@@ -39,6 +39,7 @@ hs_err_pid*
 .settings/
 .classpath
 .project
+module-info.java
 
 # NetBeans specific
 nbproject/private/
