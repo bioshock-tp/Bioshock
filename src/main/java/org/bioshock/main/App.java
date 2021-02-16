@@ -3,7 +3,7 @@ package org.bioshock.main;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bioshock.engine.ai.Enemy;
-import org.bioshock.engine.physics.Movement;
+//import org.bioshock.engine.physics.Movement;
 import org.bioshock.engine.sprites.*;
 
 import javafx.application.Application;
@@ -22,11 +22,11 @@ import javafx.stage.Stage;
 public class App extends Application {
     private Pane root = new Pane();
     
-    private Player player = new Player(300,400,40,40,Color.PINK,200);
-    private Enemy enemy = new Enemy(10,10,40,40,Color.INDIANRED,300);
-    private Wall wall = new Wall(100,100,100,200,Color.RED);
+    private static Player player = new Player(300,400,40,40,Color.PINK,200);
+    private static Enemy enemy = new Enemy(10,10,40,40,Color.INDIANRED,300);
+    private static Wall wall = new Wall(100,100,100,200,Color.RED);
 
-    private final Sprite[] sprites = {player, enemy, wall};
+    private static final Sprite[] sprites = {player, enemy, wall};
 
     public static final Logger logger = LogManager.getLogger(App.class);
 
@@ -43,7 +43,7 @@ public class App extends Application {
     public void start(Stage stage) {
         Scene scene = new Scene(buildContent());
 
-        Movement playerMovement = player.getMovement();
+       /* Movement playerMovement = player.getMovement();
 
         scene.setOnKeyPressed(e -> {
             KeyCode key = e.getCode();
@@ -65,7 +65,7 @@ public class App extends Application {
                 playerMovement.move(new Point2D(Movement.SPEED, 0));
             }
         });
-
+*/
         stage.setScene(scene);
         stage.show();
     }

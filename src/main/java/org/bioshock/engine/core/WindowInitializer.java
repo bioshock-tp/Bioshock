@@ -30,6 +30,7 @@ public class WindowInitializer {
 			@Override
 			public void handle(long now) {
 				if (InputManager.checkKeyUp(exitFullscreen)) {
+					System.out.println("Window Init Handle");
 					window.setFullScreen(!window.isFullScreen());
 				}				
 			}

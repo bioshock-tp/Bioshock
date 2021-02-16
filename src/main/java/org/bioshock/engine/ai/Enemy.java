@@ -15,7 +15,7 @@ public class Enemy extends Player {
     public void followPlayer(Sprite sprite){
         Shape intersects = Shape.intersect(fov, sprite.getSpr());
         if(intersects.getBoundsInLocal().getWidth() != -1){
-            movement.move(new Point2D(sprite.getX(), sprite.getY()));
+            //movement.move(new Point2D(sprite.getX(), sprite.getY()));
         }
     }
 }

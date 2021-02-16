@@ -1,7 +1,8 @@
 package org.bioshock.engine.input;
 
-import org.bioshock.engine.utils.Point;
 
+
+import javafx.geometry.Point2D;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
 
@@ -14,7 +15,7 @@ public interface IInputChecker {
 	
 	public boolean CheckMouseUp(MouseButton mouseButton);
 	
-	public Point CheckMousePoint();
+	public Point2D CheckMousePoint();
 	
-	public Point CheckMouseDelta();
+	public Point2D CheckMouseDelta();
 }
