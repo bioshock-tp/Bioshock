@@ -4,8 +4,11 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bioshock.engine.ai.Enemy;
 import org.bioshock.engine.physics.Movement;
-import org.bioshock.engine.sprites.*;
+import org.bioshock.engine.sprites.Player;
+import org.bioshock.engine.sprites.Sprite;
+import org.bioshock.engine.sprites.Wall;
 
+import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.geometry.Point2D;
 import javafx.scene.Parent;
@@ -66,11 +69,20 @@ public class App extends Application {
             }
         });
 
+        AnimationTimer timer = new AnimationTimer() {
+            @Override
+            public void handle(long l) {
+                enemy.followPlayer(player);
+            }
+        };
+
+        timer.start();
+
         stage.setScene(scene);
         stage.show();
     }
 
-    public static Sprite[] getSprites() {
+    public Sprite[] getSprites() {
         return sprites;
     }
 
