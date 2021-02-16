@@ -1,14 +1,18 @@
 package org.bioshock.main;
 
-import org.bioshock.engine.ai.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.bioshock.engine.ai.Enemy;
+import org.bioshock.engine.physics.Movement;
+import org.bioshock.engine.sprites.*;
 
-import javafx.animation.AnimationTimer;
 import javafx.application.Application;
+import javafx.geometry.Point2D;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Shape;
 import javafx.stage.Stage;
 
 
@@ -16,51 +20,61 @@ import javafx.stage.Stage;
  * JavaFX App
  */
 public class App extends Application {
-
     private Pane root = new Pane();
-    private Sprite player = new Sprite(300,400,40,40,200,Color.PINK);
-    private Enemy enemy = new Enemy(10, 10, 40,40,300,Color.INDIANRED);
+    
+    private Player player = new Player(300,400,40,40,Color.PINK,200);
+    private Enemy enemy = new Enemy(10,10,40,40,Color.INDIANRED,300);
+    private Wall wall = new Wall(100,100,100,200,Color.RED);
+
+    private final Sprite[] sprites = {player, enemy, wall};
+
+    public static final Logger logger = LogManager.getLogger(App.class);
 
     private Parent buildContent(){
         root.setStyle("-fx-background-color: black");
         root.setPrefSize(600,800);
 
-
-        root.getChildren().addAll(player, enemy);
-
-        AnimationTimer timer = new AnimationTimer() {
-            @Override
-            public void handle(long l) {
-                update();
-            }
-        };
-
-        timer.start();
+        root.getChildren().addAll(sprites);
 
         return root;
-    }
-
-    private void update(){
-        Shape intersects = Shape.intersect(enemy.getFov(), player.getSpr());
-        if(intersects.getBoundsInLocal().getWidth() != -1){
-            enemy.followPlayer(player);
-        }
     }
 
     @Override
     public void start(Stage stage) {
         Scene scene = new Scene(buildContent());
 
-        scene.setOnMouseClicked(e -> {
-            player.setCentreXY(e.getX(), e.getY());
+        Movement playerMovement = player.getMovement();
+
+        scene.setOnKeyPressed(e -> {
+            KeyCode key = e.getCode();
+
+            if (key == KeyCode.W) {
+                logger.debug("W Pressed");
+                playerMovement.move(new Point2D(0, Movement.SPEED));
+            }
+            if (key == KeyCode.A) {
+                logger.debug("A Pressed");
+                playerMovement.move(new Point2D(-Movement.SPEED, 0));
+            }
+            if (key == KeyCode.S) {
+                logger.debug("S Pressed");
+                playerMovement.move(new Point2D(0, -Movement.SPEED));
+            }
+            if (key == KeyCode.D) {
+                logger.debug("D Pressed");
+                playerMovement.move(new Point2D(Movement.SPEED, 0));
+            }
         });
 
         stage.setScene(scene);
         stage.show();
     }
 
+    public static Sprite[] getSprites() {
+        return sprites;
+    }
+
     public static void main(String[] args) {
         launch();
     }
-
 }
