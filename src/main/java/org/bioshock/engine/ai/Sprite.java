@@ -11,21 +11,21 @@ import javafx.scene.shape.Shape;
 public class Sprite extends Parent {
 
     Rectangle spr;
-    Circle fov;
+    //Circle fov;
     double r;
     double speed = 1;
 
     public Sprite(int x, int y, int w, int h, double r, Color c) {
         spr = new Rectangle(w, h, c);
-        fov = new Circle(r);
-        fov.setStroke(c);
-        fov.setFill(Color.TRANSPARENT);
+        //fov = new Circle(r);
+        //fov.setStroke(c);
+        //fov.setFill(Color.TRANSPARENT);
 
         this.r = r;
-        // spr.relocate(x, y);
+        spr.relocate(x, y);
         // fov.relocate(x, y);
 
-        getChildren().add(new StackPane(fov, spr));
+        getChildren().add(new StackPane(spr));
 
         setCentreXY(x, y);
     }
@@ -37,6 +37,26 @@ public class Sprite extends Parent {
     public void setCentreXY(double x, double y) {
         setTranslateX(x - r);
         setTranslateY(y - r);
+    }
+
+    public void moveLeft() {
+        Point2D center = getCentre();
+        setTranslateX(-10 + center.getX() - r);
+    }
+
+    public void moveRight() {
+        Point2D center = getCentre();
+        setTranslateX(10 + center.getX() - r);
+    }
+
+    public void moveUp() {
+        Point2D center = getCentre();
+        setTranslateY(-10 + center.getY() - r);
+    }
+
+    public void moveDown() {
+        Point2D center = getCentre();
+        setTranslateY(10 + center.getY() - r);
     }
 
     public Shape getSpr() {

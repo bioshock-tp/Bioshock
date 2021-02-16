@@ -14,8 +14,8 @@ public class Enemy extends Sprite {
 
     public void followPlayer(Sprite s){
 
-        Shape intersects = Shape.intersect(fov, s.spr);
-        if(intersects.getBoundsInLocal().getWidth() != -1){
+        //Shape intersects = Shape.intersect(fov, s.spr);
+        /*if(intersects.getBoundsInLocal().getWidth() != -1){
             double sx = s.getCentre().getX();
             double sy = s.getCentre().getY();
 
@@ -23,12 +23,12 @@ public class Enemy extends Sprite {
 
             setCentreXY((getCentre().getX() + movement.getX() * speed), (getCentre().getY() + movement.getY() * speed));
 
-        }
+        }*/
 
 
     }
 
-	public Shape getFov() {
-		return fov;
-	}
+	//public Shape getFov() {
+		//return fov;
+	//}
 }
