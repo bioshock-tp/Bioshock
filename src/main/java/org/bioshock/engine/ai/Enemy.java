@@ -1,19 +1,18 @@
-package org.bioshock;
+package org.bioshock.engine.ai;
 
 import javafx.geometry.Point2D;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Shape;
-import org.bioshock.Sprite;
 
 public class Enemy extends Sprite {
 
     Point2D movement = new Point2D(0,0);
 
-    Enemy(int x, int y, int w, int h, double r, Color c) {
+    public Enemy(int x, int y, int w, int h, double r, Color c) {
         super(x, y, w, h, r, c);
     }
 
-    void followPlayer(Sprite s){
+    public void followPlayer(Sprite s){
 
         Shape intersects = Shape.intersect(fov, s.spr);
         if(intersects.getBoundsInLocal().getWidth() != -1){
@@ -28,4 +27,8 @@ public class Enemy extends Sprite {
 
 
     }
+
+	public Shape getFov() {
+		return fov;
+	}
 }

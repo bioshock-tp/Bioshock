@@ -1,15 +1,13 @@
-package org.bioshock;
+package org.bioshock.main;
+
+import org.bioshock.engine.ai.*;
 
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
-import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
 import javafx.stage.Stage;
 
@@ -43,7 +41,7 @@ public class App extends Application {
     }
 
     private void update(){
-        Shape intersects = Shape.intersect(enemy.fov, player.spr);
+        Shape intersects = Shape.intersect(enemy.getFov(), player.getSpr());
         if(intersects.getBoundsInLocal().getWidth() != -1){
             enemy.followPlayer(player);
         }

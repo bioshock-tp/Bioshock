@@ -1,4 +1,4 @@
-package org.bioshock;
+package org.bioshock.engine.ai;
 
 import javafx.scene.Parent;
 
