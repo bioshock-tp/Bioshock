@@ -6,3 +6,6 @@
 - [Mircea-Andrei Radu](mailto:MXR997@student.bham.ac.uk)
 - [Benjamin Stein](mailto:BXS971@student.bham.ac.uk)
 - [Kian-Rhys Wells](mailto:KXW959@student.bham.ac.uk)
+
+## To Run
+[Main](./src/main/java/org/bioshock/main/Main.java)
