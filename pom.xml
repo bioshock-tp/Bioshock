@@ -37,7 +37,15 @@
                 <artifactId>javafx-maven-plugin</artifactId>
                 <version>0.0.4</version>
                 <configuration>
-                    <mainClass>org.bioshock.App</mainClass>
+                    <mainClass>org.bioshock.main.Main</mainClass>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>1.4.0</version>
+                <configuration>
+                    <mainClass>org.bioshock.main.Main</mainClass>
                 </configuration>
             </plugin>
         </plugins>
