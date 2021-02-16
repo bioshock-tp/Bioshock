@@ -42,6 +42,7 @@ hs_err_pid*
 .settings/
 .classpath
 .project
+.factorypath
 module-info.java
 
 # NetBeans specific
