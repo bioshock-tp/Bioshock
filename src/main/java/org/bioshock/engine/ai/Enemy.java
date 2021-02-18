@@ -17,6 +17,7 @@ public class Enemy extends Player {
     		int x, int y, int w, int h, double r, Color c, double z, SquareEntity entityToFollow) {
         super(transform, renderer, x, y, w, h, r, c, z);
         this.entityToFollow = entityToFollow;
+        this.movement.speed = 5;
     }
     
     public Enemy(int x, int y, int w, int h, double r, Color c, double z, SquareEntity entityToFollow) {

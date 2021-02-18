@@ -7,7 +7,7 @@ import javafx.geometry.Point2D;
 import javafx.scene.input.KeyCode;
 
 public class Movement {
-    public static final double SPEED = 10;
+    public double speed = 10;
 
     private SquareEntity entity;
 
@@ -43,11 +43,11 @@ public class Movement {
               		
         if (x != target.getX()) {
             double disp = target.getX() - x;
-            x += disp / Math.abs(disp) * SPEED;
+            x += disp / Math.abs(disp) * speed;
         }
         if (y != target.getY()) {
             double disp = target.getY() - y;
-            y += disp / Math.abs(disp) * SPEED;
+            y += disp / Math.abs(disp) * speed;
         }
         entity.transformC.setPosition(new Point2D(x, y));
         
@@ -62,18 +62,18 @@ public class Movement {
 	private Point2D checkMove() {
 		double x = 0;
 		if (InputChecker.checkKeyDown(KeyCode.A)) {
-			x += -SPEED;
+			x += -speed;
 		}
 		if (InputChecker.checkKeyDown(KeyCode.D)) {
-			x += SPEED;
+			x += speed;
 		}
 		
 		double y = 0;
 		if (InputChecker.checkKeyDown(KeyCode.S)) {
-			y += SPEED;
+			y += speed;
 		}
 		if (InputChecker.checkKeyDown(KeyCode.W)) {
-			y += -SPEED;
+			y += -speed;
 		}
 		
 		return new Point2D(x, y);

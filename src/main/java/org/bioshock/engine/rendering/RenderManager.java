@@ -32,11 +32,11 @@ public final class RenderManager {
 	 * before rendering it sets the entire canvas to Color.LIGHTGRAY
 	 */
 	public static void tick() {
-		System.out.println("Render Tick");
+		//System.out.println("Render Tick");
 		if (canvas == null) {
 			return;
 		}
-		System.out.println("Render Tick With Canvas");
+		//System.out.println("Render Tick With Canvas");
 		
 		GraphicsContext gc = canvas.getGraphicsContext2D();
 		
