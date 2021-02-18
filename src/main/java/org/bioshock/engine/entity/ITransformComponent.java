@@ -1,5 +1,12 @@
 package org.bioshock.engine.entity;
 
-public interface ITransformComponent {
+import javafx.geometry.Point2D;
 
+public interface ITransformComponent {
+	
+	public double getRotation();
+	public void setRotation();
+	
+	public Point2D getPosition();
+	public Point2D setPosition();
 }
