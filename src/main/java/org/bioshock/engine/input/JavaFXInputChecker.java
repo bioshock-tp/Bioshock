@@ -23,7 +23,9 @@ public class JavaFXInputChecker implements IInputChecker{
 	
 	public JavaFXInputChecker(Stage stage) {
 		stage.addEventHandler(KeyEvent.KEY_PRESSED, (KeyEvent event) -> {
-			keysDown.add(event.getCode());
+			if(!keysDown.contains(event.getCode())) {
+				keysDown.add(event.getCode());
+			}
 		});
 		stage.addEventHandler(KeyEvent.KEY_RELEASED, (KeyEvent event) -> {
 			keysDown.remove(event.getCode());
@@ -31,7 +33,9 @@ public class JavaFXInputChecker implements IInputChecker{
 			keyAdded = true;
 		});
 		stage.addEventHandler(MouseEvent.MOUSE_CLICKED, (MouseEvent event) -> {
-			mouseDown.add(event.getButton());
+			if(!mouseDown.contains(event.getButton())) {
+				mouseDown.add(event.getButton());
+			}
 		});
 		stage.addEventHandler(MouseEvent.MOUSE_RELEASED, (MouseEvent event) -> {
 			mouseDown.remove(event.getButton());

@@ -22,11 +22,12 @@ import javafx.stage.Stage;
 public class App extends Application {
     private Pane root = new Pane();
     
+    /*
     private static Player player = new Player(300,400,40,40,Color.PINK,200);
-    private static Enemy enemy = new Enemy(10,10,40,40,Color.INDIANRED,300);
+    private static Enemy enemy = new Enemy(10,10,40,40,Color.INDIANRED,300);*/
     private static Wall wall = new Wall(100,100,100,200,Color.RED);
 
-    private static final Sprite[] sprites = {player, enemy, wall};
+    //private static final SquareEntityWithFov[] sprites = {player, enemy, wall};
 
     public static final Logger logger = LogManager.getLogger(App.class);
 
@@ -34,7 +35,7 @@ public class App extends Application {
         root.setStyle("-fx-background-color: black");
         root.setPrefSize(600,800);
 
-        root.getChildren().addAll(sprites);
+        //root.getChildren().addAll(sprites);
 
         return root;
     }
@@ -70,9 +71,9 @@ public class App extends Application {
         stage.show();
     }
 
-    public static Sprite[] getSprites() {
+    /*public static SquareEntityWithFov[] getSprites() {
         return sprites;
-    }
+    }*/
 
     public static void main(String[] args) {
         launch();

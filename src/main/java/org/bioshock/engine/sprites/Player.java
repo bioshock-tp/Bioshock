@@ -1,29 +1,44 @@
 package org.bioshock.engine.sprites;
 
-//import org.bioshock.engine.physics.Movement;
+import org.bioshock.engine.physics.Movement;
+import org.bioshock.render.components.PlayerRendererC;
+import org.bioshock.transform.components.PlayerTransformC;
 
-import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
 
-public class Player extends Sprite {
-    protected Circle fov;
-    protected double r;
-    //protected Movement movement;
+public class Player extends SquareEntity {
+    public Movement movement;
+    public PlayerTransformC transform;
+    PlayerRendererC renderer;
 
-    public Player(int x, int y, int w, int h, Color c, double r) {
-        super(x, y, w, h, c);
-        this.r = r;
-        //this.movement = new Movement(this);
-
-        fov = new Circle(r);
-        fov.setStroke(c);
-        fov.setFill(Color.TRANSPARENT);
-
-        getChildren().add(new StackPane(fov, spr));
+    public Player(PlayerTransformC transform, PlayerRendererC renderer, 
+    		int x, int y, int w, int h, double r, Color c, double z) {
+    	super(transform, renderer, x, y, w, h, c, z);
+    	this.transform = transform;
+        this.transform.setRadius(r);
+        
+        this.movement = new Movement(this);
+        
+        setXYRectangle(x, y);
+    }
+    
+    public Player(int x, int y, int w, int h, double r, Color c, double z) {
+    	this(new PlayerTransformC(), new PlayerRendererC(), x, y, w, h, r, c, z);
     }
 
-    /*public Movement getMovement() {
+    public Movement getMovement() {
 		return movement;
-	}*/
+	}
+
+	@Override
+	public void destroy() {
+		return;
+	}
+
+	@Override
+	protected void tick(double timeDelta) {
+		movement.tick(timeDelta);
+	}
+	
+	
 }

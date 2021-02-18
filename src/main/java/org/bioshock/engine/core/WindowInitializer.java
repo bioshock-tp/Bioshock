@@ -1,6 +1,6 @@
 package org.bioshock.engine.core;
 
-import org.bioshock.engine.input.InputManager;
+import org.bioshock.engine.input.InputChecker;
 
 import javafx.animation.AnimationTimer;
 import javafx.geometry.Rectangle2D;
@@ -29,7 +29,7 @@ public class WindowInitializer {
 			
 			@Override
 			public void handle(long now) {
-				if (InputManager.checkKeyUp(exitFullscreen)) {
+				if (InputChecker.checkKeyUp(exitFullscreen)) {
 					System.out.println("Window Init Handle");
 					window.setFullScreen(!window.isFullScreen());
 				}				

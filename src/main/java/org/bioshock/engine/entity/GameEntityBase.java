@@ -11,7 +11,7 @@ public abstract class GameEntityBase {
 	public IPhysicsComponent physicsC = null;
 	public IRendererComponent rendererC = null;
 	public ITransformComponent transformC = null;
-	private boolean enabled = false;
+	public boolean enabled = true;
 	private boolean initialized = false;
 	private UUID ID;
 	

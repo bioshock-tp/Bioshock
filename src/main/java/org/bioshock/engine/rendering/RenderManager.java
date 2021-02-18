@@ -6,6 +6,8 @@ import java.util.Map;
 
 import org.bioshock.engine.entity.GameEntityBase;
 import org.bioshock.engine.entity.IRendererComponent;
+import org.bioshock.render.components.PlayerRendererC;
+import org.bioshock.render.renderers.PlayerRenderer;
 
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -15,8 +17,13 @@ public final class RenderManager {
 	private static ArrayList<GameEntityBase> renderableEntities = new ArrayList<GameEntityBase>();
 	private static Map<Class<? extends IRendererComponent>, IBaseRenderer> map = 
 			new HashMap<Class<? extends IRendererComponent>, IBaseRenderer>();
+	static {
+		map.put(PlayerRendererC.class, new PlayerRenderer());
+	}
+	
 	
 	public static Canvas canvas;
+	
 	
 	/**
 	 * A method that attempts to render every entity registered to the RenderManager in Ascending Y order
@@ -25,14 +32,15 @@ public final class RenderManager {
 	 * before rendering it sets the entire canvas to Color.LIGHTGRAY
 	 */
 	public static void tick() {
+		System.out.println("Render Tick");
 		if (canvas == null) {
 			return;
 		}
+		System.out.println("Render Tick With Canvas");
 		
 		GraphicsContext gc = canvas.getGraphicsContext2D();
 		
 		//Set Background to LightGray
-		gc.setFill(Color.LIGHTGRAY);
 		gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
 		
 		
@@ -61,7 +69,7 @@ public final class RenderManager {
         for (int j = 1; j < n; j++) {  
         	GameEntityBase key = entityList.get(j);  
             int i = j-1;  
-            while ( (i > -1) && (entityList.get(i).rendererC.getY() > key.rendererC.getY() ) ) {  
+            while ( (i > -1) && (entityList.get(i).rendererC.getZ() > key.rendererC.getZ() ) ) {  
                 entityList.set(i+1, entityList.get(i));  
                 i--;  
             }  
@@ -90,7 +98,7 @@ public final class RenderManager {
 		else {
 			int i = 0;
 			GameEntityBase currentEntity = renderableEntities.get(0);
-			while (currentEntity.rendererC.getY() < entityToAdd.rendererC.getY()) {
+			while (currentEntity.rendererC.getZ() < entityToAdd.rendererC.getZ()) {
 				i++;
 				currentEntity = renderableEntities.get(i);
 			}

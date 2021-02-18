@@ -6,7 +6,7 @@ import javafx.geometry.Point2D;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
 
-public final class InputManager {
+public final class InputChecker {
 	private static IInputChecker inputChecker;
 
 	public static void initialize(IInputChecker checker) {
