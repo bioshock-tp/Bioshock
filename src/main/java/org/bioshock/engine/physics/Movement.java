@@ -2,6 +2,7 @@ package org.bioshock.engine.physics;
 
 import org.bioshock.engine.input.InputChecker;
 import org.bioshock.engine.sprites.SquareEntity;
+import org.bioshock.main.App2;
 
 import javafx.geometry.Point2D;
 import javafx.scene.input.KeyCode;
@@ -22,11 +23,6 @@ public class Movement {
     }
 
     public void move(Point2D trans) {
-        //App.logger.debug("Translation ({}, {})", trans.getX(), trans.getY());
-
-        //if (trans.getX() == 0 && trans.getY() == 0) 
-            //App.logger.error("Empty movement call");
-
         Point2D target = trans.add(entity.transformC.getPosition());
         
         update(target);
@@ -35,8 +31,7 @@ public class Movement {
     private void update(Point2D target) {
     	double x = entity.transformC.getPosition().getX();
         double y = entity.transformC.getPosition().getY();
-        //App.logger.debug("Current {} {} Target {} {}", x, y, target.getX(), target.getY());
-
+        
         // Sprite[] sprites = App.getSprites();
 
         // for (Sprite spr : )
@@ -51,8 +46,6 @@ public class Movement {
         }
         entity.transformC.setPosition(new Point2D(x, y));
         
-        //App.logger.debug("{} {}", entity.getX(), entity.getY());
-
         // if (
         //     sprite.getTranslateX() == target.getX() && 
         //     sprite.getTranslateY() == target.getY()

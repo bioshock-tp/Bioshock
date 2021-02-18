@@ -25,7 +25,7 @@ public class Enemy extends Player {
     }
 
     public void followPlayer(){
-        if(intersects(entityToFollow)){            
+        if(intersects(entityToFollow)){    
             movement.move(entityToFollow.transformC.getPosition().subtract(this.transformC.getPosition()));
         }
     }
