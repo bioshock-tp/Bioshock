@@ -10,7 +10,11 @@ import org.bioshock.main.App;
 import javafx.scene.input.KeyCode;
 
 public class InputManager {
-    private static Map<KeyCode, InputAction> keysAssigned = new EnumMap<>(KeyCode.class);
+    private static Map<KeyCode, InputAction> keyPresses = 
+        new EnumMap<>(KeyCode.class);
+
+    private static Map<KeyCode, InputAction> keyReleases = 
+        new EnumMap<>(KeyCode.class);
 
     private InputManager() {}
 
@@ -21,8 +25,16 @@ public class InputManager {
 	public static void changeScene() {
         SceneManager.getScene().setOnKeyPressed(e -> {
             InputAction action;
-            if ((action = keysAssigned.get(e.getCode())) != null) {
+            if ((action = keyPresses.get(e.getCode())) != null) {
                 App.logger.info("{} pressed", e.getCode().getChar());
+                action.execute();
+            }
+        });
+
+        SceneManager.getScene().setOnKeyReleased(e -> {
+            InputAction action;
+            if ((action = keyReleases.get(e.getCode())) != null) {
+                App.logger.info("{} released", e.getCode().getChar());
                 action.execute();
             }
         });
@@ -30,8 +42,17 @@ public class InputManager {
         //TODO: Insert mouse listener
     }
 
-	public static void addKeyListener(KeyCode keyCode, InputAction action) {
-        if (keysAssigned.putIfAbsent(keyCode, action) != null) {
+	public static void onPressListener(KeyCode keyCode, InputAction action) {
+        if (keyPresses.putIfAbsent(keyCode, action) != null) {
+            throw new InvalidParameterException(String.format(
+                "Tried to add listener to key: %s, but was already assinged",
+                keyCode.getChar()
+            ));
+        }
+	}
+
+    public static void onReleaseListener(KeyCode keyCode, InputAction action) {
+        if (keyReleases.putIfAbsent(keyCode, action) != null) {
             throw new InvalidParameterException(String.format(
                 "Tried to add listener to key: %s, but was already assinged",
                 keyCode.getChar()
@@ -45,6 +66,6 @@ public class InputManager {
     }
 
     public static void removeKeyListener(KeyCode keyCode) {
-        keysAssigned.remove(keyCode);
+        keyPresses.remove(keyCode);
 	}
 }

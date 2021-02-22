@@ -8,29 +8,37 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Color;
 
 public class Player extends SquareEntity {
-    public Player(Point3D pos, Size size, int r, Color c) {
-    	super(pos, size, r, c);
+    public Player(Point3D pos, Size s, int r, Color c) {
+    	super(pos, s, r, c);
 
         renderer = new PlayerRenderer();
 
-        InputManager.addKeyListener(
-            KeyCode.W,
-            () -> movement.displace(0, -movement.getSpeed())
-        );
+        final int speed = movement.getSpeed();
 
-        InputManager.addKeyListener(
-            KeyCode.A,
-            () -> movement.displace(-movement.getSpeed(), 0)
+        InputManager.onPressListener(
+            KeyCode.W, () -> movement.direction(0, -speed)
         );
-
-        InputManager.addKeyListener(
-            KeyCode.S,
-            () -> movement.displace(0,  movement.getSpeed())
+        InputManager.onPressListener(
+            KeyCode.A, () -> movement.direction(-speed, 0)
         );
-
-        InputManager.addKeyListener(
-            KeyCode.D,
-            () -> movement.displace(movement.getSpeed(),  0)
+        InputManager.onPressListener(
+            KeyCode.S, () -> movement.direction(0,  speed)
+        );
+        InputManager.onPressListener(
+            KeyCode.D, () -> movement.direction(speed,  0)
+        );
+        
+        InputManager.onReleaseListener(
+            KeyCode.W, () -> movement.direction(0, speed)
+        );
+        InputManager.onReleaseListener(
+            KeyCode.A, () -> movement.direction(speed, 0)
+        );
+        InputManager.onReleaseListener(
+            KeyCode.S, () -> movement.direction(0,  -speed)
+        );
+        InputManager.onReleaseListener(
+            KeyCode.D, () -> movement.direction(-speed,  0)
         );
     }
 

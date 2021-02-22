@@ -7,19 +7,21 @@ import javafx.geometry.Point2D;
 public class Movement {
     private int speed = 10;
 
-    private int dispX = 0;
-    private int dispY = 0;
+    private int xDirection = 0;
+    private int yDirection = 0;
 
     private SquareEntity entity;
 
     public Movement(SquareEntity entity) {
         this.entity = entity;
     }
-    
+
+    private Point2D getDirection() {
+		return new Point2D(xDirection, yDirection);
+	}
+
     public void tick(double timeDelta) {
-        Point2D displacement = getDisplacement();
-        if (displacement.getX() == 0 && displacement.getY() == 0) return;
-    	move(displacement);
+        if (xDirection != 0 || yDirection != 0) move(getDirection());
     }
 
     public void move(Point2D trans) {
@@ -38,21 +40,17 @@ public class Movement {
         entity.setPosition(x, y);
     }
 
-    public void displace(int displacementX, int displacementY) {
-        dispX += displacementX;
-        dispY += displacementY;
+    public void direction(int newXDirection, int newYDirection) {
+        int newX = Math.abs(xDirection + newXDirection);
+        if (newX <= speed) xDirection += newXDirection;
+
+        int newY = Math.abs(yDirection + newYDirection);
+        if (newY <= speed) yDirection += newYDirection;
     }
 
     public void setSpeed(int newSpeed) {
         speed = newSpeed;
     }
-
-	private Point2D getDisplacement() {
-        Point2D displacement = new Point2D(dispX, dispY);
-        dispX = 0;
-        dispY = 0;
-		return displacement;
-	}
 
     public int getSpeed() {
         return speed;

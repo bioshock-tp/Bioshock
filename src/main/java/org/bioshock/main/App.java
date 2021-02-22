@@ -20,7 +20,7 @@ public final class App extends Application{
 		WindowManager.initialize(primaryStage);
 		SceneManager.initialize(primaryStage, new LoadingScreen());
         InputManager.initialize();
-        InputManager.addKeyListener(KeyCode.C, () -> App.logger.debug(SceneManager.getScene()));
+        InputManager.onPressListener(KeyCode.C, () -> App.logger.debug(SceneManager.getScene()));
 
 		primaryStage.setScene(SceneManager.getScene());
 		primaryStage.show();
