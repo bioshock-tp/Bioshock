@@ -1,71 +1,61 @@
 package org.bioshock.engine.physics;
 
-import java.util.Stack;
-
-import org.bioshock.engine.sprites.Sprite;
+import org.bioshock.engine.entity.SquareEntity;
 import org.bioshock.main.App;
 
-import javafx.animation.AnimationTimer;
 import javafx.geometry.Point2D;
 
 public class Movement {
-    public static final double SPEED = 10;
+    private int speed = 10;
 
-    private Sprite sprite;
-    private AnimationTimer timer;
-    private Stack<Point2D> movementStack = new Stack<>();
+    private int dispX = 0;
+    private int dispY = 0;
 
-    public Movement(Sprite sprite) {
-        this.sprite = sprite;
+    private SquareEntity entity;
 
-        timer = new AnimationTimer() {
-            @Override
-            public void handle(long l) {
-                if (!movementStack.empty()) update(movementStack.pop());
-            }
-        };
-
-        timer.start();
+    public Movement(SquareEntity entity) {
+        this.entity = entity;
+    }
+    
+    public void tick(double timeDelta) {
+        Point2D displacement = getDisplacement();
+        if (displacement.getX() == 0 && displacement.getY() == 0) return;
+    	move(displacement);
     }
 
     public void move(Point2D trans) {
-        App.logger.debug("Translation ({}, {})", trans.getX(), trans.getY());
-
-        if (trans.getX() == 0 && trans.getY() == 0) 
-            App.logger.error("Empty movement call");
-
-        trans = new Point2D(trans.getX(), -trans.getY());
-
-        Point2D target = trans.add(
-            sprite.getTranslateX(),
-            sprite.getTranslateY()
-        );
-
-        movementStack.push(target);
+        Point2D target = trans.add(entity.getPosition());
+        int x = entity.getX();
+        int y = entity.getY();
+              		
+        if (x != target.getX()) {
+            int disp = (int) target.getX() - x;
+            x += disp / Math.abs(disp) * speed;
+        }
+        if (y != target.getY()) {
+            int disp = (int) target.getY() - y;
+            y += disp / Math.abs(disp) * speed;
+        }
+        entity.setPosition(x, y);
     }
 
-    private void update(Point2D target) {
-        App.logger.debug("Current {} {} Target {} {}", sprite.getTranslateX(), sprite.getTranslateY(), target.getX(), target.getY());
+    public void displace(int displacementX, int displacementY) {
+        dispX += displacementX;
+        dispY += displacementY;
+    }
 
-        // Sprite[] sprites = App.getSprites();
+    public void setSpeed(int newSpeed) {
+        speed = newSpeed;
+    }
 
-        // for (Sprite spr : )
+	private Point2D getDisplacement() {
+        Point2D displacement = new Point2D(dispX, dispY);
+        dispX = 0;
+        dispY = 0;
+		return displacement;
+	}
 
-        if (sprite.getTranslateX() != target.getX()) {
-            double disp = target.getX() - sprite.getTranslateX();
-            sprite.setTranslateX(sprite.getTranslateX() + disp / Math.abs(disp) * SPEED);
-        }
-        if (sprite.getTranslateY() != target.getY()) {
-            double disp = target.getY() - sprite.getTranslateY();
-            sprite.setTranslateY(sprite.getTranslateY() + disp / Math.abs(disp) * SPEED);
-        }
-        App.logger.debug("{} {}", sprite.getX(), sprite.getY());
-
-        // if (
-        //     sprite.getTranslateX() == target.getX() && 
-        //     sprite.getTranslateY() == target.getY()
-        // ) timer.stop();
+    public int getSpeed() {
+        return speed;
     }
 }
-
-

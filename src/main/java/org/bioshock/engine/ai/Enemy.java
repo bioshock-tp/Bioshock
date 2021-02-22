@@ -1,28 +1,50 @@
 package org.bioshock.engine.ai;
 
-import org.bioshock.engine.physics.Movement;
-import org.bioshock.engine.sprites.Player;
-import org.bioshock.engine.sprites.Sprite;
+import org.bioshock.engine.entity.EntityManager;
+import org.bioshock.engine.entity.Player;
+import org.bioshock.engine.entity.Size;
+import org.bioshock.engine.entity.SquareEntity;
+import org.bioshock.engine.renderers.EnemyRenderer;
 import org.bioshock.main.App;
 
-import javafx.geometry.Point2D;
+import javafx.geometry.Point3D;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import javafx.scene.shape.Shape;
 
-public class Enemy extends Player {
-    public Enemy(int x, int y, int w, int h, Color c, double r) {
-        super(x, y, w, h, c, r);
+public class Enemy extends SquareEntity {
+    private final Circle fov;
+    private SquareEntity target;
+	
+    public Enemy(Point3D pos, Size size, int r, Color c, Player initialFollow) {
+        super(pos, size, c);
+
+        fov = new Circle(pos.getX(), pos.getY(), r);
+
+        target = initialFollow;
+        
+        movement.setSpeed(5);
+
+        renderer = new EnemyRenderer();
     }
 
-    public void followPlayer(Sprite sprite){
-        Shape intersects = Shape.intersect(fov, sprite.getSpr());
-        if(intersects.getBoundsInLocal().getWidth() != -1){
-            double sx = sprite.getX();
-            double sy = sprite.getY();
+    public boolean canSee(SquareEntity enemy) {
+    	Shape intersect = Shape.intersect(fov, enemy.getHitbox());
+        return intersect.getBoundsInLocal().getWidth() != -1;
+    }
 
-            Point2D movement = new Point2D(sx - getX(), sy - getY()).normalize();
-
-            setCentreXY(getX() + (movement.getX() * Movement.SPEED / 10), getY() + (movement.getY() * Movement.SPEED / 10));
+    public void followPlayer() {
+        if (EntityManager.areRendered(this, target) && canSee(target)) {
+            movement.move(target.getPosition().subtract(this.getPosition()));
         }
     }
+    
+    @Override
+	protected void tick(double timeDelta) {
+    	followPlayer();
+	}
+
+	public int getRadius() {
+		return (int) fov.getRadius();
+	}
 }
