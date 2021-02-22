@@ -1,8 +1,13 @@
 package org.bioshock.engine.ai;
 
+import org.bioshock.engine.entity.GameEntityManager;
+import org.bioshock.engine.rendering.RenderManager;
+import org.bioshock.engine.scene.SceneController;
 import org.bioshock.engine.sprites.Player;
 import org.bioshock.engine.sprites.SquareEntity;
+import org.bioshock.render.components.EnemyRendererC;
 import org.bioshock.render.components.PlayerRendererC;
+import org.bioshock.transform.components.EnemyTransformC;
 import org.bioshock.transform.components.PlayerTransformC;
 
 import javafx.scene.paint.Color;
@@ -12,16 +17,17 @@ import javafx.scene.shape.Shape;
 
 public class Enemy extends Player {
 	private SquareEntity entityToFollow;
+	private Swatter swatter;
 	
-    public Enemy(PlayerTransformC transform, PlayerRendererC renderer, 
-    		int x, int y, int w, int h, double r, Color c, double z, SquareEntity entityToFollow) {
+    public Enemy(EnemyTransformC transform, EnemyRendererC renderer,
+                 int x, int y, int w, int h, double r, Color c, double z, SquareEntity entityToFollow) {
         super(transform, renderer, x, y, w, h, r, c, z);
         this.entityToFollow = entityToFollow;
         this.movement.speed = 5;
     }
     
     public Enemy(int x, int y, int w, int h, double r, Color c, double z, SquareEntity entityToFollow) {
-    	this(new PlayerTransformC(), new PlayerRendererC(), x, y, w, h, r, c, z, entityToFollow);
+    	this(new EnemyTransformC(), new EnemyRendererC(), x, y, w, h, r, c, z, entityToFollow);
     }
 
     public void followPlayer(){

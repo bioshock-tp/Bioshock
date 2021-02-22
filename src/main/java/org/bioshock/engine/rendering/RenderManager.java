@@ -6,12 +6,16 @@ import java.util.Map;
 
 import org.bioshock.engine.entity.GameEntityBase;
 import org.bioshock.engine.entity.IRendererComponent;
+import org.bioshock.render.components.EnemyRendererC;
 import org.bioshock.render.components.PlayerRendererC;
+import org.bioshock.render.components.SwatterRendererC;
+import org.bioshock.render.renderers.EnemyRenderer;
 import org.bioshock.render.renderers.PlayerRenderer;
 
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
+import org.bioshock.render.renderers.SwatterRenderer;
 
 public final class RenderManager {
 	private static ArrayList<GameEntityBase> renderableEntities = new ArrayList<GameEntityBase>();
@@ -19,6 +23,8 @@ public final class RenderManager {
 			new HashMap<Class<? extends IRendererComponent>, IBaseRenderer>();
 	static {
 		map.put(PlayerRendererC.class, new PlayerRenderer());
+		map.put(EnemyRendererC.class, new EnemyRenderer());
+		map.put(SwatterRendererC.class, new SwatterRenderer());
 	}
 	
 	
@@ -62,7 +68,7 @@ public final class RenderManager {
 	/**
 	 * A method that sorts a list of entities in ascending order
 	 * Current Implementation uses Insertion sort as there is likely to be minimal changes from frame to frame in order
-	 * @param The list to be sorted by ref
+	 * @param entityList The list to be sorted by ref
 	 */
 	public static void sort(ArrayList<GameEntityBase> entityList) {  
         int n = entityList.size();  

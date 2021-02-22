@@ -24,8 +24,13 @@ public class Movement {
 
     public void move(Point2D trans) {
         Point2D target = trans.add(entity.transformC.getPosition());
-        
+        rotate(trans);
         update(target);
+    }
+
+    public void rotate(Point2D trans){
+        double rotation = Math.atan2(trans.getX(), -trans.getY())*180/Math.PI;
+        entity.transformC.setRotation(rotation);
     }
 
     private void update(Point2D target) {
