@@ -5,7 +5,6 @@ import org.bioshock.engine.entity.Player;
 import org.bioshock.engine.entity.Size;
 import org.bioshock.engine.entity.SquareEntity;
 import org.bioshock.engine.renderers.EnemyRenderer;
-import org.bioshock.main.App;
 
 import javafx.geometry.Point3D;
 import javafx.scene.paint.Color;

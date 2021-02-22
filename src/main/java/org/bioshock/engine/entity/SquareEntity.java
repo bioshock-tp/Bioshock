@@ -32,6 +32,7 @@ public abstract class SquareEntity extends Entity {
         );
         hitbox.setTranslateX(pos.getX());
         hitbox.setTranslateY(pos.getY());
+        hitbox.setFill(Color.TRANSPARENT);
     }
 	
     @Override
