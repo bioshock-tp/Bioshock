@@ -3,7 +3,6 @@ package org.bioshock.engine.entity;
 import java.util.UUID;
 
 import org.bioshock.engine.renderers.Renderer;
-import org.bioshock.main.App;
 
 import javafx.geometry.Point2D;
 import javafx.geometry.Point3D;

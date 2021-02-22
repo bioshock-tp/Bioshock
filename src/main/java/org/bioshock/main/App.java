@@ -2,14 +2,12 @@ package org.bioshock.main;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
 import org.bioshock.engine.core.GameLoop;
 import org.bioshock.engine.core.WindowManager;
 import org.bioshock.engine.input.InputManager;
 import org.bioshock.engine.scene.SceneManager;
 import org.bioshock.scenes.LoadingScreen;
 
-import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;

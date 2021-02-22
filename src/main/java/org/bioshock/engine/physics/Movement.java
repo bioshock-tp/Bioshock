@@ -1,7 +1,6 @@
 package org.bioshock.engine.physics;
 
 import org.bioshock.engine.entity.SquareEntity;
-import org.bioshock.main.App;
 
 import javafx.geometry.Point2D;
 

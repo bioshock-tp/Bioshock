@@ -29,7 +29,7 @@ public class WindowManager {
 		window.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
 		
         InputManager.addKeyListener(
-            KeyCode.F11, () -> WindowManager.toggleFullScreen()
+            KeyCode.F11, WindowManager::toggleFullScreen
         );
 
         InputManager.addKeyListener(KeyCode.ESCAPE, () -> {

@@ -6,15 +6,10 @@ import org.bioshock.engine.renderers.PlayerRenderer;
 import javafx.geometry.Point3D;
 import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
 
 public class Player extends SquareEntity {
-    protected final Circle fov;
-
     public Player(Point3D pos, Size size, int r, Color c) {
-    	super(pos, size, c);
-
-        fov = new Circle(pos.getX(), pos.getY(), r);
+    	super(pos, size, r, c);
 
         renderer = new PlayerRenderer();
 
