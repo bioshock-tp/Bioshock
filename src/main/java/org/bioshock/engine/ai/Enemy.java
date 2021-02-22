@@ -1,49 +1,50 @@
 package org.bioshock.engine.ai;
 
-import org.bioshock.engine.sprites.Player;
-import org.bioshock.engine.sprites.SquareEntity;
-import org.bioshock.render.components.PlayerRendererC;
-import org.bioshock.transform.components.PlayerTransformC;
+import org.bioshock.engine.entity.EntityManager;
+import org.bioshock.engine.entity.Player;
+import org.bioshock.engine.entity.Size;
+import org.bioshock.engine.entity.SquareEntity;
+import org.bioshock.engine.renderers.EnemyRenderer;
+import org.bioshock.main.App;
 
+import javafx.geometry.Point3D;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
-import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
 
-public class Enemy extends Player {
-	private SquareEntity entityToFollow;
+public class Enemy extends SquareEntity {
+    private final Circle fov;
+    private SquareEntity target;
 	
-    public Enemy(PlayerTransformC transform, PlayerRendererC renderer, 
-    		int x, int y, int w, int h, double r, Color c, double z, SquareEntity entityToFollow) {
-        super(transform, renderer, x, y, w, h, r, c, z);
-        this.entityToFollow = entityToFollow;
-        this.movement.speed = 5;
-    }
-    
-    public Enemy(int x, int y, int w, int h, double r, Color c, double z, SquareEntity entityToFollow) {
-    	this(new PlayerTransformC(), new PlayerRendererC(), x, y, w, h, r, c, z, entityToFollow);
+    public Enemy(Point3D pos, Size size, int r, Color c, Player initialFollow) {
+        super(pos, size, c);
+
+        fov = new Circle(pos.getX(), pos.getY(), r);
+
+        target = initialFollow;
+        
+        movement.setSpeed(5);
+
+        renderer = new EnemyRenderer();
     }
 
-    public void followPlayer(){
-        if(intersects(entityToFollow)){    
-            movement.move(entityToFollow.transformC.getPosition().subtract(this.transformC.getPosition()));
-        }
+    public boolean canSee(SquareEntity enemy) {
+    	Shape intersect = Shape.intersect(fov, enemy.getHitbox());
+        return intersect.getBoundsInLocal().getWidth() != -1;
     }
-    
-    public boolean intersects(SquareEntity entity) {
-    	double radius = super.transform.getRadius();
-    	Circle fov = new Circle(getX() + super.transform.width/2, getY() + super.transform.height/2, radius);
-    	Rectangle entityHitBox = new Rectangle(entity.getX(), entity.getY(), entity.getWidth(), entity.getHeight());
-    	
-    	Shape intersect = Shape.intersect(fov, entityHitBox);
-        if(intersect.getBoundsInLocal().getWidth() != -1){
-        	return true;
+
+    public void followPlayer() {
+        if (EntityManager.areRendered(this, target) && canSee(target)) {
+            movement.move(target.getPosition().subtract(this.getPosition()));
         }
-        return false;
     }
     
     @Override
 	protected void tick(double timeDelta) {
     	followPlayer();
+	}
+
+	public int getRadius() {
+		return (int) fov.getRadius();
 	}
 }
