@@ -1,6 +1,7 @@
 package org.bioshock.main;
 
 import org.bioshock.engine.ai.*;
+import org.bioshock.networking.*;
 
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
@@ -10,6 +11,15 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Shape;
 import javafx.stage.Stage;
+
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.nio.ByteBuffer;
+
+import org.java_websocket.client.WebSocketClient;
+import org.java_websocket.drafts.Draft;
+import org.java_websocket.drafts.Draft_6455;
+import org.java_websocket.handshake.ServerHandshake;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -104,7 +114,9 @@ public class App extends Application {
         stage.show();
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws URISyntaxException {
+        WebSocketClient client = new EmptyClient(new URI("ws://localhost:8887"));
+        client.connect();
         launch();
     }
 
