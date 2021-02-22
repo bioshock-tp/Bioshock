@@ -4,14 +4,13 @@ import org.bioshock.engine.physics.Movement;
 
 import javafx.geometry.Point3D;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.transform.Rotate;
 
 public abstract class SquareEntity extends Entity {
     protected Size size;
-    protected Paint colour;
+    protected Color colour;
     protected Rectangle hitbox;
     protected Circle fov;
     protected final Rotate rotate = new Rotate();
@@ -26,7 +25,7 @@ public abstract class SquareEntity extends Entity {
         fov = new Circle(pos.getX(), pos.getY(), r);
         fov.setTranslateX(pos.getX());
         fov.setTranslateY(pos.getY());
-        
+
         hitbox = new Rectangle(
             pos.getX(), pos.getY(),
             s.getWidth(), s.getHeight()
@@ -63,7 +62,7 @@ public abstract class SquareEntity extends Entity {
         return rotate;
     }
 
-    public Paint getColor() {
+    public Color getColor() {
 		return colour;
 	}
 

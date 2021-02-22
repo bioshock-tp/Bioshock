@@ -5,6 +5,7 @@ import org.bioshock.engine.entity.Player;
 import org.bioshock.engine.entity.Size;
 import org.bioshock.engine.entity.SquareEntity;
 import org.bioshock.engine.renderers.EnemyRenderer;
+import org.bioshock.main.App;
 
 import javafx.geometry.Point3D;
 import javafx.scene.paint.Color;
@@ -13,8 +14,8 @@ import javafx.scene.shape.Shape;
 public class Enemy extends SquareEntity {
     private SquareEntity target;
 	
-    public Enemy(Point3D pos, Size size, int r, Color c, Player initialFollow) {
-        super(pos, size, r, c);
+    public Enemy(Point3D pos, Size s, int r, Color c, Player initialFollow) {
+        super(pos, s, r, c);
 
         target = initialFollow;
         

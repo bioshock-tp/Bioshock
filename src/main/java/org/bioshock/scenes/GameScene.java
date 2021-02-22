@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import org.bioshock.engine.core.WindowManager;
 import org.bioshock.engine.entity.Entity;
 import org.bioshock.engine.entity.EntityManager;
+import org.bioshock.engine.entity.SquareEntity;
 
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
@@ -31,6 +32,11 @@ public abstract class GameScene extends Scene {
 
 	public void renderEntities() {
         children.forEach(EntityManager::register);
+        children.forEach(entity -> {
+            if (entity instanceof SquareEntity) {
+                pane.getChildren().add(((SquareEntity) entity).getHitbox());
+            }
+        });
 	}
 
     public void setBackground(Background background) {
@@ -44,6 +50,4 @@ public abstract class GameScene extends Scene {
 	public Canvas getCanvas() {
 		return canvas;
 	}
-
-
 }

@@ -1,6 +1,5 @@
 package org.bioshock.engine.scene;
 
-import org.bioshock.engine.entity.Entity;
 import org.bioshock.engine.entity.EntityManager;
 import org.bioshock.engine.input.InputManager;
 import org.bioshock.scenes.GameScene;
@@ -21,18 +20,10 @@ public final class SceneManager {
         currentScene = initialScene;
 	}
 
-    public static void addAllEntities(Entity... entities) {
-        EntityManager.registerAll(entities);
-	}
-
-    public static void unloadEntities() {
-		EntityManager.unregisterAll();
-	}
-
 	public static void setScene(GameScene scene) {
         currentScene = scene;
         
-        unloadEntities();
+        EntityManager.unregisterAll();
 
         InputManager.changeScene();
 
@@ -52,5 +43,4 @@ public final class SceneManager {
 	public static Canvas getCanvas() {
 		return currentScene.getCanvas();
 	}
-    
 }

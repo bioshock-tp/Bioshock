@@ -19,35 +19,30 @@ public final class EntityManager {
 	}
 	
 	public static void register(Entity entity) {
-        // SceneController.getPane().getChildren().add(entity);
         NetworkManager.register(entity);
         RenderManager.register(entity);
         rendered.add(entity);
 	}
 
 	public static void registerAll(Entity... toAdd) {
-        // SceneController.getPane().getChildren().addAll(toAdd);
         NetworkManager.registerAll(Arrays.asList(toAdd));
         RenderManager.registerAll(Arrays.asList(toAdd));
         rendered.addAll(Arrays.asList(toAdd));
 	}
 
 	public static void unregister(Entity entity) {
-        // SceneController.getPane().getChildren().remove(entity);
         NetworkManager.unregister(entity);
         RenderManager.unregister(entity);
         rendered.remove(entity);
 	}
 
     public static void unregisterAll() {
-        // SceneController.getPane().getChildren().removeAll(rendered);
         NetworkManager.unregisterAll(rendered);
         RenderManager.unregisterAll(rendered);
         rendered.clear();
     }
 
     public static void unregisterAll(Entity... entities) {
-        // SceneController.getPane().getChildren().removeAll(entities);
         NetworkManager.unregisterAll(Arrays.asList(entities));
         RenderManager.unregisterAll(Arrays.asList(entities));
         rendered.removeAll(Arrays.asList(entities));
