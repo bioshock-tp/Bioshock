@@ -116,6 +116,8 @@ public class App extends Application {
 
     public static void main(String[] args) throws URISyntaxException {
         WebSocketClient client = new EmptyClient(new URI("ws://localhost:8887"));
+        //ws://51.15.109.210:8080/lobby
+        //WebSocketClient client = new EmptyClient(new URI("ws://51.15.109.210:8080/lobby"));
         client.connect();
         launch();
     }

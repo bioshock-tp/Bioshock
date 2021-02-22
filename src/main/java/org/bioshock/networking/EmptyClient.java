@@ -20,7 +20,7 @@ public class EmptyClient extends WebSocketClient {
 
     @Override
     public void onOpen(ServerHandshake handshakedata) {
-        send("Hello, it is me. Mario :)");
+        send("Hello, it is me. Andrei :)");
         System.out.println("new connection opened");
     }
 
