@@ -1,6 +1,7 @@
 package org.bioshock.scenes;
 
 import org.bioshock.engine.ai.Enemy;
+import org.bioshock.engine.ai.Swatter;
 import org.bioshock.engine.core.WindowInitializer;
 import org.bioshock.engine.rendering.RenderManager;
 import org.bioshock.engine.scene.GameScene;
@@ -36,7 +37,5 @@ public class MainGame extends GameScene{
 		Player player = new Player(300, 400, 40, 40, 200,Color.PINK, 1.0);
 		this.AddEntity(player);
 		this.AddEntity(new Enemy((int) (WindowInitializer.getWindowWidth()/2), (int) (WindowInitializer.getWindowHeight()/2), 40, 40, 300, Color.INDIANRED, 0.5, player));
-		
-		
 	}	
 }
