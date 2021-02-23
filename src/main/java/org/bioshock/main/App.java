@@ -21,6 +21,7 @@ import org.java_websocket.drafts.Draft;
 import org.java_websocket.drafts.Draft_6455;
 import org.java_websocket.handshake.ServerHandshake;
 
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -71,6 +72,7 @@ public class App extends Application {
 
     private void update() {
         t += 0.016;
+        //TODO: lockstep(...)
     };
 
     @Override
@@ -113,12 +115,19 @@ public class App extends Application {
         stage.setScene(scene);
         stage.show();
     }
-
+    private static ClientInput poll(){return null;}
+    //TODO: use fixed point numbers instead of float
+    private static GameState lockstep (float dt, ClientInput[] inps, GameState oldGameState ) {return null;}
     public static void main(String[] args) throws URISyntaxException {
-        WebSocketClient client = new EmptyClient(new URI("ws://localhost:8887"));
+        //WebSocketClient client = new EmptyClient(new URI("ws://localhost:8887"));
         //ws://51.15.109.210:8080/lobby
-        //WebSocketClient client = new EmptyClient(new URI("ws://51.15.109.210:8080/lobby"));
+        WebSocketClient client = new EmptyClient(new URI("ws://51.15.109.210:8080/lobby"));
         client.connect();
+//        send(Messages.Serializer.Serialize(ClientInput(serilaize(poll()))));
+        //var s = "{\"Case\":\"Details\",\"Fields\":[\"hidenseek\",\"mircea\",[]]}";
+        //client.send(s.getBytes(StandardCharsets.UTF_8));
+
+
         launch();
     }
 

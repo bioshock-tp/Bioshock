@@ -26,6 +26,12 @@
             <artifactId>Java-WebSocket</artifactId>
             <version>1.5.1</version>
         </dependency>
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <version>20180813</version>
+        </dependency>
+
     </dependencies>
     <build>
         <plugins>
@@ -35,6 +41,8 @@
                 <version>3.8.0</version>
                 <configuration>
                     <release>11</release>
+                    <source>15</source>
+                    <target>15</target>
                 </configuration>
             </plugin>
             <plugin>
