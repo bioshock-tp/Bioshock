@@ -1,16 +1,13 @@
 package org.bioshock.engine.ai;
 
 import javafx.geometry.Point2D;
+import javafx.scene.transform.Rotate;
 import org.bioshock.engine.entity.GameEntityManager;
 import org.bioshock.engine.rendering.RenderManager;
-import org.bioshock.engine.scene.SceneController;
 import org.bioshock.engine.sprites.Player;
 import org.bioshock.engine.sprites.SquareEntity;
 import org.bioshock.render.components.EnemyRendererC;
-import org.bioshock.render.components.PlayerRendererC;
-import org.bioshock.render.components.SwatterRendererC;
 import org.bioshock.transform.components.EnemyTransformC;
-import org.bioshock.transform.components.PlayerTransformC;
 
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -42,6 +39,9 @@ public class Enemy extends Player {
                 ((Player) entityToFollow).setDead(true);
             }
         }
+        if(intersects(entityToFollow, "close")){
+            swatter.shouldSwat = true;
+        }
         if(intersects(entityToFollow, "fov")){
             movement.move(entityToFollow.transformC.getPosition().subtract(this.transformC.getPosition()));
         }
@@ -49,6 +49,8 @@ public class Enemy extends Player {
 
     public void setSwatterPos(){
         swatter.transform.setPosition(new Point2D(getX() - swatter.getWidth(), getY() + getWidth()/2 - swatter.getHeight()/2));
+    }
+    public void setSwatterRot(){
         swatter.transform.setRotation(transform.getRotation());
     }
     
@@ -62,6 +64,13 @@ public class Enemy extends Player {
                 double radius = super.transform.getRadius();
                 Circle fov = new Circle(getX() + super.transform.width/2, getY() + super.transform.height/2, radius);
                 intersect = Shape.intersect(fov, entityHitBox);
+                break;
+
+            case "close":
+                Rectangle closeHitBox = new Rectangle(getX() - swatter.getWidth(),getY() - swatter.getWidth(), (swatter.getWidth()*2) + getWidth(), swatter.getWidth());
+                Rotate r = new Rotate(transform.getRotation(), getX() + getWidth()/2, getY() + getHeight()/2);
+                closeHitBox.getTransforms().add(r);
+                intersect = Shape.intersect(closeHitBox, entityHitBox);
                 break;
 
             case "swatter":
@@ -81,6 +90,9 @@ public class Enemy extends Player {
     @Override
 	protected void tick(double timeDelta) {
     	followPlayer();
-    	setSwatterPos();
+        setSwatterPos();
+    	if(!swatter.shouldSwat){
+            setSwatterRot();
+        }
 	}
 }

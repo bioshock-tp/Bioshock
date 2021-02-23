@@ -1,5 +1,6 @@
 package org.bioshock.engine.ai;
 
+import javafx.animation.AnimationTimer;
 import javafx.scene.paint.Color;
 import org.bioshock.engine.physics.Movement;
 import org.bioshock.engine.sprites.SquareEntity;
@@ -14,6 +15,11 @@ public class Swatter extends SquareEntity {
     public SwatterRendererC renderer;
     public Movement movement;
     public Enemy enemy;
+
+    public boolean shouldSwat = false;
+    private boolean swatBack = false;
+
+    protected int angles = 0;
 
 
     public Swatter(SwatterTransformC transform, SwatterRendererC renderer, int x, int y, int w, int h, Color c, double z, Enemy enemy) {
@@ -38,6 +44,31 @@ public class Swatter extends SquareEntity {
         return enemy;
     }
 
+    private void swat(){
+        int s = 4;
+        if(angles < 180/s){
+            transform.setRotation(transform.getRotation()+s);
+            angles++;
+        }
+        else {
+            angles = 180;
+            swatBack = true;
+        }
+    }
+
+    private void swatB(){
+        int s = 4;
+        if(angles > 0){
+            transform.setRotation(transform.getRotation()-s);
+            angles -= s;
+        }
+        else{
+            angles = 0;
+            shouldSwat = false;
+            swatBack = false;
+        }
+    }
+
     @Override
     public void destroy() {
         return;
@@ -45,5 +76,13 @@ public class Swatter extends SquareEntity {
 
     @Override
     protected void tick(double timeDelta) {
+        if(shouldSwat){
+            if(swatBack){
+                swatB();
+            }
+            else{
+                swat();
+            }
+        }
     }
 }
