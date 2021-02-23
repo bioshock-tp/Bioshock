@@ -47,7 +47,6 @@ public final class App extends Application{
 //	@Override
 	public static void startGame(Stage primaryStage) throws Exception {
 		//WindowManager.initialize(primaryStage);
-		// TODO: Fix window glitch after launching game
 		SceneManager.initialize(primaryStage, new LoadingScreen());
         InputManager.initialize();
         InputManager.onPressListener(KeyCode.C, () -> App.logger.debug(SceneManager.getScene()));
