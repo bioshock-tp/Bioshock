@@ -2,6 +2,7 @@ package org.bioshock.engine.entity;
 
 import org.bioshock.engine.physics.Movement;
 
+import javafx.geometry.Point2D;
 import javafx.geometry.Point3D;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -50,6 +51,13 @@ public abstract class SquareEntity extends Entity {
             fov.setTranslateY(y);
         }
     }
+
+    public Point2D getCentre() {
+		return new Point2D(
+            getX() + (double) getWidth() / 2,
+            getY() + (double) getHeight() / 2
+        );
+	}
 
 	public int getWidth() {
 		return size.getWidth();

@@ -3,6 +3,7 @@ package org.bioshock.engine.physics;
 import org.bioshock.engine.entity.SquareEntity;
 
 import javafx.geometry.Point2D;
+import javafx.scene.transform.Rotate;
 
 public class Movement {
     private int speed = 10;
@@ -38,6 +39,7 @@ public class Movement {
             y += disp / Math.abs(disp) * speed;
         }
         entity.setPosition(x, y);
+        updateFacing(trans);
     }
 
     public void direction(int newXDirection, int newYDirection) {
@@ -46,6 +48,31 @@ public class Movement {
 
         int newY = Math.abs(yDirection + newYDirection);
         if (newY <= speed) yDirection += newYDirection;
+    }
+
+    public void updateFacing(Point2D trans){
+        double rotation = Math.atan2(trans.getX(), -trans.getY())*180/Math.PI;
+        setRotation(rotation);
+    }
+
+    public void rotate(double degree) {
+        Rotate rotate = entity.getRotation();
+        Point2D pos = entity.getCentre();
+
+        rotate.setPivotX(pos.getX());
+        rotate.setPivotY(pos.getY());
+        
+        setRotation(entity.getRotation().getAngle() + degree);
+    }
+
+    public void setRotation(double newDegree) {
+        Rotate rotate = entity.getRotation();
+        Point2D pos = entity.getCentre();
+
+        rotate.setPivotX(pos.getX());
+        rotate.setPivotY(pos.getY());
+
+        rotate.setAngle(newDegree);
     }
 
     public void setSpeed(int newSpeed) {
