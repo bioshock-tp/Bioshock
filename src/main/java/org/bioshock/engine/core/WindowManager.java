@@ -13,7 +13,7 @@ public class WindowManager {
 	
 	private static Rectangle2D screenSize = Screen.getPrimary().getBounds();
 	private static final String NAME = "BuzzKill";
-	private static final boolean INITFULLSCREEN = true;
+	private static final boolean INITFULLSCREEN = false;
 	private static final boolean INITMAXIMISED = true;
     private static Stage window;
 
