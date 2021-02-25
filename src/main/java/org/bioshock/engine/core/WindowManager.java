@@ -3,7 +3,6 @@ package org.bioshock.engine.core;
 import org.bioshock.engine.input.InputManager;
 import org.bioshock.main.App;
 
-import javafx.application.Platform;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCombination;

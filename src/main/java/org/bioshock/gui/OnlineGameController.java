@@ -12,12 +12,12 @@ public class OnlineGameController {
     public Button backButton;
 
     @FXML
-    private void switchToMainView() throws IOException {
-        App.setRoot("main");
+    private void switchToMainView() {
+        App.setFXMLRoot("main");
     }
 
     @FXML
-    public void switchToNewGameView(ActionEvent actionEvent) throws IOException {
-        App.setRoot("new_game");
+    public void switchToNewGameView(ActionEvent actionEvent) {
+        App.setFXMLRoot("new_game");
     }
 }

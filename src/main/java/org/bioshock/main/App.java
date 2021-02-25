@@ -19,35 +19,19 @@ import org.bioshock.scenes.LoadingScreen;
 import java.io.IOException;
 import java.net.URL;
 
-public final class App extends Application{
+public final class App extends Application {
 	public static final Logger logger = LogManager.getLogger(App.class);
-	private static Scene scene;
-
+    private static Scene fxmlScene;
 
 	@Override
-	public void start(Stage stage) throws IOException {
-
-//		prefs = Preferences.userRoot().node(this.getClass().getName());
-//		playMusic(prefs.getBoolean("musicOn", true));
+	public void start(Stage stage) {
 		WindowManager.initialize(stage);
-		scene = new Scene(loadFXML("main"));
-		stage.setScene(scene);
+        initFXMLScene();
+		stage.setScene(fxmlScene);
 		stage.show();
 	}
 
-	private static Parent loadFXML(String fxml) throws IOException {
-		URL location = MainController.class.getResource(fxml + ".fxml");
-		FXMLLoader fxmlLoader = new FXMLLoader(location);
-		return fxmlLoader.load();
-	}
-
-	public static void setRoot(String fxml) throws IOException {
-		scene.setRoot(loadFXML(fxml));
-	}
-
-//	@Override
-	public static void startGame(Stage primaryStage) throws Exception {
-		//WindowManager.initialize(primaryStage);
+    public static void startGame(Stage primaryStage) {
 		SceneManager.initialize(primaryStage, new LoadingScreen());
         InputManager.initialize();
         InputManager.onPressListener(KeyCode.C, () -> App.logger.debug(SceneManager.getScene()));
@@ -63,7 +47,27 @@ public final class App extends Application{
         Platform.exit();
         System.exit(0);
 	}
-	
+
+	public static void setFXMLRoot(String fxml) {
+		fxmlScene.setRoot(loadFXML(fxml));
+	}
+
+    private static void initFXMLScene() {
+        fxmlScene = new Scene(loadFXML("main")); 
+    }
+
+    private static Parent loadFXML(String fxml) {
+        try {
+            URL location = MainController.class.getResource(fxml + ".fxml");
+            FXMLLoader fxmlLoader = new FXMLLoader(location);
+            return fxmlLoader.load();
+        } catch (IOException e) {
+            App.logger.error("Error loading FXML");
+            exit();
+            return null; /* Prevents no return value warning */
+        }
+	}
+
 	public static void main(String[] args) {
 		launch();
 	}

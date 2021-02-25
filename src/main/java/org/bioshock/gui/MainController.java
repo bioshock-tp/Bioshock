@@ -15,8 +15,8 @@ public class MainController {
     public Button settingsButton;
 
     @FXML
-    private void openNewGameView() throws IOException {
-        App.setRoot("new_game");
+    private void openNewGameView() {
+        App.setFXMLRoot("new_game");
     }
 
     @FXML
@@ -26,7 +26,7 @@ public class MainController {
     }
 
     @FXML
-    public void openSettingsView(ActionEvent actionEvent) throws IOException {
-        App.setRoot("settings");
+    public void openSettingsView(ActionEvent actionEvent) {
+        App.setFXMLRoot("settings");
     }
 }
