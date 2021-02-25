@@ -1,6 +1,7 @@
 package org.bioshock.engine.core;
 
 import org.bioshock.engine.input.InputManager;
+import org.bioshock.main.App;
 
 import javafx.application.Platform;
 import javafx.geometry.Rectangle2D;
@@ -32,10 +33,7 @@ public class WindowManager {
             KeyCode.F11, WindowManager::toggleFullScreen
         );
 
-        InputManager.onPressListener(KeyCode.ESCAPE, () -> {
-            Platform.exit();
-            System.exit(0);
-        });
+        InputManager.onPressListener(KeyCode.ESCAPE, App::exit);
     }
 	
 	private static void toggleFullScreen() {

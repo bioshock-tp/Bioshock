@@ -1,6 +1,7 @@
 package org.bioshock.main;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -56,6 +57,11 @@ public final class App extends Application{
 
 		GameLoop loop = new GameLoop();
 		loop.start();
+	}
+
+	public static void exit() {
+        Platform.exit();
+        System.exit(0);
 	}
 	
 	public static void main(String[] args) {
