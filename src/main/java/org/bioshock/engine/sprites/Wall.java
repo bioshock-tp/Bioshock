@@ -1,6 +1,5 @@
 package org.bioshock.engine.sprites;
 
-import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 
 public class Wall /*extends SquareEntityWithFov */{

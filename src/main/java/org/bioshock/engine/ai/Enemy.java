@@ -1,81 +1,94 @@
 package org.bioshock.engine.ai;
 
-import javafx.geometry.Point2D;
 import javafx.scene.transform.Rotate;
-import org.bioshock.engine.entity.GameEntityManager;
-import org.bioshock.engine.rendering.RenderManager;
-import org.bioshock.engine.sprites.Player;
-import org.bioshock.engine.sprites.SquareEntity;
-import org.bioshock.render.components.EnemyRendererC;
-import org.bioshock.transform.components.EnemyTransformC;
+import org.bioshock.engine.entity.EntityManager;
+import org.bioshock.engine.entity.Player;
+import org.bioshock.engine.entity.Size;
+import org.bioshock.engine.entity.SquareEntity;
+import org.bioshock.engine.renderers.EnemyRenderer;
 
+import javafx.geometry.Point3D;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
+import org.bioshock.engine.scene.SceneManager;
 
-public class Enemy extends Player {
-	private SquareEntity entityToFollow;
-	private Swatter swatter;
-	
-    public Enemy(EnemyTransformC transform, EnemyRendererC renderer,
-                 int x, int y, int w, int h, double r, Color c, double z, SquareEntity entityToFollow) {
-        super(transform, renderer, x, y, w, h, r, c, z);
-        this.entityToFollow = entityToFollow;
-        this.movement.speed = 5;
 
-        swatter = new Swatter(x, y, 80,10,Color.BLACK,0.8, this);
-        GameEntityManager.register(swatter);
-        RenderManager.register(swatter);
+public class Enemy extends SquareEntity {
+    private SquareEntity target;
+    public Swatter swatter;
+
+    public Enemy(Point3D pos, Size s, int r, Color c, Player initialFollow) {
+        super(pos, s, r, c);
+
+        target = initialFollow;
+
+        movement.setSpeed(5);
+
+        renderer = new EnemyRenderer();
+
+        swatter = new Swatter(pos, new Size(80,10),Color.BLACK, this);
     }
-    
-    public Enemy(int x, int y, int w, int h, double r, Color c, double z, SquareEntity entityToFollow) {
-    	this(new EnemyTransformC(), new EnemyRendererC(), x, y, w, h, r, c, z, entityToFollow);
+
+    public boolean canSee(SquareEntity enemy) {
+    	Shape intersect = Shape.intersect(fov, enemy.getHitbox());
+        return intersect.getBoundsInLocal().getWidth() != -1;
     }
 
-    public void followPlayer(){
-        if(intersects(entityToFollow, "swatter")){
-            if(entityToFollow instanceof Player){
-                ((Player) entityToFollow).setDead(true);
+    public boolean touchSwatter(SquareEntity entity){
+        Shape intersect = Shape.intersect(swatter.getHitbox(), entity.getHitbox());
+        return intersect.getBoundsInLocal().getWidth() != -1;
+    }
+
+    public boolean touchClose(SquareEntity entity){
+        Rectangle rec = getHitbox();
+        rec.setTranslateX(getX() - swatter.getWidth());
+        rec.setTranslateY(getY() - swatter.getWidth());
+        rec.setWidth((swatter.getWidth()*2) + getWidth());
+        rec.setHeight(swatter.getWidth());
+        Shape intersect = Shape.intersect(rec, entity.getHitbox());
+        return intersect.getBoundsInLocal().getWidth() != -1;
+    }
+
+    public void followPlayer() {
+        if(EntityManager.areRendered(this, target, swatter) && touchSwatter(target)){
+            if(target instanceof Player){
+                ((Player) target).setDead(true);
             }
         }
-        if(intersects(entityToFollow, "close")){
+        if(EntityManager.areRendered(this, target, swatter) && touchClose(target)){
             swatter.shouldSwat = true;
         }
-        if(intersects(entityToFollow, "fov")){
-            movement.move(entityToFollow.transformC.getPosition().subtract(this.transformC.getPosition()));
+        if (EntityManager.areRendered(this, target) && canSee(target)) {
+            movement.move(target.getPosition().subtract(this.getPosition()));
         }
     }
 
     public void setSwatterPos(){
-        swatter.transform.setPosition(new Point2D(getX() - swatter.getWidth(), getY() + getWidth()/2 - swatter.getHeight()/2));
+        swatter.setPosition((int) (getX() - swatter.getWidth()), (int) (getY() + getWidth()/2 - swatter.getHeight()/2));
     }
     public void setSwatterRot(){
-        swatter.transform.setRotation(transform.getRotation());
+        swatter.setRotation(getRotation());
     }
-    
+
     public boolean intersects(SquareEntity entity, String type) {
-        Rectangle entityHitBox = new Rectangle(entity.getX(), entity.getY(), entity.getWidth(), entity.getHeight());
         Shape intersect;
 
 
         switch(type){
             case "fov":
-                double radius = super.transform.getRadius();
-                Circle fov = new Circle(getX() + super.transform.width/2, getY() + super.transform.height/2, radius);
-                intersect = Shape.intersect(fov, entityHitBox);
+                intersect = Shape.intersect(fov, entity.getHitbox());
                 break;
 
             case "close":
                 Rectangle closeHitBox = new Rectangle(getX() - swatter.getWidth(),getY() - swatter.getWidth(), (swatter.getWidth()*2) + getWidth(), swatter.getWidth());
-                Rotate r = new Rotate(transform.getRotation(), getX() + getWidth()/2, getY() + getHeight()/2);
+                Rotate r = new Rotate(getRotation().getAngle(), getX() + getWidth()/2, getY() + getHeight()/2);
                 closeHitBox.getTransforms().add(r);
-                intersect = Shape.intersect(closeHitBox, entityHitBox);
+                intersect = Shape.intersect(closeHitBox, entity.getHitbox());
                 break;
 
             case "swatter":
-                Rectangle swatterHitBox = new Rectangle(swatter.getX(), swatter.getY(), swatter.getWidth(), swatter.getHeight());
-                intersect = Shape.intersect(swatterHitBox, entityHitBox);
+                intersect = Shape.intersect(swatter.getHitbox(), entity.getHitbox());
                 break;
             default:
                 return false;
@@ -94,5 +107,9 @@ public class Enemy extends Player {
     	if(!swatter.shouldSwat){
             setSwatterRot();
         }
+	}
+
+	public int getRadius() {
+		return (int) fov.getRadius();
 	}
 }

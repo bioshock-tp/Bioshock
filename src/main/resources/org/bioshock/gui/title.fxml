@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.scene.text.TextFlow?>
+<?import java.net.URL?>
+<?import javafx.scene.text.Text?>
+<VBox alignment="CENTER" spacing="30.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="org.bioshock.gui.TitleController">
+    <stylesheets>
+        <URL value="@title_style.css"/>
+    </stylesheets>
+
+    <Group>
+        <TextFlow styleClass="paragraph">
+            <Text styleClass="buzzSpan">Buzz</Text>
+            <Text styleClass="killSpan">Kill</Text>
+        </TextFlow>
+    </Group>
+</VBox>

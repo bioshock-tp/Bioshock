@@ -1,7 +1,6 @@
 package org.bioshock.scenes;
 
-import org.bioshock.engine.scene.GameScene;
-import org.bioshock.engine.scene.SceneController;
+import org.bioshock.engine.scene.SceneManager;
 
 import javafx.animation.FadeTransition;
 import javafx.geometry.Insets;
@@ -13,15 +12,20 @@ import javafx.scene.layout.CornerRadii;
 import javafx.scene.paint.Color;
 import javafx.util.Duration;
 
-public class LoadingScreen extends GameScene{
+public class LoadingScreen extends GameScene {
 	public LoadingScreen () {
+        super();
+
 		Label label = new Label("Team Project");
 		label.setStyle("-fx-font: 100 arial;");
 		label.setTextFill(Color.WHITE);
+
+        getPane().getChildren().add(label);
 		
-		getChildren().add(label);
 		setCursor(Cursor.NONE);
-		setBackground(new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY)));
+		setBackground(new Background(new BackgroundFill(
+            Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY
+        )));
 		
         FadeTransition fadeIn = new FadeTransition(Duration.seconds(2), label);
         fadeIn.setFromValue(0);
@@ -35,18 +39,8 @@ public class LoadingScreen extends GameScene{
  
         fadeIn.play();
  
-        fadeIn.setOnFinished((e) -> {
-            fadeOut.play();
-        });
+        fadeIn.setOnFinished(e -> fadeOut.play());
         
-        fadeOut.setOnFinished((e) -> {
-        	SceneController.setScene(new MainGame());
-        });
-	}
-	
-	@Override
-	public void unload() {
-		super.unload();
-		System.out.println("Unloading SplashScreen");
+        fadeOut.setOnFinished(e -> SceneManager.setScene(new MainGame()));
 	}
 }
