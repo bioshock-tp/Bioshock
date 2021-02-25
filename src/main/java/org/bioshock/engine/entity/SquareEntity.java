@@ -18,21 +18,21 @@ public abstract class SquareEntity extends Entity {
     
     protected final Movement movement = new Movement(this);
     
-    protected SquareEntity(Point3D pos, Size s, int r, Color c) {
-        super(pos);
+    protected SquareEntity(Point3D p, Components com, Size s, int r, Color c) {
+        super(p, com);
         size = s;
         colour = c;
 
-        fov = new Circle(pos.getX(), pos.getY(), r);
-        fov.setTranslateX(pos.getX());
-        fov.setTranslateY(pos.getY());
+        fov = new Circle(p.getX(), p.getY(), r);
+        fov.setTranslateX(p.getX());
+        fov.setTranslateY(p.getY());
 
         hitbox = new Rectangle(
-            pos.getX(), pos.getY(),
+            p.getX(), p.getY(),
             s.getWidth(), s.getHeight()
         );
-        hitbox.setTranslateX(pos.getX());
-        hitbox.setTranslateY(pos.getY());
+        hitbox.setTranslateX(p.getX());
+        hitbox.setTranslateY(p.getY());
         hitbox.setFill(Color.TRANSPARENT);
     }
 	

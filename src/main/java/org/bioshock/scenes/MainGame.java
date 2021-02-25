@@ -2,6 +2,7 @@ package org.bioshock.scenes;
 
 import org.bioshock.engine.ai.Enemy;
 import org.bioshock.engine.core.WindowManager;
+import org.bioshock.engine.entity.Components;
 import org.bioshock.engine.entity.Player;
 import org.bioshock.engine.entity.Size;
 import org.bioshock.main.App;
@@ -29,24 +30,20 @@ public class MainGame extends GameScene {
         )));
 		
 		Player player = new Player(
-            new Point3D(300, 400, 1), new Size(40, 40),
-            200, Color.PINK
+            new Point3D(300, 400, 1), new Components(true, true),
+            new Size(40, 40), 200, Color.PINK
         );
         children.add(player);
         App.logger.debug("Player object - {}", (Object) player);
-        
-		// SceneController.addEntity(player);
 
         int x = WindowManager.getWindowWidth() / 2;
         int y = WindowManager.getWindowHeight() / 2;
 
         Enemy enemy = new Enemy(
-            new Point3D(x, y, 0.5), new Size(40, 40),
-            300, Color.INDIANRED, player
+            new Point3D(x, y, 0.5), new Components(true, true),
+            new Size(40, 40), 300, Color.INDIANRED, player
         );
         children.add(enemy);
         App.logger.debug("Enemy object - {}", (Object) enemy);
-        
-		// SceneController.addEntity(enemy);
 	}
 }

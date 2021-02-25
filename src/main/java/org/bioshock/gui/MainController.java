@@ -6,8 +6,6 @@ import javafx.scene.control.Button;
 import javafx.stage.Stage;
 import org.bioshock.main.App;
 
-import java.io.IOException;
-
 public class MainController {
 
     public Button newGameButton;

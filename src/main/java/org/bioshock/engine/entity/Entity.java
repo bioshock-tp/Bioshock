@@ -11,13 +11,16 @@ import javafx.scene.Parent;
 public abstract class Entity extends Parent {
     protected int z;
 
+    protected Components components;
+
 	protected final UUID uuid = UUID.randomUUID();
     protected boolean enabled = true;
     protected Renderer renderer;
 	
-    protected Entity(Point3D pos) {
+    protected Entity(Point3D pos, Components comp) {
         setPosition((int) pos.getX(), (int) pos.getY());
         z = (int) pos.getZ();
+        components = comp;
 	}
     
     protected abstract void tick(double timeDelta);
@@ -65,4 +68,12 @@ public abstract class Entity extends Parent {
 	public Renderer getRenderer() {
 		return renderer;
 	}
+
+    public Components getComponents() {
+        return components;
+    }
+
+    public void setComponents(Components components) {
+        this.components = components;
+    }
 }

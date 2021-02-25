@@ -8,8 +8,8 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Color;
 
 public class Player extends SquareEntity {
-    public Player(Point3D pos, Size s, int r, Color c) {
-    	super(pos, s, r, c);
+    public Player(Point3D p, Components com, Size s, int r, Color c) {
+    	super(p, com, s, r, c);
 
         renderer = new PlayerRenderer();
 
@@ -29,16 +29,16 @@ public class Player extends SquareEntity {
         );
         
         InputManager.onReleaseListener(
-            KeyCode.W, () -> movement.direction(0, speed)
+            KeyCode.W, () -> movement.direction(0,  speed)
         );
         InputManager.onReleaseListener(
-            KeyCode.A, () -> movement.direction(speed, 0)
+            KeyCode.A, () -> movement.direction(speed,  0)
         );
         InputManager.onReleaseListener(
-            KeyCode.S, () -> movement.direction(0,  -speed)
+            KeyCode.S, () -> movement.direction(0, -speed)
         );
         InputManager.onReleaseListener(
-            KeyCode.D, () -> movement.direction(-speed,  0)
+            KeyCode.D, () -> movement.direction(-speed, 0)
         );
     }
 

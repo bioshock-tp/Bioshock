@@ -6,7 +6,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.RadioButton;
 import org.bioshock.main.App;
 
-import java.net.URISyntaxException;
 import java.util.prefs.Preferences;
 
 public class SettingsController {
@@ -88,5 +87,6 @@ public class SettingsController {
     }
 
     public void toggleSfx(ActionEvent actionEvent) {
+        //TODO
     }
 }

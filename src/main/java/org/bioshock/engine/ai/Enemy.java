@@ -1,5 +1,6 @@
 package org.bioshock.engine.ai;
 
+import org.bioshock.engine.entity.Components;
 import org.bioshock.engine.entity.EntityManager;
 import org.bioshock.engine.entity.Player;
 import org.bioshock.engine.entity.Size;
@@ -13,10 +14,10 @@ import javafx.scene.shape.Shape;
 public class Enemy extends SquareEntity {
     private SquareEntity target;
 	
-    public Enemy(Point3D pos, Size s, int r, Color c, Player initialFollow) {
-        super(pos, s, r, c);
+    public Enemy(Point3D p, Components com, Size s, int r, Color c, Player e) {
+        super(p, com, s, r, c);
 
-        target = initialFollow;
+        target = e;
         
         movement.setSpeed(5);
 
@@ -29,7 +30,7 @@ public class Enemy extends SquareEntity {
     }
 
     public void followPlayer() {
-        if (EntityManager.areRendered(this, target) && canSee(target)) {
+        if (EntityManager.isManaged(this, target) && canSee(target)) {
             movement.move(target.getPosition().subtract(this.getPosition()));
         }
     }
