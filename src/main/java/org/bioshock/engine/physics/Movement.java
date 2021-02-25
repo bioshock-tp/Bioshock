@@ -1,10 +1,9 @@
 package org.bioshock.engine.physics;
 
-import javafx.scene.transform.Rotate;
 import org.bioshock.engine.entity.SquareEntity;
 
 import javafx.geometry.Point2D;
-import javafx.scene.input.KeyCode;
+import javafx.scene.transform.Rotate;
 
 public class Movement {
     private int speed = 10;
@@ -26,17 +25,11 @@ public class Movement {
         if (xDirection != 0 || yDirection != 0) move(getDirection());
     }
 
-    public void rotate(Point2D trans){
-        double rotation = Math.atan2(trans.getX(), -trans.getY())*180/Math.PI;
-        entity.setRotation(new Rotate(rotation, entity.getRotation().getPivotX(), entity.getRotation().getPivotY()));
-    }
-
     public void move(Point2D trans) {
         Point2D target = trans.add(entity.getPosition());
         int x = entity.getX();
         int y = entity.getY();
-
-
+              		
         if (x != target.getX()) {
             int disp = (int) target.getX() - x;
             x += disp / Math.abs(disp) * speed;
@@ -46,6 +39,7 @@ public class Movement {
             y += disp / Math.abs(disp) * speed;
         }
         entity.setPosition(x, y);
+        updateFacing(trans);
     }
 
     public void direction(int newXDirection, int newYDirection) {
@@ -56,6 +50,31 @@ public class Movement {
         if (newY <= speed) yDirection += newYDirection;
     }
 
+    public void updateFacing(Point2D trans){
+        double rotation = Math.atan2(trans.getX(), -trans.getY())*180/Math.PI;
+        setRotation(rotation);
+    }
+
+    public void rotate(double degree) {
+        Rotate rotate = entity.getRotation();
+        Point2D pos = entity.getCentre();
+
+        rotate.setPivotX(pos.getX());
+        rotate.setPivotY(pos.getY());
+        
+        setRotation(entity.getRotation().getAngle() + degree);
+    }
+
+    public void setRotation(double newDegree) {
+        Rotate rotate = entity.getRotation();
+        Point2D pos = entity.getCentre();
+
+        rotate.setPivotX(pos.getX());
+        rotate.setPivotY(pos.getY());
+
+        rotate.setAngle(newDegree);
+    }
+
     public void setSpeed(int newSpeed) {
         speed = newSpeed;
     }
@@ -64,5 +83,3 @@ public class Movement {
         return speed;
     }
 }
-
-

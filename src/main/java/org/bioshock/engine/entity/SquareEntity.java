@@ -2,6 +2,7 @@ package org.bioshock.engine.entity;
 
 import org.bioshock.engine.physics.Movement;
 
+import javafx.geometry.Point2D;
 import javafx.geometry.Point3D;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -13,7 +14,7 @@ public abstract class SquareEntity extends Entity {
     protected Color colour;
     protected Rectangle hitbox;
     protected Circle fov;
-    protected Rotate rotate;
+    protected final Rotate rotate = new Rotate();
     
     protected final Movement movement = new Movement(this);
     
@@ -21,8 +22,6 @@ public abstract class SquareEntity extends Entity {
         super(pos);
         size = s;
         colour = c;
-
-        rotate = new Rotate(0, getX() + getWidth()/2, getY() + getHeight()/2);
 
         fov = new Circle(pos.getX(), pos.getY(), r);
         fov.setTranslateX(pos.getX());
@@ -53,15 +52,18 @@ public abstract class SquareEntity extends Entity {
         }
     }
 
-    public void setRotation(Rotate r){
-        rotate = r;
-    }
+    public Point2D getCentre() {
+		return new Point2D(
+            getX() + (double) getWidth() / 2,
+            getY() + (double) getHeight() / 2
+        );
+	}
 
-	public double getWidth() {
+	public int getWidth() {
 		return size.getWidth();
 	}
 	
-	public double getHeight() {
+	public int getHeight() {
 		return size.getHeight();
 	}
 
