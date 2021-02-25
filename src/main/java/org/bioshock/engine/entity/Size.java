@@ -1,19 +1,19 @@
 package org.bioshock.engine.entity;
 
 public class Size {
-    private double width;
-    private double height;
+    private int width;
+    private int height;
 
     public Size(int width, int height) {
         this.width = width;
         this.height = height;
     }
 
-    public double getWidth() {
+    public int getWidth() {
         return width;
     }
 
-    public double getHeight() {
+    public int getHeight() {
         return height;
     }
 }

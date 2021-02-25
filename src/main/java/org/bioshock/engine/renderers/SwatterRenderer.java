@@ -24,7 +24,8 @@ public class SwatterRenderer implements Renderer {
         double height = swatter.getHeight();
 
         gc.save();
-        Rotate r = new Rotate(swatter.getRotation().getAngle(), enemy.getX() + (enemy.getWidth()/2), enemy.getY() + (enemy.getHeight()/2));
+        Rotate r = swatter.getRotation();
+        //Rotate r = new Rotate(swatter.getRotation().getAngle(), enemy.getX() + (enemy.getWidth()/2), enemy.getY() + (enemy.getHeight()/2));
         gc.setTransform(r.getMxx(), r.getMyx(), r.getMxy(), r.getMyy(), r.getTx(), r.getTy());
         gc.setFill(swatter.getColor());
         gc.fillRect(x, y, width, height);

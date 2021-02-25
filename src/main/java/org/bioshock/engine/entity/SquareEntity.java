@@ -59,6 +59,8 @@ public abstract class SquareEntity extends Entity {
         );
 	}
 
+
+
 	public int getWidth() {
 		return size.getWidth();
 	}

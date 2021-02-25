@@ -1,5 +1,6 @@
 package org.bioshock.engine.ai;
 
+import javafx.geometry.Point2D;
 import javafx.scene.transform.Rotate;
 import org.bioshock.engine.entity.EntityManager;
 import org.bioshock.engine.entity.Player;
@@ -17,11 +18,13 @@ import org.bioshock.engine.scene.SceneManager;
 public class Enemy extends SquareEntity {
     private SquareEntity target;
     public Swatter swatter;
+    public Rectangle closeBox;
 
     public Enemy(Point3D pos, Size s, int r, Color c, Player initialFollow) {
         super(pos, s, r, c);
 
         target = initialFollow;
+
 
         movement.setSpeed(5);
 
@@ -35,31 +38,17 @@ public class Enemy extends SquareEntity {
         return intersect.getBoundsInLocal().getWidth() != -1;
     }
 
-    public boolean touchSwatter(SquareEntity entity){
-        Shape intersect = Shape.intersect(swatter.getHitbox(), entity.getHitbox());
-        return intersect.getBoundsInLocal().getWidth() != -1;
-    }
-
-    public boolean touchClose(SquareEntity entity){
-        Rectangle rec = getHitbox();
-        rec.setTranslateX(getX() - swatter.getWidth());
-        rec.setTranslateY(getY() - swatter.getWidth());
-        rec.setWidth((swatter.getWidth()*2) + getWidth());
-        rec.setHeight(swatter.getWidth());
-        Shape intersect = Shape.intersect(rec, entity.getHitbox());
-        return intersect.getBoundsInLocal().getWidth() != -1;
-    }
 
     public void followPlayer() {
-        if(EntityManager.areRendered(this, target, swatter) && touchSwatter(target)){
+        if(EntityManager.areRendered(this, target, swatter) && intersects(target, "swatter")){
             if(target instanceof Player){
                 ((Player) target).setDead(true);
             }
         }
-        if(EntityManager.areRendered(this, target, swatter) && touchClose(target)){
+        if(EntityManager.areRendered(this, target, swatter) && intersects(target, "close")){
             swatter.shouldSwat = true;
         }
-        if (EntityManager.areRendered(this, target) && canSee(target)) {
+        if (EntityManager.areRendered(this, target) && intersects(target, "fov")) {
             movement.move(target.getPosition().subtract(this.getPosition()));
         }
     }
@@ -68,12 +57,13 @@ public class Enemy extends SquareEntity {
         swatter.setPosition((int) (getX() - swatter.getWidth()), (int) (getY() + getWidth()/2 - swatter.getHeight()/2));
     }
     public void setSwatterRot(){
-        swatter.setRotation(getRotation());
+        swatter.getMovement().setRotation(getRotation().getAngle(), new Point2D(getRotation().getPivotX(), getRotation().getPivotY()));
     }
 
     public boolean intersects(SquareEntity entity, String type) {
         Shape intersect;
-
+        Rectangle entityHitbox = new Rectangle(entity.getX(),entity.getY(),entity.getWidth(),entity.getHeight());
+        entityHitbox.getTransforms().add(entity.getRotation());
 
         switch(type){
             case "fov":
@@ -82,13 +72,14 @@ public class Enemy extends SquareEntity {
 
             case "close":
                 Rectangle closeHitBox = new Rectangle(getX() - swatter.getWidth(),getY() - swatter.getWidth(), (swatter.getWidth()*2) + getWidth(), swatter.getWidth());
-                Rotate r = new Rotate(getRotation().getAngle(), getX() + getWidth()/2, getY() + getHeight()/2);
-                closeHitBox.getTransforms().add(r);
-                intersect = Shape.intersect(closeHitBox, entity.getHitbox());
+                closeHitBox.getTransforms().add(getRotation());
+                intersect = Shape.intersect(closeHitBox, entityHitbox);
                 break;
 
             case "swatter":
-                intersect = Shape.intersect(swatter.getHitbox(), entity.getHitbox());
+                Rectangle swatterHitbox = new Rectangle(swatter.getX(), swatter.getY(), swatter.getWidth(), swatter.getHeight());
+                swatterHitbox.getTransforms().add(swatter.getRotation());
+                intersect = Shape.intersect(swatterHitbox, entityHitbox);
                 break;
             default:
                 return false;

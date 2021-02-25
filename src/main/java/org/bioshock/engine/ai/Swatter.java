@@ -1,6 +1,7 @@
 package org.bioshock.engine.ai;
 
 import javafx.animation.AnimationTimer;
+import javafx.geometry.Point2D;
 import javafx.geometry.Point3D;
 import javafx.scene.paint.Color;
 import javafx.scene.transform.Rotate;
@@ -12,7 +13,6 @@ import org.bioshock.engine.renderers.SwatterRenderer;
 public class Swatter extends SquareEntity {
 
 
-    public Movement movement;
     public Enemy enemy;
 
     public boolean shouldSwat = false;
@@ -41,7 +41,7 @@ public class Swatter extends SquareEntity {
     private void swat(){
         int s = 4;
         if(angles < 180/s){
-            setRotation(new Rotate(getRotation().getAngle() + s, getRotation().getPivotX(), getRotation().getPivotY()));
+            movement.setRotation(getRotation().getAngle() + s, new Point2D(enemy.getRotation().getPivotX(), enemy.getRotation().getPivotY()));
             angles++;
         }
         else {
@@ -53,7 +53,7 @@ public class Swatter extends SquareEntity {
     private void swatB(){
         int s = 4;
         if(angles > 0){
-            setRotation(new Rotate(getRotation().getAngle() - s, getRotation().getPivotX(), getRotation().getPivotY()));
+            movement.setRotation(getRotation().getAngle() - s, new Point2D(enemy.getRotation().getPivotX(), enemy.getRotation().getPivotY()));
             angles -= s;
         }
         else{
