@@ -65,11 +65,9 @@ public class Movement {
         setRotation(entity.getRotation().getAngle() + degree);
     }
 
-    public void setRotation(double newDegree){
+    public void setRotation(double newDegree) {
         Rotate rotate = entity.getRotation();
         Point2D pos = entity.getCentre();
-
-        Rotate newRotate = new Rotate(newDegree, pos.getX(), pos.getX());
 
         rotate.setPivotX(pos.getX());
         rotate.setPivotY(pos.getY());
@@ -79,8 +77,6 @@ public class Movement {
 
     public void setRotation(double newDegree, Point2D pos) {
         Rotate rotate = entity.getRotation();
-
-        Rotate newRotate = new Rotate(newDegree, pos.getX(), pos.getX());
 
         rotate.setPivotX(pos.getX());
         rotate.setPivotY(pos.getY());

@@ -1,14 +1,13 @@
 package org.bioshock.gui;
 
+import java.util.prefs.Preferences;
+
+import org.bioshock.main.App;
+
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.RadioButton;
-import org.bioshock.main.App;
-
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.util.prefs.Preferences;
 
 public class SettingsController {
     public Button backButton;
@@ -21,8 +20,8 @@ public class SettingsController {
 //    private MediaPlayer bgMusic;
 
     @FXML
-    private void switchToMainView() throws IOException {
-        App.setRoot("main");
+    private void switchToMainView() {
+        App.setFXMLRoot("main");
     }
 //    public void startMusic(boolean b) throws URISyntaxException {
 //        bgMusic = new MediaPlayer(new Media(getClass().getResource("backgroundMusic.mp3").toURI().toString()));
@@ -73,7 +72,7 @@ public class SettingsController {
 //        }
 //    }
     @FXML
-    public void toggleMusicOn(ActionEvent actionEvent) throws URISyntaxException {
+    public void toggleMusicOn(ActionEvent actionEvent) {
         prefs.putBoolean("musicOn", true);
 //        if (!musicPlaying()) {
 //            System.out.println("Yes");
@@ -81,7 +80,7 @@ public class SettingsController {
 //        }
     }
     @FXML
-    public void toggleMusicOff(ActionEvent actionEvent) throws URISyntaxException {
+    public void toggleMusicOff(ActionEvent actionEvent) {
         prefs.putBoolean("musicOn", false);
 //        if (musicPlaying()) {
 //            startMusic(prefs.getBoolean("musicOn", false));
@@ -89,5 +88,6 @@ public class SettingsController {
     }
 
     public void toggleSfx(ActionEvent actionEvent) {
+        //TODO
     }
 }

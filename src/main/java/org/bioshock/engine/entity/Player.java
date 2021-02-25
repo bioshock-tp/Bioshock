@@ -2,17 +2,17 @@ package org.bioshock.engine.entity;
 
 import org.bioshock.engine.input.InputManager;
 import org.bioshock.engine.renderers.PlayerRenderer;
+import org.bioshock.main.App;
 
 import javafx.geometry.Point3D;
 import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Color;
 
 public class Player extends SquareEntity {
+    private boolean dead = false;
 
-    protected boolean dead = false;
-
-    public Player(Point3D pos, Size s, int r, Color c) {
-    	super(pos, s, r, c);
+    public Player(Point3D p, Components com, Size s, int r, Color c) {
+    	super(p, com, s, r, c);
 
         renderer = new PlayerRenderer();
 
@@ -32,18 +32,27 @@ public class Player extends SquareEntity {
         );
         
         InputManager.onReleaseListener(
-            KeyCode.W, () -> movement.direction(0, speed)
+            KeyCode.W, () -> movement.direction(0,  speed)
         );
         InputManager.onReleaseListener(
-            KeyCode.A, () -> movement.direction(speed, 0)
+            KeyCode.A, () -> movement.direction(speed,  0)
         );
         InputManager.onReleaseListener(
-            KeyCode.S, () -> movement.direction(0,  -speed)
+            KeyCode.S, () -> movement.direction(0, -speed)
         );
         InputManager.onReleaseListener(
-            KeyCode.D, () -> movement.direction(-speed,  0)
+            KeyCode.D, () -> movement.direction(-speed, 0)
         );
     }
+    
+	@Override
+	protected void tick(double timeDelta) {
+        if (dead) {
+            App.logger.info("{} is dead", getID());
+            dead = false;
+        }
+        movement.tick(timeDelta);
+	}
 
     public void setDead(boolean d){
         dead = d;
@@ -52,15 +61,6 @@ public class Player extends SquareEntity {
     public boolean getDead(){
         return dead;
     }
-
-	@Override
-	protected void tick(double timeDelta) {
-        if(dead){
-            System.out.println("DEAD");
-            dead =false;
-        }
-        movement.tick(timeDelta);
-	}
 
 	public int getRadius() {
 		return (int) fov.getRadius();

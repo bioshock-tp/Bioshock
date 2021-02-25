@@ -1,23 +1,22 @@
 package org.bioshock.gui;
 
+import org.bioshock.main.App;
+
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
-import org.bioshock.main.App;
-
-import java.io.IOException;
 
 public class OnlineGameController {
 
     public Button backButton;
 
     @FXML
-    private void switchToMainView() throws IOException {
-        App.setRoot("main");
+    private void switchToMainView() {
+        App.setFXMLRoot("main");
     }
 
     @FXML
-    public void switchToNewGameView(ActionEvent actionEvent) throws IOException {
-        App.setRoot("new_game");
+    public void switchToNewGameView(ActionEvent actionEvent) {
+        App.setFXMLRoot("new_game");
     }
 }
