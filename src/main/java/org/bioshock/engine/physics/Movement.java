@@ -1,76 +1,94 @@
 package org.bioshock.engine.physics;
 
-import org.bioshock.engine.input.InputChecker;
-import org.bioshock.engine.sprites.SquareEntity;
-import org.bioshock.main.App2;
+import org.bioshock.engine.entity.SquareEntity;
 
 import javafx.geometry.Point2D;
-import javafx.scene.input.KeyCode;
+import javafx.scene.transform.Rotate;
 
 public class Movement {
-    public double speed = 10;
+    private int speed = 10;
+
+    private int xDirection = 0;
+    private int yDirection = 0;
 
     private SquareEntity entity;
 
-    public Movement(SquareEntity sprite) {
-        this.entity = sprite;
+    public Movement(SquareEntity entity) {
+        this.entity = entity;
     }
-    
+
+    private Point2D getDirection() {
+		return new Point2D(xDirection, yDirection);
+	}
+
     public void tick(double timeDelta) {
-    	Point2D inputMovement = checkMove();
-    	
-    	move(inputMovement);
+        if (xDirection != 0 || yDirection != 0) move(getDirection());
     }
 
     public void move(Point2D trans) {
-        Point2D target = trans.add(entity.transformC.getPosition());
-        
-        update(target);
-    }
-
-    private void update(Point2D target) {
-    	double x = entity.transformC.getPosition().getX();
-        double y = entity.transformC.getPosition().getY();
-        
-        // Sprite[] sprites = App.getSprites();
-
-        // for (Sprite spr : )
+        Point2D target = trans.add(entity.getPosition());
+        int x = entity.getX();
+        int y = entity.getY();
               		
         if (x != target.getX()) {
-            double disp = target.getX() - x;
+            int disp = (int) target.getX() - x;
             x += disp / Math.abs(disp) * speed;
         }
         if (y != target.getY()) {
-            double disp = target.getY() - y;
+            int disp = (int) target.getY() - y;
             y += disp / Math.abs(disp) * speed;
         }
-        entity.transformC.setPosition(new Point2D(x, y));
-        
-        // if (
-        //     sprite.getTranslateX() == target.getX() && 
-        //     sprite.getTranslateY() == target.getY()
-        // ) timer.stop();
+        entity.setPosition(x, y);
+        updateFacing(trans);
     }
-    
-	private Point2D checkMove() {
-		double x = 0;
-		if (InputChecker.checkKeyDown(KeyCode.A)) {
-			x += -speed;
-		}
-		if (InputChecker.checkKeyDown(KeyCode.D)) {
-			x += speed;
-		}
-		
-		double y = 0;
-		if (InputChecker.checkKeyDown(KeyCode.S)) {
-			y += speed;
-		}
-		if (InputChecker.checkKeyDown(KeyCode.W)) {
-			y += -speed;
-		}
-		
-		return new Point2D(x, y);
-	}
+
+    public void direction(int newXDirection, int newYDirection) {
+        int newX = Math.abs(xDirection + newXDirection);
+        if (newX <= speed) xDirection += newXDirection;
+
+        int newY = Math.abs(yDirection + newYDirection);
+        if (newY <= speed) yDirection += newYDirection;
+    }
+
+    public void updateFacing(Point2D trans){
+        double rotation = Math.atan2(trans.getX(), -trans.getY())*180/Math.PI;
+        setRotation(rotation);
+    }
+
+    public void rotate(double degree) {
+        Rotate rotate = entity.getRotation();
+        Point2D pos = entity.getCentre();
+
+        rotate.setPivotX(pos.getX());
+        rotate.setPivotY(pos.getY());
+
+        setRotation(entity.getRotation().getAngle() + degree);
+    }
+
+    public void setRotation(double newDegree) {
+        Rotate rotate = entity.getRotation();
+        Point2D pos = entity.getCentre();
+
+        rotate.setPivotX(pos.getX());
+        rotate.setPivotY(pos.getY());
+
+        rotate.setAngle(newDegree);
+    }
+
+    public void setRotation(double newDegree, Point2D pos) {
+        Rotate rotate = entity.getRotation();
+
+        rotate.setPivotX(pos.getX());
+        rotate.setPivotY(pos.getY());
+
+        rotate.setAngle(newDegree);
+    }
+
+    public void setSpeed(int newSpeed) {
+        speed = newSpeed;
+    }
+
+    public int getSpeed() {
+        return speed;
+    }
 }
-
-

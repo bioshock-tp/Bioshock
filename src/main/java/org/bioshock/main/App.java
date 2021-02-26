@@ -1,81 +1,75 @@
 package org.bioshock.main;
 
+import java.io.IOException;
+import java.net.URL;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.bioshock.engine.ai.Enemy;
-//import org.bioshock.engine.physics.Movement;
-import org.bioshock.engine.sprites.*;
+import org.bioshock.engine.core.GameLoop;
+import org.bioshock.engine.core.WindowManager;
+import org.bioshock.engine.input.InputManager;
+import org.bioshock.engine.scene.SceneManager;
+import org.bioshock.gui.MainController;
+import org.bioshock.scenes.LoadingScreen;
 
 import javafx.application.Application;
-import javafx.geometry.Point2D;
+import javafx.application.Platform;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
-import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
+public final class App extends Application {
+	public static final Logger logger = LogManager.getLogger(App.class);
+    private static Scene fxmlScene;
 
-/**
- * JavaFX App
- */
-public class App extends Application {
-    private Pane root = new Pane();
-    
-    /*
-    private static Player player = new Player(300,400,40,40,Color.PINK,200);
-    private static Enemy enemy = new Enemy(10,10,40,40,Color.INDIANRED,300);*/
-    private static Wall wall = new Wall(100,100,100,200,Color.RED);
+	@Override
+	public void start(Stage stage) {
+		WindowManager.initialize(stage);
+        initFXMLScene();
+		stage.setScene(fxmlScene);
+		stage.show();
+	}
 
-    //private static final SquareEntityWithFov[] sprites = {player, enemy, wall};
+    public static void startGame(Stage primaryStage) {
+		SceneManager.initialize(primaryStage, new LoadingScreen());
+        InputManager.initialize();
+        InputManager.onPressListener(KeyCode.C, () -> App.logger.debug(SceneManager.getScene()));
 
-    public static final Logger logger = LogManager.getLogger(App.class);
+		primaryStage.setScene(SceneManager.getScene());
+		primaryStage.show();
 
-    private Parent buildContent(){
-        root.setStyle("-fx-background-color: black");
-        root.setPrefSize(600,800);
+		GameLoop loop = new GameLoop();
+		loop.start();
+	}
 
-        //root.getChildren().addAll(sprites);
+	public static void exit() {
+        Platform.exit();
+        System.exit(0);
+	}
 
-        return root;
+	public static void setFXMLRoot(String fxml) {
+		fxmlScene.setRoot(loadFXML(fxml));
+	}
+
+    private static void initFXMLScene() {
+        fxmlScene = new Scene(loadFXML("main")); 
     }
 
-    @Override
-    public void start(Stage stage) {
-        Scene scene = new Scene(buildContent());
+    private static Parent loadFXML(String fxml) {
+        try {
+            URL location = MainController.class.getResource(fxml + ".fxml");
+            FXMLLoader fxmlLoader = new FXMLLoader(location);
+            return fxmlLoader.load();
+        } catch (IOException e) {
+            App.logger.error("Error loading FXML");
+            exit();
+            return null; /* Prevents no return value warning */
+        }
+	}
 
-       /* Movement playerMovement = player.getMovement();
-
-        scene.setOnKeyPressed(e -> {
-            KeyCode key = e.getCode();
-
-            if (key == KeyCode.W) {
-                logger.debug("W Pressed");
-                playerMovement.move(new Point2D(0, Movement.SPEED));
-            }
-            if (key == KeyCode.A) {
-                logger.debug("A Pressed");
-                playerMovement.move(new Point2D(-Movement.SPEED, 0));
-            }
-            if (key == KeyCode.S) {
-                logger.debug("S Pressed");
-                playerMovement.move(new Point2D(0, -Movement.SPEED));
-            }
-            if (key == KeyCode.D) {
-                logger.debug("D Pressed");
-                playerMovement.move(new Point2D(Movement.SPEED, 0));
-            }
-        });
-*/
-        stage.setScene(scene);
-        stage.show();
-    }
-
-    /*public static SquareEntityWithFov[] getSprites() {
-        return sprites;
-    }*/
-
-    public static void main(String[] args) {
-        launch();
-    }
+	public static void main(String[] args) {
+		launch();
+	}
 }
