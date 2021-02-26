@@ -1,6 +1,6 @@
 package org.bioshock.engine.ai;
 
-import org.bioshock.engine.entity.Components;
+import org.bioshock.engine.entity.NetworkC;
 import org.bioshock.engine.entity.Size;
 import org.bioshock.engine.entity.SquareEntity;
 import org.bioshock.engine.renderers.SwatterRenderer;
@@ -10,14 +10,14 @@ import javafx.geometry.Point3D;
 import javafx.scene.paint.Color;
 
 public class Swatter extends SquareEntity {
-    private Enemy enemy;
+    private Seeker enemy;
 
     private boolean shouldSwat = false;
     private boolean swatBack = false;
 
     private int angles = 0;
 
-    public Swatter(Point3D p, Components com, Size s, Color c, Enemy enemy) {
+    public Swatter(Point3D p, NetworkC com, Size s, Color c, Seeker enemy) {
         super(p, com, s, 0, c);
 
         renderer = new SwatterRenderer();
@@ -25,7 +25,7 @@ public class Swatter extends SquareEntity {
         this.enemy = enemy;
     }
 
-    public void setEnemy(Enemy e){
+    public void setEnemy(Seeker e){
         enemy = e;
     }
 
@@ -33,7 +33,7 @@ public class Swatter extends SquareEntity {
         shouldSwat = b;
 	}
 
-    public Enemy getEnemy() {
+    public Seeker getEnemy() {
         return enemy;
     }
 

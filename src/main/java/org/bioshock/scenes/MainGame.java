@@ -1,9 +1,9 @@
 package org.bioshock.scenes;
 
-import org.bioshock.engine.ai.Enemy;
+import org.bioshock.engine.ai.Seeker;
 import org.bioshock.engine.core.WindowManager;
-import org.bioshock.engine.entity.Components;
-import org.bioshock.engine.entity.Player;
+import org.bioshock.engine.entity.NetworkC;
+import org.bioshock.engine.entity.Hider;
 import org.bioshock.engine.entity.Size;
 
 import javafx.geometry.Insets;
@@ -23,20 +23,20 @@ public class MainGame extends GameScene {
             Color.LIGHTGRAY, CornerRadii.EMPTY, Insets.EMPTY
         )));
 		
-		Player player = new Player(
-            new Point3D(300, 400, 1), new Components(true, true),
+		Hider hider = new Hider(
+            new Point3D(300, 400, 1), new NetworkC(true),
             new Size(40, 40), 200, Color.PINK
         );
-        children.add(player);
+        children.add(hider);
 
         int x = WindowManager.getWindowWidth() / 2;
         int y = WindowManager.getWindowHeight() / 2;
 
-        Enemy enemy = new Enemy(
-            new Point3D(x, y, 0.5), new Components(true, true),
-            new Size(40, 40), 300, Color.INDIANRED, player
+        Seeker seeker = new Seeker(
+            new Point3D(x, y, 0.5), new NetworkC(true),
+            new Size(40, 40), 300, Color.INDIANRED, hider
         );
-        children.add(enemy);
-        children.add(enemy.getSwatter());
+        children.add(seeker);
+        children.add(seeker.getSwatter());
 	}
 }

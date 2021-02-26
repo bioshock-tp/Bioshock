@@ -19,10 +19,10 @@ public final class EntityManager {
 	}
 	
 	public static void register(Entity entity) {
-        if (entity.getComponents().isNetworked()) {
+        if (entity.getNetworkC().isNetworked()) {
             NetworkManager.register(entity);
         }
-        if (entity.getComponents().isRendered()) {
+        if (entity.renderC != null) {
             RenderManager.register(entity);
         }
         entities.add(entity);
@@ -33,10 +33,10 @@ public final class EntityManager {
 	}
 
 	public static void unregister(Entity entity) {
-        if (entity.getComponents().isNetworked()) {
+        if (entity.getNetworkC().isNetworked()) {
             NetworkManager.unregister(entity);
         }
-        if (entity.getComponents().isRendered()) {
+        if (entity.renderC != null) {
             RenderManager.unregister(entity);
         }
         entities.remove(entity);

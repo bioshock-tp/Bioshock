@@ -10,21 +10,30 @@ import javafx.scene.Parent;
 
 public abstract class Entity extends Parent {
     protected int z;
-
-    protected Components components;
-
+    protected NetworkC networkC;
+    protected IRendererC renderC = null;
 	protected final UUID uuid = UUID.randomUUID();
     protected boolean enabled = true;
     protected Renderer renderer;
 	
-    protected Entity(Point3D pos, Components comp) {
+    protected Entity(Point3D pos, NetworkC newNetC, IRendererC newRenC) {
+    	renderC = newRenC;
         setPosition((int) pos.getX(), (int) pos.getY());
         z = (int) pos.getZ();
-        components = comp;
+        networkC = newNetC;
+        renderC = newRenC;
 	}
     
     protected abstract void tick(double timeDelta);
 
+	public IRendererC getRenderC() {
+		return renderC;
+	}
+
+	public void setRenderC(IRendererC renderC) {
+		this.renderC = renderC;
+	}
+	
     public final void safeTick(double timeDelta) {
 		if (enabled) {
 			this.tick(timeDelta);
@@ -69,11 +78,11 @@ public abstract class Entity extends Parent {
 		return renderer;
 	}
 
-    public Components getComponents() {
-        return components;
+    public NetworkC getNetworkC() {
+        return networkC;
     }
 
-    public void setComponents(Components components) {
-        this.components = components;
+    public void setNetwokC(NetworkC component) {
+        this.networkC = component;
     }
 }

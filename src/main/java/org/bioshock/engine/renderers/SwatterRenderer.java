@@ -8,7 +8,7 @@ import org.bioshock.engine.entity.Entity;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.transform.Rotate;
 
-public class SwatterRenderer implements Renderer {
+public final class SwatterRenderer implements Renderer {
     @Override
     public void render(GraphicsContext gc, Entity entity) {
         if (!(entity instanceof Swatter)) {
@@ -30,10 +30,10 @@ public class SwatterRenderer implements Renderer {
             r.getMxx(), r.getMyx(), r.getMxy(),
             r.getMyy(), r.getTx(), r.getTy()
         );
-        gc.setFill(swatter.getColor());
+        gc.setFill(swatter.getSqrenc().getColor());
         gc.fillRect(x, y, width, height);
         gc.setLineWidth(10);
-        gc.setStroke(swatter.getColor());
+        gc.setStroke(swatter.getSqrenc().getColor());
 
         gc.restore();
     }
