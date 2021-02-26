@@ -35,7 +35,8 @@ public final class App extends Application {
     public static void startGame(Stage primaryStage) {
 		SceneManager.initialize(primaryStage, new LoadingScreen());
         InputManager.initialize();
-        InputManager.onPressListener(KeyCode.C, () -> App.logger.debug(SceneManager.getScene()));
+        InputManager.onPressListener(KeyCode.C, () -> 
+            App.logger.debug(SceneManager.getScene()));
 
 		primaryStage.setScene(SceneManager.getScene());
 		primaryStage.show();

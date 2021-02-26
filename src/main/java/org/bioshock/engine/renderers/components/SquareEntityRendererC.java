@@ -1,19 +1,17 @@
 package org.bioshock.engine.renderers.components;
 
-import org.bioshock.engine.entity.IRendererC;
+import org.bioshock.engine.components.RendererC;
 
 import javafx.scene.paint.Color;
 
-public class SquareEntityRendererC implements IRendererC{
+public class SquareEntityRendererC implements RendererC {
 	private double z;
 	private Color color;
-	
-	@Override
+
 	public double getZ() {
 		return this.z;
 	}
-	
-	@Override
+
 	public void setZ(double newZ) {
 		this.z = newZ;
 	}

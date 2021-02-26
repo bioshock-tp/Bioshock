@@ -9,7 +9,6 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.transform.Rotate;
 
 public final class SwatterRenderer implements Renderer {
-    @Override
     public void render(GraphicsContext gc, Entity entity) {
         if (!(entity instanceof Swatter)) {
             throw new InvalidParameterException();
@@ -30,10 +29,10 @@ public final class SwatterRenderer implements Renderer {
             r.getMxx(), r.getMyx(), r.getMxy(),
             r.getMyy(), r.getTx(), r.getTy()
         );
-        gc.setFill(swatter.getSqrenc().getColor());
+        gc.setFill(swatter.getRendererC().getColor());
         gc.fillRect(x, y, width, height);
         gc.setLineWidth(10);
-        gc.setStroke(swatter.getSqrenc().getColor());
+        gc.setStroke(swatter.getRendererC().getColor());
 
         gc.restore();
     }

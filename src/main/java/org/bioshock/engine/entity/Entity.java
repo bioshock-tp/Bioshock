@@ -2,6 +2,8 @@ package org.bioshock.engine.entity;
 
 import java.util.UUID;
 
+import org.bioshock.engine.components.NetworkC;
+import org.bioshock.engine.components.RendererC;
 import org.bioshock.engine.renderers.Renderer;
 
 import javafx.geometry.Point2D;
@@ -10,30 +12,21 @@ import javafx.scene.Parent;
 
 public abstract class Entity extends Parent {
     protected int z;
-    protected NetworkC networkC;
-    protected IRendererC renderC = null;
+    protected NetworkC networkC = null;
+    protected RendererC rendererC = null;
 	protected final UUID uuid = UUID.randomUUID();
     protected boolean enabled = true;
     protected Renderer renderer;
 	
-    protected Entity(Point3D pos, NetworkC newNetC, IRendererC newRenC) {
-    	renderC = newRenC;
+    protected Entity(Point3D pos, NetworkC netC, RendererC renC) {
         setPosition((int) pos.getX(), (int) pos.getY());
         z = (int) pos.getZ();
-        networkC = newNetC;
-        renderC = newRenC;
+        networkC = netC;
+        rendererC = renC;
 	}
     
     protected abstract void tick(double timeDelta);
 
-	public IRendererC getRenderC() {
-		return renderC;
-	}
-
-	public void setRenderC(IRendererC renderC) {
-		this.renderC = renderC;
-	}
-	
     public final void safeTick(double timeDelta) {
 		if (enabled) {
 			this.tick(timeDelta);
@@ -53,6 +46,14 @@ public abstract class Entity extends Parent {
         setTranslateX(point.getX());
         setTranslateY(point.getY());
 	}
+
+	public void setRenderC(RendererC renderC) {
+		this.rendererC = renderC;
+	}
+	
+    public void setNetwokC(NetworkC component) {
+        this.networkC = component;
+    }
 
 	public UUID getID() {
 		return uuid;
@@ -78,11 +79,12 @@ public abstract class Entity extends Parent {
 		return renderer;
 	}
 
+	public RendererC getRendererC() {
+		return rendererC;
+	}
+
     public NetworkC getNetworkC() {
         return networkC;
     }
 
-    public void setNetwokC(NetworkC component) {
-        this.networkC = component;
-    }
 }

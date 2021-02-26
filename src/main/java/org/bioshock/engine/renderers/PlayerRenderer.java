@@ -9,7 +9,6 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.transform.Rotate;
 
 public final class PlayerRenderer implements Renderer {
-    @Override
     public void render(GraphicsContext gc, Entity entity) {
         if (!(entity instanceof SquareEntity)) {
             throw new InvalidParameterException();
@@ -19,7 +18,7 @@ public final class PlayerRenderer implements Renderer {
 
         int x = player.getX();
         int y = player.getY();
-        int radius = player.getRadius();
+        double radius = player.getRadius();
         double width = player.getWidth();
         double height = player.getHeight();
 
@@ -27,13 +26,13 @@ public final class PlayerRenderer implements Renderer {
 
         Rotate r = player.getRotation();
         gc.setTransform(r.getMxx(), r.getMyx(), r.getMxy(), r.getMyy(), r.getTx(), r.getTy());
-        gc.setFill(player.getSqrenc().getColor());
+        gc.setFill(player.getRendererC().getColor());
         gc.fillRect(x, y, width, height);
         gc.setLineWidth(10);
-        gc.setStroke(player.getSqrenc().getColor());
+        gc.setStroke(player.getRendererC().getColor());
         gc.strokeOval(
-            x - radius + (double) width / 2, y - radius + (double) height / 2,
-            (double) radius * 2, (double) radius * 2
+            x - radius + width / 2, y - radius + height / 2,
+            radius * 2, radius * 2
         );
 
         gc.restore();

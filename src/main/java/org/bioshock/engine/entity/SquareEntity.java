@@ -1,5 +1,6 @@
 package org.bioshock.engine.entity;
 
+import org.bioshock.engine.components.NetworkC;
 import org.bioshock.engine.physics.Movement;
 import org.bioshock.engine.renderers.components.SquareEntityRendererC;
 
@@ -11,11 +12,6 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.transform.Rotate;
 
 public abstract class SquareEntity extends Entity {
-    private SquareEntityRendererC sqRenC = new SquareEntityRendererC();
-	public SquareEntityRendererC getSqrenc() {
-		return sqRenC;
-	}
-
 	protected Size size;
     protected Rectangle hitbox;
     protected Circle fov;
@@ -25,8 +21,7 @@ public abstract class SquareEntity extends Entity {
     
     protected SquareEntity(Point3D p, NetworkC com, Size s, int r, Color c) {
         super(p, com, new SquareEntityRendererC());
-        sqRenC = (SquareEntityRendererC) super.renderC;
-        sqRenC.setColor(c);
+        rendererC.setColor(c);
         
         size = s;
 
@@ -41,10 +36,6 @@ public abstract class SquareEntity extends Entity {
         hitbox.setTranslateX(p.getX());
         hitbox.setTranslateY(p.getY());
         hitbox.setFill(Color.TRANSPARENT);
-    }
-    
-    public int getRadius() {
-    	return (int) fov.getRadius();
     }
 	
     @Override
@@ -70,8 +61,6 @@ public abstract class SquareEntity extends Entity {
         );
 	}
 
-
-
 	public int getWidth() {
 		return size.getWidth();
 	}
@@ -79,6 +68,10 @@ public abstract class SquareEntity extends Entity {
 	public int getHeight() {
 		return size.getHeight();
 	}
+
+    public int getRadius() {
+    	return (int) fov.getRadius();
+    }
 
     public Rotate getRotation() {
         return rotate;

@@ -1,5 +1,6 @@
 package org.bioshock.engine.entity;
 
+import org.bioshock.engine.components.NetworkC;
 import org.bioshock.engine.input.InputManager;
 import org.bioshock.engine.renderers.PlayerRenderer;
 import org.bioshock.main.App;
@@ -44,8 +45,7 @@ public class Hider extends SquareEntity {
             KeyCode.D, () -> movement.direction(-speed, 0)
         );
     }
-    
-	@Override
+
 	protected void tick(double timeDelta) {
         if (dead) {
             App.logger.info("{} is dead", getID());
@@ -61,8 +61,4 @@ public class Hider extends SquareEntity {
     public boolean getDead(){
         return dead;
     }
-
-	public int getRadius() {
-		return (int) fov.getRadius();
-	}
 }

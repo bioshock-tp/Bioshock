@@ -1,4 +1,4 @@
-package org.bioshock.engine.entity;
+package org.bioshock.engine.components;
 
 public class NetworkC {
     private boolean networked;

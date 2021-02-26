@@ -22,7 +22,7 @@ public final class EntityManager {
         if (entity.getNetworkC().isNetworked()) {
             NetworkManager.register(entity);
         }
-        if (entity.renderC != null) {
+        if (entity.getRendererC() != null) {
             RenderManager.register(entity);
         }
         entities.add(entity);
@@ -36,7 +36,7 @@ public final class EntityManager {
         if (entity.getNetworkC().isNetworked()) {
             NetworkManager.unregister(entity);
         }
-        if (entity.renderC != null) {
+        if (entity.getRendererC() != null) {
             RenderManager.unregister(entity);
         }
         entities.remove(entity);

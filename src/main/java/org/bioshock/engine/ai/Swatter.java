@@ -1,6 +1,6 @@
 package org.bioshock.engine.ai;
 
-import org.bioshock.engine.entity.NetworkC;
+import org.bioshock.engine.components.NetworkC;
 import org.bioshock.engine.entity.Size;
 import org.bioshock.engine.entity.SquareEntity;
 import org.bioshock.engine.renderers.SwatterRenderer;
@@ -74,7 +74,6 @@ public class Swatter extends SquareEntity {
         }
     }
 
-    @Override
     protected void tick(double timeDelta) {
         if (shouldSwat) {
             if (swatBack) {

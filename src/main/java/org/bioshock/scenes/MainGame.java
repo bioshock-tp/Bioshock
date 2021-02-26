@@ -1,8 +1,8 @@
 package org.bioshock.scenes;
 
 import org.bioshock.engine.ai.Seeker;
+import org.bioshock.engine.components.NetworkC;
 import org.bioshock.engine.core.WindowManager;
-import org.bioshock.engine.entity.NetworkC;
 import org.bioshock.engine.entity.Hider;
 import org.bioshock.engine.entity.Size;
 

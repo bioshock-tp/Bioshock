@@ -1,8 +1,8 @@
 package org.bioshock.engine.ai;
 
+import org.bioshock.engine.components.NetworkC;
 import org.bioshock.engine.entity.EntityManager;
 import org.bioshock.engine.entity.Hider;
-import org.bioshock.engine.entity.NetworkC;
 import org.bioshock.engine.entity.Size;
 import org.bioshock.engine.entity.SquareEntity;
 import org.bioshock.engine.renderers.PlayerRenderer;
@@ -97,7 +97,6 @@ public class Seeker extends SquareEntity {
         return intersect.getBoundsInLocal().getWidth() != -1;
     }
     
-    @Override
 	protected void tick(double timeDelta) {
     	followPlayer();
         setSwatterPos();
@@ -119,10 +118,6 @@ public class Seeker extends SquareEntity {
             new Point2D(getRotation().getPivotX(), getRotation().getPivotY())
         );
     }
-
-	public int getRadius() {
-		return (int) fov.getRadius();
-	}
 
     public Swatter getSwatter() {
         return swatter;
