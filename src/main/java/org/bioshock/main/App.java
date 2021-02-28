@@ -121,7 +121,7 @@ public class App extends Application {
     public static void main(String[] args) throws URISyntaxException {
         //WebSocketClient client = new EmptyClient(new URI("ws://localhost:8887"));
         //ws://51.15.109.210:8080/lobby
-        WebSocketClient client = new EmptyClient(new URI("ws://51.15.109.210:8080/lobby"));
+        WebSocketClient client = new EmptyClient(new URI("ws://51.15.109.210:8010/lobby"));
         client.connect();
 //        send(Messages.Serializer.Serialize(ClientInput(serilaize(poll()))));
         //var s = "{\"Case\":\"Details\",\"Fields\":[\"hidenseek\",\"mircea\",[]]}";
