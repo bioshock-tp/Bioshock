@@ -13,7 +13,15 @@ import javafx.scene.transform.Rotate;
 
 public abstract class SquareEntity extends Entity {
 	protected Size size;
-    protected Rectangle hitbox;
+    public Size getSize() {
+		return size;
+	}
+
+	public void setSize(Size size) {
+		this.size = size;
+	}
+
+	protected Rectangle hitbox;
     protected Circle fov;
     protected final Rotate rotate = new Rotate();
     
