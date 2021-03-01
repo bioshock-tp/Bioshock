@@ -1,10 +1,12 @@
 package org.bioshock.engine.rendering;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.bioshock.engine.entity.Entity;
 import org.bioshock.engine.scene.SceneManager;
+import org.bioshock.main.App;
 
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -16,32 +18,40 @@ public final class RenderManager {
     }
 
     /**
-	 * A method that attempts to render every entity registered to the RenderManager in Ascending Y order
-	 * but cannot render if it has no canvas to render entities on
-	 * 
-	 * before rendering it sets the entire canvas to Color.LIGHTGRAY
-	 */
-	public static void tick() {
+     * A method that attempts to render every entity registered to the
+     * RenderManager in Ascending Y order but cannot render if it has no canvas
+     * to render entities on before rendering it sets the entire canvas to 
+     * Color.LIGHTGRAY
+     */
+    public static void tick() {
         Canvas canvas = SceneManager.getCanvas();
-		GraphicsContext gc = canvas.getGraphicsContext2D();
-		
-		//Set Background to LightGray
-		gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
-		
-		
-		sort(renderableEntities);
-		
-		//renders each entity with the renderer defined in the map 
-		for (Entity entity : renderableEntities) {
-			if (entity.isEnabled()) {
-                entity.getRenderer().render(gc, entity);
+        GraphicsContext gc = canvas.getGraphicsContext2D();
+
+        // Set Background to LightGray
+        gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
+
+        sort(renderableEntities);
+
+        // renders each entity with the renderer defined in the map
+        for (Entity entity : renderableEntities) {
+            if (entity.isEnabled()) {
+                try {
+                    Method rend = entity.getRenderer().getDeclaredMethods()[0];
+                    rend.invoke(null, gc, entity);
+                } catch (Exception e) {
+                    App.logger.error(
+                        "Render function not defined for {}",
+                        entity.getRenderer()
+                    );
+                }
 			}
 		}
 	}
 
     /**
 	 * A method that sorts a entities of entities in ascending order
-	 * Current Implementation uses Insertion sort as there is likely to be minimal changes from frame to frame in order
+	 * Current Implementation uses Insertion sort as there is likely to be
+     * minimal changes from frame to frame in order
 	 * @param entityList entities to be sorted by ref
 	 */
 	public static void sort(List<Entity> entityList) {
@@ -49,7 +59,11 @@ public final class RenderManager {
         	Entity key = entityList.get(j);
 
             int i;
-            for (i = j-1; ((i > -1) && (entityList.get(i).getZ() > key.getZ())); i--) {
+            for (
+                i = j-1;
+                ((i > -1) && (entityList.get(i).getZ() > key.getZ()));
+                i--
+            ) {
                 entityList.set(i+1, entityList.get(i));
             }  
             entityList.set(i+1, key);
@@ -58,9 +72,8 @@ public final class RenderManager {
 
 
 	/**
-	 * Registers an entity to the RenderManager 
-	 * and 
-	 * Stores it in ascending order with regards to it's Y value given in it's render component
+	 * Registers an entity to the RenderManager and Stores it in ascending
+     * order with regards to it's Y value given in it's render component
 	 * @param entityToAdd
 	 */
 	public static void register(Entity entityToAdd) {

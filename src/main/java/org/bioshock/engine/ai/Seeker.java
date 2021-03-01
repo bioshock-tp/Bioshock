@@ -26,7 +26,7 @@ public class Seeker extends SquareEntity {
         
         movement.setSpeed(5);
 
-        renderer = new PlayerRenderer();
+        renderer = PlayerRenderer.class;
 
         swatter = new Swatter(p, com, new Size(80,10), Color.BLACK, this);
     }

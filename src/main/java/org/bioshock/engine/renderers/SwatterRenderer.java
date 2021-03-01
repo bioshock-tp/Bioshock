@@ -1,21 +1,17 @@
 package org.bioshock.engine.renderers;
 
-import java.security.InvalidParameterException;
-
-import org.bioshock.engine.ai.Swatter;
-import org.bioshock.engine.entity.Entity;
+import org.bioshock.engine.entity.SquareEntity;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.transform.Rotate;
 
 public final class SwatterRenderer implements Renderer {
-    public void render(GraphicsContext gc, Entity entity) {
-        if (!(entity instanceof Swatter)) {
-            throw new InvalidParameterException();
-        }
+    private SwatterRenderer() {}
 
-        Swatter swatter = (Swatter) entity;
-
+    public static <E extends SquareEntity> void render(
+        GraphicsContext gc,
+        E swatter
+    ) {
         int x = swatter.getX();
         int y = swatter.getY();
         double width = swatter.getWidth();

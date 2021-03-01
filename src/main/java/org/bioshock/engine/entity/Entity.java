@@ -5,6 +5,7 @@ import java.util.UUID;
 import org.bioshock.engine.components.NetworkC;
 import org.bioshock.engine.components.RendererC;
 import org.bioshock.engine.renderers.Renderer;
+import org.bioshock.main.App;
 
 import javafx.geometry.Point2D;
 import javafx.geometry.Point3D;
@@ -16,13 +17,15 @@ public abstract class Entity extends Parent {
     protected RendererC rendererC = null;
 	protected final UUID uuid = UUID.randomUUID();
     protected boolean enabled = true;
-    protected Renderer renderer;
+    protected Class<? extends Renderer> renderer;
 	
     protected Entity(Point3D pos, NetworkC netC, RendererC renC) {
         setPosition((int) pos.getX(), (int) pos.getY());
         z = (int) pos.getZ();
         networkC = netC;
         rendererC = renC;
+
+        App.logger.info("New Entity {} with ID {}", (Object) this, this.uuid);
 	}
     
     protected abstract void tick(double timeDelta);
@@ -75,7 +78,7 @@ public abstract class Entity extends Parent {
         return z;
     }
 
-	public Renderer getRenderer() {
+	public Class<? extends Renderer> getRenderer() {
 		return renderer;
 	}
 

@@ -1,20 +1,17 @@
 package org.bioshock.engine.renderers;
 
-import java.security.InvalidParameterException;
-
-import org.bioshock.engine.entity.Entity;
 import org.bioshock.engine.entity.SquareEntity;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.transform.Rotate;
 
 public final class PlayerRenderer implements Renderer {
-    public void render(GraphicsContext gc, Entity entity) {
-        if (!(entity instanceof SquareEntity)) {
-            throw new InvalidParameterException();
-        }
+    private PlayerRenderer() {}
 
-        SquareEntity player = (SquareEntity) entity;
+    public static <E extends SquareEntity> void render(
+        GraphicsContext gc,
+        E player
+    ) {
 
         int x = player.getX();
         int y = player.getY();
@@ -25,13 +22,17 @@ public final class PlayerRenderer implements Renderer {
         gc.save();
 
         Rotate r = player.getRotation();
-        gc.setTransform(r.getMxx(), r.getMyx(), r.getMxy(), r.getMyy(), r.getTx(), r.getTy());
+        gc.setTransform(
+            r.getMxx(), r.getMyx(), r.getMxy(),
+            r.getMyy(), r.getTx(), r.getTy()
+        );
         gc.setFill(player.getRendererC().getColor());
         gc.fillRect(x, y, width, height);
         gc.setLineWidth(10);
         gc.setStroke(player.getRendererC().getColor());
         gc.strokeOval(
-            x - radius + width / 2, y - radius + height / 2,
+            x - radius + width / 2,
+            y - radius + height / 2,
             radius * 2, radius * 2
         );
 

@@ -20,7 +20,7 @@ public class Swatter extends SquareEntity {
     public Swatter(Point3D p, NetworkC com, Size s, Color c, Seeker enemy) {
         super(p, com, s, 0, c);
 
-        renderer = new SwatterRenderer();
+        renderer = SwatterRenderer.class;
 
         this.enemy = enemy;
     }

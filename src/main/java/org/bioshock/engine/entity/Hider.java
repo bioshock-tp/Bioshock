@@ -15,7 +15,7 @@ public class Hider extends SquareEntity {
     public Hider(Point3D p, NetworkC com, Size s, int r, Color c) {
     	super(p, com, s, r, c);
 
-        renderer = new PlayerRenderer();
+        renderer = PlayerRenderer.class;
 
         final int speed = movement.getSpeed();
 
@@ -54,11 +54,11 @@ public class Hider extends SquareEntity {
         movement.tick(timeDelta);
 	}
 
-    public void setDead(boolean d){
+    public void setDead(boolean d) {
         dead = d;
     }
 
-    public boolean getDead(){
+    public boolean getDead() {
         return dead;
     }
 }
