@@ -5,9 +5,6 @@ import org.bioshock.engine.components.NetworkC;
 import org.bioshock.engine.core.WindowManager;
 import org.bioshock.engine.entity.Hider;
 import org.bioshock.engine.entity.Size;
-import org.bioshock.entities.map.Exits;
-import org.bioshock.entities.map.Room;
-import org.bioshock.entities.map.Sides;
 import org.bioshock.entities.map.ThreeByThreeMap;
 
 import javafx.geometry.Insets;
@@ -42,15 +39,13 @@ public class MainGame extends GameScene {
 		 * Size(100, 100), new Exits(true, true, true, true), Color.SADDLEBROWN);
 		 * children.addAll(all4.getWalls());
 		 */
-		
+
 		ThreeByThreeMap map = new ThreeByThreeMap(
-				new Point3D(100, 100, 0), 
-				10, 
-				new Size(100, 200), 
-				new Size(30, 30), 
+				new Point3D(100, 100, 0),
+				10,
+				new Size(100, 200),
+				new Size(30, 30),
 				Color.SADDLEBROWN);
 		children.addAll(map.getWalls());
-		
-		
 	}
 }

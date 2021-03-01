@@ -13,24 +13,16 @@ import javafx.scene.transform.Rotate;
 
 public abstract class SquareEntity extends Entity {
 	protected Size size;
-    public Size getSize() {
-		return size;
-	}
-
-	public void setSize(Size size) {
-		this.size = size;
-	}
-
 	protected Rectangle hitbox;
     protected Circle fov;
     protected final Rotate rotate = new Rotate();
-    
+
     protected final Movement movement = new Movement(this);
-    
+
     protected SquareEntity(Point3D p, NetworkC com, Size s, int r, Color c) {
         super(p, com, new SquareEntityRendererC());
         rendererC.setColor(c);
-        
+
         size = s;
 
         fov = new Circle(p.getX(), p.getY(), r);
@@ -45,12 +37,12 @@ public abstract class SquareEntity extends Entity {
         hitbox.setTranslateY(p.getY());
         hitbox.setFill(Color.TRANSPARENT);
     }
-	
+
     @Override
     public void setPosition(int x, int y) {
         setTranslateX(x);
         setTranslateY(y);
-        
+
         if (hitbox != null) {
             hitbox.setTranslateX(x);
             hitbox.setTranslateY(y);
@@ -62,6 +54,10 @@ public abstract class SquareEntity extends Entity {
         }
     }
 
+    public void setSize(Size size) {
+		this.size = size;
+	}
+
     public Point2D getCentre() {
 		return new Point2D(
             getX() + (double) getWidth() / 2,
@@ -69,10 +65,14 @@ public abstract class SquareEntity extends Entity {
         );
 	}
 
+    public Size getSize() {
+		return size;
+	}
+
 	public int getWidth() {
 		return size.getWidth();
 	}
-	
+
 	public int getHeight() {
 		return size.getHeight();
 	}
@@ -88,7 +88,7 @@ public abstract class SquareEntity extends Entity {
 	public Rectangle getHitbox() {
 		return hitbox;
 	}
- 
+
     public Movement getMovement() {
 		return movement;
 	}

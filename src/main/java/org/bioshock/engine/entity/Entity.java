@@ -18,7 +18,7 @@ public abstract class Entity extends Parent {
 	protected final UUID uuid = UUID.randomUUID();
     protected boolean enabled = true;
     protected Class<? extends Renderer> renderer;
-	
+
     protected Entity(Point3D pos, NetworkC netC, RendererC renC) {
         setPosition((int) pos.getX(), (int) pos.getY());
         z = (int) pos.getZ();
@@ -27,7 +27,7 @@ public abstract class Entity extends Parent {
 
         App.logger.info("New Entity {} with ID {}", (Object) this, this.uuid);
 	}
-    
+
     protected abstract void tick(double timeDelta);
 
     public final void safeTick(double timeDelta) {
@@ -53,7 +53,7 @@ public abstract class Entity extends Parent {
 	public void setRenderC(RendererC renderC) {
 		this.rendererC = renderC;
 	}
-	
+
     public void setNetwokC(NetworkC component) {
         this.networkC = component;
     }

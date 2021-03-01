@@ -10,11 +10,11 @@ import javafx.scene.control.Button;
 import javafx.scene.control.RadioButton;
 
 public class SettingsController {
-    public Button backButton;
-    public RadioButton musicOffRadioButton;
-    public RadioButton musicOnRadioButton;
-    public RadioButton sfxOffRadioButton;
-    public RadioButton sfxOnRadioButton;
+    private Button backButton;
+    private RadioButton musicOffRadioButton;
+    private RadioButton musicOnRadioButton;
+    private RadioButton sfxOffRadioButton;
+    private RadioButton sfxOnRadioButton;
     private Preferences prefs;
 
 //    private MediaPlayer bgMusic;

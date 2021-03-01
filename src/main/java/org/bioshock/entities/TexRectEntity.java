@@ -12,13 +12,11 @@ public class TexRectEntity extends SquareEntity{
 
 	public TexRectEntity(Point3D p, NetworkC com, Size s, Color c) {
 		super(p, com, s, 0, c);
-		renderer = new SquareRenderer();
+		renderer = SquareRenderer.class;
 	}
 
 	@Override
 	protected void tick(double timeDelta) {
 		// TODO Auto-generated method stub
-		  
 	}
-
 }
