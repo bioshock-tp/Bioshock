@@ -1,17 +1,17 @@
 package org.bioshock.engine.core;
 
-import org.bioshock.engine.input.InputManager;
-import org.bioshock.main.App;
+import static org.bioshock.main.App.exit;
 
-import javafx.geometry.Rectangle2D;
+import org.bioshock.engine.input.InputManager;
+
+import javafx.geometry.BoundingBox;
+import javafx.geometry.Bounds;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCombination;
-import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 public class WindowManager {
-	
-	private static Rectangle2D screenSize = Screen.getPrimary().getBounds();
+	private static Bounds screenSize = new BoundingBox(0, 0, 1920, 1080);
 	private static final String NAME = "BuzzKill";
 	private static final boolean INITFULLSCREEN = false;
 	private static final boolean INITMAXIMISED = true;
@@ -19,22 +19,20 @@ public class WindowManager {
 
     private WindowManager() {}
 
-	public static void initialize(Stage stage) {
+	public static void initialise(Stage stage) {
         window = stage;
 		window.setTitle(NAME);
-		window.setFullScreen(INITFULLSCREEN);		
+		window.setFullScreen(INITFULLSCREEN);
 		window.setMaximized(INITMAXIMISED);
-		
+
 		window.setFullScreenExitHint("");
 		window.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
-		
-        InputManager.onPressListener(
-            KeyCode.F11, WindowManager::toggleFullScreen
-        );
 
-        InputManager.onPressListener(KeyCode.ESCAPE, App::exit);
+        InputManager.onPress(KeyCode.F11, WindowManager::toggleFullScreen);
+
+        InputManager.onPress(KeyCode.ESCAPE, () -> exit(0));
     }
-	
+
 	private static void toggleFullScreen() {
         window.setFullScreen(!window.isFullScreen());
     }

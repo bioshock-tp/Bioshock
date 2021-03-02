@@ -12,23 +12,28 @@ import javafx.stage.Stage;
 public final class SceneManager {
     private static Stage stage;
     private static GameScene currentScene;
-    
+    private static boolean initialised = false;
+
     private SceneManager() {}
 
-    public static void initialize(Stage primaryStage, GameScene initialScene) {
+    public static void initialise(Stage primaryStage, GameScene initialScene) {
+        if (initialised) return;
+        initialised = true;
+
 		stage = primaryStage;
         currentScene = initialScene;
+        currentScene.renderEntities();
 	}
 
 	public static void setScene(GameScene scene) {
         currentScene = scene;
-        
+
         EntityManager.unregisterAll();
 
         InputManager.changeScene();
 
         stage.setScene(currentScene);
-        
+
         currentScene.renderEntities();
 	}
 

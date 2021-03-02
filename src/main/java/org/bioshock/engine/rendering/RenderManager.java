@@ -1,12 +1,13 @@
 package org.bioshock.engine.rendering;
 
+import static org.bioshock.main.App.logger;
+
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.bioshock.engine.entity.Entity;
 import org.bioshock.engine.scene.SceneManager;
-import org.bioshock.main.App;
 
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -20,7 +21,7 @@ public final class RenderManager {
     /**
      * A method that attempts to render every entity registered to the
      * RenderManager in Ascending Y order but cannot render if it has no canvas
-     * to render entities on before rendering it sets the entire canvas to 
+     * to render entities on before rendering it sets the entire canvas to
      * Color.LIGHTGRAY
      */
     public static void tick() {
@@ -39,7 +40,7 @@ public final class RenderManager {
                     Method rend = entity.getRenderer().getDeclaredMethods()[0];
                     rend.invoke(null, gc, entity);
                 } catch (Exception e) {
-                    App.logger.error(
+                    logger.error(
                         "Render function not defined for {}",
                         entity.getRenderer()
                     );
@@ -65,7 +66,7 @@ public final class RenderManager {
                 i--
             ) {
                 entityList.set(i+1, entityList.get(i));
-            }  
+            }
             entityList.set(i+1, key);
         }
     }
@@ -86,7 +87,7 @@ public final class RenderManager {
 			for (i = 1; (currentEntity.getZ() < entityToAdd.getZ()); i++) {
 				currentEntity = renderableEntities.get(i);
 			}
-			
+
 			renderableEntities.add(i, entityToAdd);
 		}
 	}

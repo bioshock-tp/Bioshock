@@ -20,22 +20,22 @@ import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
 
-public final class App extends Application {
+public class App extends Application {
 	public static final Logger logger = LogManager.getLogger(App.class);
     private static Scene fxmlScene;
 
 	@Override
 	public void start(Stage stage) {
-		WindowManager.initialize(stage);
+		WindowManager.initialise(stage);
         initFXMLScene();
 		stage.setScene(fxmlScene);
 		stage.show();
 	}
 
     public static void startGame(Stage primaryStage) {
-		SceneManager.initialize(primaryStage, new LoadingScreen());
-        InputManager.initialize();
-        InputManager.onPressListener(KeyCode.C, () -> 
+		SceneManager.initialise(primaryStage, new LoadingScreen());
+        InputManager.initialise();
+        InputManager.onPress(KeyCode.C, () ->
             App.logger.debug(SceneManager.getScene()));
 
 		primaryStage.setScene(SceneManager.getScene());
@@ -45,9 +45,9 @@ public final class App extends Application {
 		loop.start();
 	}
 
-	public static void exit() {
+	public static void exit(int code) {
         Platform.exit();
-        System.exit(0);
+        System.exit(code);
 	}
 
 	public static void setFXMLRoot(String fxml) {
@@ -55,7 +55,7 @@ public final class App extends Application {
 	}
 
     private static void initFXMLScene() {
-        fxmlScene = new Scene(loadFXML("main")); 
+        fxmlScene = new Scene(loadFXML("main"));
     }
 
     private static Parent loadFXML(String fxml) {
@@ -65,7 +65,7 @@ public final class App extends Application {
             return fxmlLoader.load();
         } catch (IOException e) {
             App.logger.error("Error loading FXML");
-            exit();
+            exit(-1);
             return null; /* Prevents no return value warning */
         }
 	}

@@ -12,13 +12,13 @@ import javafx.stage.Stage;
 public class Debug extends App {
     @Override
     public void start(Stage stage) {
-		WindowManager.initialize(stage);
+		WindowManager.initialise(stage);
         startGame(stage);
 	}
 
     public static void startGame(Stage primaryStage) {
-        SceneManager.initialize(primaryStage, new MainGame());
-        InputManager.initialize();
+        SceneManager.initialise(primaryStage, new MainGame());
+        InputManager.initialise();
         InputManager.onPress(KeyCode.C, () ->
             App.logger.debug(SceneManager.getScene()));
 
