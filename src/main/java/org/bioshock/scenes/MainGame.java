@@ -21,8 +21,8 @@ import javafx.scene.text.FontWeight;
 
 public class MainGame extends GameScene{
 	public MainGame() {
-		Canvas canvas = new Canvas(WindowInitializer.getWindowWidth(), WindowInitializer.getWindowHeight());
-		this.getChildren().add(canvas);
+//		Canvas canvas = new Canvas(WindowInitializer.getWindowWidth(), WindowInitializer.getWindowHeight());
+//		this.getChildren().add(canvas);
 		
 		//Label gameLabel = new Label("Main Game");
 		//this.getChildren().add(gameLabel);
@@ -31,7 +31,7 @@ public class MainGame extends GameScene{
 		
 		setCursor(Cursor.HAND);
 		setBackground(new Background(new BackgroundFill(Color.LIGHTGRAY, CornerRadii.EMPTY, Insets.EMPTY)));
-		RenderManager.canvas = canvas;
+		//RenderManager.canvas = canvas;
 		
 		Player player = new Player(300, 400, 40, 40, 200,Color.PINK, 1.0);
 		this.AddEntity(player);
