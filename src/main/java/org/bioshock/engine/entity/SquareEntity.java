@@ -19,19 +19,20 @@ public abstract class SquareEntity extends Entity {
     protected Size size;
     protected Circle fov;
 
+    private SquareEntity(Point3D p, Rectangle h, NetworkC com) {
+        super(p, h, com, new SquareEntityRendererC());
+    }
+
     protected SquareEntity(Point3D p, NetworkC com, Size s, int r, Color c) {
-        super(p, com, new SquareEntityRendererC());
+        this(
+            p,
+            new Rectangle(p.getX(), p.getY(), s.getWidth(), s.getHeight()),
+            com
+        );
+
         rendererC.setColor(c);
 
         size = s;
-
-        hitbox = new Rectangle(
-            p.getX(),
-            p.getY(),
-            s.getWidth(),
-            s.getHeight()
-        );
-        hitbox.setFill(Color.TRANSPARENT);
 
         fov = new Circle(p.getX(), p.getY(), r);
 
@@ -41,11 +42,6 @@ public abstract class SquareEntity extends Entity {
     @Override
     public void setPosition(int x, int y) {
         super.setPosition(x, y);
-
-        if (hitbox != null) {
-            hitbox.setTranslateX(x);
-            hitbox.setTranslateY(y);
-        }
 
         if (fov != null) {
             fov.setTranslateX(x);

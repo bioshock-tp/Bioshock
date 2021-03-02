@@ -11,6 +11,7 @@ import org.bioshock.engine.renderers.Renderer;
 import javafx.geometry.Point2D;
 import javafx.geometry.Point3D;
 import javafx.scene.Parent;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
 public abstract class Entity extends Parent {
@@ -24,10 +25,14 @@ public abstract class Entity extends Parent {
     protected RendererC rendererC = null;
     protected Class<? extends Renderer> renderer;
 
-    protected Entity(Point3D p, NetworkC netC, RendererC renC) {
+    protected Entity(Point3D p, Rectangle h, NetworkC netC, RendererC renC) {
+        hitbox = h;
+        hitbox.setFill(Color.TRANSPARENT);
+        
         setPosition(p);
 
         z = p.getZ();
+
         networkC = netC;
         rendererC = renC;
 
@@ -49,6 +54,9 @@ public abstract class Entity extends Parent {
     public void setPosition(int x, int y) {
         setTranslateX(x);
         setTranslateY(y);
+
+        hitbox.setTranslateX(x);
+        hitbox.setTranslateY(y);
     }
 
     public void setPosition(Point2D point) {
