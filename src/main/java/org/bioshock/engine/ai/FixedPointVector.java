@@ -2,24 +2,36 @@ package org.bioshock.engine.ai;
 
 import org.decimal4j.immutable.*;
 
-public class FixedPointVector {
+public final class FixedPointVector {
 
-    Decimal5f x, y;
+    public final Decimal5f x, y;
 
     private Decimal5f lerpAux(Decimal5f dt, Decimal5f xs, Decimal5f xf){
         return (xs.multiply(Decimal5f.valueOf(1).subtract(dt))).add(xf.multiply(dt));
     }
 
-    public FixedPointVector(double x, double y) {
-        this.x = Decimal5f.valueOf(x);
-        this.y = Decimal5f.valueOf(y);
-    }
+
 
     public FixedPointVector(Decimal5f x, Decimal5f y) {
         this.x = x;
         this.y = y;
     }
 
+    @Override
+    public String toString() {
+        return "FixedPointVector{" +
+                "x=" + x +
+                ", y=" + y +
+                '}';
+    }
+
+    public FixedPointVector(int x, int y) {
+        this.x = Decimal5f.valueOf(x);
+        this.y = Decimal5f.valueOf(y);
+    }
+    public FixedPointVector nondeterministic(double x, double y) {
+        return new FixedPointVector(Decimal5f.valueOf(x),Decimal5f.valueOf(y));
+    }
     public Decimal5f getX(){
         return this.x;
     }

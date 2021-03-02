@@ -35,8 +35,8 @@ public class Sprite extends Parent {
     }
 
     public void setCentreXY(double x, double y) {
-        setTranslateX(x - r);
-        setTranslateY(y - r);
+        setTranslateX(x);
+        setTranslateY(y);
     }
 
     public void moveLeft() {

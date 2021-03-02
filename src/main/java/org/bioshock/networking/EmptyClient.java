@@ -8,17 +8,22 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Queue;
 
+import org.decimal4j.immutable.Decimal5f;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.drafts.Draft;
 import org.java_websocket.drafts.Draft_6455;
 import org.java_websocket.handshake.ServerHandshake;
 
+import java.util.concurrent.Semaphore;
+import java.util.concurrent.locks.*;
+
 public class EmptyClient extends WebSocketClient {
-    Queue<Messages.ServerToClient> msgQ = new LinkedList<>();
+    public Semaphore mutex = new Semaphore(1);
+    public Queue<Messages.ServerToClient> msgQ = new LinkedList<>();
     public EmptyClient(URI serverUri, Draft draft) {
         super(serverUri, draft);
     }
-
+    public boolean connected = false;
     public EmptyClient(URI serverURI) {
         super(serverURI);
     }
@@ -36,6 +41,7 @@ public class EmptyClient extends WebSocketClient {
         var queuMesage = new Messages.QueueRequest("mircea", "hideandseek", 2);
         send(Messages.Serializer.serialize(queuMesage));
         //System.out.println("new connection opened");
+        connected = true;
     }
 
     @Override
@@ -46,12 +52,28 @@ public class EmptyClient extends WebSocketClient {
 
     @Override
     public void onMessage(String message) {
-        //var queueMessage = Messages.Serializer.deserialize(message);
-        //msgQ.add(queueMessage);
-//        System.out.println("_" + _queueMessage);
-        var queueMessage = (Messages.InQueue) Messages.Serializer.deserialize(message);
-        System.out.println("timestamp: " + queueMessage.timestamp + "; " + "names: " + Arrays.toString(queueMessage.names) + "; " + "n: " + queueMessage.n + "; " + "N: " + queueMessage.N);
         //System.out.println("received message: " + message);
+        var queueMessage = (Messages.ServerToClient) Messages.Serializer.deserialize(message);
+        try {
+            mutex.acquire();
+            try {
+                msgQ.add(queueMessage);
+            } finally {
+                mutex.release();
+            }
+        } catch(InterruptedException ie) {
+            System.out.println(ie);
+        }
+//        System.out.println("_" + _queueMessage);
+        /*var queueMessage = (Messages.ServerToClient) Messages.Serializer.deserialize(message);
+        if(queueMessage instanceof Messages.InQueue) {
+            var d = (Messages.InQueue)queueMessage;
+            System.out.println("timestamp: " + d.timestamp + "; " + "names: " + Arrays.toString(d.names) + "; " + "n: " + d.n + "; " + "N: " + d.N);
+        }
+        else if(queueMessage instanceof Messages.ServerInputState){
+            var d = (Messages.ServerInputState)queueMessage;
+            System.out.println(d);
+        }*/
     }
 
     @Override
