@@ -2,8 +2,6 @@ package org.bioshock.engine.physics;
 
 import org.bioshock.engine.input.InputChecker;
 import org.bioshock.engine.sprites.SquareEntity;
-import org.bioshock.main.App2;
-
 import javafx.geometry.Point2D;
 import javafx.scene.input.KeyCode;
 
