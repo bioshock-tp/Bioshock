@@ -45,5 +45,6 @@ public class Enemy extends Player {
     @Override
 	protected void tick(double timeDelta) {
     	followPlayer();
+    	System.out.println("Enemy x: " + getX() + "    y: " + getY());
 	}
 }

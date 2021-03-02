@@ -38,6 +38,7 @@ public class Player extends SquareEntity {
 	@Override
 	protected void tick(double timeDelta) {
 		movement.tick(timeDelta);
+		System.out.println("Enemy x: " + getX() + "    y: " + getY());
 	}
 	
 	
