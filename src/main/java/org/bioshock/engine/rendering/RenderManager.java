@@ -39,10 +39,10 @@ public final class RenderManager {
                     Method rend = entity.getRenderer().getDeclaredMethods()[0];
                     rend.invoke(null, gc, entity);
                 } catch (Exception e) {
-                    App.logger.error(
+                    /*App.logger.error(
                         "Render function not defined for {}",
                         entity.getRenderer()
-                    );
+                    );*/
                 }
 			}
 		}

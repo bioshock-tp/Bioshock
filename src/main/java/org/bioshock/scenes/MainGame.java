@@ -4,6 +4,7 @@ import org.bioshock.engine.ai.Seeker;
 import org.bioshock.engine.components.NetworkC;
 import org.bioshock.engine.core.WindowManager;
 import org.bioshock.engine.entity.Hider;
+import org.bioshock.engine.entity.SeekerHuman;
 import org.bioshock.engine.entity.Size;
 import org.bioshock.entities.map.ThreeByThreeMap;
 
@@ -33,6 +34,11 @@ public class MainGame extends GameScene {
 
 		children.add(seeker);
 		children.add(seeker.getSwatter());
+
+		/*SeekerHuman sh = new SeekerHuman(new Point3D(x, y, 0.5), new NetworkC(true), new Size(40, 40), 300, Color.INDIANRED,
+				hider);
+		children.add(sh);
+		children.add(sh.getSwatter());*/
 
 		/*
 		 * Room all4 = new Room( new Point3D(100, 100, 0), 40, new Size(300, 600), new

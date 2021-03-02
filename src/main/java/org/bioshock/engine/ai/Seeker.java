@@ -36,7 +36,7 @@ public class Seeker extends SquareEntity {
         return intersect.getBoundsInLocal().getWidth() != -1;
     }
 
-    public void followPlayer() {
+    public void doActions() {
         if (
             EntityManager.isManaged(this, target, swatter) 
             && intersects(target, "swatter")
@@ -98,7 +98,7 @@ public class Seeker extends SquareEntity {
     }
     
 	protected void tick(double timeDelta) {
-    	followPlayer();
+    	doActions();
         setSwatterPos();
     	if(!swatter.shouldSwat()){
             setSwatterRot();
@@ -118,6 +118,8 @@ public class Seeker extends SquareEntity {
             new Point2D(getRotation().getPivotX(), getRotation().getPivotY())
         );
     }
+
+    public SquareEntity getTarget(){return target;}
 
     public Swatter getSwatter() {
         return swatter;
