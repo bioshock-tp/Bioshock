@@ -1,12 +1,13 @@
 package org.bioshock.engine.ai;
 
+import static org.bioshock.main.App.logger;
+
 import org.bioshock.engine.components.NetworkC;
 import org.bioshock.engine.entity.EntityManager;
 import org.bioshock.engine.entity.Hider;
 import org.bioshock.engine.entity.Size;
 import org.bioshock.engine.entity.SquareEntity;
 import org.bioshock.engine.renderers.PlayerRenderer;
-import org.bioshock.main.App;
 
 import javafx.geometry.Point2D;
 import javafx.geometry.Point3D;
@@ -15,15 +16,15 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
 
 public class Seeker extends SquareEntity {
-    private SquareEntity target;
+    private Hider target;
     private Swatter swatter;
     private Rectangle closeBox;
-	
+
     public Seeker(Point3D p, NetworkC com, Size s, int r, Color c, Hider e) {
         super(p, com, s, r, c);
 
         target = e;
-        
+
         movement.setSpeed(5);
 
         renderer = PlayerRenderer.class;
@@ -38,11 +39,10 @@ public class Seeker extends SquareEntity {
 
     public void followPlayer() {
         if (
-            EntityManager.isManaged(this, target, swatter) 
+            EntityManager.isManaged(this, target, swatter)
             && intersects(target, "swatter")
-            && target instanceof Hider
         ) {
-            ((Hider) target).setDead(true);
+            target.setDead(true);
         }
         if (
             EntityManager.isManaged(this, target, swatter)
@@ -56,6 +56,10 @@ public class Seeker extends SquareEntity {
         ) {
             movement.move(target.getPosition().subtract(this.getPosition()));
         }
+    }
+
+    public void newTarget(Hider newTarget) {
+        target = newTarget;
     }
 
     public boolean intersects(SquareEntity entity, String type) {
@@ -90,13 +94,13 @@ public class Seeker extends SquareEntity {
                 intersect = Shape.intersect(swatterHitbox, entityHitbox);
                 break;
             default:
-                App.logger.error("Invalid intersects type: {}", type);
+                logger.error("Invalid intersects type: {}", type);
                 return false;
         }
 
         return intersect.getBoundsInLocal().getWidth() != -1;
     }
-    
+
 	protected void tick(double timeDelta) {
     	followPlayer();
         setSwatterPos();
@@ -111,7 +115,7 @@ public class Seeker extends SquareEntity {
             getY() + getWidth() / 2 - swatter.getHeight() / 2
         );
     }
-    
+
     public void setSwatterRot() {
         swatter.getMovement().setRotation(
             getRotation().getAngle(),

@@ -34,12 +34,6 @@ public class MainGame extends GameScene {
 		children.add(seeker);
 		children.add(seeker.getSwatter());
 
-		/*
-		 * Room all4 = new Room( new Point3D(100, 100, 0), 40, new Size(300, 600), new
-		 * Size(100, 100), new Exits(true, true, true, true), Color.SADDLEBROWN);
-		 * children.addAll(all4.getWalls());
-		 */
-
 		ThreeByThreeMap map = new ThreeByThreeMap(
 				new Point3D(100, 100, 0),
 				10,

@@ -1,8 +1,15 @@
 package org.bioshock.engine.physics;
 
+import static org.bioshock.main.App.logger;
+
+import org.bioshock.engine.ai.Swatter;
+import org.bioshock.engine.core.WindowManager;
+import org.bioshock.engine.entity.EntityManager;
 import org.bioshock.engine.entity.SquareEntity;
+import org.bioshock.entities.TexRectEntity;
 
 import javafx.geometry.Point2D;
+import javafx.scene.shape.Shape;
 import javafx.scene.transform.Rotate;
 
 public class Movement {
@@ -21,25 +28,53 @@ public class Movement {
 		return new Point2D(xDirection, yDirection);
 	}
 
-    public void tick(double timeDelta) {
+    public void tick() {
         if (xDirection != 0 || yDirection != 0) move(getDirection());
     }
 
     public void move(Point2D trans) {
         Point2D target = trans.add(entity.getPosition());
+
         int x = entity.getX();
         int y = entity.getY();
-              		
+
+        int dispX = (int) target.getX() - x;
         if (x != target.getX()) {
-            int disp = (int) target.getX() - x;
-            x += disp / Math.abs(disp) * speed;
+            x += dispX / Math.abs(dispX) * speed;
         }
+
+        int dispY = (int) target.getY() - y;
         if (y != target.getY()) {
-            int disp = (int) target.getY() - y;
-            y += disp / Math.abs(disp) * speed;
+            y += dispY / Math.abs(dispY) * speed;
         }
-        entity.setPosition(x, y);
+
         updateFacing(trans);
+
+        while (x < 0) x++;
+        while (y < 0) y++;
+        while (x + entity.getWidth() > WindowManager.getWindowWidth()) x--;
+        while (y + entity.getHeight() > WindowManager.getWindowHeight()) y--;
+
+        int oldX = entity.getX();
+        int oldY = entity.getY();
+        entity.setPosition(x, y);
+
+        EntityManager.getEntityList().forEach(child ->{
+            if (
+                   child == entity
+                || child instanceof TexRectEntity
+                || child instanceof Swatter
+            ) return;
+
+            Shape intersects = Shape.intersect(
+                entity.getHitbox(),
+                child.getHitbox()
+            );
+            if (intersects.getBoundsInLocal().getWidth() != -1) {
+                logger.debug("{} collided with {}", entity, child);
+                entity.setPosition(oldX, oldY);
+            }
+        });
     }
 
     public void direction(int newXDirection, int newYDirection) {
@@ -75,11 +110,11 @@ public class Movement {
         rotate.setAngle(newDegree);
     }
 
-    public void setRotation(double newDegree, Point2D pos) {
+    public void setRotation(double newDegree, Point2D pivot) {
         Rotate rotate = entity.getRotation();
 
-        rotate.setPivotX(pos.getX());
-        rotate.setPivotY(pos.getY());
+        rotate.setPivotX(pivot.getX());
+        rotate.setPivotY(pivot.getY());
 
         rotate.setAngle(newDegree);
     }

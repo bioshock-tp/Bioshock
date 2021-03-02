@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import org.bioshock.engine.core.WindowManager;
 import org.bioshock.engine.entity.Entity;
 import org.bioshock.engine.entity.EntityManager;
-import org.bioshock.engine.entity.SquareEntity;
 
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
@@ -13,12 +12,12 @@ import javafx.scene.layout.Background;
 import javafx.scene.layout.StackPane;
 
 public abstract class GameScene extends Scene {
-    protected StackPane pane;
-    protected Canvas canvas = new Canvas(
+    private StackPane pane;
+    private Canvas canvas = new Canvas(
         WindowManager.getWindowWidth(),
         WindowManager.getWindowHeight()
     );
-    public ArrayList<Entity> children = new ArrayList<>();
+    protected ArrayList<Entity> children = new ArrayList<>();
 
     private GameScene(StackPane pane) {
         super(pane);
@@ -32,13 +31,8 @@ public abstract class GameScene extends Scene {
 
 	public void renderEntities() {
         children.forEach(EntityManager::register);
-        children.forEach(entity -> {
-            if (entity instanceof SquareEntity) {
-                pane.getChildren().add(((SquareEntity) entity).getHitbox());
-            }
-        });
+        children.forEach(entity -> pane.getChildren().add(entity.getHitbox()));
 	}
-
 
     public void setBackground(Background background) {
         pane.setBackground(background);

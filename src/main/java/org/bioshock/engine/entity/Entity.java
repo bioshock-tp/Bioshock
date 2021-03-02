@@ -1,31 +1,37 @@
 package org.bioshock.engine.entity;
 
+import static org.bioshock.main.App.logger;
+
 import java.util.UUID;
 
 import org.bioshock.engine.components.NetworkC;
 import org.bioshock.engine.components.RendererC;
 import org.bioshock.engine.renderers.Renderer;
-import org.bioshock.main.App;
 
 import javafx.geometry.Point2D;
 import javafx.geometry.Point3D;
 import javafx.scene.Parent;
+import javafx.scene.shape.Rectangle;
 
 public abstract class Entity extends Parent {
-    protected int z;
+    protected Rectangle hitbox = null;
+
+    protected double z;
+    protected boolean enabled = true;
+    protected final UUID uuid = UUID.randomUUID();
+
     protected NetworkC networkC = null;
     protected RendererC rendererC = null;
-	protected final UUID uuid = UUID.randomUUID();
-    protected boolean enabled = true;
     protected Class<? extends Renderer> renderer;
 
-    protected Entity(Point3D pos, NetworkC netC, RendererC renC) {
-        setPosition((int) pos.getX(), (int) pos.getY());
-        z = (int) pos.getZ();
+    protected Entity(Point3D p, NetworkC netC, RendererC renC) {
+        setPosition(p);
+
+        z = p.getZ();
         networkC = netC;
         rendererC = renC;
 
-        App.logger.info("New Entity {} with ID {}", (Object) this, this.uuid);
+        logger.info("New {} with ID {}", this, uuid);
 	}
 
     protected abstract void tick(double timeDelta);
@@ -46,8 +52,11 @@ public abstract class Entity extends Parent {
     }
 
     public void setPosition(Point2D point) {
-        setTranslateX(point.getX());
-        setTranslateY(point.getY());
+        setPosition((int) point.getX(), (int) point.getY());
+	}
+
+    public void setPosition(Point3D point) {
+        setPosition((int) point.getX(), (int) point.getY());
 	}
 
 	public void setRenderC(RendererC renderC) {
@@ -78,6 +87,16 @@ public abstract class Entity extends Parent {
         return z;
     }
 
+    public Rectangle getHitbox() {
+		if (hitbox == null) {
+            logger.error(
+                "Hitbox not implemented for {}",
+                getClass().getSimpleName()
+            );
+        }
+        return hitbox;
+	}
+
 	public Class<? extends Renderer> getRenderer() {
 		return renderer;
 	}
@@ -90,4 +109,8 @@ public abstract class Entity extends Parent {
         return networkC;
     }
 
+    @Override
+    public String toString() {
+        return getClass().getSimpleName();
+    }
 }
