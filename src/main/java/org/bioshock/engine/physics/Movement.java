@@ -39,7 +39,6 @@ public class Movement {
             y += disp / Math.abs(disp) * speed;
         }
         entity.setPosition(x, y);
-        updateFacing(trans);
     }
 
     public void direction(int newXDirection, int newYDirection) {
@@ -50,19 +49,9 @@ public class Movement {
         if (newY <= speed) yDirection += newYDirection;
     }
 
-    public void updateFacing(Point2D trans){
-        double rotation = Math.atan2(trans.getX(), -trans.getY())*180/Math.PI;
-        setRotation(rotation);
-    }
 
-    public void rotate(double degree) {
-        Rotate rotate = entity.getRotation();
-        Point2D pos = entity.getCentre();
-
-        rotate.setPivotX(pos.getX());
-        rotate.setPivotY(pos.getY());
-
-        setRotation(entity.getRotation().getAngle() + degree);
+    public double getFacingRotate(Point2D trans){
+        return Math.atan2(trans.getX(), -trans.getY())*180/Math.PI;
     }
 
     public void setRotation(double newDegree) {

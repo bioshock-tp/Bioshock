@@ -7,4 +7,5 @@ public interface RendererC {
     public void setColor(Color newColor);
 	public double getZ();
 	public Color getColor();
+
 }

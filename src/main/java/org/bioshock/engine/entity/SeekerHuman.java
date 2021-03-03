@@ -3,14 +3,12 @@ package org.bioshock.engine.entity;
 import javafx.geometry.Point3D;
 import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Color;
-import org.bioshock.engine.ai.Seeker;
-import org.bioshock.engine.ai.Swatter;
+import org.bioshock.engine.ai.SeekerAI;
 import org.bioshock.engine.components.NetworkC;
 import org.bioshock.engine.input.InputManager;
 
-public class SeekerHuman extends Seeker {
+public class SeekerHuman extends SeekerAI {
     private SquareEntity target;
-    private Swatter swatter;
 
     public SeekerHuman(Point3D p, NetworkC com, Size s, int r, Color c, Hider e) {
         super(p, com, s, r, c, e);
@@ -18,7 +16,6 @@ public class SeekerHuman extends Seeker {
         final int speed = movement.getSpeed();
 
         target = getTarget();
-        swatter = getSwatter();
 
         InputManager.onPressListener(
                 KeyCode.W, () -> movement.direction(0, -speed)
@@ -32,9 +29,32 @@ public class SeekerHuman extends Seeker {
         InputManager.onPressListener(
                 KeyCode.D, () -> movement.direction(speed,  0)
         );
+
         InputManager.onPressListener(
-                KeyCode.SPACE, () -> getSwatter().setShouldSwat(true)
+                KeyCode.UP, () -> {
+                    getSwatterHitbox().setStartAngle(30);
+                    setActive(true);
+                }
         );
+        InputManager.onPressListener(
+                KeyCode.LEFT, () -> {
+                    getSwatterHitbox().setStartAngle(120);
+                    setActive(true);
+                }
+        );
+        InputManager.onPressListener(
+                KeyCode.DOWN, () -> {
+                    getSwatterHitbox().setStartAngle(210);
+                    setActive(true);
+                }
+        );
+        InputManager.onPressListener(
+                KeyCode.RIGHT, () -> {
+                    getSwatterHitbox().setStartAngle(300);
+                    setActive(true);
+                }
+        );
+
 
         InputManager.onReleaseListener(
                 KeyCode.W, () -> movement.direction(0,  speed)
@@ -50,17 +70,21 @@ public class SeekerHuman extends Seeker {
         );
 
 
-
     }
 
     @Override
     public void doActions(){
         if (
-                EntityManager.isManaged(this, target, swatter)
+                EntityManager.isManaged(this, target)
                         && intersects(target, "swatter")
-                        && target instanceof Hider
         ) {
-            ((Hider) target).setDead(true);
+            if(getIsActive()){
+                if(target instanceof Hider){
+                    ((Hider) target).setDead(true);
+                }
+                rendererC.setColor(Color.GREEN);
+            }
+
         }
     }
 
@@ -68,9 +92,6 @@ public class SeekerHuman extends Seeker {
     protected void tick(double timeDelta) {
         doActions();
         setSwatterPos();
-        if(!swatter.shouldSwat()){
-            setSwatterRot();
-        }
         movement.tick(timeDelta);
     }
 
