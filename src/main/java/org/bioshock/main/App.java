@@ -1,17 +1,5 @@
 package org.bioshock.main;
 
-import java.io.IOException;
-import java.net.URL;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.bioshock.engine.core.GameLoop;
-import org.bioshock.engine.core.WindowManager;
-import org.bioshock.engine.input.InputManager;
-import org.bioshock.engine.scene.SceneManager;
-import org.bioshock.gui.MainController;
-import org.bioshock.scenes.LoadingScreen;
-
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
@@ -19,6 +7,19 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.bioshock.audio.AudioController;
+import org.bioshock.engine.core.GameLoop;
+import org.bioshock.engine.core.WindowManager;
+import org.bioshock.engine.input.InputManager;
+import org.bioshock.engine.scene.SceneManager;
+import org.bioshock.gui.MainController;
+import org.bioshock.scenes.LoadingScreen;
+
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.net.URL;
 
 public class App extends Application {
 	public static final Logger logger = LogManager.getLogger(App.class);
@@ -30,6 +31,7 @@ public class App extends Application {
         initFXMLScene();
 		stage.setScene(fxmlScene);
 		stage.show();
+		AudioController audioController = new AudioController(true);
 	}
 
     public static void startGame(Stage primaryStage) {
