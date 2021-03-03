@@ -1,39 +1,48 @@
 package org.bioshock.audio;
 
+import java.net.URISyntaxException;
+
+import org.bioshock.main.App;
+
 import javafx.concurrent.Task;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 
-import java.net.URISyntaxException;
-
 public class AudioController {
-    private MediaPlayer bgMusic;
-    //private Preferences prefs;
-    private Thread bgMusicThread;
+    private static final String MUSIC = "backgroundMusic.mp3";
+    private static MediaPlayer bgMusic;
+    
+    private AudioController() {}
 
-    public AudioController(boolean play) throws URISyntaxException {
-        playMusic(play);
-    }
-
-    public void playMusic(boolean b) throws URISyntaxException {
-        bgMusicThread = new Thread(new Task<>() {
+    public static void playMusic() {
+        final Thread bgMusicThread = new Thread(new Task<>() {
             @Override
-            protected Object call() throws URISyntaxException {
-                bgMusic = new MediaPlayer(new Media(getClass().getResource("backgroundMusic.mp3").toURI().toString()));
-                if (b) {
+            protected Object call() {
+                try {
+                    bgMusic = new MediaPlayer(new Media(getClass().getResource(MUSIC).toURI().toString()));
+
                     bgMusic.play();
-                } else {
-                    bgMusic.stop();
+                } catch (URISyntaxException exception) {
+                    App.logger.error(
+                        "{} could not be accesed. Exception: {}",
+                        MUSIC,
+                        exception.getMessage()
+                    );
                 }
+
                 return null;
             }
         });
+
         bgMusicThread.start();
-        //bgMusic.setAutoPlay(b);
     }
 
-    public boolean musicPlaying() {
-        this.bgMusic.getStatus();
-        return this.bgMusic.getStatus().equals(MediaPlayer.Status.READY);
+    public static void stopMusic() {
+        if (musicPlaying()) bgMusic.stop();
+    }
+
+    public static boolean musicPlaying() {
+        bgMusic.getStatus();
+        return bgMusic.getStatus().equals(MediaPlayer.Status.READY);
     }
 }

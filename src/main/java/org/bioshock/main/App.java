@@ -1,12 +1,8 @@
 package org.bioshock.main;
 
-import javafx.application.Application;
-import javafx.application.Platform;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.input.KeyCode;
-import javafx.stage.Stage;
+import java.io.IOException;
+import java.net.URL;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bioshock.audio.AudioController;
@@ -17,9 +13,13 @@ import org.bioshock.engine.scene.SceneManager;
 import org.bioshock.gui.MainController;
 import org.bioshock.scenes.LoadingScreen;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.net.URL;
+import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.input.KeyCode;
+import javafx.stage.Stage;
 
 public class App extends Application {
 	public static final Logger logger = LogManager.getLogger(App.class);
@@ -27,12 +27,12 @@ public class App extends Application {
 
 	@Override
 	public void start(Stage stage) {
+        AudioController.playMusic();
 		WindowManager.initialise(stage);
         initFXMLScene();
 		stage.setScene(fxmlScene);
 		stage.show();
-		AudioController audioController = new AudioController(true);
-	}
+    }
 
     public static void startGame(Stage primaryStage) {
 		SceneManager.initialise(primaryStage, new LoadingScreen());
