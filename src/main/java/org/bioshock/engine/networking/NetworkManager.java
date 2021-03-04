@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import org.bioshock.engine.ai.Seeker;
 import org.bioshock.engine.entity.Entity;
 import org.bioshock.engine.entity.EntityManager;
 import org.bioshock.engine.entity.Hider;
@@ -43,15 +44,19 @@ public class NetworkManager {
 
     // TDDO
     private static Messages.ClientInput pollInputs() {
-        int x = Boolean.compare(keyPressed.get(KeyCode.D), keyPressed.get(KeyCode.A));
-        int y = Boolean.compare(keyPressed.get(KeyCode.S), keyPressed.get(KeyCode.W));
+        int x = (int) players.get(me).getX() + Boolean.compare(keyPressed.get(KeyCode.D), keyPressed.get(KeyCode.A));
+        int y = (int) players.get(me).getY() + Boolean.compare(keyPressed.get(KeyCode.S), keyPressed.get(KeyCode.W));
 
-        Point2D ai = EntityManager.getSeeker().getMovement().getDirection();
+        Seeker ai = EntityManager.getSeeker();
+        Point2D pos = ai.getPosition();
+        Point2D direc = ai.getMovement().getDirection();
+
+        Point2D newPos = pos.add(direc);
 
         // App.logger.debug("x {} y {}", x, y);
-        App.logger.debug("ai local - x {} y {}", ai.getX(), ai.getY());
+        App.logger.debug("ai local - x {} y {}", newPos.getX(), newPos.getY());
 
-        return new Messages.ClientInput(x, y, ai.getX(), ai.getY());
+        return new Messages.ClientInput(x, y, newPos.getX(), newPos.getY());
     }
 
 	public static void tick() {
@@ -90,16 +95,16 @@ public class NetworkManager {
 
                                 if (i == 0) {
                                     App.logger.debug("x {} y {} delta {}", d.inputs[i].aiX, d.inputs[i].aiY, d.delta);
-                                    EntityManager.getSeeker().getMovement().direction(
-                                        (int) (d.inputs[i].aiX * d.delta),
-                                        (int) (d.inputs[i].aiY * d.delta)
-                                    );
+                                    EntityManager.getSeeker().getMovement().move(new Point2D(
+                                        (d.inputs[i].aiX * d.delta),
+                                        (d.inputs[i].aiY * d.delta)
+                                    ));
                                 }
 
-                                players.get(d.names[i]).getMovement().direction(
-                                    (int) (d.inputs[i].x * d.delta),
-                                    (int) (d.inputs[i].y * d.delta)
-                                );
+                                players.get(d.names[i]).getMovement().move(new Point2D(
+                                    (d.inputs[i].x * d.delta),
+                                    (d.inputs[i].y * d.delta)
+                                ));
                             }
                         }
                     }
