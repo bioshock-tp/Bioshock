@@ -1,7 +1,6 @@
 package org.bioshock.engine.ai;
 
-import javafx.scene.shape.Arc;
-import javafx.scene.shape.ArcType;
+import javafx.scene.shape.*;
 import org.bioshock.engine.components.NetworkC;
 import org.bioshock.engine.entity.EntityManager;
 import org.bioshock.engine.entity.Hider;
@@ -11,8 +10,6 @@ import org.bioshock.engine.renderers.SeekerRenderer;
 
 import javafx.geometry.Point3D;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
-import javafx.scene.shape.Shape;
 
 public class SeekerAI extends SquareEntity {
     private SquareEntity target;
@@ -70,11 +67,11 @@ public class SeekerAI extends SquareEntity {
         Rectangle entityHitbox = new Rectangle(
             entity.getX(), entity.getY(), entity.getWidth(), entity.getHeight()
         );
-        entityHitbox.getTransforms().add(entity.getRotation());
 
         switch(type){
             case "fov":
-                intersect = Shape.intersect(fov, entity.getHitbox());
+                Circle fovC = new Circle(getCentre().getX(), getCentre().getY(), getRadius());
+                intersect = Shape.intersect(fovC, entityHitbox);
                 break;
 
             case "swatter":
@@ -85,6 +82,10 @@ public class SeekerAI extends SquareEntity {
         }
 
         return intersect.getBoundsInLocal().getWidth() != -1;
+    }
+
+    private void searchForPlayer(){
+        //TODO: Add independent enemy movement from room to room
     }
     
 	protected void tick(double timeDelta) {
@@ -99,5 +100,7 @@ public class SeekerAI extends SquareEntity {
     public SquareEntity getTarget(){return target;}
 
     public boolean getIsActive(){return isActive;}
+
+
 
 }
