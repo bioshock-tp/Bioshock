@@ -12,10 +12,11 @@ import javafx.geometry.Point3D;
 import javafx.scene.Parent;
 
 public abstract class Entity extends Parent {
+    protected String uuid = UUID.randomUUID().toString();
     protected int z;
     protected NetworkC networkC = null;
     protected RendererC rendererC = null;
-	protected final UUID uuid = UUID.randomUUID();
+
     protected boolean enabled = true;
     protected Class<? extends Renderer> renderer;
 
@@ -58,7 +59,11 @@ public abstract class Entity extends Parent {
         this.networkC = component;
     }
 
-	public UUID getID() {
+    public void setID(String newID) {
+        uuid = newID;
+    }
+
+	public String getID() {
 		return uuid;
 	}
 

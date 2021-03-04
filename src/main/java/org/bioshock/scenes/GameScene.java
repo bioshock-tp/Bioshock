@@ -18,7 +18,7 @@ public abstract class GameScene extends Scene {
         WindowManager.getWindowWidth(),
         WindowManager.getWindowHeight()
     );
-    public ArrayList<Entity> children = new ArrayList<>();
+    protected ArrayList<Entity> children = new ArrayList<>();
 
     private GameScene(StackPane pane) {
         super(pane);

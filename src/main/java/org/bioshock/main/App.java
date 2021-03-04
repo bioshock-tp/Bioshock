@@ -8,6 +8,7 @@ import org.apache.logging.log4j.Logger;
 import org.bioshock.engine.core.GameLoop;
 import org.bioshock.engine.core.WindowManager;
 import org.bioshock.engine.input.InputManager;
+import org.bioshock.engine.networking.NetworkManager;
 import org.bioshock.engine.scene.SceneManager;
 import org.bioshock.gui.MainController;
 import org.bioshock.scenes.LoadingScreen;
@@ -35,8 +36,10 @@ public final class App extends Application {
     public static void startGame(Stage primaryStage) {
 		SceneManager.initialize(primaryStage, new LoadingScreen());
         InputManager.initialize();
-        InputManager.onPressListener(KeyCode.C, () -> 
+        InputManager.onPressListener(KeyCode.C, () ->
             App.logger.debug(SceneManager.getScene()));
+
+        NetworkManager.initialise();
 
 		primaryStage.setScene(SceneManager.getScene());
 		primaryStage.show();
@@ -45,17 +48,12 @@ public final class App extends Application {
 		loop.start();
 	}
 
-	public static void exit() {
-        Platform.exit();
-        System.exit(0);
-	}
-
 	public static void setFXMLRoot(String fxml) {
 		fxmlScene.setRoot(loadFXML(fxml));
 	}
 
     private static void initFXMLScene() {
-        fxmlScene = new Scene(loadFXML("main")); 
+        fxmlScene = new Scene(loadFXML("main"));
     }
 
     private static Parent loadFXML(String fxml) {
@@ -70,7 +68,12 @@ public final class App extends Application {
         }
 	}
 
-	public static void main(String[] args) {
+	public static void exit() {
+        Platform.exit();
+        System.exit(0);
+	}
+
+    public static void main(String[] args) {
 		launch();
 	}
 }

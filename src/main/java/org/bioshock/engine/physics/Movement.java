@@ -17,7 +17,7 @@ public class Movement {
         this.entity = entity;
     }
 
-    private Point2D getDirection() {
+    public Point2D getDirection() {
 		return new Point2D(xDirection, yDirection);
 	}
 
@@ -29,7 +29,7 @@ public class Movement {
         Point2D target = trans.add(entity.getPosition());
         int x = entity.getX();
         int y = entity.getY();
-              		
+
         if (x != target.getX()) {
             int disp = (int) target.getX() - x;
             x += disp / Math.abs(disp) * speed;
@@ -43,11 +43,9 @@ public class Movement {
     }
 
     public void direction(int newXDirection, int newYDirection) {
-        int newX = Math.abs(xDirection + newXDirection);
-        if (newX <= speed) xDirection += newXDirection;
+        xDirection = newXDirection;
 
-        int newY = Math.abs(yDirection + newYDirection);
-        if (newY <= speed) yDirection += newYDirection;
+        yDirection = newYDirection;
     }
 
     public void updateFacing(Point2D trans){
