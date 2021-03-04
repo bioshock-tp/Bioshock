@@ -1,19 +1,23 @@
 package org.bioshock.gui;
 
-import java.util.prefs.Preferences;
-
-import org.bioshock.main.App;
-
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.RadioButton;
+import org.bioshock.main.App;
 
-public class SettingsController {
+import java.util.prefs.Preferences;
+
+public class SettingsController extends App {
+    @FXML
     private Button backButton;
+    @FXML
     private RadioButton musicOffRadioButton;
+    @FXML
     private RadioButton musicOnRadioButton;
+    @FXML
     private RadioButton sfxOffRadioButton;
+    @FXML
     private RadioButton sfxOnRadioButton;
     private Preferences prefs;
 
@@ -81,7 +85,11 @@ public class SettingsController {
     }
     @FXML
     public void toggleMusicOff(ActionEvent actionEvent) {
-        prefs.putBoolean("musicOn", false);
+//        AudioController audioController = getAudioController();
+//        audioController.stopMusic();
+
+//        bgMusic.stopMusic();
+        //prefs.putBoolean("musicOn", false);
 //        if (musicPlaying()) {
 //            startMusic(prefs.getBoolean("musicOn", false));
 //        }

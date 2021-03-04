@@ -1,0 +1,8 @@
+[
+  {
+    "type": "music",
+    "name": "background-music",
+    "path": "./backgroundMusic.mp3",
+    "filesystem": "local"
+  }
+]
