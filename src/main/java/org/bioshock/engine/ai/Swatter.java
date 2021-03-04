@@ -9,8 +9,8 @@ import javafx.geometry.Point2D;
 import javafx.geometry.Point3D;
 import javafx.scene.paint.Color;
 
-public class Swatter extends SquareEntity {
-    private Seeker enemy;
+public class Swatter /*extends SquareEntity*/ {
+    /*private Seeker enemy;
 
     private boolean shouldSwat = false;
     private boolean swatBack = false;
@@ -83,5 +83,5 @@ public class Swatter extends SquareEntity {
                 swat();
             }
         }
-    }
+    }*/
 }

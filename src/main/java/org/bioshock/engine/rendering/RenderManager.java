@@ -71,7 +71,6 @@ public final class RenderManager {
         }
     }
 
-
 	/**
 	 * Registers an entity to the RenderManager and Stores it in ascending
      * order with regards to it's Y value given in it's render component

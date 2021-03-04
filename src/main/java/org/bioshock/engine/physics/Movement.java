@@ -1,8 +1,7 @@
 package org.bioshock.engine.physics;
 
-import static org.bioshock.main.App.logger;
+import org.bioshock.main.App;
 
-import org.bioshock.engine.ai.Swatter;
 import org.bioshock.engine.core.WindowManager;
 import org.bioshock.engine.entity.EntityManager;
 import org.bioshock.engine.entity.SquareEntity;
@@ -48,8 +47,6 @@ public class Movement {
             y += dispY / Math.abs(dispY) * speed;
         }
 
-        updateFacing(trans);
-
         while (x < 0) x++;
         while (y < 0) y++;
         while (x + entity.getWidth() > WindowManager.getWindowWidth()) x--;
@@ -60,18 +57,15 @@ public class Movement {
         entity.setPosition(x, y);
 
         EntityManager.getEntityList().forEach(child ->{
-            if (
-                   child == entity
-                || child instanceof TexRectEntity
-                || child instanceof Swatter
-            ) return;
+            if (child == entity || child instanceof TexRectEntity) return;
 
             Shape intersects = Shape.intersect(
                 entity.getHitbox(),
                 child.getHitbox()
             );
+
             if (intersects.getBoundsInLocal().getWidth() != -1) {
-                logger.debug("{} collided with {}", entity, child);
+                App.logger.debug("{} collided with {}", entity, child);
                 entity.setPosition(oldX, oldY);
             }
         });
@@ -85,19 +79,9 @@ public class Movement {
         if (newY <= speed) yDirection += newYDirection;
     }
 
-    public void updateFacing(Point2D trans){
-        double rotation = Math.atan2(trans.getX(), -trans.getY())*180/Math.PI;
-        setRotation(rotation);
-    }
 
-    public void rotate(double degree) {
-        Rotate rotate = entity.getRotation();
-        Point2D pos = entity.getCentre();
-
-        rotate.setPivotX(pos.getX());
-        rotate.setPivotY(pos.getY());
-
-        setRotation(entity.getRotation().getAngle() + degree);
+    public double getFacingRotate(Point2D trans){
+        return Math.atan2(trans.getX(), -trans.getY())*180/Math.PI;
     }
 
     public void setRotation(double newDegree) {

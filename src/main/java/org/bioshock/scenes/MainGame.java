@@ -1,6 +1,7 @@
 package org.bioshock.scenes;
 
-import org.bioshock.engine.ai.Seeker;
+import javafx.geometry.Point2D;
+import org.bioshock.engine.ai.SeekerAI;
 import org.bioshock.engine.components.NetworkC;
 import org.bioshock.engine.core.WindowManager;
 import org.bioshock.engine.entity.Hider;
@@ -22,24 +23,33 @@ public class MainGame extends GameScene {
 		setCursor(Cursor.HAND);
 		setBackground(new Background(new BackgroundFill(Color.LIGHTGRAY, CornerRadii.EMPTY, Insets.EMPTY)));
 
-		Hider hider = new Hider(new Point3D(300, 400, 1), new NetworkC(true), new Size(40, 40), 200, Color.PINK);
+
+
+
+
+		/*SeekerHuman sh = new SeekerHuman(new Point3D(x, y, 0.5), new NetworkC(true), new Size(40, 40), 300, Color.INDIANRED,
+				hider);
+		children.add(sh);*/
+
+		ThreeByThreeMap map = new ThreeByThreeMap(
+				new Point3D(100, 100, 0),
+				10,
+				new Size(300, 600),
+				new Size(90, 90),
+				Color.SADDLEBROWN);
+		children.addAll(map.getWalls());
+
+		Point3D startPos = map.getRooms().get(2).getRoomCenter();
+
+		Hider hider = new Hider(new Point3D(300, 400, startPos.getZ()), new NetworkC(true), new Size(40, 40), 200, Color.PINK);
 		children.add(hider);
 
 		int x = WindowManager.getWindowWidth() / 2;
 		int y = WindowManager.getWindowHeight() / 2;
 
-		Seeker seeker = new Seeker(new Point3D(x, y, 0.5), new NetworkC(true), new Size(40, 40), 300, Color.INDIANRED,
+		SeekerAI seeker = new SeekerAI(startPos, new NetworkC(true), new Size(40, 40), 300, Color.INDIANRED,
 				hider);
 
 		children.add(seeker);
-		children.add(seeker.getSwatter());
-
-		ThreeByThreeMap map = new ThreeByThreeMap(
-				new Point3D(100, 100, 0),
-				10,
-				new Size(100, 200),
-				new Size(30, 30),
-				Color.SADDLEBROWN);
-		children.addAll(map.getWalls());
 	}
 }
