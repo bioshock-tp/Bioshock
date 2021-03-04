@@ -1,5 +1,6 @@
 package org.bioshock.engine.scene;
 
+import org.bioshock.engine.core.WindowManager;
 import org.bioshock.engine.entity.EntityManager;
 import org.bioshock.engine.input.InputManager;
 import org.bioshock.scenes.GameScene;
@@ -9,6 +10,7 @@ import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
+import javafx.stage.Window;
 
 public final class SceneManager {
     private static Stage stage;
@@ -33,6 +35,7 @@ public final class SceneManager {
         currentScene.renderEntities();
 
         if (currentScene instanceof MainGame) {
+            WindowManager.setFullScreen(true);
             ((MainGame) currentScene).setStarted(true);
         }
 	}

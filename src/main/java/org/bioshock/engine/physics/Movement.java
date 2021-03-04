@@ -6,10 +6,10 @@ import javafx.geometry.Point2D;
 import javafx.scene.transform.Rotate;
 
 public class Movement {
-    private int speed = 10;
+    private double speed = 10;
 
-    private int xDirection = 0;
-    private int yDirection = 0;
+    private double xDirection = 0;
+    private double yDirection = 0;
 
     private SquareEntity entity;
 
@@ -27,25 +27,29 @@ public class Movement {
 
     public void move(Point2D trans) {
         Point2D target = trans.add(entity.getPosition());
-        int x = entity.getX();
-        int y = entity.getY();
+        double x = entity.getX();
+        double y = entity.getY();
 
         if (x != target.getX()) {
-            int disp = (int) target.getX() - x;
+            double disp = target.getX() - x;
             x += disp / Math.abs(disp) * speed;
         }
         if (y != target.getY()) {
-            int disp = (int) target.getY() - y;
+            double disp = target.getY() - y;
             y += disp / Math.abs(disp) * speed;
         }
         entity.setPosition(x, y);
         updateFacing(trans);
     }
 
-    public void direction(int newXDirection, int newYDirection) {
+    public void direction(double newXDirection, double newYDirection) {
         xDirection = newXDirection;
 
         yDirection = newYDirection;
+    }
+
+    public void direction(Point2D targ) {
+        direction(targ.getX(), targ.getY());
     }
 
     public void updateFacing(Point2D trans){
@@ -86,7 +90,7 @@ public class Movement {
         speed = newSpeed;
     }
 
-    public int getSpeed() {
+    public double getSpeed() {
         return speed;
     }
 }

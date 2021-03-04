@@ -76,9 +76,15 @@ public abstract class Messages {
         public final int x;
         public final int y;
 
-        public ClientInput(int x, int y) {
+        public final double aiX;
+        public final double aiY;
+
+        public ClientInput(int x, int y, double aiX, double aiY) {
             this.x = x;
             this.y = y;
+
+            this.aiX = aiX;
+            this.aiY = aiY;
         }
 
         @Override
@@ -110,7 +116,7 @@ public abstract class Messages {
 
             if(m instanceof ClientInput) {
                 ClientInput d = (ClientInput) m;
-                String s1 = "{\"X\":\"" + d.x + "\",\"Y\":\"" + d.y + "\"}";
+                String s1 = String.format("{\"X\":\"%s\",\"Y\":\"%s\",\"aiX\":\"%s\",\"aiY\":\"%s\"}", d.x, d.y, d.aiX, d.aiY);
                 String ba = Base64.getEncoder().encodeToString(s1.getBytes(StandardCharsets.UTF_8));
                 String s2 = "{\"Case\":\"ClientInput\",\"Fields\":[[],\"" + ba + "\"]}";
 
@@ -119,7 +125,6 @@ public abstract class Messages {
 
             return new byte[0];
         }
-
 
         public static ServerToClient deserialize(String s) {
             JSONObject obj = new JSONObject(s);
@@ -136,11 +141,9 @@ public abstract class Messages {
                 }
 
                 var n = fieldsArray.getInt(2);
-                var numberOfPlayers
-     = fieldsArray.getInt(3);
+                var numberOfPlayers = fieldsArray.getInt(3);
 
-                return new InQueue(timestamp, names, n, numberOfPlayers
-    );
+                return new InQueue(timestamp, names, n, numberOfPlayers);
             }
 
             if(messageType.equals("GameReady")) {
@@ -169,7 +172,7 @@ public abstract class Messages {
                     var s2 = new String((Base64.getDecoder().decode(s1)), StandardCharsets.UTF_8);
 
                     JSONObject json2 = new JSONObject(s2);
-                    inputs[i] = new ClientInput(json2.getInt("X"), json2.getInt("Y"));
+                    inputs[i] = new ClientInput(json2.getInt("X"), json2.getInt("Y"), json2.getDouble("aiX"), json2.getDouble("aiY"));
                 }
 
                 return new ServerInputState(names, inputs, delta);

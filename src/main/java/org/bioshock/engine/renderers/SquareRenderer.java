@@ -9,8 +9,8 @@ public class SquareRenderer implements Renderer {
     private SquareRenderer() {}
 
 	public static <E extends SquareEntity> void render(GraphicsContext gc, E rect) {
-        int x = rect.getX();
-        int y = rect.getY();
+        double x = rect.getX();
+        double y = rect.getY();
         double width = rect.getWidth();
         double height = rect.getHeight();
 

@@ -39,7 +39,7 @@ public abstract class SquareEntity extends Entity {
     }
 
     @Override
-    public void setPosition(int x, int y) {
+    public void setPosition(double x, double y) {
         setTranslateX(x);
         setTranslateY(y);
 

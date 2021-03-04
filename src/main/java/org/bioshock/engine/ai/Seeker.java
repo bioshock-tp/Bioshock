@@ -18,12 +18,12 @@ public class Seeker extends SquareEntity {
     private SquareEntity target;
     private Swatter swatter;
     private Rectangle closeBox;
-	
+
     public Seeker(Point3D p, NetworkC com, Size s, int r, Color c, Hider e) {
         super(p, com, s, r, c);
 
         target = e;
-        
+
         movement.setSpeed(5);
 
         renderer = PlayerRenderer.class;
@@ -38,7 +38,7 @@ public class Seeker extends SquareEntity {
 
     public void followPlayer() {
         if (
-            EntityManager.isManaged(this, target, swatter) 
+            EntityManager.isManaged(this, target, swatter)
             && intersects(target, "swatter")
             && target instanceof Hider
         ) {
@@ -54,7 +54,13 @@ public class Seeker extends SquareEntity {
             EntityManager.isManaged(this, target)
             && intersects(target, "fov")
         ) {
-            movement.move(target.getPosition().subtract(this.getPosition()));
+            // App.logger.debug("before {}", target.getPosition().subtract(this.getPosition()));
+            Point2D targDirec = target.getPosition().subtract(this.getPosition()).normalize();
+            // App.logger.debug("after {}", targDirec);
+
+            movement.direction(targDirec);
+        } else {
+            movement.direction(0, 0);
         }
     }
 
@@ -96,9 +102,10 @@ public class Seeker extends SquareEntity {
 
         return intersect.getBoundsInLocal().getWidth() != -1;
     }
-    
+
 	protected void tick(double timeDelta) {
     	followPlayer();
+        movement.tick(timeDelta);
         setSwatterPos();
     	if(!swatter.shouldSwat()){
             setSwatterRot();
@@ -111,7 +118,7 @@ public class Seeker extends SquareEntity {
             getY() + getWidth() / 2 - swatter.getHeight() / 2
         );
     }
-    
+
     public void setSwatterRot() {
         swatter.getMovement().setRotation(
             getRotation().getAngle(),

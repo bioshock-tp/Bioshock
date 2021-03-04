@@ -13,7 +13,7 @@ import javafx.scene.Parent;
 
 public abstract class Entity extends Parent {
     protected String uuid = UUID.randomUUID().toString();
-    protected int z;
+    protected double z;
     protected NetworkC networkC = null;
     protected RendererC rendererC = null;
 
@@ -22,7 +22,7 @@ public abstract class Entity extends Parent {
 
     protected Entity(Point3D pos, NetworkC netC, RendererC renC) {
         setPosition((int) pos.getX(), (int) pos.getY());
-        z = (int) pos.getZ();
+        z = pos.getZ();
         networkC = netC;
         rendererC = renC;
 
@@ -41,7 +41,7 @@ public abstract class Entity extends Parent {
         return enabled;
     }
 
-    public void setPosition(int x, int y) {
+    public void setPosition(double x, double y) {
         setTranslateX(x);
         setTranslateY(y);
     }
@@ -71,12 +71,12 @@ public abstract class Entity extends Parent {
         return new Point2D(getTranslateX(), getTranslateY());
     }
 
-	public int getX() {
-		return (int) getTranslateX();
+	public double getX() {
+		return getTranslateX();
 	}
 
-	public int getY() {
-		return (int) getTranslateY();
+	public double getY() {
+		return getTranslateY();
 	}
 
     public double getZ() {

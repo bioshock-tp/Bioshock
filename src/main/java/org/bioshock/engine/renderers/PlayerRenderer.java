@@ -13,8 +13,8 @@ public final class PlayerRenderer implements Renderer {
         E player
     ) {
 
-        int x = player.getX();
-        int y = player.getY();
+        double x = player.getX();
+        double y = player.getY();
         double radius = player.getRadius();
         double width = player.getWidth();
         double height = player.getHeight();

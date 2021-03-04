@@ -13,6 +13,7 @@ import org.bioshock.engine.scene.SceneManager;
 import org.bioshock.main.App;
 import org.bioshock.networking.Messages;
 
+import javafx.geometry.Point2D;
 import javafx.scene.input.KeyCode;
 
 public class NetworkManager {
@@ -22,7 +23,6 @@ public class NetworkManager {
     private static String me = UUID.randomUUID().toString();
     private static int noOfPlayers;
     private static Map<String, Hider> players = new HashMap<>();
-
 
     private static boolean inGame = false;
 
@@ -46,9 +46,12 @@ public class NetworkManager {
         int x = Boolean.compare(keyPressed.get(KeyCode.D), keyPressed.get(KeyCode.A));
         int y = Boolean.compare(keyPressed.get(KeyCode.S), keyPressed.get(KeyCode.W));
 
-        // App.logger.debug("x {} y {}", x, y);
+        Point2D ai = EntityManager.getSeeker().getMovement().getDirection();
 
-        return new Messages.ClientInput(x, y);
+        // App.logger.debug("x {} y {}", x, y);
+        App.logger.debug("ai local - x {} y {}", ai.getX(), ai.getY());
+
+        return new Messages.ClientInput(x, y, ai.getX(), ai.getY());
     }
 
 	public static void tick() {
@@ -83,7 +86,15 @@ public class NetworkManager {
                         } else if (ms instanceof Messages.ServerInputState && inGame) {
                             var d = (Messages.ServerInputState) ms;
                             for (int i = 0; i < players.size(); i++) {
-                                App.logger.debug("x {} y {} delta {}", d.inputs[i].x, d.inputs[i].y, d.delta);
+                                // App.logger.debug("x {} y {} delta {}", d.inputs[i].x, d.inputs[i].y, d.delta);
+
+                                if (i == 0) {
+                                    App.logger.debug("x {} y {} delta {}", d.inputs[i].aiX, d.inputs[i].aiY, d.delta);
+                                    EntityManager.getSeeker().getMovement().direction(
+                                        (int) (d.inputs[i].aiX * d.delta),
+                                        (int) (d.inputs[i].aiY * d.delta)
+                                    );
+                                }
 
                                 players.get(d.names[i]).getMovement().direction(
                                     (int) (d.inputs[i].x * d.delta),
