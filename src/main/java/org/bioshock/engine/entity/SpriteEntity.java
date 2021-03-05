@@ -16,7 +16,7 @@ public abstract class SpriteEntity extends Entity {
 	protected Rectangle hitbox;
     protected Circle fov;
     private static final Image spriteImage = SpriteAnimator.getImage();
-    ImageView spriteImageView;
+    ImageView spriteImageView = new ImageView(spriteImage);
 
     protected final Movement movement = new Movement(this);
 
@@ -24,7 +24,7 @@ public abstract class SpriteEntity extends Entity {
         super(p, com, new SpriteEntityRendererC());
         //rendererC.setColor(c);
 
-        spriteImageView = new ImageView(spriteImage);
+        //spriteImageView = new ImageView(spriteImage);
 
 
         fov = new Circle(p.getX(), p.getY(), r);
@@ -101,5 +101,9 @@ public abstract class SpriteEntity extends Entity {
 
 	public Image getImage() {
         return spriteImage;
+    }
+
+    public ImageView getSpriteImageView() {
+        return spriteImageView;
     }
 }
