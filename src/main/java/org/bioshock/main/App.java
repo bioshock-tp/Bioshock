@@ -11,6 +11,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bioshock.audio.AudioController;
 import org.bioshock.audio.MusicController;
+import org.bioshock.audio.settings.MusicSettings;
 import org.bioshock.engine.core.GameLoop;
 import org.bioshock.engine.core.WindowManager;
 import org.bioshock.engine.input.InputManager;
@@ -69,7 +70,10 @@ public class App extends Application {
 
 	public void playBackgroundMusic() {
 		musicController = audioController.loadMusicController("background-music");
-		musicController.play(null);
+		final MusicSettings settings = new MusicSettings();
+		settings.setVolume(0.5);
+		settings.setCycleCount(-1);
+		musicController.play(settings);
 	}
 
 	public static void setFXMLRoot(String fxml) {

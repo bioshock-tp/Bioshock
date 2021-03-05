@@ -86,9 +86,7 @@ public class AudioController {
          * and MediaPlayer JavaFX classes. The program will just throw NPEs when you try to create new
          * MediaPlayers.
          */
-        //instance = new AudioController();
         Platform.setImplicitExit(false);
-//        Platform.startup(() -> {});
     }
 
     /**

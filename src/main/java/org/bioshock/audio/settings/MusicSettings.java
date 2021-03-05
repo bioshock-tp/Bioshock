@@ -10,7 +10,7 @@ public class MusicSettings extends AudioSettings {
     public MusicSettings deepCopy() {
         final var settings = new MusicSettings();
 //        settings.setBalance(super.balance);
-//        settings.setCycleCount(super.cycleCount);
+        settings.setCycleCount(super.cycleCount);
 //        settings.setRate(super.rate);
         settings.setVolume(super.volume);
         return settings;
