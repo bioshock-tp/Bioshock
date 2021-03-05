@@ -59,8 +59,8 @@ public class App extends Application {
         System.exit(0);
 	}
 
-	public MusicController getMusicController() {
-		return musicController;
+	public AudioController getAudioController() {
+		return audioController;
 	}
 
 	public void stopBackgroundMusic() {

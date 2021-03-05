@@ -4,6 +4,8 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.RadioButton;
+import org.bioshock.audio.EffectController;
+import org.bioshock.audio.MusicController;
 import org.bioshock.main.App;
 
 public class SettingsController extends App {
@@ -40,7 +42,15 @@ public class SettingsController extends App {
         stopBackgroundMusic();
     }
 
-    public void toggleSfx(ActionEvent actionEvent) {
-        //TODO
+    @FXML
+    public void toggleSfxOn(ActionEvent actionEvent) {
+        EffectController effectController = getAudioController().loadEffectController("enabled");
+        effectController.play(null);
+    }
+
+    @FXML
+    public void toggleSfxOff(ActionEvent actionEvent) {
+        MusicController musicController = getAudioController().loadMusicController("enabled");
+        musicController.stop();
     }
 }

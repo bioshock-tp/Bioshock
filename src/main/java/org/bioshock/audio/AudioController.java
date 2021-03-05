@@ -202,7 +202,7 @@ public class AudioController {
      *          A new instance of the effect, if it does not exist in the cache, or a cached instance of the
      *          effect.
      */
-    public EffectController loadEffect(final @NonNull String name) {
+    public EffectController loadEffectController(final @NonNull String name) {
         if (name.isEmpty()) {
             throw new IllegalArgumentException("Names cannot be blank.");
         }

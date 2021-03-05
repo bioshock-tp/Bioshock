@@ -33,8 +33,8 @@
    </HBox>
    <HBox spacing="20" alignment="CENTER">
       <Label text="SFX:" styleClass="p"/>
-      <RadioButton fx:id="sfxOnRadioButton" text="On" toggleGroup="$sfxToggleGroup" styleClass="gui-radio-button"/>
-      <RadioButton fx:id="sfxOffRadioButton" text="Off" toggleGroup="$sfxToggleGroup" styleClass="gui-radio-button"/>
+      <RadioButton fx:id="sfxOnRadioButton" text="On" selected="true" toggleGroup="$sfxToggleGroup" onAction="#toggleSfxOn" styleClass="gui-radio-button"/>
+      <RadioButton fx:id="sfxOffRadioButton" text="Off" toggleGroup="$sfxToggleGroup" onAction="#toggleSfxOff" styleClass="gui-radio-button"/>
    </HBox>
    <Button fx:id="backButton" text="Back to Main Menu" onAction="#switchToMainView" styleClass="gui-button"/>
 </VBox>
