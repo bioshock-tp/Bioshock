@@ -31,7 +31,7 @@ public class Hider extends SquareEntity {
         InputManager.onPressListener(
             KeyCode.D, () -> movement.direction(speed,  0)
         );
-        
+
         InputManager.onReleaseListener(
             KeyCode.W, () -> movement.direction(0,  speed)
         );

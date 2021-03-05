@@ -21,26 +21,26 @@ public class LoadingScreen extends GameScene {
 		label.setTextFill(Color.WHITE);
 
         getPane().getChildren().add(label);
-		
+
 		setCursor(Cursor.NONE);
 		setBackground(new Background(new BackgroundFill(
             Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY
         )));
-		
+
         FadeTransition fadeIn = new FadeTransition(Duration.seconds(2), label);
         fadeIn.setFromValue(0);
         fadeIn.setToValue(1);
         fadeIn.setCycleCount(1);
- 
+
         FadeTransition fadeOut = new FadeTransition(Duration.seconds(2), label);
         fadeOut.setFromValue(1);
         fadeOut.setToValue(0);
         fadeOut.setCycleCount(1);
- 
+
         fadeIn.play();
- 
+
         fadeIn.setOnFinished(e -> fadeOut.play());
-        
+
         fadeOut.setOnFinished(e -> SceneManager.setScene(new MainGame()));
 	}
 }

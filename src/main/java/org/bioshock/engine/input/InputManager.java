@@ -10,10 +10,10 @@ import org.bioshock.main.App;
 import javafx.scene.input.KeyCode;
 
 public class InputManager {
-    private static Map<KeyCode, InputAction> keyPresses = 
+    private static Map<KeyCode, InputAction> keyPresses =
         new EnumMap<>(KeyCode.class);
 
-    private static Map<KeyCode, InputAction> keyReleases = 
+    private static Map<KeyCode, InputAction> keyReleases =
         new EnumMap<>(KeyCode.class);
 
     private InputManager() {}

@@ -20,7 +20,7 @@ public final class RenderManager {
     /**
      * A method that attempts to render every entity registered to the
      * RenderManager in Ascending Y order but cannot render if it has no canvas
-     * to render entities on before rendering it sets the entire canvas to 
+     * to render entities on before rendering it sets the entire canvas to
      * Color.LIGHTGRAY
      */
     public static void tick() {
@@ -65,7 +65,7 @@ public final class RenderManager {
                 i--
             ) {
                 entityList.set(i+1, entityList.get(i));
-            }  
+            }
             entityList.set(i+1, key);
         }
     }
@@ -86,7 +86,7 @@ public final class RenderManager {
 			for (i = 1; (currentEntity.getZ() < entityToAdd.getZ()); i++) {
 				currentEntity = renderableEntities.get(i);
 			}
-			
+
 			renderableEntities.add(i, entityToAdd);
 		}
 	}

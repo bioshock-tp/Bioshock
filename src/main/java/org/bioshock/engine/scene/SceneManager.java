@@ -12,7 +12,7 @@ import javafx.stage.Stage;
 public final class SceneManager {
     private static Stage stage;
     private static GameScene currentScene;
-    
+
     private SceneManager() {}
 
     public static void initialize(Stage primaryStage, GameScene initialScene) {
@@ -22,13 +22,13 @@ public final class SceneManager {
 
 	public static void setScene(GameScene scene) {
         currentScene = scene;
-        
+
         EntityManager.unregisterAll();
 
         InputManager.changeScene();
 
         stage.setScene(currentScene);
-        
+
         currentScene.renderEntities();
 	}
 

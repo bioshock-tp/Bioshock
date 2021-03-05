@@ -16,12 +16,12 @@ public class SeekerAI extends SquareEntity {
     private Arc swatterHitbox;
 
     private boolean isActive = false;
-	
+
     public SeekerAI(Point3D p, NetworkC com, Size s, int r, Color c, Hider e) {
         super(p, com, s, r, c);
 
         target = e;
-        
+
         movement.setSpeed(5);
 
         renderer = SeekerRenderer.class;
@@ -87,7 +87,7 @@ public class SeekerAI extends SquareEntity {
     private void searchForPlayer(){
         //TODO: Add independent enemy movement from room to room
     }
-    
+
 	protected void tick(double timeDelta) {
         doActions();
         setSwatterPos();

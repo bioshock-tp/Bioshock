@@ -11,13 +11,13 @@ public final class EntityManager {
 	private static ArrayList<Entity> entities = new ArrayList<>();
 
     private EntityManager() {}
-	
+
 	public static void tick(double timeDelta) {
 		for (Entity entity : entities) {
 			entity.safeTick(timeDelta);
 		}
 	}
-	
+
 	public static void register(Entity entity) {
         if (entity.getNetworkC().isNetworked()) {
             NetworkManager.register(entity);

@@ -15,11 +15,11 @@ public class SquareEntityRendererC implements RendererC {
 	public void setZ(double newZ) {
 		this.z = newZ;
 	}
-	
+
 	public Color getColor() {
 		return this.color;
 	}
-	
+
 	public void setColor(Color newColor) {
 		this.color = newColor;
 	}

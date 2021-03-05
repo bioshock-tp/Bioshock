@@ -37,7 +37,7 @@ public final class App extends Application {
     public static void startGame(Stage primaryStage) {
 		SceneManager.initialize(primaryStage, new LoadingScreen());
         InputManager.initialize();
-        InputManager.onPressListener(KeyCode.C, () -> 
+        InputManager.onPressListener(KeyCode.C, () ->
             App.logger.debug(SceneManager.getScene()));
 
 		primaryStage.setScene(SceneManager.getScene());
@@ -57,7 +57,7 @@ public final class App extends Application {
 	}
 
     private static void initFXMLScene() {
-        fxmlScene = new Scene(loadFXML("main")); 
+        fxmlScene = new Scene(loadFXML("main"));
     }
 
     private static Parent loadFXML(String fxml) {

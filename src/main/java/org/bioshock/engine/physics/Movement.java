@@ -29,7 +29,7 @@ public class Movement {
         Point2D target = trans.add(entity.getPosition());
         int x = entity.getX();
         int y = entity.getY();
-              		
+
         if (x != target.getX()) {
             int disp = (int) target.getX() - x;
             x += disp / Math.abs(disp) * speed;
