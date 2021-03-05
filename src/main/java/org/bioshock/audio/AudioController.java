@@ -11,7 +11,7 @@ import javafx.scene.media.MediaPlayer;
 public class AudioController {
     private static final String MUSIC = "backgroundMusic.mp3";
     private static MediaPlayer bgMusic;
-    
+
     private AudioController() {}
 
     public static void playMusic() {

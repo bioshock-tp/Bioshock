@@ -38,13 +38,13 @@ public class App extends Application {
 		SceneManager.initialise(primaryStage, new LoadingScreen());
         InputManager.initialise();
         InputManager.onPress(KeyCode.C, () ->
-            App.logger.debug(SceneManager.getScene()));
+            App.logger.debug(SceneManager.getScene())
+        );
 
 		primaryStage.setScene(SceneManager.getScene());
 		primaryStage.show();
 
-		GameLoop loop = new GameLoop();
-		loop.start();
+		new GameLoop().start();
 	}
 
 	public static void exit(int code) {

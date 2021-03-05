@@ -11,7 +11,7 @@ public class NetworkC {
 	public boolean isNetworked() {
 		return networked;
 	}
-	
+
 	public void setNetworked(boolean networked) {
 		this.networked = networked;
 	}
