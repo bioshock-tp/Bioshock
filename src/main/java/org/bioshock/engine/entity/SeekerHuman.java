@@ -1,17 +1,30 @@
 package org.bioshock.engine.entity;
 
 import javafx.geometry.Point3D;
+import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Color;
-import org.bioshock.engine.ai.SeekerAI;
+import javafx.scene.shape.*;
 import org.bioshock.engine.components.NetworkC;
 import org.bioshock.engine.input.InputManager;
+import org.bioshock.engine.renderers.SeekerHumanRenderer;
 
-public class SeekerHuman extends SeekerAI {
+public class SeekerHuman extends SpriteEntity {
     private SquareEntity target;
+    private Arc swatterHitbox;
 
-    public SeekerHuman(Point3D p, NetworkC com, Size s, int r, Color c, Hider e) {
-        super(p, com, s, r, c, e);
+    private boolean isActive = false;
+
+    public SeekerHuman(Point3D p, NetworkC com, int r) {
+        super(p, com, r);
+
+
+        movement.setSpeed(5);
+
+        renderer = SeekerHumanRenderer.class;
+
+        swatterHitbox = new Arc(getCentre().getX(), getCentre().getY(), 150,150,30, 120);
+        swatterHitbox.setType(ArcType.ROUND);
 
         final int speed = movement.getSpeed();
 
@@ -72,19 +85,22 @@ public class SeekerHuman extends SeekerAI {
 
     }
 
-    @Override
     public void doActions(){
         if (
                 EntityManager.isManaged(this, target)
                         && intersects(target, "swatter")
         ) {
-            if(getIsActive()){
-                if(target instanceof Hider){
-                    ((Hider) target).setDead(true);
-                }
-                rendererC.setColor(Color.GREEN);
+            setActive(true);
+            if(target instanceof Hider){
+                ((Hider) target).setDead(true);
             }
-
+            rendererC.setColor(Color.GREEN);
+        }
+        if (
+                EntityManager.isManaged(this, target)
+                        && intersects(target, "fov")
+        ) {
+            movement.move(target.getPosition().subtract(this.getPosition()));
         }
     }
 
@@ -94,5 +110,75 @@ public class SeekerHuman extends SeekerAI {
         setSwatterPos();
         movement.tick(timeDelta);
     }
+
+    public void setActive(boolean b){isActive = b;}
+
+    public void setSwatterPos(){
+        swatterHitbox.setCenterX(getCentre().getX());
+        swatterHitbox.setCenterY(getCentre().getY());
+    }
+
+    public void setSwatterRot(){
+        double r = movement.getFacingRotate(target.getPosition().subtract(this.getPosition()));
+        swatterHitbox.setStartAngle(390-r);
+    }
+
+//    public void doActions() {
+//        if (
+//                EntityManager.isManaged(this, target)
+//                        && intersects(target, "swatter")
+//        ) {
+//            setActive(true);
+//            if(target instanceof Hider){
+//                ((Hider) target).setDead(true);
+//            }
+//            rendererC.setColor(Color.GREEN);
+//        }
+//        if (
+//                EntityManager.isManaged(this, target)
+//                        && intersects(target, "fov")
+//        ) {
+//            movement.move(target.getPosition().subtract(this.getPosition()));
+//        }
+//    }
+
+    public boolean intersects(SquareEntity entity, String type) {
+        Shape intersect;
+        Rectangle entityHitbox = new Rectangle(
+                entity.getX(), entity.getY(), entity.getWidth(), entity.getHeight()
+        );
+
+        switch(type){
+            case "fov":
+                Circle fovC = new Circle(getCentre().getX(), getCentre().getY(), getRadius());
+                intersect = Shape.intersect(fovC, entityHitbox);
+                break;
+
+            case "swatter":
+                intersect = Shape.intersect(swatterHitbox, entityHitbox);
+                break;
+            default:
+                return false;
+        }
+
+        return intersect.getBoundsInLocal().getWidth() != -1;
+    }
+
+    private void searchForPlayer(){
+        //TODO: Add independent enemy movement from room to room
+    }
+
+
+    public Arc getSwatterHitbox(){return swatterHitbox;}
+
+    public SquareEntity getTarget(){return target;}
+
+    public boolean getIsActive(){return isActive;}
+
+    public Image getImage() {
+        return super.getImage();
+    }
+
+
 
 }

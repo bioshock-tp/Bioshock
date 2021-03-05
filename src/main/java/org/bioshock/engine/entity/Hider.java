@@ -1,13 +1,10 @@
 package org.bioshock.engine.entity;
 
+import javafx.geometry.Point3D;
+import javafx.scene.paint.Color;
 import org.bioshock.engine.components.NetworkC;
-import org.bioshock.engine.input.InputManager;
 import org.bioshock.engine.renderers.PlayerRenderer;
 import org.bioshock.main.App;
-
-import javafx.geometry.Point3D;
-import javafx.scene.input.KeyCode;
-import javafx.scene.paint.Color;
 
 public class Hider extends SquareEntity {
     private boolean dead = false;
@@ -19,31 +16,31 @@ public class Hider extends SquareEntity {
 
         final int speed = movement.getSpeed();
 
-        InputManager.onPressListener(
-            KeyCode.W, () -> movement.direction(0, -speed)
-        );
-        InputManager.onPressListener(
-            KeyCode.A, () -> movement.direction(-speed, 0)
-        );
-        InputManager.onPressListener(
-            KeyCode.S, () -> movement.direction(0,  speed)
-        );
-        InputManager.onPressListener(
-            KeyCode.D, () -> movement.direction(speed,  0)
-        );
-        
-        InputManager.onReleaseListener(
-            KeyCode.W, () -> movement.direction(0,  speed)
-        );
-        InputManager.onReleaseListener(
-            KeyCode.A, () -> movement.direction(speed,  0)
-        );
-        InputManager.onReleaseListener(
-            KeyCode.S, () -> movement.direction(0, -speed)
-        );
-        InputManager.onReleaseListener(
-            KeyCode.D, () -> movement.direction(-speed, 0)
-        );
+//        InputManager.onPressListener(
+//            KeyCode.W, () -> movement.direction(0, -speed)
+//        );
+//        InputManager.onPressListener(
+//            KeyCode.A, () -> movement.direction(-speed, 0)
+//        );
+//        InputManager.onPressListener(
+//            KeyCode.S, () -> movement.direction(0,  speed)
+//        );
+//        InputManager.onPressListener(
+//            KeyCode.D, () -> movement.direction(speed,  0)
+//        );
+//
+//        InputManager.onReleaseListener(
+//            KeyCode.W, () -> movement.direction(0,  speed)
+//        );
+//        InputManager.onReleaseListener(
+//            KeyCode.A, () -> movement.direction(speed,  0)
+//        );
+//        InputManager.onReleaseListener(
+//            KeyCode.S, () -> movement.direction(0, -speed)
+//        );
+//        InputManager.onReleaseListener(
+//            KeyCode.D, () -> movement.direction(-speed, 0)
+//        );
     }
 
 	protected void tick(double timeDelta) {

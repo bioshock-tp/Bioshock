@@ -1,9 +1,7 @@
 package org.bioshock.engine.physics;
 
-import org.bioshock.engine.entity.SquareEntity;
-
 import javafx.geometry.Point2D;
-import javafx.scene.transform.Rotate;
+import org.bioshock.engine.entity.Entity;
 
 public class Movement {
     private int speed = 10;
@@ -11,9 +9,9 @@ public class Movement {
     private int xDirection = 0;
     private int yDirection = 0;
 
-    private SquareEntity entity;
+    private Entity entity;
 
-    public Movement(SquareEntity entity) {
+    public Movement(Entity entity) {
         this.entity = entity;
     }
 
@@ -54,24 +52,24 @@ public class Movement {
         return Math.atan2(trans.getX(), -trans.getY())*180/Math.PI;
     }
 
-    public void setRotation(double newDegree) {
-        Rotate rotate = entity.getRotation();
-        Point2D pos = entity.getCentre();
-
-        rotate.setPivotX(pos.getX());
-        rotate.setPivotY(pos.getY());
-
-        rotate.setAngle(newDegree);
-    }
-
-    public void setRotation(double newDegree, Point2D pos) {
-        Rotate rotate = entity.getRotation();
-
-        rotate.setPivotX(pos.getX());
-        rotate.setPivotY(pos.getY());
-
-        rotate.setAngle(newDegree);
-    }
+//    public void setRotation(double newDegree) {
+//        Rotate rotate = entity.getRotation();
+//        Point2D pos = entity.getCentre();
+//
+//        rotate.setPivotX(pos.getX());
+//        rotate.setPivotY(pos.getY());
+//
+//        rotate.setAngle(newDegree);
+//    }
+//
+//    public void setRotation(double newDegree, Point2D pos) {
+//        Rotate rotate = entity.getRotation();
+//
+//        rotate.setPivotX(pos.getX());
+//        rotate.setPivotY(pos.getY());
+//
+//        rotate.setAngle(newDegree);
+//    }
 
     public void setSpeed(int newSpeed) {
         speed = newSpeed;

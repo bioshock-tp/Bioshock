@@ -1,20 +1,23 @@
 package org.bioshock.engine.renderers;
 
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Arc;
-import javafx.scene.transform.Rotate;
-import org.bioshock.engine.ai.SeekerAI;
-import org.bioshock.engine.entity.SquareEntity;
+import org.bioshock.engine.entity.SeekerHuman;
+import org.bioshock.engine.entity.SpriteEntity;
 
-public class SeekerRenderer implements Renderer {
+import static org.bioshock.engine.scene.SceneManager.getPane;
 
-    private SeekerRenderer() {}
+public class SeekerHumanRenderer implements Renderer {
 
-    public static <E extends SquareEntity> void render(
+    private SeekerHumanRenderer() {}
+
+    public static <E extends SpriteEntity> void render(
             GraphicsContext gc,
             E entity
     ) {
-        SeekerAI seeker = (SeekerAI) entity;
+        SeekerHuman seeker = (SeekerHuman) entity;
 
         int x = seeker.getX();
         int y = seeker.getY();
@@ -26,13 +29,25 @@ public class SeekerRenderer implements Renderer {
 
         gc.save();
 
-        Rotate r = seeker.getRotation();
-        gc.setTransform(
-                r.getMxx(), r.getMyx(), r.getMxy(),
-                r.getMyy(), r.getTx(), r.getTy()
-        );
-        gc.setFill(seeker.getRendererC().getColor());
-        gc.fillRect(x, y, width, height);
+//        Rotate r = seeker.getRotation();
+//        gc.setTransform(
+//                r.getMxx(), r.getMyx(), r.getMxy(),
+//                r.getMyy(), r.getTx(), r.getTy()
+//        );
+//        gc.setFill(seeker.getRendererC().getColor());
+
+        //gc.drawImage(seeker.getImage(), x, y);
+        ImageView imageView = new ImageView();
+        imageView.setImage(seeker.getImage());
+        imageView.setFocusTraversable(true);
+//        imageView.setSmooth(true);
+//        imageView.setCache(true);
+
+        imageView.setX(x);
+        imageView.setY(y);
+        StackPane pane = getPane();
+        pane.getChildren().add(imageView);
+        //gc.fillRect(x, y, width, height);
         gc.setLineWidth(10);
         gc.setStroke(seeker.getRendererC().getColor());
         gc.strokeOval(
