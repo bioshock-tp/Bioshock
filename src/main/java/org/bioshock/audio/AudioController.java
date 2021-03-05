@@ -56,7 +56,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class AudioController {
 
     /** The singleton instance. */
-    private static AudioController instance;
+    private static AudioController instance = new AudioController();
 
     /** Whether the V2DAudio library should output debugging information to the terminal. */
     public static boolean debuggingEnabled = false;
@@ -86,9 +86,9 @@ public class AudioController {
          * and MediaPlayer JavaFX classes. The program will just throw NPEs when you try to create new
          * MediaPlayers.
          */
-        instance = new AudioController();
+        //instance = new AudioController();
         Platform.setImplicitExit(false);
-        Platform.startup(() -> {});
+//        Platform.startup(() -> {});
     }
 
     /**

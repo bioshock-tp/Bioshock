@@ -21,13 +21,13 @@ import org.bioshock.scenes.LoadingScreen;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public class App extends Application {
 	public static final Logger logger = LogManager.getLogger(App.class);
     private static Scene fxmlScene;
-    private AudioController audioController;
+	private final AudioController audioController = AudioController.getInstance();
+	private MusicController musicController;
 
 	@Override
 	public void start(Stage stage) throws URISyntaxException, IOException {
@@ -36,11 +36,11 @@ public class App extends Application {
 		stage.setScene(fxmlScene);
 		stage.show();
 		//audioController = new AudioController(true);
-		final AudioController controller = AudioController.getInstance();
-		Path tempPath = Paths.get("/src/main/java/org/bioshock/main/audio-data.json");
-		controller.initialize(tempPath);
-		final MusicController music = controller.loadMusicController("background-music");
-		music.play(null);
+		//final AudioController controller = AudioController.getInstance();
+		//Path tempPath = Paths.get("src/main/resources/org/bioshock/audio/audio-data.json");
+		audioController.initialize(Paths.get("src/main/resources/org/bioshock/audio/audio-data.json"));
+		musicController = audioController.loadMusicController("background-music");
+		musicController.play(null);
 	}
 
     public static void startGame(Stage primaryStage) {
@@ -61,8 +61,18 @@ public class App extends Application {
         System.exit(0);
 	}
 
-	public AudioController getAudioController() {
-		return audioController;
+	public MusicController getMusicController() {
+		return musicController;
+	}
+
+	public void stopBackgroundMusic() {
+		musicController = audioController.loadMusicController("background-music");
+		musicController.stop();
+	}
+
+	public void playBackgroundMusic() {
+		musicController = audioController.loadMusicController("background-music");
+		musicController.play(null);
 	}
 
 	public static void setFXMLRoot(String fxml) {

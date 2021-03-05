@@ -2,7 +2,7 @@
   {
     "type": "music",
     "name": "background-music",
-    "path": "./backgroundMusic.mp3",
+    "path": "src/main/resources/org/bioshock/audio/backgroundMusic.mp3",
     "filesystem": "local"
   }
 ]

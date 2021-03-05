@@ -77,7 +77,8 @@ public class SettingsController extends App {
 //    }
     @FXML
     public void toggleMusicOn(ActionEvent actionEvent) {
-        prefs.putBoolean("musicOn", true);
+        //prefs.putBoolean("musicOn", true);
+        playBackgroundMusic();
 //        if (!musicPlaying()) {
 //            System.out.println("Yes");
 //            //startMusic(prefs.getBoolean("musicOn", true));
@@ -85,6 +86,8 @@ public class SettingsController extends App {
     }
     @FXML
     public void toggleMusicOff(ActionEvent actionEvent) {
+        stopBackgroundMusic();
+        //getBackgroundMusic.stop();
 //        AudioController audioController = getAudioController();
 //        audioController.stopMusic();
 
