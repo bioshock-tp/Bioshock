@@ -1,0 +1,14 @@
+[
+  {
+    "type": "music",
+    "name": "background-music",
+    "path": "src/main/resources/org/bioshock/audio/backgroundMusic.mp3",
+    "filesystem": "local"
+  },
+  {
+    "type": "effect",
+    "name": "enabled",
+    "path": "src/main/resources/org/bioshock/audio/enabledSound.mp3",
+    "filesystem": "local"
+  }
+]

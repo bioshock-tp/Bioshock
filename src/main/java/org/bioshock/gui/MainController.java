@@ -22,6 +22,7 @@ public class MainController {
     public void handleQuitButton(ActionEvent actionEvent) {
         Stage stage = (Stage) quitButton.getScene().getWindow();
         stage.close();
+        System.exit(0);
     }
 
     @FXML
