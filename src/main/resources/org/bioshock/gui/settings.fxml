@@ -28,7 +28,7 @@
 
    <HBox spacing="20" alignment="CENTER">
       <Label text="Music:" styleClass="p"/>
-      <RadioButton fx:id="musicOnRadioButton" text="On" toggleGroup="$musicToggleGroup" onAction="#toggleMusicOn" styleClass="gui-radio-button"/>
+      <RadioButton fx:id="musicOnRadioButton" text="On" selected="true" toggleGroup="$musicToggleGroup" onAction="#toggleMusicOn" styleClass="gui-radio-button"/>
       <RadioButton fx:id="musicOffRadioButton" text="Off" toggleGroup="$musicToggleGroup" onAction="#toggleMusicOff" styleClass="gui-radio-button"/>
    </HBox>
    <HBox spacing="20" alignment="CENTER">

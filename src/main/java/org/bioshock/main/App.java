@@ -35,12 +35,9 @@ public class App extends Application {
         initFXMLScene();
 		stage.setScene(fxmlScene);
 		stage.show();
-		//audioController = new AudioController(true);
-		//final AudioController controller = AudioController.getInstance();
-		//Path tempPath = Paths.get("src/main/resources/org/bioshock/audio/audio-data.json");
+
 		audioController.initialize(Paths.get("src/main/resources/org/bioshock/audio/audio-data.json"));
-		musicController = audioController.loadMusicController("background-music");
-		musicController.play(null);
+		playBackgroundMusic();
 	}
 
     public static void startGame(Stage primaryStage) {
