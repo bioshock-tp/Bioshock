@@ -78,8 +78,8 @@ public class Seeker extends SquareEntity {
 
             case "close":
                 Rectangle closeHitBox = new Rectangle(
-                    (double) getX() - swatter.getWidth(),         // x
-                    (double) getY() - swatter.getWidth(),         // y
+                    getX() - swatter.getWidth(),         // x
+                    getY() - swatter.getWidth(),         // y
                     (double) swatter.getWidth() * 2 + getWidth(), // width
                     swatter.getWidth()                            // height
                 );

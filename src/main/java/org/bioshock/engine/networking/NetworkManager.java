@@ -7,144 +7,228 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.bioshock.engine.ai.Seeker;
-import org.bioshock.engine.entity.Entity;
-import org.bioshock.engine.entity.EntityManager;
 import org.bioshock.engine.entity.Hider;
+import org.bioshock.engine.entity.SquareEntity;
+import org.bioshock.engine.input.InputManager;
 import org.bioshock.engine.scene.SceneManager;
 import org.bioshock.main.App;
-import org.bioshock.networking.Messages;
 
+import javafx.concurrent.Task;
 import javafx.geometry.Point2D;
 import javafx.scene.input.KeyCode;
 
 public class NetworkManager {
-    private static Map<KeyCode, Boolean> keyPressed =
-        new EnumMap<>(KeyCode.class);
+    private static Map<KeyCode, Boolean> keyPressed = new EnumMap<>(KeyCode.class);
 
     private static String me = UUID.randomUUID().toString();
-    private static int noOfPlayers;
     private static Map<String, Hider> players = new HashMap<>();
+    private static Seeker seeker;
 
     private static boolean inGame = false;
 
-    private static GameState gameState = null;
-    private static EmptyClient client;
+    private static Client client;
+    private static Hider firstPlayer;
+
+    private static Object gameStartedMutex = new Object();
+    private static Object awaitingMessage = new Object();
 
     private NetworkManager() {}
 
     public static void initialise() {
+        Client client2 = new Client();
+        try {
+            client2.connectBlocking();
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+        App.logger.debug("connected");
+
+        client2.send("yo");
+        App.logger.debug("sent");
+
         keyPressed.put(KeyCode.W, false);
         keyPressed.put(KeyCode.A, false);
         keyPressed.put(KeyCode.S, false);
         keyPressed.put(KeyCode.D, false);
 
-        client = new EmptyClient();
-        client.connect();
+        Thread initThread = new Thread(new Task<>() {
+            @Override
+            protected Object call() {
+                synchronized (gameStartedMutex) {
+                    while (!SceneManager.isGameStarted()) {
+                        try {
+                            gameStartedMutex.wait();
+                            client.connectBlocking();
+                        } catch (InterruptedException e) {
+                            Thread.currentThread().interrupt();
+                        }
+                    }
+                }
+
+                for (int psConn = 0; psConn < App.PLAYERCOUNT; psConn++) {
+                    synchronized(awaitingMessage) {
+                        while (client.getInitialMessages().isEmpty()) {
+                            try {
+                                App.logger.info("Awaiting Players");
+                                App.logger.debug("connected {}", client.getReadyState());
+                                if (psConn != 0) {
+                                    awaitingMessage.wait();
+                                }
+                                client.send("I'm waiting");
+                                App.logger.debug("Lobby message");
+                                Thread.sleep(1000);
+                            } catch (InterruptedException e) {
+                                Thread.currentThread().interrupt();
+                            }
+                        }
+                        App.logger.debug("Player joined");
+                    }
+
+                    Message message = client.getInitialMessages().poll();
+
+                    Hider[] localPlayers = players.values().toArray(new Hider[1]);
+                    Hider player = localPlayers[psConn];
+                    players.remove(player.getID());
+                    player.setID(message.uuid);
+                    players.put(player.getID(), player);
+                }
+
+                InputManager.onPressListener(
+                    KeyCode.W, () -> setKeysPressed(KeyCode.W, true)
+                );
+                InputManager.onPressListener(
+                    KeyCode.A, () -> setKeysPressed(KeyCode.A, true)
+                );
+                InputManager.onPressListener(
+                    KeyCode.S, () -> setKeysPressed(KeyCode.S, true)
+                );
+                InputManager.onPressListener(
+                    KeyCode.D, () -> setKeysPressed(KeyCode.D, true)
+                );
+
+                InputManager.onReleaseListener(
+                    KeyCode.W, () -> setKeysPressed(KeyCode.W, false)
+                );
+                InputManager.onReleaseListener(
+                    KeyCode.A, () -> setKeysPressed(KeyCode.A, false)
+                );
+                InputManager.onReleaseListener(
+                    KeyCode.S, () -> setKeysPressed(KeyCode.S, false)
+                );
+                InputManager.onReleaseListener(
+                    KeyCode.D, () -> setKeysPressed(KeyCode.D, false)
+                );
+
+                inGame = true;
+
+                App.logger.info("Networking initialised");
+
+                return null;
+            }
+        });
+
+        initThread.start();
     }
 
     // TDDO
-    private static Messages.ClientInput pollInputs() {
-        int x = (int) players.get(me).getX() + Boolean.compare(keyPressed.get(KeyCode.D), keyPressed.get(KeyCode.A));
-        int y = (int) players.get(me).getY() + Boolean.compare(keyPressed.get(KeyCode.S), keyPressed.get(KeyCode.W));
+    private static Message pollInputs() {
+        int x = Boolean.compare(
+            keyPressed.get(KeyCode.D),
+            keyPressed.get(KeyCode.A)
+        );
+        int y = Boolean.compare(
+            keyPressed.get(KeyCode.S),
+            keyPressed.get(KeyCode.W)
+        );
 
-        Seeker ai = EntityManager.getSeeker();
-        Point2D pos = ai.getPosition();
-        Point2D direc = ai.getMovement().getDirection();
+        Point2D ai = seeker.getMovement().getDirection();
 
-        Point2D newPos = pos.add(direc);
+        Message.ClientInput input = new Message.ClientInput(
+            x, y, ai.getX(), ai.getY()
+        );
 
-        // App.logger.debug("x {} y {}", x, y);
-        App.logger.debug("ai local - x {} y {}", newPos.getX(), newPos.getY());
-
-        return new Messages.ClientInput(x, y, newPos.getX(), newPos.getY());
+        return new Message(me, input);
     }
 
-	public static void tick() {
-        //TODO: lockstep(...)
-        if(client.isConnected() && SceneManager.isGameStarted()) {
-            try {
-                client.getMutex().acquire();
-                try {
-                    for (var ms : client.getMsgQ()) {
-                        if (ms instanceof Messages.InQueue) {
-                            var d = (Messages.InQueue) ms;
-                            if(d.n == d.numberOfPlayers) {
-                                // pass data from d into constructor to initialize game state
-                                noOfPlayers = d.numberOfPlayers;
-                                List<Hider> localPlayers = EntityManager.getPlayers();
-                                if (localPlayers.size() != noOfPlayers) {
-                                    App.logger.error(
-                                        "Wrong number of players expected {}, actual {}",
-                                        noOfPlayers,
-                                        localPlayers.size()
-                                    );
-                                    App.exit();
-                                }
+    public static void tick() {
+        if (!inGame) {
+            return;
+        }
 
-                                for (int i = 0; i < noOfPlayers; i++) {
-                                    localPlayers.get(i).setID(d.uuids[i]);
-                                    players.put(d.uuids[i], localPlayers.get(i));
-                                }
+        players.get(me).getMovement().direction(0, 0);
 
-                                inGame = true;
-                            }
-                        } else if (ms instanceof Messages.ServerInputState && inGame) {
-                            var d = (Messages.ServerInputState) ms;
-                            for (int i = 0; i < players.size(); i++) {
-                                // App.logger.debug("x {} y {} delta {}", d.inputs[i].x, d.inputs[i].y, d.delta);
+        try {
+            App.logger.debug("deadlock?");
+            client.getMutex().acquire();
+            App.logger.debug("mutex acquired");
+            for (Message message : client.getMsgQ()) {
+                App.logger.debug("Received Message");
 
-                                if (i == 0) {
-                                    App.logger.debug("x {} y {} delta {}", d.inputs[i].aiX, d.inputs[i].aiY, d.delta);
-                                    EntityManager.getSeeker().getMovement().move(new Point2D(
-                                        (d.inputs[i].aiX * d.delta),
-                                        (d.inputs[i].aiY * d.delta)
-                                    ));
-                                }
-
-                                players.get(d.names[i]).getMovement().move(new Point2D(
-                                    (d.inputs[i].x * d.delta),
-                                    (d.inputs[i].y * d.delta)
-                                ));
-                            }
-                        }
-                    }
-                    client.getMsgQ().clear();
-                } finally {
-                    client.getMutex().release();
+                if (message.uuid.equals(firstPlayer.getID())) {
+                    seeker.getMovement().direction(
+                        message.input.aiX,
+                        message.input.aiY
+                    );
                 }
-            } catch(InterruptedException ie) {
-                App.logger.error(ie);
-                Thread.currentThread().interrupt(); /* Shoud not ignore interuptions */
+
+                players.get(message.uuid).getMovement().direction(
+                    message.input.x,
+                    message.input.y
+                );
+
+                client.getMsgQ().remove(message);
             }
-            if (inGame) {
-                client.send(Messages.Serializer.serialize(pollInputs()));
+        } catch(InterruptedException ie) {
+            App.logger.error(ie);
+            Thread.currentThread().interrupt(); /* Should not ignore interruptions */
+        } finally {
+            client.getMutex().release();
+            App.logger.debug("mutex released");
+        }
+
+        client.send(Message.serialize(pollInputs()));
+	}
+
+	public static void register(SquareEntity entity) {
+        if (entity instanceof Hider) {
+            if (players.isEmpty()) {
+                firstPlayer = (Hider) entity;
             }
+            players.put(entity.getID(), (Hider) entity);
+        } else {
+            seeker = (Seeker) entity;
         }
 	}
 
-	public static void register(Entity entity) {
-		// TODO Auto-generated method stub
-
-	}
-
-    public static void registerAll(List<Entity> entities) {
+    public static void registerAll(List<SquareEntity> entities) {
         entities.forEach(NetworkManager::register);
 	}
 
-	public static void unregister(Entity entity) {
-		// TODO Auto-generated method stub
-
+	public static void unregister(SquareEntity entity) {
+		if (entity instanceof Seeker) {
+            seeker = null;
+        } else {
+            players.remove(entity.getID());
+        }
 	}
 
-	public static void unregisterAll(List<Entity> entities) {
+	public static void unregisterAll(List<SquareEntity> entities) {
        entities.forEach(NetworkManager::unregister);
 	}
 
     public static void setKeysPressed(KeyCode key, boolean pressed) {
-        keyPressed.put(key, pressed);
+        keyPressed.replace(key, pressed);
     }
 
 	public static String getMe() {
 		return me;
 	}
+
+    public static Object getMutex() {
+        return gameStartedMutex;
+    }
+
+    public static Object getMessageMutex() {
+        return awaitingMessage;
+    }
 }

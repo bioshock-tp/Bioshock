@@ -21,19 +21,24 @@ import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
 
-public final class App extends Application {
-	public static final Logger logger = LogManager.getLogger(App.class);
+public class App extends Application {
+    public static final String NAME = "BuzzKill";
+    public static final int PLAYERCOUNT = 2;
+
+    public static final Logger logger = LogManager.getLogger(App.class);
+
     private static Scene fxmlScene;
 
 	@Override
 	public void start(Stage stage) {
+        assert(PLAYERCOUNT > 0);
 		WindowManager.initialize(stage);
         initFXMLScene();
 		stage.setScene(fxmlScene);
 		stage.show();
 	}
 
-    public static void startGame(Stage primaryStage) {
+    public static void startNetworked(Stage primaryStage) {
 		SceneManager.initialize(primaryStage, new LoadingScreen());
         InputManager.initialize();
         InputManager.onPressListener(KeyCode.C, () ->

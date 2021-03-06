@@ -3,6 +3,7 @@ package org.bioshock.main;
 import org.bioshock.engine.core.GameLoop;
 import org.bioshock.engine.core.WindowManager;
 import org.bioshock.engine.input.InputManager;
+import org.bioshock.engine.networking.NetworkManager;
 import org.bioshock.engine.scene.SceneManager;
 import org.bioshock.scenes.MainGame;
 
@@ -12,15 +13,17 @@ import javafx.stage.Stage;
 public class Debug extends App {
     @Override
     public void start(Stage stage) {
-		WindowManager.initialise(stage);
+		WindowManager.initialize(stage);
         startGame(stage);
 	}
 
     public static void startGame(Stage primaryStage) {
-        SceneManager.initialise(primaryStage, new MainGame());
-        InputManager.initialise();
-        InputManager.onPress(KeyCode.C, () ->
+        SceneManager.initialize(primaryStage, new MainGame());
+        InputManager.initialize();
+        InputManager.onPressListener(KeyCode.C, () ->
             App.logger.debug(SceneManager.getScene()));
+
+        NetworkManager.initialise();
 
 		primaryStage.setScene(SceneManager.getScene());
 		primaryStage.show();

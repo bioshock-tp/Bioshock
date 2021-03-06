@@ -23,6 +23,6 @@ public class LocalGameController {
 
     public void launchGame(ActionEvent actionEvent) {
         Stage stage = (Stage) launchButton.getScene().getWindow();
-        App.startGame(stage);
+        App.startNetworked(stage);
     }
 }
