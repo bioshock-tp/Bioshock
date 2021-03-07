@@ -6,13 +6,16 @@ import java.util.Arrays;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.bioshock.audio.AudioController;
+import org.bioshock.audio.MusicController;
+import org.bioshock.audio.settings.MusicSettings;
 import org.bioshock.engine.core.GameLoop;
 import org.bioshock.engine.core.WindowManager;
 import org.bioshock.engine.input.InputManager;
 import org.bioshock.engine.networking.NetworkManager;
 import org.bioshock.engine.scene.SceneManager;
 import org.bioshock.gui.MainController;
-import org.bioshock.scenes.LoadingScreen;
+import org.bioshock.scenes.GameScene;
 
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -24,11 +27,13 @@ import javafx.stage.Stage;
 
 public class App extends Application {
     public static final String NAME = "BuzzKill";
-    public static final int PLAYERCOUNT = 2;
+    public static int PLAYERCOUNT = 2;
 
     public static final Logger logger = LogManager.getLogger(App.class);
 
     private static Scene fxmlScene;
+	private MusicController musicController;
+    private static boolean networked;
 
 	@Override
 	public void start(Stage stage) {
@@ -41,28 +46,71 @@ public class App extends Application {
         );
         assert(PLAYERCOUNT > 0);
 
-		WindowManager.initialize(stage);
-
+		WindowManager.initialise(stage);
         initFXMLScene();
 
-        stage.setScene(fxmlScene);
-		stage.show();
-	}
+        AudioController.initialise();
+		playBackgroundMusic();
 
-    public static void startNetworked(Stage primaryStage) {
-		SceneManager.initialize(primaryStage, new LoadingScreen());
-        InputManager.initialize();
-        InputManager.onPressListener(KeyCode.C, () ->
+		stage.setScene(fxmlScene);
+		stage.show();
+    }
+
+    public static void startGame(
+        Stage primaryStage,
+        GameScene initScene,
+        boolean isNetworked
+    ) {
+        networked = isNetworked;
+
+		SceneManager.initialise(primaryStage, initScene);
+        InputManager.initialise();
+        InputManager.onPress(KeyCode.C, () ->
             App.logger.debug(SceneManager.getScene())
         );
 
-        NetworkManager.initialise();
+        if (isNetworked) {
+            NetworkManager.initialise();
+        }
+
+        InputManager.onPress(KeyCode.R, () -> {
+            App.logger.debug("Resetting Scene...");
+            try {
+
+                GameScene scene = SceneManager.getScene();
+                scene.destroy();
+                Class<? extends GameScene> sceCl = scene.getClass();
+                GameScene nSce = sceCl.getDeclaredConstructor().newInstance();
+                SceneManager.setScene(nSce);
+            } catch (Exception e) {
+                App.logger.error(
+                    "Error whilst changing scene: {}",
+                    e.getMessage()
+                );
+            }
+        });
 
 		primaryStage.setScene(SceneManager.getScene());
 		primaryStage.show();
 
-		GameLoop loop = new GameLoop();
-		loop.start();
+		new GameLoop().start();
+	}
+
+	public void stopBackgroundMusic() {
+		musicController = AudioController.loadMusicController(
+            "background-music"
+        );
+		musicController.stop();
+	}
+
+	public void playBackgroundMusic() {
+		musicController = AudioController.loadMusicController(
+            "background-music"
+        );
+		final MusicSettings settings = new MusicSettings();
+		settings.setVolume(0.5);
+		settings.setCycleCount(-1);
+		musicController.play(settings);
 	}
 
 	public static void setFXMLRoot(String fxml) {
@@ -79,18 +127,28 @@ public class App extends Application {
             FXMLLoader fxmlLoader = new FXMLLoader(location);
             return fxmlLoader.load();
         } catch (IOException e) {
-            App.logger.fatal("Error loading FXML");
-            App.exit();
+            App.logger.error(
+                "Error loading FXML: {} {}",
+                fxml,
+                e.getMessage()
+            );
+            exit(-1);
             return null; /* Prevents no return value warning */
         }
 	}
 
-	public static void exit() {
+    public static boolean isNetworked() {
+        return networked;
+    }
+
+	public static void exit(int code) {
         Platform.exit();
-        System.exit(0);
+        System.exit(code);
 	}
 
     public static void main(String[] args) {
 		launch();
 	}
+
+
 }

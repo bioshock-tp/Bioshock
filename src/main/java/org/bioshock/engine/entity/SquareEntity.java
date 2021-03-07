@@ -4,7 +4,6 @@ import org.bioshock.engine.components.NetworkC;
 import org.bioshock.engine.physics.Movement;
 import org.bioshock.engine.renderers.components.SquareEntityRendererC;
 
-import javafx.geometry.Point2D;
 import javafx.geometry.Point3D;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -12,41 +11,36 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.transform.Rotate;
 
 public abstract class SquareEntity extends Entity {
-	protected Size size;
-	protected Rectangle hitbox;
-    protected Circle fov;
     protected final Rotate rotate = new Rotate();
 
     protected final Movement movement = new Movement(this);
 
+    protected Size size;
+    protected Circle fov;
+
+    private SquareEntity(Point3D p, Rectangle h, NetworkC com) {
+        super(p, h, com, new SquareEntityRendererC());
+    }
+
     protected SquareEntity(Point3D p, NetworkC com, Size s, int r, Color c) {
-        super(p, com, new SquareEntityRendererC());
+        this(
+            p,
+            new Rectangle(p.getX(), p.getY(), s.getWidth(), s.getHeight()),
+            com
+        );
+
         rendererC.setColor(c);
 
         size = s;
 
         fov = new Circle(p.getX(), p.getY(), r);
-        fov.setTranslateX(p.getX());
-        fov.setTranslateY(p.getY());
 
-        hitbox = new Rectangle(
-            p.getX(), p.getY(),
-            s.getWidth(), s.getHeight()
-        );
-        hitbox.setTranslateX(p.getX());
-        hitbox.setTranslateY(p.getY());
-        hitbox.setFill(Color.TRANSPARENT);
+        setPosition(position);
     }
 
     @Override
     public void setPosition(double x, double y) {
-        setTranslateX(x);
-        setTranslateY(y);
-
-        if (hitbox != null) {
-            hitbox.setTranslateX(x);
-            hitbox.setTranslateY(y);
-        }
+        super.setPosition(x, y);
 
         if (fov != null) {
             fov.setTranslateX(x);
@@ -58,36 +52,29 @@ public abstract class SquareEntity extends Entity {
 		this.size = size;
 	}
 
-    public Point2D getCentre() {
-		return new Point2D(
-            getX() + (double) getWidth() / 2,
-            getY() + (double) getHeight() / 2
-        );
+    public Point getCentre() {
+		return new Point(getX() + getWidth() / 2, getY() + getHeight() / 2);
 	}
 
     public Size getSize() {
 		return size;
 	}
 
-	public int getWidth() {
+	public double getWidth() {
 		return size.getWidth();
 	}
 
-	public int getHeight() {
+	public double getHeight() {
 		return size.getHeight();
 	}
 
-    public int getRadius() {
-    	return (int) fov.getRadius();
+    public double getRadius() {
+    	return fov.getRadius();
     }
 
-    public Rotate getRotation() {
+    public Rotate getRotate() {
         return rotate;
     }
-
-	public Rectangle getHitbox() {
-		return hitbox;
-	}
 
     public Movement getMovement() {
 		return movement;

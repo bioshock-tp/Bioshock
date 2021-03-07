@@ -8,6 +8,9 @@ import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
 
 public class Server extends WebSocketServer {
+    private static final String host = "51.15.109.210";
+    private static final int port = 8010;
+
     public Server(InetSocketAddress address) {
 		super(address);
 	}
@@ -69,9 +72,6 @@ public class Server extends WebSocketServer {
 	}
 
 	public static void main(String[] args) {
-		String host = "localhost";
-		int port = 8010;
-
 		WebSocketServer server = new Server(new InetSocketAddress(host, port));
 		server.run();
 	}

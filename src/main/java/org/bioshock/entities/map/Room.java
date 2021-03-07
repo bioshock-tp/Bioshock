@@ -13,7 +13,7 @@ import javafx.scene.paint.Color;
 public class Room {
 	private Size totalSize;
 	private Size roomSize;
-	private ArrayList<TexRectEntity> walls = new ArrayList<>();
+	private List<TexRectEntity> walls = new ArrayList<>();
 	private double z;
 	private Point3D pos;
 
@@ -28,7 +28,7 @@ public class Room {
 	 */
 	public Room(
         Point3D newPos,
-        int wallWidth,
+        double wallWidth,
         Size newRoomSize,
         Size coriSize,
         Exits exits,
@@ -69,7 +69,7 @@ public class Room {
 			walls.addAll(Sides.bExit(
                 pos.add(
                     coriSize.getHeight(),
-                    (double) coriSize.getHeight() + roomSize.getHeight(),
+                    coriSize.getHeight() + roomSize.getHeight(),
                     0
                 ),
 				wallWidth,
@@ -83,7 +83,7 @@ public class Room {
 			walls.addAll(Sides.bNoExit(
                 pos.add(
                     coriSize.getHeight(),
-                    (double) coriSize.getHeight() + roomSize.getHeight(),
+                    coriSize.getHeight() + roomSize.getHeight(),
                     0
                 ),
 				wallWidth,
@@ -119,7 +119,7 @@ public class Room {
 		if (exits.isRight()) {
 			walls.addAll(Sides.rExit(
                 pos.add(
-                    (double) coriSize.getHeight() + roomSize.getWidth(),
+                    coriSize.getHeight() + roomSize.getWidth(),
                     coriSize.getHeight(),
                     0
                 ),
@@ -133,7 +133,7 @@ public class Room {
 		else {
 			walls.addAll(Sides.rNoExit(
                 pos.add(
-                    (double) coriSize.getHeight() + roomSize.getWidth(),
+                    coriSize.getHeight() + roomSize.getWidth(),
                     coriSize.getHeight(),
                     0
                 ),
@@ -148,8 +148,8 @@ public class Room {
 		//corner connecting bottom and right
 		TexRectEntity corner1 = new TexRectEntity(
 				pos.add(
-                    (double) coriSize.getHeight() - wallWidth,
-                    (double) coriSize.getHeight() - wallWidth,
+                    coriSize.getHeight() - wallWidth,
+                    coriSize.getHeight() - wallWidth,
                     0
                 ),
 				new NetworkC(false),
@@ -160,8 +160,8 @@ public class Room {
 		//corner connecting bottom and left
 		TexRectEntity corner2 = new TexRectEntity(
 				pos.add(
-                    (double) coriSize.getHeight() + roomSize.getWidth(),
-                    (double) coriSize.getHeight() - wallWidth,
+                    coriSize.getHeight() + roomSize.getWidth(),
+                    coriSize.getHeight() - wallWidth,
                     0
                 ),
 				new NetworkC(false),
@@ -172,8 +172,8 @@ public class Room {
 		//corner connecting top and right
 		TexRectEntity corner3 = new TexRectEntity(
 				pos.add(
-                    (double) coriSize.getHeight() - wallWidth,
-                    (double) coriSize.getHeight() + roomSize.getHeight(),
+                    coriSize.getHeight() - wallWidth,
+                    coriSize.getHeight() + roomSize.getHeight(),
                     0
                 ),
 				new NetworkC(false),
@@ -184,8 +184,8 @@ public class Room {
 		//corner connecting top and left
 		TexRectEntity corner4 = new TexRectEntity(
 				pos.add(
-                    (double) coriSize.getHeight() + roomSize.getWidth(),
-                    (double) coriSize.getHeight() + roomSize.getHeight(),
+                    coriSize.getHeight() + roomSize.getWidth(),
+                    coriSize.getHeight() + roomSize.getHeight(),
                     0
                 ),
 				new NetworkC(false),
@@ -239,8 +239,8 @@ public class Room {
 	 */
 	public Point3D getRoomCenter() {
 		return pos.add(
-            (double) totalSize.getWidth() / 2,
-            (double) totalSize.getHeight() / 2,
+            totalSize.getWidth() / 2,
+            totalSize.getHeight() / 2,
             0
         );
 	}

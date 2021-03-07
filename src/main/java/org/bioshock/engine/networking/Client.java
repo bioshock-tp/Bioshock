@@ -42,7 +42,7 @@ public class Client extends WebSocketClient {
             return new URI(URI);
         } catch (URISyntaxException e) {
             App.logger.fatal("Invalid URI {}: {}", URI, e.getMessage());
-            App.exit();
+            App.exit(-1);
             return null; /* Suppress no return value warning */
         }
     }
@@ -120,12 +120,12 @@ public class Client extends WebSocketClient {
 
     @Override
     public void onClose(int code, String reason, boolean remote) {
-        App.logger.error(
+        App.logger.fatal(
             "Server connection closed with exit code {}, additional info: {}",
             code,
             reason
         );
-        App.exit();
+        App.exit(-1);
     }
 
     public Queue<Message> getInitialMessages() {

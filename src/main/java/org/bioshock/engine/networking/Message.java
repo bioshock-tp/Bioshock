@@ -126,7 +126,7 @@ public class Message implements Serializable {
                 App.logger.fatal(
                     "Too much recursion serialising empty messages"
                 );
-                App.exit();
+                App.exit(-1);
             } else {
                 return serialise(new Message());
             }

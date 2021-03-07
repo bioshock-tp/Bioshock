@@ -9,7 +9,7 @@ public class Exits {
 	boolean bot = false;
 	boolean left = false;
 	boolean right = false;
-	
+
 	/***
 	 * Creates a new Exits object where true represents having an exit on that side
 	 * @param newTop
@@ -22,7 +22,7 @@ public class Exits {
 		bot = newBot;
 		left = newLeft;
 		right = newRight;
-	}	
+	}
 
 	public boolean isTop() {
 		return top;

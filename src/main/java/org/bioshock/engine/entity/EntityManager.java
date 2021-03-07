@@ -4,11 +4,15 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.bioshock.engine.ai.SeekerAI;
 import org.bioshock.engine.networking.NetworkManager;
 import org.bioshock.engine.rendering.RenderManager;
+import org.bioshock.engine.scene.SceneManager;
 
 public final class EntityManager {
-	private static List<Entity> entities = new ArrayList<>();
+	private static ArrayList<Entity> entities = new ArrayList<>();
+    private static ArrayList<Hider> players = new ArrayList<>();
+    private static SeekerAI seeker;
 
     private EntityManager() {}
 
@@ -28,15 +32,14 @@ public final class EntityManager {
 
         if (entity.getRendererC() != null) {
             RenderManager.register(entity);
+            if (entity instanceof SquareEntity) {
+                SceneManager.getPane().getChildren().add(entity.getHitbox());
+            }
         }
 
-        // children.forEach(entity -> {
-        //     if (entity instanceof SquareEntity) {
-        //         SceneManager.getPane().getChildren().add(((SquareEntity) entity).getHitbox());
-        //     }
-        // });
-
         entities.add(entity);
+        if (entity instanceof Hider) players.add((Hider) entity);
+        if (entity instanceof SeekerAI) seeker = (SeekerAI) entity;
 	}
 
 	public static void registerAll(Entity... toAdd) {
@@ -56,10 +59,25 @@ public final class EntityManager {
         }
 
         entities.remove(entity);
+        players.remove(entity);
+        if (entity == seeker) seeker = null;
 	}
 
     public static void unregisterAll() {
-        entities.forEach(EntityManager::unregister);
+        entities.forEach(entity -> {
+            if (
+                entity.getNetworkC().isNetworked()
+                && entity instanceof SquareEntity
+            ) {
+                NetworkManager.unregister((SquareEntity) entity);
+            }
+            if (entity.getRendererC() != null) {
+                RenderManager.unregister(entity);
+            }
+        });
+        seeker = null;
+        entities.clear();
+        players.clear();
     }
 
     public static void unregisterAll(Entity... toRemove) {
@@ -77,5 +95,13 @@ public final class EntityManager {
 
     public static List<Entity> getEntityList() {
         return entities;
+    }
+
+    public static SeekerAI getSeeker() {
+        return seeker;
+    }
+
+    public static List<Hider> getPlayers() {
+        return players;
     }
 }

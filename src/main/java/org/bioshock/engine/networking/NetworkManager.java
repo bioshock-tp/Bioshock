@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import org.bioshock.engine.ai.Seeker;
+import org.bioshock.engine.ai.SeekerAI;
 import org.bioshock.engine.entity.Hider;
 import org.bioshock.engine.entity.SquareEntity;
 import org.bioshock.engine.input.InputManager;
@@ -26,11 +26,11 @@ public class NetworkManager {
     private static String me = UUID.randomUUID().toString();
     static List<Hider> playerList = new ArrayList<>(App.PLAYERCOUNT);
     private static Map<String, Hider> loadedPlayers = new HashMap<>(App.PLAYERCOUNT);
-    private static Seeker seeker;
+    private static SeekerAI seeker;
 
     private static boolean inGame = false;
 
-    private static Client client = new Client("ws://localhost:8010");
+    private static Client client = new Client();
     private static Object gameStartedMutex = new Object();
     private static Object awaitingMessage = new Object();
 
@@ -85,29 +85,29 @@ public class NetworkManager {
                 Movement movement = hider.getMovement();
                 double speed = movement.getSpeed();
 
-                InputManager.onPressListener(
+                InputManager.onPress(
                     KeyCode.W, () -> movement.direction(0, -speed)
                 );
-                InputManager.onPressListener(
+                InputManager.onPress(
                     KeyCode.A, () -> movement.direction(-speed, 0)
                 );
-                InputManager.onPressListener(
+                InputManager.onPress(
                     KeyCode.S, () -> movement.direction(0, speed)
                 );
-                InputManager.onPressListener(
+                InputManager.onPress(
                     KeyCode.D, () -> movement.direction(speed, 0)
                 );
 
-                InputManager.onReleaseListener(
+                InputManager.onRelease(
                     KeyCode.W, () -> movement.direction(0, speed)
                 );
-                InputManager.onReleaseListener(
+                InputManager.onRelease(
                     KeyCode.A, () -> movement.direction(speed, 0)
                 );
-                InputManager.onReleaseListener(
+                InputManager.onRelease(
                     KeyCode.S, () -> movement.direction(0, -speed)
                 );
-                InputManager.onReleaseListener(
+                InputManager.onRelease(
                     KeyCode.D, () -> movement.direction(-speed, 0)
                 );
 
@@ -177,8 +177,8 @@ public class NetworkManager {
             }
             playerList.add((Hider) entity);
         }
-        else if (entity instanceof Seeker) {
-            seeker = (Seeker) entity;
+        else if (entity instanceof SeekerAI) {
+            seeker = (SeekerAI) entity;
         }
         else {
             App.logger.error("Tried to register non player entity {}", entity);
@@ -194,7 +194,7 @@ public class NetworkManager {
             playerList.remove(entity);
             loadedPlayers.remove(entity.getID());
         }
-		else if (entity instanceof Seeker) {
+		else if (entity instanceof SeekerAI) {
             seeker = null;
         }
         else {

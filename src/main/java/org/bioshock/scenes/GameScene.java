@@ -13,8 +13,8 @@ import javafx.scene.layout.Background;
 import javafx.scene.layout.StackPane;
 
 public abstract class GameScene extends Scene {
-    protected StackPane pane;
-    protected Canvas canvas = new Canvas(
+    private StackPane pane;
+    private Canvas canvas = new Canvas(
         WindowManager.getWindowWidth(),
         WindowManager.getWindowHeight()
     );
@@ -44,5 +44,8 @@ public abstract class GameScene extends Scene {
 
 	public Canvas getCanvas() {
 		return canvas;
+	}
+
+	public void destroy() {
 	}
 }

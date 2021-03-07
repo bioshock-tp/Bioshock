@@ -1,7 +1,8 @@
 package org.bioshock.engine.core;
 
-import org.bioshock.engine.input.InputManager;
 import org.bioshock.main.App;
+
+import org.bioshock.engine.input.InputManager;
 
 import javafx.geometry.BoundingBox;
 import javafx.geometry.Bounds;
@@ -18,7 +19,7 @@ public class WindowManager {
 
     private WindowManager() {}
 
-	public static void initialize(Stage stage) {
+	public static void initialise(Stage stage) {
         window = stage;
 		window.setTitle(App.NAME);
 		window.setFullScreen(INITFULLSCREEN);
@@ -27,11 +28,11 @@ public class WindowManager {
 		window.setFullScreenExitHint("");
 		window.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
 
-        InputManager.onPressListener(
+        InputManager.onPress(
             KeyCode.F11, WindowManager::toggleFullScreen
         );
 
-        InputManager.onPressListener(KeyCode.ESCAPE, App::exit);
+        InputManager.onPress(KeyCode.ESCAPE, () -> App.exit(0));
     }
 
 	private static void toggleFullScreen() {

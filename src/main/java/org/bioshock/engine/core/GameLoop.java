@@ -8,20 +8,17 @@ import javafx.animation.AnimationTimer;
 
 public final class GameLoop extends AnimationTimer {
 	private long prev = 0;
-    private long lastUpdate = 0;
 
 	@Override
 	public void handle(long now) {
 		long nanoSDelta = now - prev;
 		double sDelta = nanoSDelta / 10e9;
 
-        // if (now - lastUpdate >= (1000 / 60f) * 10e6) {
-            NetworkManager.tick();
-            EntityManager.tick(sDelta);
-            RenderManager.tick();
-            FrameRate.tick(now);
-            lastUpdate = now;
-        // }
+        NetworkManager.tick();
+        EntityManager.tick(sDelta);
+        RenderManager.tick();
+        FrameRate.tick(now);
+
 		prev = now;
 	}
 }

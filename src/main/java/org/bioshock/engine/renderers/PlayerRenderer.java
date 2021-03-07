@@ -21,7 +21,7 @@ public final class PlayerRenderer implements Renderer {
 
         gc.save();
 
-        Rotate r = player.getRotation();
+        Rotate r = player.getRotate();
         gc.setTransform(
             r.getMxx(), r.getMyx(), r.getMxy(),
             r.getMyy(), r.getTx(), r.getTy()

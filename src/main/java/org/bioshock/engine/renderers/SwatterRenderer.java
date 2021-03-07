@@ -19,7 +19,7 @@ public final class SwatterRenderer implements Renderer {
 
         gc.save();
 
-        Rotate r = swatter.getRotation();
+        Rotate r = swatter.getRotate();
 
         gc.setTransform(
             r.getMxx(), r.getMyx(), r.getMxy(),

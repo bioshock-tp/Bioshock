@@ -1,35 +1,15 @@
 package org.bioshock.main;
 
-import org.bioshock.engine.core.GameLoop;
 import org.bioshock.engine.core.WindowManager;
-import org.bioshock.engine.input.InputManager;
-import org.bioshock.engine.networking.NetworkManager;
-import org.bioshock.engine.scene.SceneManager;
 import org.bioshock.scenes.MainGame;
 
-import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
 
 public class Debug extends App {
     @Override
     public void start(Stage stage) {
-		WindowManager.initialize(stage);
-        startGame(stage);
-	}
-
-    public static void startGame(Stage primaryStage) {
-        SceneManager.initialize(primaryStage, new MainGame());
-        InputManager.initialize();
-        InputManager.onPressListener(KeyCode.C, () ->
-            App.logger.debug(SceneManager.getScene()));
-
-        NetworkManager.initialise();
-
-		primaryStage.setScene(SceneManager.getScene());
-		primaryStage.show();
-
-		GameLoop loop = new GameLoop();
-		loop.start();
+		WindowManager.initialise(stage);
+        startGame(stage, new MainGame(), false);
 	}
 
     public static void main(String[] args) {

@@ -1,12 +1,15 @@
 package org.bioshock.engine.physics;
 
+import org.bioshock.engine.core.WindowManager;
+import org.bioshock.engine.entity.EntityManager;
+import org.bioshock.engine.entity.Point;
 import org.bioshock.engine.entity.SquareEntity;
 
 import javafx.geometry.Point2D;
 import javafx.scene.transform.Rotate;
 
 public class Movement {
-    private double speed = 10;
+    private double speed = 5;
 
     private double xDirection = 0;
     private double yDirection = 0;
@@ -17,8 +20,8 @@ public class Movement {
         this.entity = entity;
     }
 
-    public Point2D getDirection() {
-		return new Point2D(xDirection, yDirection);
+    private Point2D getDirection() {
+		return new Point(xDirection, yDirection);
 	}
 
     public void tick(double timeDelta) {
@@ -31,6 +34,7 @@ public class Movement {
 
     public void move(Point2D trans) {
         Point2D target = trans.add(entity.getPosition());
+
         double x = entity.getX();
         double y = entity.getY();
 
@@ -38,12 +42,44 @@ public class Movement {
             double disp = target.getX() - x;
             x += disp / Math.abs(disp) * speed;
         }
+
         if (y != target.getY()) {
             double disp = target.getY() - y;
             y += disp / Math.abs(disp) * speed;
         }
+
+        while (x < 0) x++;
+        while (y < 0) y++;
+        while (x + entity.getWidth() > WindowManager.getWindowWidth()) x--;
+        while (y + entity.getHeight() > WindowManager.getWindowHeight()) y--;
+
+        double oldX = entity.getX();
+        double oldY = entity.getY();
         entity.setPosition(x, y);
-        updateFacing(trans);
+
+        final double newX = x;
+        EntityManager.getEntityList().forEach(child -> {
+            if (child == entity) return;
+
+            if (entity.intersects(child)) {
+
+                /* Check if x value was cause of collision */
+                entity.setX(oldX);
+
+            }
+            if (entity.intersects(child)) {
+
+                /* In this case x was not cause, so check y */
+                entity.setX(newX);
+                entity.setY(oldY);
+
+            }
+            if (entity.intersects(child)) {
+
+                /* In this case both x and y were cause */
+                entity.setPosition(oldX, oldY);
+            }
+        });
     }
 
     public void direction(double newXDirection, double newYDirection) {
@@ -64,17 +100,21 @@ public class Movement {
     }
 
     public void rotate(double degree) {
-        Rotate rotate = entity.getRotation();
+        Rotate rotate = entity.getRotate();
         Point2D pos = entity.getCentre();
 
         rotate.setPivotX(pos.getX());
         rotate.setPivotY(pos.getY());
 
-        setRotation(entity.getRotation().getAngle() + degree);
+        setRotation(entity.getRotate().getAngle() + degree);
+    }
+
+    public double getFacingRotate(Point2D trans) {
+        return Math.atan2(trans.getX(), -trans.getY())*180/Math.PI;
     }
 
     public void setRotation(double newDegree) {
-        Rotate rotate = entity.getRotation();
+        Rotate rotate = entity.getRotate();
         Point2D pos = entity.getCentre();
 
         rotate.setPivotX(pos.getX());
@@ -83,16 +123,16 @@ public class Movement {
         rotate.setAngle(newDegree);
     }
 
-    public void setRotation(double newDegree, Point2D pos) {
-        Rotate rotate = entity.getRotation();
+    public void setRotation(double newDegree, Point2D pivot) {
+        Rotate rotate = entity.getRotate();
 
-        rotate.setPivotX(pos.getX());
-        rotate.setPivotY(pos.getY());
+        rotate.setPivotX(pivot.getX());
+        rotate.setPivotY(pivot.getY());
 
         rotate.setAngle(newDegree);
     }
 
-    public void setSpeed(int newSpeed) {
+    public void setSpeed(double newSpeed) {
         speed = newSpeed;
     }
 
