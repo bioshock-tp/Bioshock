@@ -1,12 +1,8 @@
 package org.bioshock.main;
 
-import javafx.application.Application;
-import javafx.application.Platform;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.input.KeyCode;
-import javafx.stage.Stage;
+import java.io.IOException;
+import java.net.URL;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bioshock.audio.AudioController;
@@ -17,59 +13,77 @@ import org.bioshock.engine.core.WindowManager;
 import org.bioshock.engine.input.InputManager;
 import org.bioshock.engine.scene.SceneManager;
 import org.bioshock.gui.MainController;
-import org.bioshock.scenes.LoadingScreen;
+import org.bioshock.scenes.GameScene;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.nio.file.Paths;
+import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.input.KeyCode;
+import javafx.stage.Stage;
 
 public class App extends Application {
 	public static final Logger logger = LogManager.getLogger(App.class);
     private static Scene fxmlScene;
-	private final AudioController audioController = AudioController.getInstance();
 	private MusicController musicController;
 
 	@Override
-	public void start(Stage stage) throws URISyntaxException, IOException {
-		WindowManager.initialize(stage);
+	public void start(Stage stage) {
+		WindowManager.initialise(stage);
         initFXMLScene();
+
+        AudioController.initialise();
+		playBackgroundMusic();
 		stage.setScene(fxmlScene);
 		stage.show();
+    }
 
-		audioController.initialize(Paths.get("src/main/resources/org/bioshock/audio/audio-data.json"));
-		playBackgroundMusic();
-	}
+    public static void startGame(Stage primaryStage, GameScene initScene) {
+		SceneManager.initialise(primaryStage, initScene);
+        InputManager.initialise();
+        InputManager.onPress(KeyCode.C, () ->
+            App.logger.debug(SceneManager.getScene())
+        );
 
-    public static void startGame(Stage primaryStage) {
-		SceneManager.initialize(primaryStage, new LoadingScreen());
-        InputManager.initialize();
-        InputManager.onPressListener(KeyCode.C, () ->
-            App.logger.debug(SceneManager.getScene()));
+        InputManager.onPress(KeyCode.R, () -> {
+            App.logger.debug("Resetting Scene...");
+            try {
+                SceneManager.getScene().destroy();
+                GameScene scene = SceneManager.getScene();
+                Class<? extends GameScene> sceCl = scene.getClass();
+                GameScene nSce = sceCl.getDeclaredConstructor().newInstance();
+                SceneManager.setScene(nSce);
+            } catch (Exception e) {
+                App.logger.error(
+                    "Error whilst changing scene: {}",
+                    e.getMessage()
+                );
+            }
+        });
 
 		primaryStage.setScene(SceneManager.getScene());
 		primaryStage.show();
 
-		GameLoop loop = new GameLoop();
-		loop.start();
+		new GameLoop().start();
 	}
 
-	public static void exit() {
+	public static void exit(int code) {
         Platform.exit();
-        System.exit(0);
-	}
-
-	public AudioController getAudioController() {
-		return audioController;
+        System.exit(code);
 	}
 
 	public void stopBackgroundMusic() {
-		musicController = audioController.loadMusicController("background-music");
+		musicController = AudioController.loadMusicController(
+            "background-music"
+        );
 		musicController.stop();
 	}
 
 	public void playBackgroundMusic() {
-		musicController = audioController.loadMusicController("background-music");
+		musicController = AudioController.loadMusicController(
+            "background-music"
+        );
 		final MusicSettings settings = new MusicSettings();
 		settings.setVolume(0.5);
 		settings.setCycleCount(-1);
@@ -91,7 +105,7 @@ public class App extends Application {
             return fxmlLoader.load();
         } catch (IOException e) {
             App.logger.error("Error loading FXML");
-            exit();
+            exit(-1);
             return null; /* Prevents no return value warning */
         }
 	}

@@ -3,7 +3,6 @@ package org.bioshock.engine.entity;
 import org.bioshock.engine.components.NetworkC;
 import org.bioshock.engine.input.InputManager;
 import org.bioshock.engine.renderers.PlayerRenderer;
-import org.bioshock.main.App;
 
 import javafx.geometry.Point3D;
 import javafx.scene.input.KeyCode;
@@ -17,48 +16,29 @@ public class Hider extends SquareEntity {
 
         renderer = PlayerRenderer.class;
 
-        final int speed = movement.getSpeed();
+        final int speed = (int) movement.getSpeed();
 
-        InputManager.onPressListener(
-            KeyCode.W, () -> movement.direction(0, -speed)
-        );
-        InputManager.onPressListener(
-            KeyCode.A, () -> movement.direction(-speed, 0)
-        );
-        InputManager.onPressListener(
-            KeyCode.S, () -> movement.direction(0,  speed)
-        );
-        InputManager.onPressListener(
-            KeyCode.D, () -> movement.direction(speed,  0)
-        );
+        InputManager.onPress(  KeyCode.W, () -> movement.direction(0, -speed));
+        InputManager.onPress(  KeyCode.A, () -> movement.direction(-speed, 0));
+        InputManager.onPress(  KeyCode.S, () -> movement.direction(0,  speed));
+        InputManager.onPress(  KeyCode.D, () -> movement.direction(speed,  0));
 
-        InputManager.onReleaseListener(
-            KeyCode.W, () -> movement.direction(0,  speed)
-        );
-        InputManager.onReleaseListener(
-            KeyCode.A, () -> movement.direction(speed,  0)
-        );
-        InputManager.onReleaseListener(
-            KeyCode.S, () -> movement.direction(0, -speed)
-        );
-        InputManager.onReleaseListener(
-            KeyCode.D, () -> movement.direction(-speed, 0)
-        );
+        InputManager.onRelease(KeyCode.W, () -> movement.direction(0,  speed));
+        InputManager.onRelease(KeyCode.A, () -> movement.direction(speed,  0));
+        InputManager.onRelease(KeyCode.S, () -> movement.direction(0, -speed));
+        InputManager.onRelease(KeyCode.D, () -> movement.direction(-speed, 0));
     }
 
 	protected void tick(double timeDelta) {
-        if (dead) {
-            App.logger.info("{} is dead", getID());
-            dead = false;
-        }
+        dead = false;
         movement.tick(timeDelta);
 	}
 
-    public void setDead(boolean d) {
-        dead = d;
+    public boolean isDead() {
+        return dead;
     }
 
-    public boolean getDead() {
-        return dead;
+    public void setDead(boolean d) {
+        dead = d;
     }
 }

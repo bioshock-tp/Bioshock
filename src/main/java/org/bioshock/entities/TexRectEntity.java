@@ -8,8 +8,7 @@ import org.bioshock.engine.renderers.SquareRenderer;
 import javafx.geometry.Point3D;
 import javafx.scene.paint.Color;
 
-public class TexRectEntity extends SquareEntity{
-
+public class TexRectEntity extends SquareEntity {
 	public TexRectEntity(Point3D p, NetworkC com, Size s, Color c) {
 		super(p, com, s, 0, c);
 		renderer = SquareRenderer.class;

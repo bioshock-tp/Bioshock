@@ -1,12 +1,13 @@
 package org.bioshock.engine.rendering;
 
+import org.bioshock.main.App;
+
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.bioshock.engine.entity.Entity;
 import org.bioshock.engine.scene.SceneManager;
-import org.bioshock.main.App;
 
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -39,10 +40,10 @@ public final class RenderManager {
                     Method rend = entity.getRenderer().getDeclaredMethods()[0];
                     rend.invoke(null, gc, entity);
                 } catch (Exception e) {
-                    /*App.logger.error(
+                    App.logger.error(
                         "Render function not defined for {}",
                         entity.getRenderer()
-                    );*/
+                    );
                 }
 			}
 		}
@@ -70,24 +71,26 @@ public final class RenderManager {
         }
     }
 
-
 	/**
 	 * Registers an entity to the RenderManager and Stores it in ascending
      * order with regards to it's Y value given in it's render component
-	 * @param entityToAdd
+	 * @param toAdd
 	 */
-	public static void register(Entity entityToAdd) {
+	public static void register(Entity toAdd) {
 		if (renderableEntities.isEmpty()) {
-			renderableEntities.add(entityToAdd);
+			renderableEntities.add(toAdd);
 		}
 		else {
-			int i;
-			Entity currentEntity = renderableEntities.get(0);
-			for (i = 1; (currentEntity.getZ() < entityToAdd.getZ()); i++) {
-				currentEntity = renderableEntities.get(i);
+			int i = 0;
+			Entity currEnt = renderableEntities.get(0);
+			while (
+                currEnt.getZ() < toAdd.getZ()
+                && i < renderableEntities.size()
+            ) {
+				currEnt = renderableEntities.get(i++);
 			}
 
-			renderableEntities.add(i, entityToAdd);
+			renderableEntities.add(i, toAdd);
 		}
 	}
 

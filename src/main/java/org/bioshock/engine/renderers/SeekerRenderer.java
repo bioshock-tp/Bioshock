@@ -17,8 +17,8 @@ public class SeekerRenderer implements Renderer {
     ) {
         SeekerAI seeker = (SeekerAI) entity;
 
-        int x = seeker.getX();
-        int y = seeker.getY();
+        double x = seeker.getX();
+        double y = seeker.getY();
         double radius = seeker.getRadius();
         double width = seeker.getWidth();
         double height = seeker.getHeight();
@@ -27,7 +27,7 @@ public class SeekerRenderer implements Renderer {
 
         gc.save();
 
-        Rotate r = seeker.getRotation();
+        Rotate r = seeker.getRotate();
         gc.setTransform(
                 r.getMxx(), r.getMyx(), r.getMxy(),
                 r.getMyy(), r.getTx(), r.getTy()

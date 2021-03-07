@@ -7,25 +7,36 @@ import org.bioshock.engine.components.RendererC;
 import org.bioshock.engine.renderers.Renderer;
 import org.bioshock.main.App;
 
-import javafx.geometry.Point2D;
 import javafx.geometry.Point3D;
-import javafx.scene.Parent;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.Shape;
 
-public abstract class Entity extends Parent {
-    protected int z;
-    protected NetworkC networkC = null;
-    protected RendererC rendererC = null;
-	protected final UUID uuid = UUID.randomUUID();
+public abstract class Entity {
+    protected Point position;
+    protected Rectangle hitbox;
+
     protected boolean enabled = true;
+    protected final UUID uuid = UUID.randomUUID();
+
+    protected NetworkC networkC;
+    protected RendererC rendererC;
     protected Class<? extends Renderer> renderer;
 
-    protected Entity(Point3D pos, NetworkC netC, RendererC renC) {
-        setPosition((int) pos.getX(), (int) pos.getY());
-        z = (int) pos.getZ();
+    protected Entity(Point3D p, Rectangle h, NetworkC netC, RendererC renC) {
+        position = new Point(p.getX(), p.getY());
+
+        hitbox = h;
+        hitbox.setFill(Color.TRANSPARENT);
+
+        setPosition(position);
+
         networkC = netC;
         rendererC = renC;
 
-        App.logger.info("New Entity {} with ID {}", (Object) this, this.uuid);
+        rendererC.setZ(p.getZ());
+
+        App.logger.info("New {} with ID {}", this, uuid);
 	}
 
     protected abstract void tick(double timeDelta);
@@ -36,18 +47,41 @@ public abstract class Entity extends Parent {
 		}
 	}
 
+    public boolean intersects(Entity entity) {
+        Shape intersects = Shape.intersect(
+            this.getHitbox(),
+            entity.getHitbox()
+        );
+
+        return (intersects.getBoundsInLocal().getWidth() != -1);
+    }
+
     public boolean isEnabled() {
         return enabled;
     }
 
-    public void setPosition(int x, int y) {
-        setTranslateX(x);
-        setTranslateY(y);
+    public void setX(double newX) {
+		setPosition(newX, getY());
+	}
+
+	public void setY(double newY) {
+		setPosition(getX(), newY);
+	}
+
+    public void setPosition(double x, double y) {
+        position.setX(x);
+        position.setY(y);
+
+        hitbox.setTranslateX(x + hitbox.getWidth() / 2);
+        hitbox.setTranslateY(y + hitbox.getHeight() / 2);
     }
 
-    public void setPosition(Point2D point) {
-        setTranslateX(point.getX());
-        setTranslateY(point.getY());
+    public void setPosition(Point point) {
+        setPosition(point.getX(), point.getY());
+	}
+
+    public void setPosition(Point3D point) {
+        setPosition(point.getX(), point.getY());
 	}
 
 	public void setRenderC(RendererC renderC) {
@@ -62,21 +96,25 @@ public abstract class Entity extends Parent {
 		return uuid;
 	}
 
-    public Point2D getPosition() {
-        return new Point2D(getTranslateX(), getTranslateY());
+    public Point getPosition() {
+        return position;
     }
 
-	public int getX() {
-		return (int) getTranslateX();
+	public double getX() {
+		return position.getX();
 	}
 
-	public int getY() {
-		return (int) getTranslateY();
+	public double getY() {
+		return position.getY();
 	}
 
     public double getZ() {
-        return z;
+        return rendererC.getZ();
     }
+
+    public Rectangle getHitbox() {
+        return hitbox;
+	}
 
 	public Class<? extends Renderer> getRenderer() {
 		return renderer;
@@ -90,4 +128,8 @@ public abstract class Entity extends Parent {
         return networkC;
     }
 
+    @Override
+    public String toString() {
+        return getClass().getSimpleName();
+    }
 }

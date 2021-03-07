@@ -9,14 +9,14 @@ public class SquareRenderer implements Renderer {
     private SquareRenderer() {}
 
 	public static <E extends SquareEntity> void render(GraphicsContext gc, E rect) {
-        int x = rect.getX();
-        int y = rect.getY();
+        double x = rect.getX();
+        double y = rect.getY();
         double width = rect.getWidth();
         double height = rect.getHeight();
 
         gc.save();
 
-        Rotate r = rect.getRotation();
+        Rotate r = rect.getRotate();
         gc.setTransform(r.getMxx(), r.getMyx(), r.getMxy(), r.getMyy(), r.getTx(), r.getTy());
         gc.setFill(rect.getRendererC().getColor());
         gc.fillRect(x, y, width, height);

@@ -6,6 +6,7 @@ import javafx.scene.media.MediaPlayer;
 import javafx.util.Duration;
 import lombok.NonNull;
 import org.bioshock.audio.settings.MusicSettings;
+import org.bioshock.main.App;
 
 import java.nio.file.Path;
 
@@ -34,9 +35,10 @@ public class MusicController {
 
             hasBeenDisposed = true;
 
-            if (AudioController.debuggingEnabled) {
-                System.out.println("Disposing Music: " + player.getMedia().getSource());
-            }
+            App.logger.debug(
+                "Disposing Music: {}",
+                player.getMedia().getSource()
+            );
         }
     }
 
@@ -50,21 +52,25 @@ public class MusicController {
      */
     public void play(MusicSettings settings) {
         if (hasBeenDisposed) {
-            throw new IllegalStateException("This music has been disposed, you cannot play it.");
+            try {
+                throw new IllegalStateException(
+                    "This music has been disposed, you cannot play it."
+                );
+            } catch (IllegalStateException e) {
+                App.logger.error(e.getMessage());
+            }
         }
 
         if (settings != null) {
             settings = settings.deepCopy();
-//            player.setBalance(settings.getBalance());
-//            player.setCycleCount(settings.getCycleCount());
-//            player.setRate(settings.getRate());
             player.setVolume(settings.getVolume());
         }
 
         Platform.runLater(() -> {
-            if (AudioController.debuggingEnabled) {
-                System.out.println("Playing Music: " + player.getMedia().getSource());
-            }
+            App.logger.debug(
+                "Playing Music: {}",
+                player.getMedia().getSource()
+            );
 
             player.play();
         });
@@ -77,14 +83,19 @@ public class MusicController {
      * @see MediaPlayer#pause()
      */
     public void pause() {
-        if (hasBeenDisposed) {
-            throw new IllegalStateException("This music has been disposed, you cannot pause it.");
+        try {
+            throw new IllegalStateException(
+                "This music has been disposed, you cannot pause it."
+            );
+        } catch (IllegalStateException e) {
+            App.logger.error(e.getMessage());
         }
 
         Platform.runLater(() -> {
-            if (AudioController.debuggingEnabled) {
-                System.out.println("Pausing Music: " + player.getMedia().getSource());
-            }
+            App.logger.debug(
+                "Pausing Music: {}",
+                player.getMedia().getSource()
+            );
 
             player.pause();
         });
@@ -97,13 +108,20 @@ public class MusicController {
      */
     public void stop() {
         if (hasBeenDisposed) {
-            throw new IllegalStateException("This music has been disposed, you cannot stop it.");
+            try {
+                throw new IllegalStateException(
+                    "This music has been disposed, you cannot stop it."
+                );
+            } catch (IllegalStateException e) {
+                App.logger.error(e.getMessage());
+            }
         }
 
         Platform.runLater(() -> {
-            if (AudioController.debuggingEnabled) {
-                System.out.println("Stopping Music: " + player.getMedia().getSource());
-            }
+            App.logger.debug(
+                "Stopping Music: {}",
+                player.getMedia().getSource()
+            );
 
             player.stop();
         });

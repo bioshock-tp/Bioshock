@@ -1,11 +1,13 @@
 package org.bioshock.gui;
 
+import org.bioshock.audio.AudioController;
+import org.bioshock.audio.EffectController;
+import org.bioshock.main.App;
+
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.RadioButton;
-import org.bioshock.audio.EffectController;
-import org.bioshock.main.App;
 
 public class SettingsController extends App {
     @FXML
@@ -19,23 +21,16 @@ public class SettingsController extends App {
     @FXML
     private RadioButton sfxOnRadioButton;
 
-
     @FXML
     private void switchToMainView() {
         App.setFXMLRoot("main");
     }
 
-
-//    @FXML
-//    public void initialize() {
-//
-//    }
-
-
     @FXML
     public void toggleMusicOn(ActionEvent actionEvent) {
         playBackgroundMusic();
     }
+
     @FXML
     public void toggleMusicOff(ActionEvent actionEvent) {
         stopBackgroundMusic();
@@ -43,13 +38,15 @@ public class SettingsController extends App {
 
     @FXML
     public void toggleSfxOn(ActionEvent actionEvent) {
-        EffectController effectController = getAudioController().loadEffectController("enabled");
+        EffectController effectController =
+            AudioController.loadEffectController("enabled");
         effectController.play(null);
     }
 
     @FXML
     public void toggleSfxOff(ActionEvent actionEvent) {
-        EffectController effectController = getAudioController().loadEffectController("enabled");
+        EffectController effectController =
+            AudioController.loadEffectController("enabled");
         effectController.stop();
     }
 }

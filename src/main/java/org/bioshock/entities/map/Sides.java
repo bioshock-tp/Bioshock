@@ -25,17 +25,17 @@ public class Sides {
      */
     public static List<TexRectEntity> lExit(
         Point3D pos,
-        int wallWidth,
-        int roomHeight,
-        int coriWidth,
-        int coriLen,
+        double wallWidth,
+        double roomHeight,
+        double coriWidth,
+        double coriLen,
         Color c
     ) {
 
         //vertical wall
         TexRectEntity roomWall1 =
             new TexRectEntity(
-                pos.add((double) coriLen - wallWidth, 0, 0),
+                pos.add(coriLen - wallWidth, 0, 0),
                 new NetworkC(false),
                 new Size(wallWidth, (roomHeight - coriWidth) / 2 - wallWidth),
                 c
@@ -45,8 +45,8 @@ public class Sides {
         TexRectEntity roomWall2 =
             new TexRectEntity(
                 pos.add(
-                    (double) coriLen - wallWidth,
-                    (double) (roomHeight + coriWidth) / 2 + wallWidth, 0
+                    coriLen - wallWidth,
+                    (roomHeight + coriWidth) / 2 + wallWidth, 0
                 ),
                 new NetworkC(false),
                 new Size(wallWidth, (roomHeight - coriWidth) / 2 - wallWidth),
@@ -58,7 +58,7 @@ public class Sides {
             new TexRectEntity(
                 pos.add(
                     0,
-                    (double) (roomHeight - coriWidth) / 2 - wallWidth,
+                    (roomHeight - coriWidth) / 2 - wallWidth,
                     0
                 ),
                 new NetworkC(false),
@@ -69,7 +69,7 @@ public class Sides {
         //bottom wall
         TexRectEntity coriWall2 =
             new TexRectEntity(
-                pos.add(0, (double) (roomHeight + coriWidth) / 2, 0),
+                pos.add(0, (roomHeight + coriWidth) / 2, 0),
                 new NetworkC(false),
                 new Size(coriLen - wallWidth, wallWidth),
                 c
@@ -79,8 +79,8 @@ public class Sides {
         TexRectEntity cor1 =
             new TexRectEntity(
                 pos.add(
-                    (double) coriLen - wallWidth,
-                    (double) (roomHeight - coriWidth) / 2 - wallWidth,
+                    coriLen - wallWidth,
+                    (roomHeight - coriWidth) / 2 - wallWidth,
                     0
                 ),
                 new NetworkC(false),
@@ -92,8 +92,8 @@ public class Sides {
         TexRectEntity cor2 =
             new TexRectEntity(
                 pos.add(
-                    (double) coriLen - wallWidth,
-                    (double) (roomHeight + coriWidth) / 2,
+                    coriLen - wallWidth,
+                    (roomHeight + coriWidth) / 2,
                     0
                 ),
                 new NetworkC(false),
@@ -118,10 +118,10 @@ public class Sides {
      */
     public static List<TexRectEntity> rExit(
         Point3D pos,
-        int wallWidth,
-        int roomHeight,
-        int coriWidth,
-        int coriLen,
+        double wallWidth,
+        double roomHeight,
+        double coriWidth,
+        double coriLen,
         Color c
     ) {
 
@@ -139,7 +139,7 @@ public class Sides {
             new TexRectEntity(
                 pos.add(
                     0,
-                    (double) (roomHeight + coriWidth) / 2 + wallWidth,
+                    (roomHeight + coriWidth) / 2 + wallWidth,
                     0
                 ),
                 new NetworkC(false),
@@ -152,7 +152,7 @@ public class Sides {
             new TexRectEntity(
                 pos.add(
                     wallWidth,
-                    (double) (roomHeight - coriWidth) / 2 - wallWidth,
+                    (roomHeight - coriWidth) / 2 - wallWidth,
                     0
                 ),
                 new NetworkC(false),
@@ -163,7 +163,7 @@ public class Sides {
         //bottom wall
         TexRectEntity coriWall2 =
             new TexRectEntity(
-                pos.add(wallWidth, (double) (roomHeight + coriWidth) / 2, 0),
+                pos.add(wallWidth, (roomHeight + coriWidth) / 2, 0),
                 new NetworkC(false),
                 new Size(coriLen - wallWidth, wallWidth),
                 c
@@ -174,7 +174,7 @@ public class Sides {
             new TexRectEntity(
                 pos.add(
                     0,
-                    (double) (roomHeight - coriWidth) / 2 - wallWidth,
+                    (roomHeight - coriWidth) / 2 - wallWidth,
                     0
             ),
                 new NetworkC(false),
@@ -185,7 +185,7 @@ public class Sides {
         //corner connecting bottom and right
         TexRectEntity cor2 =
             new TexRectEntity(
-                pos.add(0, (double) (roomHeight + coriWidth) / 2, 0),
+                pos.add(0, (roomHeight + coriWidth) / 2, 0),
                 new NetworkC(false),
                 new Size(wallWidth, wallWidth),
                 c
@@ -208,17 +208,17 @@ public class Sides {
      */
     public static List<TexRectEntity> tExit(
         Point3D pos,
-        int wallWidth,
-        int roomWidth,
-        int coriWidth,
-        int coriLen,
+        double wallWidth,
+        double roomWidth,
+        double coriWidth,
+        double coriLen,
         Color c
     ) {
 
         //top wall
         TexRectEntity roomWall1 =
             new TexRectEntity(
-                pos.add(0, (double) coriLen - wallWidth, 0),
+                pos.add(0, coriLen - wallWidth, 0),
                 new NetworkC(false),
                 new Size((roomWidth - coriWidth) / 2 - wallWidth, wallWidth),
                 c
@@ -228,8 +228,8 @@ public class Sides {
         TexRectEntity roomWall2 =
             new TexRectEntity(
                 pos.add(
-                    (double) (roomWidth + coriWidth) / 2 + wallWidth,
-                    (double) coriLen - wallWidth,
+                    (roomWidth + coriWidth) / 2 + wallWidth,
+                    coriLen - wallWidth,
                     0
                 ),
                 new NetworkC(false),
@@ -241,7 +241,7 @@ public class Sides {
         TexRectEntity coriWall1 =
             new TexRectEntity(
                 pos.add(
-                    (double) (roomWidth - coriWidth) / 2 - wallWidth,
+                    (roomWidth - coriWidth) / 2 - wallWidth,
                     0,
                     0
                 ),
@@ -253,7 +253,7 @@ public class Sides {
         //vertical wall
         TexRectEntity coriWall2 =
             new TexRectEntity(
-                pos.add((double) (roomWidth + coriWidth) / 2, 0, 0),
+                pos.add((roomWidth + coriWidth) / 2, 0, 0),
                 new NetworkC(false),
                 new Size(wallWidth, coriLen - wallWidth),
                 c
@@ -263,8 +263,8 @@ public class Sides {
         TexRectEntity cor1 =
             new TexRectEntity(
                 pos.add(
-                    (double) (roomWidth - coriWidth) / 2 - wallWidth,
-                    (double) coriLen - wallWidth,
+                    (roomWidth - coriWidth) / 2 - wallWidth,
+                    coriLen - wallWidth,
                     0
                 ),
                 new NetworkC(false),
@@ -276,8 +276,8 @@ public class Sides {
         TexRectEntity cor2 =
             new TexRectEntity(
                 pos.add(
-                    (double) (roomWidth + coriWidth) / 2,
-                    (double) coriLen - wallWidth,
+                    (roomWidth + coriWidth) / 2,
+                    coriLen - wallWidth,
                     0
                 ),
                 new NetworkC(false),
@@ -302,10 +302,10 @@ public class Sides {
      */
     public static List<TexRectEntity> bExit(
         Point3D pos,
-        int wallWidth,
-        int roomWidth,
-        int coriWidth,
-        int coriLen,
+        double wallWidth,
+        double roomWidth,
+        double coriWidth,
+        double coriLen,
         Color c
     ) {
 
@@ -322,7 +322,7 @@ public class Sides {
         TexRectEntity roomWall2 =
             new TexRectEntity(
                 pos.add(
-                    (double) (roomWidth + coriWidth) / 2 + wallWidth,
+                    (roomWidth + coriWidth) / 2 + wallWidth,
                     0,
                     0
                 ),
@@ -335,7 +335,7 @@ public class Sides {
         TexRectEntity coriWall1 =
             new TexRectEntity(
                 pos.add(
-                    (double) (roomWidth - coriWidth) / 2 - wallWidth,
+                    (roomWidth - coriWidth) / 2 - wallWidth,
                     wallWidth,
                     0
                 ),
@@ -347,7 +347,7 @@ public class Sides {
         //vertical wall
         TexRectEntity coriWall2 =
             new TexRectEntity(
-                pos.add((double) (roomWidth + coriWidth) / 2, wallWidth, 0),
+                pos.add((roomWidth + coriWidth) / 2, wallWidth, 0),
                 new NetworkC(false),
                 new Size(wallWidth, coriLen - wallWidth),
                 c
@@ -357,7 +357,7 @@ public class Sides {
         TexRectEntity cor1 =
             new TexRectEntity(
                 pos.add(
-                    (double) (roomWidth - coriWidth) / 2 - wallWidth,
+                    (roomWidth - coriWidth) / 2 - wallWidth,
                     0,
                     0
                 ),
@@ -369,7 +369,7 @@ public class Sides {
         //corner connecting bottom and right
         TexRectEntity cor2 =
             new TexRectEntity(
-                pos.add((double) (roomWidth + coriWidth) / 2, 0, 0),
+                pos.add((roomWidth + coriWidth) / 2, 0, 0),
                 new NetworkC(false),
                 new Size(wallWidth, wallWidth),
                 c
@@ -392,17 +392,17 @@ public class Sides {
      */
     public static List<TexRectEntity> lNoExit(
         Point3D pos,
-        int wallWidth,
-        int roomHeight,
-        int coriWidth,
-        int coriLen,
+        double wallWidth,
+        double roomHeight,
+        double coriWidth,
+        double coriLen,
         Color c
     ) {
 
         //vertical wall
         TexRectEntity wall =
             new TexRectEntity(
-                pos.add((double) coriLen - wallWidth, 0, 0),
+                pos.add(coriLen - wallWidth, 0, 0),
                 new NetworkC(false),
                 new Size(wallWidth, roomHeight),
                 c
@@ -423,10 +423,10 @@ public class Sides {
      */
     public static List<TexRectEntity> rNoExit(
         Point3D pos,
-        int wallWidth,
-        int roomHeight,
-        int coriWidth,
-        int coriLen,
+        double wallWidth,
+        double roomHeight,
+        double coriWidth,
+        double coriLen,
         Color c
     ) {
 
@@ -454,17 +454,17 @@ public class Sides {
      */
     public static List<TexRectEntity> tNoExit(
         Point3D pos,
-        int wallWidth,
-        int roomWidth,
-        int coriWidth,
-        int coriLen,
+        double wallWidth,
+        double roomWidth,
+        double coriWidth,
+        double coriLen,
         Color c
     ) {
 
         //top wall
         TexRectEntity wall =
             new TexRectEntity(
-                pos.add(0, (double) coriLen - wallWidth, 0),
+                pos.add(0, coriLen - wallWidth, 0),
                 new NetworkC(false),
                 new Size(roomWidth, wallWidth),
                 c
@@ -485,10 +485,10 @@ public class Sides {
      */
     public static List<TexRectEntity> bNoExit(
         Point3D pos,
-        int wallWidth,
-        int roomWidth,
-        int coriWidth,
-        int coriLen,
+        double wallWidth,
+        double roomWidth,
+        double coriWidth,
+        double coriLen,
         Color c
     ) {
 

@@ -18,11 +18,7 @@ public class EffectSettings extends AudioSettings {
 
     @Override
     public EffectSettings deepCopy()  {
-        final var settings = new EffectSettings();
-//        settings.setBalance(super.balance);
-//        settings.setCycleCount(super.cycleCount);
-//        settings.setPan(pan);
-//        settings.setRate(super.rate);
+        final EffectSettings settings = new EffectSettings();
         settings.setVolume(super.volume);
         return settings;
     }

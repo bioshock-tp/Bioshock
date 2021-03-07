@@ -4,6 +4,7 @@ import javafx.application.Platform;
 import javafx.scene.media.AudioClip;
 import lombok.NonNull;
 import org.bioshock.audio.settings.EffectSettings;
+import org.bioshock.main.App;
 
 import java.nio.file.Path;
 
@@ -32,17 +33,14 @@ public class EffectController {
     public void play(EffectSettings settings) {
         if (settings != null) {
             settings = settings.deepCopy();
-//            clip.setBalance(settings.getBalance());
-//            clip.setCycleCount(settings.getCycleCount());
-//            clip.setPan(settings.getPan());
-//            clip.setRate(settings.getRate());
             clip.setVolume(settings.getVolume());
         }
 
         Platform.runLater(() -> {
-            if (AudioController.debuggingEnabled) {
-                System.out.println("Playing Effect: " + clip.getSource());
-            }
+            App.logger.debug(
+                "Playing Effect: {}",
+                clip.getSource()
+            );
 
             clip.play();
         });
@@ -55,9 +53,10 @@ public class EffectController {
      */
     public void stop() {
         Platform.runLater(() -> {
-            if (AudioController.debuggingEnabled) {
-                System.out.println("Stopping Effect: " + clip.getSource());
-            }
+                App.logger.debug(
+                    "Stopping Effect: ",
+                    clip.getSource()
+                );
 
             clip.stop();
         });

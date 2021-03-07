@@ -8,10 +8,10 @@ import lombok.EqualsAndHashCode;
 public class MusicSettings extends AudioSettings {
     @Override
     public MusicSettings deepCopy() {
-        final var settings = new MusicSettings();
-//        settings.setBalance(super.balance);
+        final MusicSettings settings = new MusicSettings();
+
         settings.setCycleCount(super.cycleCount);
-//        settings.setRate(super.rate);
+
         settings.setVolume(super.volume);
         return settings;
     }
@@ -20,6 +20,4 @@ public class MusicSettings extends AudioSettings {
     public double getVolume() {
         return super.volume;
     }
-
-
 }
