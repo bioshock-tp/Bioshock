@@ -30,18 +30,18 @@ public class Client extends WebSocketClient {
     }
 
     public Client() {
-        this(getURI(DEFURI));
+        this(DEFURI);
     }
 
-    public Client(String uri) {
-        this(getURI(uri));
+    public Client(String URI) {
+        this(getURI(URI));
     }
 
-    private static URI getURI(String uri) {
+    private static URI getURI(String URI) {
         try {
-            return new URI(uri);
+            return new URI(URI);
         } catch (URISyntaxException e) {
-            App.logger.fatal("Invalid URI {}: {}", uri, e.getMessage());
+            App.logger.fatal("Invalid URI {}: {}", URI, e.getMessage());
             App.exit();
             return null; /* Suppress no return value warning */
         }
@@ -91,6 +91,9 @@ public class Client extends WebSocketClient {
 
             /* Case of input */
             else {
+                if (NetworkManager.playerList.get(0).getID().equals(message.UUID)) {
+                    App.logger.debug(message);
+                }
                 inputQueue.put(message.UUID, message.input);
             }
         } catch(InterruptedException ie) {

@@ -25,6 +25,10 @@ public class Movement {
         if (xDirection != 0 || yDirection != 0) move(getDirection());
     }
 
+    public void moveTo(double x, double y) {
+        move(new Point2D(x, y).subtract(entity.getPosition()));
+    }
+
     public void move(Point2D trans) {
         Point2D target = trans.add(entity.getPosition());
         double x = entity.getX();
@@ -43,9 +47,11 @@ public class Movement {
     }
 
     public void direction(double newXDirection, double newYDirection) {
-        xDirection = newXDirection;
+        double newX = Math.abs(xDirection + newXDirection);
+        if (newX <= speed) xDirection += newXDirection;
 
-        yDirection = newYDirection;
+        double newY = Math.abs(yDirection + newYDirection);
+        if (newY <= speed) yDirection += newYDirection;
     }
 
     public void direction(Point2D targ) {

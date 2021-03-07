@@ -41,6 +41,13 @@ public class Message implements Serializable {
         final double aiX;
         final double aiY;
 
+        /**
+         * Information to send in message containing player POS/DIR
+         * @param x Coordinate X of player
+         * @param y Coordinate Y of player
+         * @param aiX Coordinate X of AI
+         * @param aiY Coordinate Y of AI
+         */
         ClientInput(int x, int y, double aiX, double aiY) {
             this.x = x;
             this.y = y;

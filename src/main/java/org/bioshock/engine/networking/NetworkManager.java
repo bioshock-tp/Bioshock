@@ -1,7 +1,6 @@
 package org.bioshock.engine.networking;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
@@ -13,6 +12,7 @@ import org.bioshock.engine.entity.Hider;
 import org.bioshock.engine.entity.SquareEntity;
 import org.bioshock.engine.input.InputManager;
 import org.bioshock.engine.networking.Message.ClientInput;
+import org.bioshock.engine.physics.Movement;
 import org.bioshock.engine.scene.SceneManager;
 import org.bioshock.main.App;
 
@@ -24,7 +24,7 @@ public class NetworkManager {
     private static Map<KeyCode, Boolean> keyPressed = new EnumMap<>(KeyCode.class);
 
     private static String me = UUID.randomUUID().toString();
-    private static List<Hider> playerList = new ArrayList<>(App.PLAYERCOUNT);
+    static List<Hider> playerList = new ArrayList<>(App.PLAYERCOUNT);
     private static Map<String, Hider> loadedPlayers = new HashMap<>(App.PLAYERCOUNT);
     private static Seeker seeker;
 
@@ -45,13 +45,6 @@ public class NetworkManager {
         Thread initThread = new Thread(new Task<>() {
             @Override
             protected Object call() {
-                // Thread.setDefaultUncaughtExceptionHandler((Thread t, Throwable e) ->
-                //     App.logger.error(
-                //         "{}\n{}",
-                //         e,
-                //         Arrays.toString(e.getStackTrace()).replace(',', '\n')
-                //     )
-                // );
 
                 /* Wait until game loads, then connect to server */
                 synchronized (gameStartedMutex) {
@@ -88,30 +81,34 @@ public class NetworkManager {
                     loadedPlayers.putIfAbsent(m.UUID, hider);
                 }
 
+                Hider hider = loadedPlayers.get(me);
+                Movement movement = hider.getMovement();
+                double speed = movement.getSpeed();
+
                 InputManager.onPressListener(
-                    KeyCode.W, () -> setKeysPressed(KeyCode.W, true)
+                    KeyCode.W, () -> movement.direction(0, -speed)
                 );
                 InputManager.onPressListener(
-                    KeyCode.A, () -> setKeysPressed(KeyCode.A, true)
+                    KeyCode.A, () -> movement.direction(-speed, 0)
                 );
                 InputManager.onPressListener(
-                    KeyCode.S, () -> setKeysPressed(KeyCode.S, true)
+                    KeyCode.S, () -> movement.direction(0, speed)
                 );
                 InputManager.onPressListener(
-                    KeyCode.D, () -> setKeysPressed(KeyCode.D, true)
+                    KeyCode.D, () -> movement.direction(speed, 0)
                 );
 
                 InputManager.onReleaseListener(
-                    KeyCode.W, () -> setKeysPressed(KeyCode.W, false)
+                    KeyCode.W, () -> movement.direction(0, speed)
                 );
                 InputManager.onReleaseListener(
-                    KeyCode.A, () -> setKeysPressed(KeyCode.A, false)
+                    KeyCode.A, () -> movement.direction(speed, 0)
                 );
                 InputManager.onReleaseListener(
-                    KeyCode.S, () -> setKeysPressed(KeyCode.S, false)
+                    KeyCode.S, () -> movement.direction(0, -speed)
                 );
                 InputManager.onReleaseListener(
-                    KeyCode.D, () -> setKeysPressed(KeyCode.D, false)
+                    KeyCode.D, () -> movement.direction(-speed, 0)
                 );
 
                 inGame = true;
@@ -127,19 +124,13 @@ public class NetworkManager {
 
     // TDDO
     private static Message pollInputs() {
-        int x = Boolean.compare(
-            keyPressed.get(KeyCode.D),
-            keyPressed.get(KeyCode.A)
-        );
-        int y = Boolean.compare(
-            keyPressed.get(KeyCode.S),
-            keyPressed.get(KeyCode.W)
-        );
+        int x = (int) loadedPlayers.get(me).getX();
+        int y = (int) loadedPlayers.get(me).getY();
 
-        Point2D aiDir = seeker.getMovement().getDirection();
+        Point2D aiPos = seeker.getPosition();
 
         Message.ClientInput input = new Message.ClientInput(
-            x, y, aiDir.getX(), aiDir.getY()
+            x, y, aiPos.getX(), aiPos.getY()
         );
 
         return new Message(-1, me, input);
@@ -149,8 +140,6 @@ public class NetworkManager {
         if (!inGame || playerList.isEmpty()) return;
 
         if (loadedPlayers.get(me) != null) {
-            loadedPlayers.get(me).getMovement().direction(0, 0);
-
             client.send(Message.serialise(pollInputs()));
         }
 
@@ -159,6 +148,10 @@ public class NetworkManager {
 
             for (Hider hider : playerList) {
                 ClientInput input = client.getInputQ().get(hider.getID());
+                if (input == null) continue;
+
+                if (hider == loadedPlayers.get(me)) continue;
+
                 if (hider == playerList.get(0)) {
                     seeker.getMovement().direction(
                         input.aiX,
@@ -166,7 +159,7 @@ public class NetworkManager {
                     );
                 }
 
-                loadedPlayers.get(hider.getID()).getMovement().direction(
+                loadedPlayers.get(hider.getID()).getMovement().moveTo(
                     input.x,
                     input.y
                 );
