@@ -58,8 +58,7 @@ public class Server extends WebSocketServer {
 	@Override
 	public void onError(WebSocket conn, Exception ex) {
 		System.out.println(String.format(
-            "An error occurred on connection %s: %s",
-            conn.getRemoteSocketAddress(),
+            "An error occurred: %s",
             ex
         ));
 	}
