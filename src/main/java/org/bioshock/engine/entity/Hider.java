@@ -28,7 +28,7 @@ public class Hider extends SquareEntity {
         dead = d;
     }
 
-    public boolean getDead() {
+    public boolean isDead() {
         return dead;
     }
 }

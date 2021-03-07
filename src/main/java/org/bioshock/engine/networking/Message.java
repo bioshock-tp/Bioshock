@@ -13,13 +13,22 @@ import org.bioshock.main.App;
 public class Message implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    String uuid;
+    int playerNumber;
+    String UUID;
     ClientInput input;
 
     Message() {}
 
-    Message(String uuid, ClientInput input) {
-        this.uuid = uuid;
+    /**
+     * Constructs a new message to send to web socket server
+     * @param playerNumber Should be -1 outside of lobby, otherwise should be
+     *     position of player in join queue
+     * @param UUID Unique ID of player sending message
+     * @param input A ClientInput object containing states of player and AI
+     */
+    Message(int playerNumber, String UUID, ClientInput input) {
+        this.playerNumber = playerNumber;
+        this.UUID = UUID;
         this.input = input;
     }
 
@@ -42,7 +51,7 @@ public class Message implements Serializable {
 
         @Override
         public String toString() {
-            return String.format("ClientInput{x=%d, y=%d, aiX=%d, aiY=%d}", x, y, aiX, aiY);
+            return String.format("ClientInput{x=%d, y=%d, aiX=%f, aiY=%f}", x, y, aiX, aiY);
         }
 
         /**
@@ -87,12 +96,12 @@ public class Message implements Serializable {
         }
     }
 
-    static Message inLobby(String uuid) {
-        return new Message(uuid, null);
+    static Message inLobby(int playerNumber, String UUID) {
+        return new Message(playerNumber, UUID, null);
     }
 
-    static Message sendInputState(String uuid, ClientInput input) {
-        return new Message(uuid, input);
+    static Message sendInputState(String UUID, ClientInput input) {
+        return new Message(-1, UUID, input);
     }
 
     public static String serialise(Message message) {
@@ -101,17 +110,18 @@ public class Message implements Serializable {
             oos.writeObject(message);
         } catch (IOException e) {
             App.logger.error(
-                "Error serializing message {}:\n {}",
+                "Error serialising message {}:\n {}",
                 message,
                 e.getMessage()
             );
 
-            Message emptyMessage = new Message();
-            if (message.equals(emptyMessage)) {
-                App.logger.error("Tried to serialize empty message");
+            if (message.equals(new Message())) {
+                App.logger.fatal(
+                    "Too much recursion serialising empty messages"
+                );
                 App.exit();
             } else {
-                return serialise(emptyMessage);
+                return serialise(new Message());
             }
         }
 
@@ -120,14 +130,14 @@ public class Message implements Serializable {
 
     public static Message deserialise(String string) {
         byte[] data = Base64.getDecoder().decode(string);
-        ByteArrayInputStream baos = new ByteArrayInputStream(data);
+        ByteArrayInputStream bais = new ByteArrayInputStream(data);
 
         Message message;
-        try (ObjectInputStream ois = new ObjectInputStream(baos)) {
+        try (ObjectInputStream ois = new ObjectInputStream(bais)) {
             message = (Message) ois.readObject();
         } catch (IOException | ClassNotFoundException e) {
             App.logger.error(
-                "Error deserializing string {}:\n{}",
+                "Error deserialising string {}:\n{}",
                 string,
                 e.getMessage()
             );
@@ -137,6 +147,16 @@ public class Message implements Serializable {
         return message;
     }
 
+    @Override
+    public String toString() {
+        return String.format(
+            "Message{Player Number %d, UUID %s, %s}",
+            playerNumber,
+            UUID,
+            input
+        );
+    }
+
     /**
      * Automatically generated
      */
@@ -144,8 +164,9 @@ public class Message implements Serializable {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
+        result = prime * result + ((UUID == null) ? 0 : UUID.hashCode());
         result = prime * result + ((input == null) ? 0 : input.hashCode());
-        result = prime * result + ((uuid == null) ? 0 : uuid.hashCode());
+        result = prime * result + playerNumber;
         return result;
     }
 
@@ -162,21 +183,18 @@ public class Message implements Serializable {
         if (getClass() != obj.getClass())
             return false;
         Message other = (Message) obj;
+        if (UUID == null) {
+            if (other.UUID != null)
+                return false;
+        } else if (!UUID.equals(other.UUID))
+            return false;
         if (input == null) {
             if (other.input != null)
                 return false;
         } else if (!input.equals(other.input))
             return false;
-        if (uuid == null) {
-            if (other.uuid != null)
-                return false;
-        } else if (!uuid.equals(other.uuid))
+        if (playerNumber != other.playerNumber)
             return false;
         return true;
-    }
-
-    @Override
-    public String toString() {
-        return String.format("Message{UUID %s, %s}", uuid, input);
     }
 }

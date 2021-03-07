@@ -8,7 +8,7 @@ import org.bioshock.engine.networking.NetworkManager;
 import org.bioshock.engine.rendering.RenderManager;
 
 public final class EntityManager {
-	private static ArrayList<Entity> entities = new ArrayList<>();
+	private static List<Entity> entities = new ArrayList<>();
 
     private EntityManager() {}
 
@@ -29,6 +29,12 @@ public final class EntityManager {
         if (entity.getRendererC() != null) {
             RenderManager.register(entity);
         }
+
+        // children.forEach(entity -> {
+        //     if (entity instanceof SquareEntity) {
+        //         SceneManager.getPane().getChildren().add(((SquareEntity) entity).getHitbox());
+        //     }
+        // });
 
         entities.add(entity);
 	}

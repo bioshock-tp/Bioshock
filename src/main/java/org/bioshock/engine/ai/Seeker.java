@@ -28,7 +28,7 @@ public class Seeker extends SquareEntity {
 
         renderer = PlayerRenderer.class;
 
-        swatter = new Swatter(p, com, new Size(80,10), Color.BLACK, this);
+        swatter = new Swatter(p, new NetworkC(false), new Size(80,10), Color.BLACK, this);
     }
 
     public boolean canSee(SquareEntity enemy) {
@@ -54,9 +54,7 @@ public class Seeker extends SquareEntity {
             EntityManager.isManaged(this, target)
             && intersects(target, "fov")
         ) {
-            // App.logger.debug("before {}", target.getPosition().subtract(this.getPosition()));
             Point2D targDirec = target.getPosition().subtract(this.getPosition()).normalize();
-            // App.logger.debug("after {}", targDirec);
 
             movement.direction(targDirec);
         } else {

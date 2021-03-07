@@ -1,27 +1,28 @@
 package org.bioshock.engine.core;
 
-import java.util.List;
-
 import org.bioshock.engine.scene.SceneManager;
 
-import javafx.scene.Node;
 import javafx.scene.control.Label;
 
 public class FrameRate {
     private static final int N = 100;
     private static final long[] frames = new long[N];
-    private static final Label label = new Label("0");
+    private static Label label;
     private static int frameTimeIndex = 0;
     private static boolean arrayFilled = false;
 
     private FrameRate() {}
 
     public static final void tick(long now) {
-        List<Node> children = SceneManager.getPane().getChildren();
-        if (!children.contains(label)) {
-            label.setTranslateX((double) WindowManager.getWindowWidth() / 2 - 10);
-            label.setTranslateY(10 - (double) WindowManager.getWindowHeight() / 2);
-            children.add(label);
+        if (label == null) {
+            label = new Label("0");
+            label.setTranslateX(
+                (double) WindowManager.getWindowWidth() / 2 - 10
+            );
+            label.setTranslateY(
+                10 - (double) WindowManager.getWindowHeight() / 2
+            );
+            SceneManager.getPane().getChildren().add(label);
         }
 
         long oldFrameTime = frames[frameTimeIndex];

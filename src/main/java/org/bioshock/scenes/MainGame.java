@@ -27,8 +27,9 @@ public class MainGame extends GameScene {
         double x = 300;
         double y = 400;
 
+        /* Players must render in exact order, do not play with z values */
         Hider hider = new Hider(
-            new Point3D(x, y, 1),
+            new Point3D(x, y, 0.5),
             new NetworkC(true),
             new Size(40, 40),
             200,
@@ -43,7 +44,7 @@ public class MainGame extends GameScene {
             y += 300 % h;
 
             children.add(new Hider(
-                new Point3D(x, y, 1),
+                new Point3D(x, y, i),
                 new NetworkC(true),
                 new Size(40, 40),
                 200,
@@ -56,7 +57,7 @@ public class MainGame extends GameScene {
 
 		Seeker seeker = new Seeker(
             new Point3D(centreX, centreY, 0.5),
-            new NetworkC(false),
+            new NetworkC(true),
             new Size(40, 40),
             300,
             Color.INDIANRED,

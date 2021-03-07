@@ -1,5 +1,7 @@
 package org.bioshock.engine.networking;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
@@ -10,6 +12,7 @@ import org.bioshock.engine.ai.Seeker;
 import org.bioshock.engine.entity.Hider;
 import org.bioshock.engine.entity.SquareEntity;
 import org.bioshock.engine.input.InputManager;
+import org.bioshock.engine.networking.Message.ClientInput;
 import org.bioshock.engine.scene.SceneManager;
 import org.bioshock.main.App;
 
@@ -21,31 +24,19 @@ public class NetworkManager {
     private static Map<KeyCode, Boolean> keyPressed = new EnumMap<>(KeyCode.class);
 
     private static String me = UUID.randomUUID().toString();
-    private static Map<String, Hider> players = new HashMap<>();
+    private static List<Hider> playerList = new ArrayList<>(App.PLAYERCOUNT);
+    private static Map<String, Hider> loadedPlayers = new HashMap<>(App.PLAYERCOUNT);
     private static Seeker seeker;
 
     private static boolean inGame = false;
 
-    private static Client client;
-    private static Hider firstPlayer;
-
+    private static Client client = new Client("ws://localhost:8010");
     private static Object gameStartedMutex = new Object();
     private static Object awaitingMessage = new Object();
 
     private NetworkManager() {}
 
     public static void initialise() {
-        Client client2 = new Client();
-        try {
-            client2.connectBlocking();
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-        }
-        App.logger.debug("connected");
-
-        client2.send("yo");
-        App.logger.debug("sent");
-
         keyPressed.put(KeyCode.W, false);
         keyPressed.put(KeyCode.A, false);
         keyPressed.put(KeyCode.S, false);
@@ -54,43 +45,47 @@ public class NetworkManager {
         Thread initThread = new Thread(new Task<>() {
             @Override
             protected Object call() {
+                // Thread.setDefaultUncaughtExceptionHandler((Thread t, Throwable e) ->
+                //     App.logger.error(
+                //         "{}\n{}",
+                //         e,
+                //         Arrays.toString(e.getStackTrace()).replace(',', '\n')
+                //     )
+                // );
+
+                /* Wait until game loads, then connect to server */
                 synchronized (gameStartedMutex) {
                     while (!SceneManager.isGameStarted()) {
                         try {
                             gameStartedMutex.wait();
+
+                            App.logger.info("Connecting to web socket...");
                             client.connectBlocking();
+                            App.logger.info("Connected to web socket");
+
                         } catch (InterruptedException e) {
                             Thread.currentThread().interrupt();
                         }
                     }
                 }
 
-                for (int psConn = 0; psConn < App.PLAYERCOUNT; psConn++) {
+                /* Wait until players join then add them to loadedPlayers */
+                while (loadedPlayers.size() < App.PLAYERCOUNT) {
                     synchronized(awaitingMessage) {
                         while (client.getInitialMessages().isEmpty()) {
                             try {
-                                App.logger.info("Awaiting Players");
-                                App.logger.debug("connected {}", client.getReadyState());
-                                if (psConn != 0) {
-                                    awaitingMessage.wait();
-                                }
-                                client.send("I'm waiting");
-                                App.logger.debug("Lobby message");
-                                Thread.sleep(1000);
+                                awaitingMessage.wait();
                             } catch (InterruptedException e) {
                                 Thread.currentThread().interrupt();
                             }
                         }
-                        App.logger.debug("Player joined");
                     }
 
-                    Message message = client.getInitialMessages().poll();
+                    Message m = client.getInitialMessages().poll();
 
-                    Hider[] localPlayers = players.values().toArray(new Hider[1]);
-                    Hider player = localPlayers[psConn];
-                    players.remove(player.getID());
-                    player.setID(message.uuid);
-                    players.put(player.getID(), player);
+                    Hider hider = playerList.get(m.playerNumber - 1);
+                    hider.setID(m.UUID);
+                    loadedPlayers.putIfAbsent(m.UUID, hider);
                 }
 
                 InputManager.onPressListener(
@@ -141,62 +136,59 @@ public class NetworkManager {
             keyPressed.get(KeyCode.W)
         );
 
-        Point2D ai = seeker.getMovement().getDirection();
+        Point2D aiDir = seeker.getMovement().getDirection();
 
         Message.ClientInput input = new Message.ClientInput(
-            x, y, ai.getX(), ai.getY()
+            x, y, aiDir.getX(), aiDir.getY()
         );
 
-        return new Message(me, input);
+        return new Message(-1, me, input);
     }
 
     public static void tick() {
-        if (!inGame) {
-            return;
+        if (!inGame || playerList.isEmpty()) return;
+
+        if (loadedPlayers.get(me) != null) {
+            loadedPlayers.get(me).getMovement().direction(0, 0);
+
+            client.send(Message.serialise(pollInputs()));
         }
 
-        players.get(me).getMovement().direction(0, 0);
-
         try {
-            App.logger.debug("deadlock?");
             client.getMutex().acquire();
-            App.logger.debug("mutex acquired");
-            for (Message message : client.getMsgQ()) {
-                App.logger.debug("Received Message");
 
-                if (message.uuid.equals(firstPlayer.getID())) {
+            for (Hider hider : playerList) {
+                ClientInput input = client.getInputQ().get(hider.getID());
+                if (hider == playerList.get(0)) {
                     seeker.getMovement().direction(
-                        message.input.aiX,
-                        message.input.aiY
+                        input.aiX,
+                        input.aiY
                     );
                 }
 
-                players.get(message.uuid).getMovement().direction(
-                    message.input.x,
-                    message.input.y
+                loadedPlayers.get(hider.getID()).getMovement().direction(
+                    input.x,
+                    input.y
                 );
-
-                client.getMsgQ().remove(message);
             }
         } catch(InterruptedException ie) {
-            App.logger.error(ie);
-            Thread.currentThread().interrupt(); /* Should not ignore interruptions */
+            Thread.currentThread().interrupt();
         } finally {
             client.getMutex().release();
-            App.logger.debug("mutex released");
         }
-
-        client.send(Message.serialize(pollInputs()));
 	}
 
 	public static void register(SquareEntity entity) {
         if (entity instanceof Hider) {
-            if (players.isEmpty()) {
-                firstPlayer = (Hider) entity;
+            if (playerList.isEmpty()) {
             }
-            players.put(entity.getID(), (Hider) entity);
-        } else {
+            playerList.add((Hider) entity);
+        }
+        else if (entity instanceof Seeker) {
             seeker = (Seeker) entity;
+        }
+        else {
+            App.logger.error("Tried to register non player entity {}", entity);
         }
 	}
 
@@ -205,10 +197,15 @@ public class NetworkManager {
 	}
 
 	public static void unregister(SquareEntity entity) {
-		if (entity instanceof Seeker) {
+        if (entity instanceof Hider) {
+            playerList.remove(entity);
+            loadedPlayers.remove(entity.getID());
+        }
+		else if (entity instanceof Seeker) {
             seeker = null;
-        } else {
-            players.remove(entity.getID());
+        }
+        else {
+            App.logger.error("Tried to register non player entity {}", entity);
         }
 	}
 

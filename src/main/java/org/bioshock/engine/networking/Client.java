@@ -3,10 +3,14 @@ package org.bioshock.engine.networking;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.ByteBuffer;
-import java.util.LinkedList;
+import java.util.ArrayDeque;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.Semaphore;
 
+import org.bioshock.engine.networking.Message.ClientInput;
 import org.bioshock.main.App;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
@@ -14,9 +18,11 @@ import org.java_websocket.handshake.ServerHandshake;
 public class Client extends WebSocketClient {
     private static final String DEFURI = "ws://51.15.109.210:8010/lobby";
 
+    private int playerNumber;
+
     private Semaphore mutex = new Semaphore(1);
-    private Queue<Message> initialMessages = new LinkedList<>();
-    private Queue<Message> inputQueue = new LinkedList<>();
+    private Queue<Message> initialMessages = new ArrayDeque<>();
+    private Map<String, ClientInput> inputQueue = new HashMap<>(App.PLAYERCOUNT);
     private boolean connected = false;
 
     private Client(URI serverURI) {
@@ -24,14 +30,18 @@ public class Client extends WebSocketClient {
     }
 
     public Client() {
-        this(getDefaultURI());
+        this(getURI(DEFURI));
     }
 
-    public static URI getDefaultURI() {
+    public Client(String uri) {
+        this(getURI(uri));
+    }
+
+    private static URI getURI(String uri) {
         try {
-            return new URI(DEFURI);
+            return new URI(uri);
         } catch (URISyntaxException e) {
-            App.logger.error("Invalid default URI; {}", e.getMessage());
+            App.logger.fatal("Invalid URI {}: {}", uri, e.getMessage());
             App.exit();
             return null; /* Suppress no return value warning */
         }
@@ -40,73 +50,86 @@ public class Client extends WebSocketClient {
     @Override
     public void onOpen(ServerHandshake handshakedata) {
         setTcpNoDelay(true);
-        Message queueMessage = Message.inLobby(
-            NetworkManager.getMe()
-        );
-        App.logger.debug("Sending {}", queueMessage);
-        App.logger.debug("Serialised {}", Message.serialise(queueMessage));
-        // send(Message.serialize(queueMessage));
-        send("yo");
-        App.logger.debug("Sent");
-        connected = true;
-        App.logger.debug("Changed Boolean (end of onOpen)");
-    }
-
-    @Override
-    public void onClose(int code, String reason, boolean remote) {
-        App.logger.error(
-            "Closed with exit code {} additional info: {}",
-            code,
-            reason
-        );
-        connect();
     }
 
     @Override
     public void onMessage(String string) {
-        // App.logger.debug("Un-serialised {}", string);
-        // Message message = Message.deserialize(string);
-        // App.logger.debug("Message {}", message);
-        // try {
-        //     mutex.acquire();
+        /* Case of player number */
+        try {
+            playerNumber = Integer.parseInt(string);
+            send("New Player");
+            return;
+        } catch (NumberFormatException ignored) {
+            /* Was not playerNumber message */
+        }
 
-        //     if (!message.uuid.isEmpty() && message.input == null) {
-        //         /* In this case message is lobby message */
-        //         getInitialMessages().add(message);
+        /* Case of new player joining */
+        if (string.equals("New Player")) {
+            Message queueMessage = Message.inLobby(
+                playerNumber,
+                NetworkManager.getMe()
+            );
 
-        //         App.logger.debug("message");
-        //         Object messageMutex = NetworkManager.getMessageMutex();
-        //         synchronized(messageMutex) {
-        //             messageMutex.notifyAll();
-        //         }
+            send(Message.serialise(queueMessage));
+            return;
+        }
 
-        //         return;
-        //     }
+        Message message = Message.deserialise(string);
 
-        //     inputQueue.add(message);
-        // } catch(InterruptedException ie) {
-        //     Thread.currentThread().interrupt();
-        // } finally {
-        //     mutex.release();
-        // }
-        App.logger.debug("yo");
+        try {
+            mutex.acquire();
+
+            /* Case of lobby message */
+            if (message.playerNumber > 0 && message.input == null) {
+                initialMessages.add(message);
+
+                Object messageMutex = NetworkManager.getMessageMutex();
+                synchronized(messageMutex) {
+                    messageMutex.notifyAll();
+                }
+            }
+
+            /* Case of input */
+            else {
+                inputQueue.put(message.UUID, message.input);
+            }
+        } catch(InterruptedException ie) {
+            Thread.currentThread().interrupt();
+        } finally {
+            mutex.release();
+        }
     }
 
     @Override
     public void onMessage(ByteBuffer message) {
         App.logger.debug("received ByteBuffer");
+        onMessage(message.toString());
     }
 
     @Override
     public void onError(Exception ex) {
-        App.logger.error("A network error occurred: {}", ex.getMessage());
+        App.logger.error(
+            "A network error occurred: {}. StackTrace\n{}",
+            ex.getMessage(),
+            Arrays.toString(ex.getStackTrace()).replace(',', '\n')
+        );
+    }
+
+    @Override
+    public void onClose(int code, String reason, boolean remote) {
+        App.logger.error(
+            "Server connection closed with exit code {}, additional info: {}",
+            code,
+            reason
+        );
+        App.exit();
     }
 
     public Queue<Message> getInitialMessages() {
         return initialMessages;
     }
 
-	public Queue<Message> getMsgQ() {
+	public Map<String, ClientInput> getInputQ() {
 		return inputQueue;
 	}
 

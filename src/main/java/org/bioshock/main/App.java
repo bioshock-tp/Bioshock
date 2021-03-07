@@ -2,6 +2,7 @@ package org.bioshock.main;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Arrays;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -31,10 +32,20 @@ public class App extends Application {
 
 	@Override
 	public void start(Stage stage) {
+        Thread.setDefaultUncaughtExceptionHandler((Thread t, Throwable e) ->
+            App.logger.error(
+                "{}\n{}",
+                e,
+                Arrays.toString(e.getStackTrace()).replace(',', '\n')
+            )
+        );
         assert(PLAYERCOUNT > 0);
+
 		WindowManager.initialize(stage);
+
         initFXMLScene();
-		stage.setScene(fxmlScene);
+
+        stage.setScene(fxmlScene);
 		stage.show();
 	}
 
@@ -42,7 +53,8 @@ public class App extends Application {
 		SceneManager.initialize(primaryStage, new LoadingScreen());
         InputManager.initialize();
         InputManager.onPressListener(KeyCode.C, () ->
-            App.logger.debug(SceneManager.getScene()));
+            App.logger.debug(SceneManager.getScene())
+        );
 
         NetworkManager.initialise();
 
@@ -67,8 +79,8 @@ public class App extends Application {
             FXMLLoader fxmlLoader = new FXMLLoader(location);
             return fxmlLoader.load();
         } catch (IOException e) {
-            App.logger.error("Error loading FXML");
-            exit();
+            App.logger.fatal("Error loading FXML");
+            App.exit();
             return null; /* Prevents no return value warning */
         }
 	}
