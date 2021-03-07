@@ -7,7 +7,7 @@ import org.java_websocket.server.WebSocketServer;
 
 public class Server extends WebSocketServer {
     private static final String host = "51.15.109.210";
-    private static final int port = 8010;
+    private static final int port = 80;
 
     public Server(InetSocketAddress address) {
 		super(address);
