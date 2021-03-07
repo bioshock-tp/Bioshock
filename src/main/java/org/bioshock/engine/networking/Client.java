@@ -16,7 +16,7 @@ import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
 
 public class Client extends WebSocketClient {
-    private static final String DEFURI = "ws://51.15.109.210:8010/lobby";
+    private static final String DEFURI = "ws://51.15.109.210:8010/";
 
     private int playerNumber;
 
