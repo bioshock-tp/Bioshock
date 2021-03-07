@@ -1,6 +1,7 @@
 package org.bioshock.engine.input;
 
 import java.security.InvalidParameterException;
+import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.Map;
 
@@ -64,5 +65,10 @@ public class InputManager {
 
     public static void removeKeyListener(KeyCode keyCode) {
         keyPresses.remove(keyCode);
+        keyReleases.remove(keyCode);
+	}
+
+    public static void removeKeyListeners(KeyCode... keyCodes) {
+        Arrays.asList(keyCodes).forEach(InputManager::removeKeyListener);
 	}
 }

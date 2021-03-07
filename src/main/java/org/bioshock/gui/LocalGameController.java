@@ -1,6 +1,7 @@
 package org.bioshock.gui;
 
 import org.bioshock.main.App;
+import org.bioshock.scenes.LoadingScreen;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -23,6 +24,6 @@ public class LocalGameController {
 
     public void launchGame(ActionEvent actionEvent) {
         Stage stage = (Stage) launchButton.getScene().getWindow();
-        App.startGame(stage);
+        App.startGame(stage, new LoadingScreen());
     }
 }

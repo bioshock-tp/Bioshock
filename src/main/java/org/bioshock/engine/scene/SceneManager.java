@@ -4,7 +4,6 @@ import org.bioshock.engine.entity.EntityManager;
 import org.bioshock.engine.input.InputManager;
 import org.bioshock.scenes.GameScene;
 
-import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
@@ -37,7 +36,7 @@ public final class SceneManager {
         currentScene.renderEntities();
 	}
 
-	public static Scene getScene() {
+	public static GameScene getScene() {
 		return currentScene;
 	}
 

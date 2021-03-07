@@ -4,7 +4,6 @@ import org.bioshock.engine.components.NetworkC;
 import org.bioshock.engine.physics.Movement;
 import org.bioshock.engine.renderers.components.SquareEntityRendererC;
 
-import javafx.geometry.Point2D;
 import javafx.geometry.Point3D;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -36,11 +35,11 @@ public abstract class SquareEntity extends Entity {
 
         fov = new Circle(p.getX(), p.getY(), r);
 
-        setPosition(p);
+        setPosition(position);
     }
 
     @Override
-    public void setPosition(int x, int y) {
+    public void setPosition(double x, double y) {
         super.setPosition(x, y);
 
         if (fov != null) {
@@ -53,30 +52,27 @@ public abstract class SquareEntity extends Entity {
 		this.size = size;
 	}
 
-    public Point2D getCentre() {
-		return new Point2D(
-            getX() + (double) getWidth() / 2,
-            getY() + (double) getHeight() / 2
-        );
+    public Point getCentre() {
+		return new Point(getX() + getWidth() / 2, getY() + getHeight() / 2);
 	}
 
     public Size getSize() {
 		return size;
 	}
 
-	public int getWidth() {
+	public double getWidth() {
 		return size.getWidth();
 	}
 
-	public int getHeight() {
+	public double getHeight() {
 		return size.getHeight();
 	}
 
-    public int getRadius() {
-    	return (int) fov.getRadius();
+    public double getRadius() {
+    	return fov.getRadius();
     }
 
-    public Rotate getRotation() {
+    public Rotate getRotate() {
         return rotate;
     }
 

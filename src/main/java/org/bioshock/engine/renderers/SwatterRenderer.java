@@ -12,14 +12,14 @@ public final class SwatterRenderer implements Renderer {
         GraphicsContext gc,
         E swatter
     ) {
-        int x = swatter.getX();
-        int y = swatter.getY();
+        double x = swatter.getX();
+        double y = swatter.getY();
         double width = swatter.getWidth();
         double height = swatter.getHeight();
 
         gc.save();
 
-        Rotate r = swatter.getRotation();
+        Rotate r = swatter.getRotate();
 
         gc.setTransform(
             r.getMxx(), r.getMyx(), r.getMxy(),

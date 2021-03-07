@@ -13,15 +13,15 @@ public final class PlayerRenderer implements Renderer {
         E player
     ) {
 
-        int x = player.getX();
-        int y = player.getY();
+        double x = player.getX();
+        double y = player.getY();
         double radius = player.getRadius();
         double width = player.getWidth();
         double height = player.getHeight();
 
         gc.save();
 
-        Rotate r = player.getRotation();
+        Rotate r = player.getRotate();
         gc.setTransform(
             r.getMxx(), r.getMyx(), r.getMxy(),
             r.getMyy(), r.getTx(), r.getTy()

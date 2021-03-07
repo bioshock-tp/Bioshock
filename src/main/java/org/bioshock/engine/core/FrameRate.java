@@ -19,8 +19,8 @@ public class FrameRate {
     public static final void tick(long now) {
         List<Node> children = SceneManager.getPane().getChildren();
         if (!children.contains(label)) {
-            label.setTranslateX((double) WindowManager.getWindowWidth() / 2 - 10);
-            label.setTranslateY(10 - (double) WindowManager.getWindowHeight() / 2);
+            label.setTranslateX(WindowManager.getWindowWidth() / 2 - 10);
+            label.setTranslateY(10 - WindowManager.getWindowHeight() / 2);
             children.add(label);
         }
 

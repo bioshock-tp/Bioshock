@@ -16,7 +16,7 @@ public class Hider extends SquareEntity {
 
         renderer = PlayerRenderer.class;
 
-        final int speed = movement.getSpeed();
+        final int speed = (int) movement.getSpeed();
 
         InputManager.onPress(  KeyCode.W, () -> movement.direction(0, -speed));
         InputManager.onPress(  KeyCode.A, () -> movement.direction(-speed, 0));
@@ -31,7 +31,7 @@ public class Hider extends SquareEntity {
 
 	protected void tick(double timeDelta) {
         dead = false;
-        movement.tick();
+        movement.tick(timeDelta);
 	}
 
     public boolean isDead() {

@@ -45,4 +45,7 @@ public abstract class GameScene extends Scene {
 	public Canvas getCanvas() {
 		return canvas;
 	}
+
+	public void destroy() {
+	}
 }
