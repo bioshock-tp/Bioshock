@@ -1,5 +1,10 @@
 package org.bioshock.engine.renderers;
 
+import static org.bioshock.engine.rendering.RenderManager.getRenHeight;
+import static org.bioshock.engine.rendering.RenderManager.getRenWidth;
+import static org.bioshock.engine.rendering.RenderManager.getRenX;
+import static org.bioshock.engine.rendering.RenderManager.getRenY;
+
 import org.bioshock.engine.entity.SquareEntity;
 
 import javafx.scene.canvas.GraphicsContext;
@@ -26,7 +31,7 @@ public final class SwatterRenderer implements Renderer {
             r.getMyy(), r.getTx(), r.getTy()
         );
         gc.setFill(swatter.getRendererC().getColor());
-        gc.fillRect(x, y, width, height);
+        gc.fillRect(getRenX(x), getRenY(y), getRenWidth(width), getRenHeight(height));
         gc.setLineWidth(10);
         gc.setStroke(swatter.getRendererC().getColor());
 

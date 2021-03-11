@@ -1,6 +1,7 @@
 package org.bioshock.engine.scene;
 
 import org.bioshock.engine.entity.EntityManager;
+import org.bioshock.engine.entity.Size;
 import org.bioshock.engine.input.InputManager;
 import org.bioshock.scenes.GameScene;
 

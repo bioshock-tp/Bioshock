@@ -4,6 +4,8 @@ import org.bioshock.engine.core.WindowManager;
 import org.bioshock.engine.entity.EntityManager;
 import org.bioshock.engine.entity.Point;
 import org.bioshock.engine.entity.SquareEntity;
+import org.bioshock.engine.scene.SceneManager;
+import org.bioshock.scenes.GameScene;
 
 import javafx.geometry.Point2D;
 import javafx.scene.transform.Rotate;
@@ -44,10 +46,10 @@ public class Movement {
             y += dispY / Math.abs(dispY) * speed;
         }
 
-        while (x < 0) x++;
-        while (y < 0) y++;
-        while (x + entity.getWidth() > WindowManager.getWindowWidth()) x--;
-        while (y + entity.getHeight() > WindowManager.getWindowHeight()) y--;
+//        while (x < 0) x++;
+//        while (y < 0) y++;
+//        while (x + entity.getWidth() > GameScene.getGameScreen().getWidth()) x--;
+//        while (y + entity.getHeight() > GameScene.getGameScreen().getHeight()) y--;
 
         double oldX = entity.getX();
         double oldY = entity.getY();
