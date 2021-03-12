@@ -99,8 +99,9 @@ public class App extends Application {
 	private void initialiseAudio() {
         AudioController.initialise();
         Preferences prefs = Preferences.userNodeForPackage(SettingsController.class);
+        double volume = prefs.getDouble("musicVolume", 1.0);
         if(prefs.getBoolean("musicOn", true)) {
-            playBackgroundMusic();
+            playBackgroundMusic(volume);
         }
     }
 
@@ -111,12 +112,12 @@ public class App extends Application {
 		musicController.stop();
 	}
 
-	public void playBackgroundMusic() {
+	public void playBackgroundMusic(double vol) {
 		musicController = AudioController.loadMusicController(
             "background-music"
         );
 		final MusicSettings settings = new MusicSettings();
-		settings.setVolume(0.5);
+		settings.setVolume(vol);
 		settings.setCycleCount(-1);
 		musicController.play(settings);
 	}

@@ -45,11 +45,26 @@ public class SettingsController extends App {
         else {
             sfxOffRadioButton.setSelected(true);
         }
+
+        musicVolumeSlider.setValue(getPrefs().getDouble("musicVolume", 1.0));
+
+        musicVolumeSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
+
+            getPrefs().putDouble("musicVolume", newValue.doubleValue());
+
+            if (getPrefs().getBoolean("musicOn", true)) {
+                playBackgroundMusic(newValue.doubleValue());
+            }
+
+            //textField.setText(Double.toString(newValue.intValue()));
+
+
+        });
     }
 
     @FXML
     public void toggleMusicOn(ActionEvent actionEvent) {
-        playBackgroundMusic();
+        playBackgroundMusic(getPrefs().getDouble("musicVolume", 1.0));
         getPrefs().putBoolean("musicOn", true);
     }
 
