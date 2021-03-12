@@ -1,6 +1,7 @@
 package org.bioshock.scenes;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.bioshock.engine.core.WindowManager;
 import org.bioshock.engine.entity.Entity;
@@ -20,8 +21,8 @@ public abstract class GameScene extends Scene {
 	private static Size gameScreen = new Size(1920, 1080); //1080p 16:9 monitor
 	private StackPane pane;
     private Canvas canvas = new Canvas(
-    		WindowManager.getWindowWidth(), 
-    		WindowManager.getWindowHeight()
+        WindowManager.getWindowWidth(),
+        WindowManager.getWindowHeight()
     );
     protected ArrayList<Entity> children = new ArrayList<>();
     private ScrollPane scrollPane = new ScrollPane();
@@ -29,7 +30,6 @@ public abstract class GameScene extends Scene {
     private GameScene(StackPane pane) {
         super(pane);
         this.pane = pane;
-        pane.getChildren().add(scrollPane);
         pane.getChildren().add(canvas);
         RenderManager.setScale(new Point2D(
     		WindowManager.getWindowWidth()/gameScreen.getWidth(), 
@@ -59,7 +59,6 @@ public abstract class GameScene extends Scene {
 
 	public void renderEntities() {
         children.forEach(EntityManager::register);
-        children.forEach(entity -> pane.getChildren().add(entity.getHitbox()));
 	}
 
     public void setBackground(Background background) {

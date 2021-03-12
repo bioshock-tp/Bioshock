@@ -9,7 +9,7 @@ public class Debug extends App {
     @Override
     public void start(Stage stage) {
 		WindowManager.initialise(stage);
-        startGame(stage, new MainGame());
+        startGame(stage, new MainGame(), false);
 	}
 
     public static void main(String[] args) {

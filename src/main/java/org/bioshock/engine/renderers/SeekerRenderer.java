@@ -64,7 +64,6 @@ public class SeekerRenderer implements Renderer {
             seeker.setActive(false);
         }
 
-
         gc.restore();
 
         seeker.getRendererC().setColor(Color.INDIANRED);

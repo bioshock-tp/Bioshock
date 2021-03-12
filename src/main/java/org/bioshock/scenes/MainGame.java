@@ -1,5 +1,7 @@
 package org.bioshock.scenes;
 
+import java.util.List;
+
 import org.bioshock.engine.ai.SeekerAI;
 import org.bioshock.engine.components.NetworkC;
 import org.bioshock.engine.entity.EntityManager;
@@ -7,7 +9,9 @@ import org.bioshock.engine.entity.Hider;
 import org.bioshock.engine.entity.Size;
 import org.bioshock.engine.input.InputManager;
 import org.bioshock.engine.rendering.RenderManager;
+import org.bioshock.entities.map.Room;
 import org.bioshock.entities.map.ThreeByThreeMap;
+import org.bioshock.main.App;
 
 import javafx.geometry.Point2D;
 import javafx.geometry.Point3D;
@@ -39,24 +43,46 @@ public class MainGame extends GameScene {
         );
 		children.addAll(map.getWalls());
 
-		Point3D startPos = map.getRooms().get(2).getRoomCenter();
+        List<Room> rooms = map.getRooms();
 
-		Hider hider = new Hider(
-            new Point3D(300, 400, 0.5),
+        double x = rooms.get(0).getRoomCenter().getX();
+        double y = rooms.get(0).getRoomCenter().getY();
+
+        /* Players must render in exact order, do not play with z values */
+        Hider hider = new Hider(
+            new Point3D(x, y, 0.5),
             new NetworkC(true),
             new Size(40, 40),
             200,
             Color.PINK
         );
-		children.add(hider);
+        children.add(hider);
+
+        for (int i = 1; i < App.PLAYERCOUNT; i++) {
+            int roomNumber = i % rooms.size();
+            if (roomNumber >= rooms.size() / 2) roomNumber++;
+            x = rooms.get(roomNumber % rooms.size()).getRoomCenter().getX();
+            y = rooms.get(roomNumber % rooms.size()).getRoomCenter().getY();
+
+            children.add(new Hider(
+                new Point3D(x, y, i),
+                new NetworkC(true),
+                new Size(40, 40),
+                200,
+                Color.PINK
+            ));
+        }
+
+		double centreX = rooms.get(rooms.size() / 2).getRoomCenter().getX();
+		double centreY = rooms.get(rooms.size() / 2).getRoomCenter().getX();
 
 		SeekerAI seeker = new SeekerAI(
-            startPos,
+            new Point3D(centreX, centreY, 0.5),
             new NetworkC(true),
             new Size(40, 40),
             300,
             Color.INDIANRED,
-			hider
+            hider
         );
 
 		children.add(seeker);

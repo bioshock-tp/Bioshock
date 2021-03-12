@@ -1,15 +1,14 @@
 package org.bioshock.engine.rendering;
 
+import org.bioshock.main.App;
+
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.bioshock.engine.entity.Entity;
-import org.bioshock.engine.entity.Size;
 import org.bioshock.engine.scene.SceneManager;
-import org.bioshock.main.App;
 
-import javafx.geometry.Point2D;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 
@@ -22,8 +21,7 @@ public final class RenderManager {
     private RenderManager() {
     }
 
-
-	/**
+    /**
      * A method that attempts to render every entity registered to the
      * RenderManager in Ascending Y order but cannot render if it has no canvas
      * to render entities on before rendering it sets the entire canvas to
@@ -37,7 +35,6 @@ public final class RenderManager {
         gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
 
         sort(renderableEntities);
-//        gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
 
         // renders each entity with the renderer defined in the map
         for (Entity entity : renderableEntities) {
@@ -77,42 +74,43 @@ public final class RenderManager {
         }
     }
 
-	/**
-	 * Registers an entity to the RenderManager and Stores it in ascending
+    /**
+     * Registers an entity to the RenderManager and Stores it in ascending
      * order with regards to it's Y value given in it's render component
-	 * @param toAdd
-	 */
-	public static void register(Entity toAdd) {
-		if (renderableEntities.isEmpty()) {
-			renderableEntities.add(toAdd);
-		}
-		else {
-			int i = 0;
-			Entity currEnt = renderableEntities.get(0);
-			while (
-                currEnt.getZ() < toAdd.getZ()
-                && i < renderableEntities.size()
+     * @param toAdd
+     */
+    public static void register(Entity entityToAdd) {
+        if (entities.isEmpty()) {
+            entities.add(entityToAdd);
+        } else {
+            int i;
+            Entity currEnt = entities.get(0);
+            for (
+                i = 1;
+                (currEnt.getZ() < entityToAdd.getZ()) && i < entities.size();
+                i++
             ) {
-				currEnt = renderableEntities.get(i++);
-			}
+				currEnt = entities.get(i);
+            }
 
-			renderableEntities.add(i, toAdd);
-		}
-	}
+			renderableEntities.add(i, entityToAdd);
+        }
+    }
 
     public static void registerAll(List<Entity> entities) {
         entities.forEach(RenderManager::register);
-	}
+    }
 
     /**
-	 * Unregisters an entity from the RenderManager
-	 * @param entity
-	 */
-	public static void unregister(Entity entity) {
-		renderableEntities.remove(entity);
-	}
+     * Unregisters an entity from the RenderManager
+     * @param entity Entity to remove
+     * @return True if entity was registered
+     */
+    public static boolean unregister(Entity entity) {
+        return entities.remove(entity);
+    }
 
-	public static void unregisterAll(List<Entity> entities) {
+    public static void unregisterAll(List<Entity> entities) {
         entities.forEach(RenderManager::unregister);
 	}
 

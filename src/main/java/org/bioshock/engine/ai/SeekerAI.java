@@ -67,22 +67,24 @@ public class SeekerAI extends SquareEntity {
 	}
 
     public void doActions() {
-        if (
-            EntityManager.isManaged(this, target)
-            && intersects(target, "swatter")
-        ) {
-            setActive(true);
-            target.setDead(true);
-            rendererC.setColor(Color.GREEN);
-        }
-        if (
-            EntityManager.isManaged(this, target)
-            && intersects(target, "fov")
-        ) {
-            movement.move(target.getPosition().subtract(this.getPosition()));
-        }
+        EntityManager.getPlayers().forEach(entity -> {
+            if (
+                EntityManager.isManaged(this, entity)
+                && intersects(entity, "swatter")
+            ) {
+                setActive(true);
+                entity.setDead(true);
+                rendererC.setColor(Color.GREEN);
+            }
+            if (
+                EntityManager.isManaged(this, entity)
+                && intersects(entity, "fov")
+            ) {
+                target = entity;
+                movement.move(target.getPosition().subtract(this.getPosition()));
+            }
+        });
     }
-
 
     public void setActive(boolean b) { isActive = b; }
 
@@ -91,10 +93,8 @@ public class SeekerAI extends SquareEntity {
         swatterHitbox.setCenterY(getCentre().getY());
     }
 
-    public void setSwatterRot() {
-        double r = movement.getFacingRotate(
-            target.getPosition().subtract(this.getPosition())
-        );
+    public void setSwatterRot(){
+        double r = movement.getFacingRotate(target.getPosition().subtract(this.getPosition()));
         swatterHitbox.setStartAngle(390-r);
     }
 

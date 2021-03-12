@@ -7,6 +7,7 @@ import java.util.List;
 import org.bioshock.engine.ai.SeekerAI;
 import org.bioshock.engine.networking.NetworkManager;
 import org.bioshock.engine.rendering.RenderManager;
+import org.bioshock.engine.scene.SceneManager;
 
 public final class EntityManager {
 	private static ArrayList<Entity> entities = new ArrayList<>();
@@ -22,12 +23,20 @@ public final class EntityManager {
 	}
 
 	public static void register(Entity entity) {
-        if (entity.getNetworkC().isNetworked()) {
-            NetworkManager.register(entity);
+        if (
+            entity.getNetworkC().isNetworked()
+            && entity instanceof SquareEntity
+        ) {
+            NetworkManager.register((SquareEntity) entity);
         }
+
         if (entity.getRendererC() != null) {
             RenderManager.register(entity);
+            if (entity instanceof SquareEntity) {
+                SceneManager.getPane().getChildren().add(entity.getHitbox());
+            }
         }
+
         entities.add(entity);
         if (entity instanceof Hider) players.add((Hider) entity);
         if (entity instanceof SeekerAI) seeker = (SeekerAI) entity;
@@ -38,27 +47,41 @@ public final class EntityManager {
 	}
 
 	public static void unregister(Entity entity) {
-        if (entity.getNetworkC().isNetworked()) {
-            NetworkManager.unregister(entity);
+        if (
+            entity.getNetworkC().isNetworked()
+            && entity instanceof SquareEntity
+        ) {
+            NetworkManager.unregister((SquareEntity) entity);
         }
+
         if (entity.getRendererC() != null) {
             RenderManager.unregister(entity);
         }
+
         entities.remove(entity);
         players.remove(entity);
         if (entity == seeker) seeker = null;
 	}
 
     public static void unregisterAll() {
-        NetworkManager.unregisterAll(entities);
-        RenderManager.unregisterAll(entities);
+        entities.forEach(entity -> {
+            if (
+                entity.getNetworkC().isNetworked()
+                && entity instanceof SquareEntity
+            ) {
+                NetworkManager.unregister((SquareEntity) entity);
+            }
+            if (entity.getRendererC() != null) {
+                RenderManager.unregister(entity);
+            }
+        });
+        seeker = null;
         entities.clear();
         players.clear();
-        seeker = null;
     }
 
-    public static void unregisterAll(Entity... toAdd) {
-        Arrays.asList(toAdd).forEach(EntityManager::unregister);
+    public static void unregisterAll(Entity... toRemove) {
+        Arrays.asList(toRemove).forEach(EntityManager::unregister);
     }
 
     public static boolean isManaged(Entity entity, Entity... toCheck) {

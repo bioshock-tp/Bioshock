@@ -10,7 +10,6 @@ import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 public class WindowManager {
-    private static final String NAME = "BuzzKill";
 	private static final boolean INITFULLSCREEN = false;
 	private static final boolean INITMAXIMISED = true;
 
@@ -21,7 +20,7 @@ public class WindowManager {
 
 	public static void initialise(Stage stage) {
         window = stage;
-		window.setTitle(NAME);
+		window.setTitle(App.NAME);
 		window.setFullScreen(INITFULLSCREEN);
 		window.setMaximized(INITMAXIMISED);
 
@@ -32,13 +31,15 @@ public class WindowManager {
             KeyCode.F11, WindowManager::toggleFullScreen
         );
 
-        InputManager.onPress(KeyCode.F11, WindowManager::toggleFullScreen);
-
         InputManager.onPress(KeyCode.ESCAPE, () -> App.exit(0));
     }
 
 	private static void toggleFullScreen() {
         window.setFullScreen(!window.isFullScreen());
+    }
+
+    public static void setFullScreen(boolean b) {
+        window.setFullScreen(b);
     }
 
     public static double getWindowWidth() {

@@ -17,6 +17,8 @@
     <padding>
         <Insets bottom="40.0" left="60.0" right="60.0" top="40.0"/>
     </padding>
+    
     <Label text="Online In Development..."  styleClass="p"/>
+    <Button fx:id="launchButton" text="Launch" onAction="#launchGame" styleClass="gui-button"/>
     <Button fx:id="backButton" text="Back to New Game" onAction="#switchToNewGameView" styleClass="gui-button"/>
 </VBox>

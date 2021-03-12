@@ -23,7 +23,8 @@ public class LocalGameController {
     }
 
     public void launchGame(ActionEvent actionEvent) {
+        App.PLAYERCOUNT = 1;
         Stage stage = (Stage) launchButton.getScene().getWindow();
-        App.startGame(stage, new LoadingScreen());
+        App.startGame(stage, new LoadingScreen(), false);
     }
 }

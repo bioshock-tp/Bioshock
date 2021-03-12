@@ -22,8 +22,5 @@ public final class GameLoop extends AnimationTimer {
 		RenderManager.tick();
         FrameRate.tick(now);
 		prev = now;
-		
-//		App.logger.debug("Canavs layout x,y: " + SceneManager.getCanvas().getLayoutX() + ", " + SceneManager.getCanvas().getLayoutY());
-//		App.logger.debug("Canavs translate x,y: " + SceneManager.getCanvas().getTranslateX() + ", " + SceneManager.getCanvas().getTranslateY());
 	}
 }
