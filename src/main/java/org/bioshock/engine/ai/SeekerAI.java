@@ -97,27 +97,26 @@ public class SeekerAI extends SquareEntity {
             && intersects(target, "fov")
         ) {
 
-            setSearch(false);
+            //setSearch(false);
             path.clear();
 
             movement.move(target.getPosition().subtract(this.getPosition()));
         }
         else{
-            if(!isSearching && path.isEmpty()){
+            if(path.isEmpty()){
                 path = createPath(findCurrentRoom());
-                setSearch(true);
+                //setSearch(true);
                 currentRoom = path.remove(0);
             }
-            else if(!path.isEmpty()){
+            else {
                 moveToCentre(currentRoom);
-                if(currentRoom.getRoomCenter().getX() == getX() && currentRoom.getRoomCenter().getY() == getY()){
+                if(Math.abs(currentRoom.getRoomCenter().getX() - getX()) < 1 && Math.abs(currentRoom.getRoomCenter().getY() - getY()) < 1){
                     currentRoom = path.remove(0);
                 }
             }
-            else{
+            /*else{
                 setSearch(false);
-            }
-
+            }*/
         }
     }
 
