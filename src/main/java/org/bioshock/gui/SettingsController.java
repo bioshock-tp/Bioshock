@@ -1,13 +1,14 @@
 package org.bioshock.gui;
 
-import org.bioshock.audio.AudioController;
-import org.bioshock.audio.EffectController;
-import org.bioshock.main.App;
-
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.RadioButton;
+import org.bioshock.audio.AudioController;
+import org.bioshock.audio.EffectController;
+import org.bioshock.main.App;
+
+import java.util.prefs.Preferences;
 
 public class SettingsController extends App {
     @FXML
@@ -27,13 +28,32 @@ public class SettingsController extends App {
     }
 
     @FXML
+    public void initialize() {
+        if(getPrefs().getBoolean("musicOn", true)) {
+            musicOnRadioButton.setSelected(true);
+        }
+        else {
+            musicOffRadioButton.setSelected(true);
+        }
+
+        if(getPrefs().getBoolean("sfxOn", true)) {
+            sfxOnRadioButton.setSelected(true);
+        }
+        else {
+            sfxOffRadioButton.setSelected(true);
+        }
+    }
+
+    @FXML
     public void toggleMusicOn(ActionEvent actionEvent) {
         playBackgroundMusic();
+        getPrefs().putBoolean("musicOn", true);
     }
 
     @FXML
     public void toggleMusicOff(ActionEvent actionEvent) {
         stopBackgroundMusic();
+        getPrefs().putBoolean("musicOn", false);
     }
 
     @FXML
@@ -41,6 +61,7 @@ public class SettingsController extends App {
         EffectController effectController =
             AudioController.loadEffectController("enabled");
         effectController.play(null);
+        getPrefs().putBoolean("sfxOn", true);
     }
 
     @FXML
@@ -48,5 +69,10 @@ public class SettingsController extends App {
         EffectController effectController =
             AudioController.loadEffectController("enabled");
         effectController.stop();
+        getPrefs().putBoolean("sfxOn", false);
+    }
+
+    private Preferences getPrefs() {
+        return Preferences.userNodeForPackage(SettingsController.class);
     }
 }
