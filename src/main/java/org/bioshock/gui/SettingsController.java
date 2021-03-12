@@ -7,6 +7,7 @@ import javafx.scene.control.RadioButton;
 import javafx.scene.control.Slider;
 import org.bioshock.audio.AudioController;
 import org.bioshock.audio.EffectController;
+import org.bioshock.audio.settings.EffectSettings;
 import org.bioshock.main.App;
 
 import java.util.prefs.Preferences;
@@ -48,18 +49,28 @@ public class SettingsController extends App {
 
         musicVolumeSlider.setValue(getPrefs().getDouble("musicVolume", 1.0));
 
-        musicVolumeSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
+        musicVolumeSlider.setOnMouseReleased(event -> {
 
-            getPrefs().putDouble("musicVolume", newValue.doubleValue());
+            getPrefs().putDouble("musicVolume", musicVolumeSlider.getValue());
 
             if (getPrefs().getBoolean("musicOn", true)) {
-                playBackgroundMusic(newValue.doubleValue());
+                playBackgroundMusic(musicVolumeSlider.getValue());
             }
 
-            //textField.setText(Double.toString(newValue.intValue()));
-
-
         });
+
+        sfxVolumeSlider.setValue(getPrefs().getDouble("sfxVolume", 1.0));
+
+        sfxVolumeSlider.setOnMouseReleased(event -> {
+            getPrefs().putDouble("sfxVolume", sfxVolumeSlider.getValue());
+
+            if (getPrefs().getBoolean("sfxOn", true)) {
+                final EffectSettings settings = new EffectSettings();
+                settings.setVolume(sfxVolumeSlider.getValue());
+                getSfxController().play(settings);
+            }
+        });
+        
     }
 
     @FXML
@@ -76,21 +87,23 @@ public class SettingsController extends App {
 
     @FXML
     public void toggleSfxOn(ActionEvent actionEvent) {
-        EffectController effectController =
-            AudioController.loadEffectController("enabled");
-        effectController.play(null);
+        final EffectSettings settings = new EffectSettings();
+        settings.setVolume(getPrefs().getDouble("sfxVolume", 1.0));
+        getSfxController().play(settings);
         getPrefs().putBoolean("sfxOn", true);
     }
 
     @FXML
     public void toggleSfxOff(ActionEvent actionEvent) {
-        EffectController effectController =
-            AudioController.loadEffectController("enabled");
-        effectController.stop();
+        getSfxController().stop();
         getPrefs().putBoolean("sfxOn", false);
     }
 
     private Preferences getPrefs() {
         return Preferences.userNodeForPackage(SettingsController.class);
+    }
+
+    private EffectController getSfxController() {
+        return AudioController.loadEffectController("enabled");
     }
 }
