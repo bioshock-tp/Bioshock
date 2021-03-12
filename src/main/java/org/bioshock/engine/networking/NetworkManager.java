@@ -26,7 +26,7 @@ public class NetworkManager {
     private static String me = UUID.randomUUID().toString();
     static List<Hider> playerList = new ArrayList<>(App.PLAYERCOUNT);
     private static Map<String, Hider> loadedPlayers = new HashMap<>(App.PLAYERCOUNT);
-    private static SeekerAI seeker;
+	private static SeekerAI seeker;
 
     private static boolean inGame = false;
 
@@ -221,4 +221,9 @@ public class NetworkManager {
     public static Object getMessageMutex() {
         return awaitingMessage;
     }
+    
+    public static Map<String, Hider> getLoadedPlayers() {
+		return loadedPlayers;
+	}
+
 }

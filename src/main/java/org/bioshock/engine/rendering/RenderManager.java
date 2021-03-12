@@ -9,6 +9,7 @@ import java.util.List;
 import org.bioshock.engine.entity.Entity;
 import org.bioshock.engine.scene.SceneManager;
 
+import javafx.geometry.Point2D;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 
@@ -80,17 +81,17 @@ public final class RenderManager {
      * @param toAdd
      */
     public static void register(Entity entityToAdd) {
-        if (entities.isEmpty()) {
-            entities.add(entityToAdd);
+        if (renderableEntities.isEmpty()) {
+        	renderableEntities.add(entityToAdd);
         } else {
             int i;
-            Entity currEnt = entities.get(0);
+            Entity currEnt = renderableEntities.get(0);
             for (
                 i = 1;
-                (currEnt.getZ() < entityToAdd.getZ()) && i < entities.size();
+                (currEnt.getZ() < entityToAdd.getZ()) && i < renderableEntities.size();
                 i++
             ) {
-				currEnt = entities.get(i);
+				currEnt = renderableEntities.get(i);
             }
 
 			renderableEntities.add(i, entityToAdd);
@@ -107,7 +108,7 @@ public final class RenderManager {
      * @return True if entity was registered
      */
     public static boolean unregister(Entity entity) {
-        return entities.remove(entity);
+        return renderableEntities.remove(entity);
     }
 
     public static void unregisterAll(List<Entity> entities) {
