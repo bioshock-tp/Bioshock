@@ -7,6 +7,7 @@ import static org.bioshock.engine.rendering.RenderManager.getRenWidth;
 import static org.bioshock.engine.rendering.RenderManager.getRenX;
 import static org.bioshock.engine.rendering.RenderManager.getRenY;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
@@ -50,7 +51,12 @@ public final class RenderManager {
                 try {
                     Method rend = entity.getRenderer().getDeclaredMethods()[0];
                     rend.invoke(null, gc, entity);
-                } catch (Exception e) {
+                }catch (InvocationTargetException e) {
+                	App.logger.error(
+                            "Render function for {} threw an exception",
+                            entity.getRenderer()
+                        );
+                }catch (Exception e) {
                     App.logger.error(
                         "Render function not defined for {}",
                         entity.getRenderer()
