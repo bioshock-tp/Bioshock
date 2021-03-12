@@ -4,7 +4,7 @@ import org.bioshock.engine.components.RendererC;
 
 import javafx.scene.paint.Color;
 
-public class SquareEntityRendererC implements RendererC {
+public class SimpleRendererC implements RendererC {
 	private double z;
 	private Color color;
 

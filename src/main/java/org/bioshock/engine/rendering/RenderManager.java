@@ -164,21 +164,23 @@ public final class RenderManager {
 	
 	public static void clipToFOV(GraphicsContext gc) {
 		Hider player = EntityManager.getCurrentPlayer();
-		double x = player.getX();
-        double y = player.getY();
-        double radius = player.getRadius();
-        double width = player.getWidth();
-        double height = player.getHeight();
+		if (player != null) {
+			double x = player.getX();
+	        double y = player.getY();
+	        double radius = player.getRadius();
+	        double width = player.getWidth();
+	        double height = player.getHeight();
+			
+			gc.beginPath();
+	    	gc.arc(getRenX(x + width / 2),
+	        		getRenY(y + height / 2),
+	        		getRenWidth(radius), 
+	        		getRenHeight(radius), 
+	        		0, 360);
+//	    	gc.rect(0, 0, gc.getCanvas().getWidth()/2, gc.getCanvas().getHeight()/2);
+	        gc.closePath();
+	        gc.clip();
+		}
 		
-		gc.beginPath();
-    	gc.arc(getRenX(x + width / 2),
-        		getRenY(y + height / 2),
-        		getRenWidth(radius), 
-        		getRenHeight(radius), 
-        		0, 360);
-//    	gc.rect(0, 0, gc.getCanvas().getWidth()/2, gc.getCanvas().getHeight()/2);
-        gc.closePath();
-        gc.stroke();
-        gc.clip();
 	}
 }

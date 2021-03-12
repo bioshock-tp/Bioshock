@@ -2,6 +2,7 @@ package org.bioshock.engine.renderers;
 
 import static org.bioshock.engine.rendering.RenderManager.* ;
 
+import org.bioshock.engine.entity.EntityManager;
 import org.bioshock.engine.entity.SquareEntity;
 import org.bioshock.engine.rendering.RenderManager;
 
@@ -24,10 +25,29 @@ public final class PlayerRenderer implements Renderer {
         double radius = player.getRadius();
         double width = player.getWidth();
         double height = player.getHeight();
-
-        gc.save();
         
+        if (player == EntityManager.getCurrentPlayer()) {
+        	gc.save();
+            gc.beginPath();
+        	gc.arc(getRenX(x + width / 2),
+            		getRenY(y + height / 2),
+            		getRenWidth(radius), 
+            		getRenHeight(radius), 
+            		0, 360);
+        	gc.rect(0, 0, gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
+            gc.closePath();
+            gc.clip();
+            gc.setFill(new Color(0, 0, 0, 0.75));
+            gc.fillRect(0, 0, gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
+            gc.restore();
+        }
+        
+        
+        gc.save();
         RenderManager.clipToFOV(gc);
+        
+//        gc.setFill(new Color(1, 1, 1, 0.7));
+//        gc.fillRect(0, 0, gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
         
 //        gc.fillRect(0, 0, gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
         
@@ -46,6 +66,8 @@ public final class PlayerRenderer implements Renderer {
     		getRenWidth(radius * 2), 
     		getRenHeight(radius * 2)
         );
+        
+        
         
         gc.restore();
     } 

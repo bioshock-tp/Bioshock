@@ -36,7 +36,7 @@ public class MainGame extends GameScene {
         )));
 
 		ThreeByThreeMap map = new ThreeByThreeMap(
-            new Point3D(100, 100, 0),
+            new Point3D(100, 100, 10),
             10,
             new Size(300, 600),
             new Size(90, 90),
@@ -91,6 +91,7 @@ public class MainGame extends GameScene {
 		
 		InputManager.onRelease(KeyCode.Y, 
 			() ->	{cameraLock = !cameraLock;});
+		
 	}
 	
 	@Override
