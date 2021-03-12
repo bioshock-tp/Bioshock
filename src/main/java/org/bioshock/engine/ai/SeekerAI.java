@@ -83,26 +83,26 @@ public class SeekerAI extends SquareEntity {
 
 
     public void doActions() {
-
-        if (
-            EntityManager.isManaged(this, target)
-            && intersects(target, "swatter")
-        ) {
-            setActive(true);
-            target.setDead(true);
-            rendererC.setColor(Color.GREEN);
-        }
-        if (
-            EntityManager.isManaged(this, target)
-            && intersects(target, "fov")
-        ) {
-
-            //setSearch(false);
-            path.clear();
-
-            movement.move(target.getPosition().subtract(this.getPosition()));
-        }
-        else{
+        setSearch(true);
+        EntityManager.getPlayers().forEach(entity -> {
+            if (
+                    EntityManager.isManaged(this, entity)
+                            && intersects(entity, "swatter")
+            ) {
+                setActive(true);
+                entity.setDead(true);
+                rendererC.setColor(Color.GREEN);
+            }
+            if (
+                    EntityManager.isManaged(this, entity)
+                            && intersects(entity, "fov")
+            ) {
+                setSearch(false);
+                target = entity;
+                movement.move(target.getPosition().subtract(this.getPosition()));
+            }
+        });
+        if(isSearching){
             if(path.isEmpty()){
                 path = createPath(findCurrentRoom());
                 //setSearch(true);
