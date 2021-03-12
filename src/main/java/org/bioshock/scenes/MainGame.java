@@ -51,7 +51,8 @@ public class MainGame extends GameScene {
             new Size(40, 40),
             300,
             Color.INDIANRED,
-			hider
+			hider,
+			map
         );
 
 		children.add(seeker);
