@@ -135,7 +135,7 @@ public class AudioController {
 
                 final String type = typeObject.toLowerCase();
                 final String name = nameObject.toLowerCase();
-                final String path = pathObject.toLowerCase();
+                final String path = pathObject;
                 final String filesystem = filesystemObject.toLowerCase();
 
                 if (name.isEmpty()) {

@@ -1,9 +1,12 @@
 package org.bioshock.main;
 
-import java.io.IOException;
-import java.net.URL;
-import java.util.Arrays;
-
+import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.input.KeyCode;
+import javafx.stage.Stage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bioshock.audio.AudioController;
@@ -15,15 +18,13 @@ import org.bioshock.engine.input.InputManager;
 import org.bioshock.engine.networking.NetworkManager;
 import org.bioshock.engine.scene.SceneManager;
 import org.bioshock.gui.MainController;
+import org.bioshock.gui.SettingsController;
 import org.bioshock.scenes.GameScene;
 
-import javafx.application.Application;
-import javafx.application.Platform;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.input.KeyCode;
-import javafx.stage.Stage;
+import java.io.IOException;
+import java.net.URL;
+import java.util.Arrays;
+import java.util.prefs.Preferences;
 
 public class App extends Application {
     public static final String NAME = "BuzzKill";
@@ -49,8 +50,7 @@ public class App extends Application {
 		WindowManager.initialise(stage);
         initFXMLScene();
 
-        AudioController.initialise();
-		playBackgroundMusic();
+        initialiseAudio();
 
 		stage.setScene(fxmlScene);
 		stage.show();
@@ -96,6 +96,15 @@ public class App extends Application {
 		new GameLoop().start();
 	}
 
+	private void initialiseAudio() {
+        AudioController.initialise();
+        Preferences prefs = Preferences.userNodeForPackage(SettingsController.class);
+        double volume = prefs.getDouble("musicVolume", 1.0);
+        if(prefs.getBoolean("musicOn", true)) {
+            playBackgroundMusic(volume);
+        }
+    }
+
 	public void stopBackgroundMusic() {
 		musicController = AudioController.loadMusicController(
             "background-music"
@@ -103,12 +112,12 @@ public class App extends Application {
 		musicController.stop();
 	}
 
-	public void playBackgroundMusic() {
+	public void playBackgroundMusic(double vol) {
 		musicController = AudioController.loadMusicController(
             "background-music"
         );
 		final MusicSettings settings = new MusicSettings();
-		settings.setVolume(0.5);
+		settings.setVolume(vol);
 		settings.setCycleCount(-1);
 		musicController.play(settings);
 	}
