@@ -30,7 +30,11 @@ public class NetworkManager {
 
     private static boolean inGame = false;
 
-    private static Client client = new Client();
+    public static boolean isInGame() {
+		return inGame;
+	}
+
+	private static Client client = new Client();
     private static Object gameStartedMutex = new Object();
     private static Object awaitingMessage = new Object();
 
