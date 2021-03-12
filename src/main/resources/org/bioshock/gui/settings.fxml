@@ -10,6 +10,7 @@
 <?import javafx.scene.control.RadioButton?>
 <?import javafx.scene.layout.HBox?>
 <?import java.net.URL?>
+<?import javafx.scene.control.Slider?>
 <VBox alignment="CENTER" spacing="30.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="org.bioshock.gui.SettingsController" styleClass="background">
    <fx:define>
@@ -26,15 +27,32 @@
       <Insets bottom="40.0" left="60.0" right="60.0" top="40.0"/>
    </padding>
 
-   <HBox spacing="20" alignment="CENTER">
-      <Label text="Music:" styleClass="p"/>
-      <RadioButton fx:id="musicOnRadioButton" text="On" toggleGroup="$musicToggleGroup" onAction="#toggleMusicOn" styleClass="gui-radio-button"/>
-      <RadioButton fx:id="musicOffRadioButton" text="Off" toggleGroup="$musicToggleGroup" onAction="#toggleMusicOff" styleClass="gui-radio-button"/>
-   </HBox>
-   <HBox spacing="20" alignment="CENTER">
-      <Label text="SFX:" styleClass="p"/>
-      <RadioButton fx:id="sfxOnRadioButton" text="On" toggleGroup="$sfxToggleGroup" onAction="#toggleSfxOn" styleClass="gui-radio-button"/>
-      <RadioButton fx:id="sfxOffRadioButton" text="Off" toggleGroup="$sfxToggleGroup" onAction="#toggleSfxOff" styleClass="gui-radio-button"/>
-   </HBox>
+   <VBox spacing="40" alignment="CENTER">
+      <VBox spacing="10" alignment="CENTER">
+         <Label text="Music" styleClass="p" style="-fx-font-weight: 700"/>
+         <HBox spacing="10" alignment="CENTER">
+            <Label text="Volume:" styleClass="p"/>
+            <Slider fx:id="musicVolumeSlider" blockIncrement="0.1" max="1.0"/>
+         </HBox>
+
+         <HBox spacing="20" alignment="CENTER">
+            <RadioButton fx:id="musicOnRadioButton" text="On" toggleGroup="$musicToggleGroup" onAction="#toggleMusicOn" styleClass="gui-radio-button"/>
+            <RadioButton fx:id="musicOffRadioButton" text="Off" toggleGroup="$musicToggleGroup" onAction="#toggleMusicOff" styleClass="gui-radio-button"/>
+         </HBox>
+      </VBox>
+      <VBox spacing="10" alignment="CENTER">
+         <Label text="SFX" styleClass="p" style="-fx-font-weight: 700"/>
+         <HBox spacing="10" alignment="CENTER">
+            <Label text="Volume:" styleClass="p"/>
+            <Slider fx:id="sfxVolumeSlider"/>
+         </HBox>
+
+         <HBox spacing="20" alignment="CENTER">
+            <RadioButton fx:id="sfxOnRadioButton" text="On" toggleGroup="$sfxToggleGroup" onAction="#toggleSfxOn" styleClass="gui-radio-button"/>
+            <RadioButton fx:id="sfxOffRadioButton" text="Off" toggleGroup="$sfxToggleGroup" onAction="#toggleSfxOff" styleClass="gui-radio-button"/>
+         </HBox>
+      </VBox>
+   </VBox>
+
    <Button fx:id="backButton" text="Back to Main Menu" onAction="#switchToMainView" styleClass="gui-button"/>
 </VBox>

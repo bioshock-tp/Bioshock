@@ -4,6 +4,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.RadioButton;
+import javafx.scene.control.Slider;
 import org.bioshock.audio.AudioController;
 import org.bioshock.audio.EffectController;
 import org.bioshock.main.App;
@@ -11,6 +12,8 @@ import org.bioshock.main.App;
 import java.util.prefs.Preferences;
 
 public class SettingsController extends App {
+    public Slider musicVolumeSlider;
+    public Slider sfxVolumeSlider;
     @FXML
     private Button backButton;
     @FXML
