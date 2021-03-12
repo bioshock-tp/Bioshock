@@ -21,6 +21,7 @@ import org.bioshock.entities.map.ThreeByThreeMap;
 import org.bioshock.main.App;
 import org.bioshock.scenes.MainGame;
 import org.checkerframework.checker.units.qual.A;
+import org.mockito.internal.matchers.Null;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -102,7 +103,7 @@ public class SeekerAI extends SquareEntity {
             movement.move(target.getPosition().subtract(this.getPosition()));
         }
         else{
-            if(!isSearching && !path.isEmpty()){
+            if(!isSearching && path.isEmpty()){
                 path = createPath(findCurrentRoom());
                 setSearch(true);
                 currentRoom = path.remove(0);
@@ -125,7 +126,7 @@ public class SeekerAI extends SquareEntity {
     }
 
     private Room findCurrentRoom(){
-        Room currentRoom = null;
+        Room current = null;
         double temp;
         double shortest = WindowManager.getWindowWidth() * WindowManager.getWindowHeight();
 
@@ -133,11 +134,11 @@ public class SeekerAI extends SquareEntity {
             temp = (room.getRoomCenter().subtract(new Point3D(this.getX(), this.getY(), room.getZ()))).magnitude();
             if(temp < shortest){
                 shortest = temp;
-                currentRoom = room;
+                current = room;
             }
         }
         
-        return currentRoom;
+        return current;
     }
 
     private void moveToCentre(Room room){
@@ -146,28 +147,52 @@ public class SeekerAI extends SquareEntity {
 
     private List<Room> createPath(Room startRoom){
         List<Room> path = new ArrayList<>();
-        List<Room> unvisited = map.getRooms();
-        List<Room> adjacents = Arrays.asList(startRoom.getAdjacentRooms().clone());
-
-        Room currentRoom = startRoom;
-
+        List<Room> possibleMoves = new ArrayList<>();
+        List<Room> backupMoves = new ArrayList<>();
+        Room[] adjacents;
+        Room destination;
+        Room current;
         Random rand = new Random();
+        int r;
 
-        unvisited.remove(startRoom);
+        current = startRoom;
+        destination = startRoom;
 
-
-        int r = rand.nextInt(unvisited.size());
-        Room destination = unvisited.get(r);
+        while(destination == startRoom){
+            r = rand.nextInt(map.getRooms().size());
+            destination = map.getRooms().get(r);
+        }
 
         path.add(startRoom);
 
-        while(currentRoom != destination){
-            adjacents.removeIf(path::contains);
-            r = rand.nextInt(adjacents.size());
-            currentRoom = adjacents.get(r);
-            adjacents = Arrays.asList(currentRoom.getAdjacentRooms().clone());
+        while(current != destination){
 
-            path.add(currentRoom);
+            adjacents = current.getAdjacentRooms();
+            for(int i = 0; i < 4; i++){
+                if(adjacents[i] != null){
+                    backupMoves.add(adjacents[i]);
+                    if(!path.contains(adjacents[i])){
+                        possibleMoves.add(adjacents[i]);
+                    }
+                }
+            }
+
+            if(!possibleMoves.isEmpty()){
+                r = rand.nextInt(possibleMoves.size());
+                current = possibleMoves.get(r);
+            }
+            else{
+                r = rand.nextInt(backupMoves.size());
+                current = backupMoves.get(r);
+            }
+
+            path.add(current);
+
+            /*adjacents.removeIf(path::contains);
+            adjacents.removeIf(null);
+            r = rand.nextInt(adjacents.size());
+            current = adjacents.get(r);
+            adjacents = Arrays.asList(current.getAdjacentRooms().clone());*/
 
         }
 
