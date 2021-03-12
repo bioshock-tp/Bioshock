@@ -18,6 +18,7 @@ public final class GameLoop extends AnimationTimer {
 
 		NetworkManager.tick();
 		EntityManager.tick(sDelta);
+		SceneManager.getScene().tick(sDelta);
 		RenderManager.tick();
         FrameRate.tick(now);
 		prev = now;

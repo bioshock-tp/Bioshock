@@ -18,7 +18,7 @@ import javafx.scene.layout.StackPane;
 public abstract class GameScene extends Scene {
 //	private static Size gameScreen = new Size(2560, 1440); //2k 16:9 monitor
 	private static Size gameScreen = new Size(1920, 1080); //1080p 16:9 monitor
- 	private StackPane pane;
+	private StackPane pane;
     private Canvas canvas = new Canvas(
     		WindowManager.getWindowWidth(), 
     		WindowManager.getWindowHeight()
@@ -75,5 +75,15 @@ public abstract class GameScene extends Scene {
 	}
 
 	public void destroy() {
+		
 	}
+	
+	public void tick(double timeDelta) {
+		
+	}
+	
+ 	public static Size getGameScreen() {
+		return gameScreen;
+	}
+
 }
