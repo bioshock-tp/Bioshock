@@ -1,7 +1,5 @@
 package org.bioshock.engine.entity;
 
-import java.util.UUID;
-
 import org.bioshock.engine.components.NetworkC;
 import org.bioshock.engine.components.RendererC;
 import org.bioshock.engine.renderers.Renderer;
@@ -16,11 +14,13 @@ public abstract class Entity {
     protected Point position;
     protected Rectangle hitbox;
 
-    protected boolean enabled = true;
-    protected final UUID uuid = UUID.randomUUID();
-
+    protected String UUID = java.util.UUID.randomUUID().toString();
+    protected double z;
     protected NetworkC networkC;
     protected RendererC rendererC;
+
+    protected boolean enabled = true;
+
     protected Class<? extends Renderer> renderer;
 
     protected Entity(Point3D p, Rectangle h, NetworkC netC, RendererC renC) {
@@ -36,7 +36,7 @@ public abstract class Entity {
 
         rendererC.setZ(p.getZ());
 
-        App.logger.info("New {} with ID {}", this, uuid);
+        App.logger.info("New {} with ID {}", this, UUID);
 	}
 
     protected abstract void tick(double timeDelta);
@@ -92,8 +92,12 @@ public abstract class Entity {
         this.networkC = component;
     }
 
-	public UUID getID() {
-		return uuid;
+    public void setID(String newID) {
+        UUID = newID;
+    }
+
+	public String getID() {
+		return UUID;
 	}
 
     public Point getPosition() {

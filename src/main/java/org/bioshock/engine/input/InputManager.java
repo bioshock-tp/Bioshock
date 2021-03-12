@@ -45,11 +45,11 @@ public class InputManager {
         if (keyPresses.putIfAbsent(keyCode, action) != null) {
             try {
                 throw new InvalidParameterException(String.format(
-                    "Tried to add listener to key: %s, but was already assigned",
+                    "Tried to add listener to key: %s, was already assigned",
                     keyCode.getChar()
                 ));
             } catch (InvalidParameterException e) {
-                App.logger.error(e.getMessage());
+                App.logger.error("{} {}", e.getMessage(), keyCode.getChar());
             }
         }
 	}
@@ -58,7 +58,7 @@ public class InputManager {
         if (keyReleases.putIfAbsent(keyCode, action) != null) {
             try {
                 throw new InvalidParameterException(String.format(
-                    "Tried to add listener to key: %s, but was already assigned",
+                    "Tried to add listener to key: %s, was already assigned",
                     keyCode.getChar()
                 ));
             } catch (InvalidParameterException e) {

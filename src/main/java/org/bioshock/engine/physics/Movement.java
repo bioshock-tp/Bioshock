@@ -4,6 +4,8 @@ import org.bioshock.engine.core.WindowManager;
 import org.bioshock.engine.entity.EntityManager;
 import org.bioshock.engine.entity.Point;
 import org.bioshock.engine.entity.SquareEntity;
+import org.bioshock.engine.scene.SceneManager;
+import org.bioshock.scenes.GameScene;
 
 import javafx.geometry.Point2D;
 import javafx.scene.transform.Rotate;
@@ -11,8 +13,8 @@ import javafx.scene.transform.Rotate;
 public class Movement {
     private double speed = 5;
 
-    private int xDirection = 0;
-    private int yDirection = 0;
+    private double xDirection = 0;
+    private double yDirection = 0;
 
     private SquareEntity entity;
 
@@ -28,26 +30,30 @@ public class Movement {
         if (xDirection != 0 || yDirection != 0) move(getDirection());
     }
 
+    public void moveTo(double x, double y) {
+        move(new Point2D(x, y).subtract(entity.getPosition()));
+    }
+
     public void move(Point2D trans) {
         Point2D target = trans.add(entity.getPosition());
 
         double x = entity.getX();
         double y = entity.getY();
 
-        double dispX = target.getX() - x;
         if (x != target.getX()) {
-            x += dispX / Math.abs(dispX) * speed;
+            double disp = target.getX() - x;
+            x += disp / Math.abs(disp) * speed;
         }
 
-        double dispY = target.getY() - y;
         if (y != target.getY()) {
-            y += dispY / Math.abs(dispY) * speed;
+            double disp = target.getY() - y;
+            y += disp / Math.abs(disp) * speed;
         }
 
-        while (x < 0) x++;
-        while (y < 0) y++;
-        while (x + entity.getWidth() > WindowManager.getWindowWidth()) x--;
-        while (y + entity.getHeight() > WindowManager.getWindowHeight()) y--;
+//        while (x < 0) x++;
+//        while (y < 0) y++;
+//        while (x + entity.getWidth() > GameScene.getGameScreen().getWidth()) x--;
+//        while (y + entity.getHeight() > GameScene.getGameScreen().getHeight()) y--;
 
         double oldX = entity.getX();
         double oldY = entity.getY();
@@ -78,15 +84,34 @@ public class Movement {
         });
     }
 
-    public void direction(int newXDirection, int newYDirection) {
-        int newX = Math.abs(xDirection + newXDirection);
+    public void direction(double newXDirection, double newYDirection) {
+        double newX = Math.abs(xDirection + newXDirection);
         if (newX <= speed) xDirection += newXDirection;
 
-        int newY = Math.abs(yDirection + newYDirection);
+        double newY = Math.abs(yDirection + newYDirection);
         if (newY <= speed) yDirection += newYDirection;
     }
 
-    public double getFacingRotate(Point2D trans){
+    public void direction(Point2D targ) {
+        direction(targ.getX(), targ.getY());
+    }
+
+    public void updateFacing(Point2D trans){
+        double rotation = Math.atan2(trans.getX(), -trans.getY())*180/Math.PI;
+        setRotation(rotation);
+    }
+
+    public void rotate(double degree) {
+        Rotate rotate = entity.getRotate();
+        Point2D pos = entity.getCentre();
+
+        rotate.setPivotX(pos.getX());
+        rotate.setPivotY(pos.getY());
+
+        setRotation(entity.getRotate().getAngle() + degree);
+    }
+
+    public double getFacingRotate(Point2D trans) {
         return Math.atan2(trans.getX(), -trans.getY())*180/Math.PI;
     }
 

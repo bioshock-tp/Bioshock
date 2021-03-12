@@ -8,7 +8,6 @@ import javafx.scene.control.Button;
 import javafx.stage.Stage;
 
 public class MainController {
-
     public Button newGameButton;
     public Button quitButton;
     public Button settingsButton;
@@ -22,7 +21,7 @@ public class MainController {
     public void handleQuitButton(ActionEvent actionEvent) {
         Stage stage = (Stage) quitButton.getScene().getWindow();
         stage.close();
-        System.exit(0);
+        App.exit(0);
     }
 
     @FXML

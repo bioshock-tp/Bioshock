@@ -136,7 +136,7 @@ public class SeekerAI extends SquareEntity {
                 current = room;
             }
         }
-        
+
         return current;
     }
 
@@ -217,10 +217,8 @@ public class SeekerAI extends SquareEntity {
         swatterHitbox.setCenterY(getCentre().getY());
     }
 
-    public void setSwatterRot() {
-        double r = movement.getFacingRotate(
-            target.getPosition().subtract(this.getPosition())
-        );
+    public void setSwatterRot(){
+        double r = movement.getFacingRotate(target.getPosition().subtract(this.getPosition()));
         swatterHitbox.setStartAngle(390-r);
     }
 

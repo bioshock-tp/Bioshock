@@ -15,18 +15,6 @@ public class Hider extends SquareEntity {
     	super(p, com, s, r, c);
 
         renderer = PlayerRenderer.class;
-
-        final int speed = (int) movement.getSpeed();
-
-        InputManager.onPress(  KeyCode.W, () -> movement.direction(0, -speed));
-        InputManager.onPress(  KeyCode.A, () -> movement.direction(-speed, 0));
-        InputManager.onPress(  KeyCode.S, () -> movement.direction(0,  speed));
-        InputManager.onPress(  KeyCode.D, () -> movement.direction(speed,  0));
-
-        InputManager.onRelease(KeyCode.W, () -> movement.direction(0,  speed));
-        InputManager.onRelease(KeyCode.A, () -> movement.direction(speed,  0));
-        InputManager.onRelease(KeyCode.S, () -> movement.direction(0, -speed));
-        InputManager.onRelease(KeyCode.D, () -> movement.direction(-speed, 0));
     }
 
 	protected void tick(double timeDelta) {
@@ -34,11 +22,41 @@ public class Hider extends SquareEntity {
         movement.tick(timeDelta);
 	}
 
-    public boolean isDead() {
-        return dead;
+    public void initMovement() {
+        final double speed = movement.getSpeed();
+
+        InputManager.onPress(
+            KeyCode.W, () -> movement.direction(0, -speed)
+        );
+        InputManager.onPress(
+            KeyCode.A, () -> movement.direction(-speed, 0)
+        );
+        InputManager.onPress(
+            KeyCode.S, () -> movement.direction(0,  speed)
+        );
+        InputManager.onPress(
+            KeyCode.D, () -> movement.direction(speed,  0)
+        );
+
+        InputManager.onRelease(
+            KeyCode.W, () -> movement.direction(0,  speed)
+        );
+        InputManager.onRelease(
+            KeyCode.A, () -> movement.direction(speed,  0)
+        );
+        InputManager.onRelease(
+            KeyCode.S, () -> movement.direction(0, -speed)
+        );
+        InputManager.onRelease(
+            KeyCode.D, () -> movement.direction(-speed, 0)
+        );
     }
 
     public void setDead(boolean d) {
         dead = d;
+    }
+
+    public boolean isDead() {
+        return dead;
     }
 }

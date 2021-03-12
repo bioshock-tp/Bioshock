@@ -3,6 +3,8 @@ package org.bioshock.engine.core;
 import org.bioshock.engine.entity.EntityManager;
 import org.bioshock.engine.networking.NetworkManager;
 import org.bioshock.engine.rendering.RenderManager;
+import org.bioshock.engine.scene.SceneManager;
+import org.bioshock.main.App;
 
 import javafx.animation.AnimationTimer;
 
@@ -16,6 +18,7 @@ public final class GameLoop extends AnimationTimer {
 
 		NetworkManager.tick();
 		EntityManager.tick(sDelta);
+		SceneManager.getScene().tick(sDelta);
 		RenderManager.tick();
         FrameRate.tick(now);
 		prev = now;
