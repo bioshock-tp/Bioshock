@@ -6,6 +6,7 @@ import static org.bioshock.engine.rendering.RenderManager.getRenX;
 import static org.bioshock.engine.rendering.RenderManager.getRenY;
 
 import org.bioshock.engine.entity.SquareEntity;
+import org.bioshock.engine.rendering.RenderManager;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.transform.Rotate;
@@ -23,7 +24,8 @@ public final class SwatterRenderer implements Renderer {
         double height = swatter.getHeight();
 
         gc.save();
-
+        
+        RenderManager.clipToFOV(gc);
         Rotate r = swatter.getRotate();
 
         gc.setTransform(

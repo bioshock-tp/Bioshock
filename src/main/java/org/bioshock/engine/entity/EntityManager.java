@@ -8,6 +8,7 @@ import org.bioshock.engine.ai.SeekerAI;
 import org.bioshock.engine.networking.NetworkManager;
 import org.bioshock.engine.rendering.RenderManager;
 import org.bioshock.engine.scene.SceneManager;
+import org.bioshock.main.App;
 
 public final class EntityManager {
 	private static ArrayList<Entity> entities = new ArrayList<>();
@@ -103,5 +104,23 @@ public final class EntityManager {
 
     public static List<Hider> getPlayers() {
         return players;
+    }
+    
+    public static Hider getCurrentPlayer() {
+    	Hider meObj = null;
+		if (!App.isNetworked()) { 
+			try {
+				meObj = EntityManager.getPlayers().get(0);
+			} catch (Exception e) {
+				return null;
+			}
+		}
+		else {
+			if(NetworkManager.isInGame()) {
+				meObj = NetworkManager.getLoadedPlayers().get(NetworkManager.getMe());
+			}
+		}
+		
+		return meObj;
     }
 }

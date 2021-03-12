@@ -96,26 +96,14 @@ public class MainGame extends GameScene {
 	@Override
 	public void tick(double timeDelta) {
 		if(cameraLock) {
-			Hider meObj = null;
-			if (!App.isNetworked()) { 
-				try {
-					meObj = EntityManager.getPlayers().get(0);
-				} catch (Exception e) {
-					return;
-				}
-			}
-			else {
-				if(NetworkManager.isInGame()) {
-					meObj = NetworkManager.getLoadedPlayers().get(NetworkManager.getMe());
-				}
-			}			
-				
-			RenderManager.setCameraPos(
-				meObj.getCentre().subtract(
-					super.getGameScreen().getWidth()/2,
-					super.getGameScreen().getHeight()/2));
-				
+			Hider meObj = EntityManager.getCurrentPlayer();			
 			
+			if (meObj != null) {
+				RenderManager.setCameraPos(
+						meObj.getCentre().subtract(
+							super.getGameScreen().getWidth()/2,
+							super.getGameScreen().getHeight()/2));				
+			}			
 		}
 	}
 	

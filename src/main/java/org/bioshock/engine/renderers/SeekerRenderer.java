@@ -12,6 +12,7 @@ import static org.bioshock.engine.rendering.RenderManager.getRenY;
 
 import org.bioshock.engine.ai.SeekerAI;
 import org.bioshock.engine.entity.SquareEntity;
+import org.bioshock.engine.rendering.RenderManager;
 
 public class SeekerRenderer implements Renderer {
 
@@ -32,7 +33,8 @@ public class SeekerRenderer implements Renderer {
         boolean isActive = seeker.getIsActive();
 
         gc.save();
-
+        
+        RenderManager.clipToFOV(gc);
         Rotate r = seeker.getRotate();
         gc.setTransform(
                 r.getMxx(), r.getMyx(), r.getMxy(),

@@ -3,8 +3,11 @@ package org.bioshock.engine.renderers;
 import static org.bioshock.engine.rendering.RenderManager.* ;
 
 import org.bioshock.engine.entity.SquareEntity;
+import org.bioshock.engine.rendering.RenderManager;
 
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import javafx.scene.transform.Rotate;
 
 public final class PlayerRenderer implements Renderer {
@@ -14,7 +17,8 @@ public final class PlayerRenderer implements Renderer {
         GraphicsContext gc,
         E player
     ) {
-
+    	
+    	
         double x = player.getX();
         double y = player.getY();
         double radius = player.getRadius();
@@ -22,7 +26,11 @@ public final class PlayerRenderer implements Renderer {
         double height = player.getHeight();
 
         gc.save();
-
+        
+        RenderManager.clipToFOV(gc);
+        
+//        gc.fillRect(0, 0, gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
+        
         Rotate r = player.getRotate();
         gc.setTransform(
             r.getMxx(), r.getMyx(), r.getMxy(),
@@ -38,7 +46,7 @@ public final class PlayerRenderer implements Renderer {
     		getRenWidth(radius * 2), 
     		getRenHeight(radius * 2)
         );
-
+        
         gc.restore();
-    }
+    } 
 }
