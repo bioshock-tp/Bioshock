@@ -1,7 +1,6 @@
 package org.bioshock.scenes;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import org.bioshock.engine.core.WindowManager;
 import org.bioshock.engine.entity.Entity;
@@ -77,7 +76,11 @@ public abstract class GameScene extends Scene {
 		
 	}
 	
-	public void tick(double timeDelta) {
+	public void renderTick(double timeDelta) {
+		
+	}
+	
+	public void logicTick(double timeDelta) {
 		
 	}
 	
@@ -85,4 +88,7 @@ public abstract class GameScene extends Scene {
 		return gameScreen;
 	}
 
+ 	public void init() {
+ 		
+ 	}
 }

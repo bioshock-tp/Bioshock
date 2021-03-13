@@ -65,7 +65,7 @@ public class NetworkManager {
                         }
                     }
                 }
-
+                
                 /* Wait until players join then add them to loadedPlayers */
                 while (loadedPlayers.size() < App.PLAYERCOUNT) {
                     synchronized(awaitingMessage) {
@@ -77,6 +77,7 @@ public class NetworkManager {
                             }
                         }
                     }
+                    App.logger.debug("Register In player");
 
                     Message m = client.getInitialMessages().poll();
 
@@ -114,7 +115,7 @@ public class NetworkManager {
                 InputManager.onRelease(
                     KeyCode.D, () -> movement.direction(-speed, 0)
                 );
-
+                                
                 inGame = true;
 
                 App.logger.info("Networking initialised");
@@ -137,7 +138,7 @@ public class NetworkManager {
             x, y, aiPos.getX(), aiPos.getY()
         );
 
-        return new Message(-1, me, input);
+        return new Message(-1, me, input, getMe().isDead());
     }
 
     public static void tick() {
@@ -151,7 +152,8 @@ public class NetworkManager {
             client.getMutex().acquire();
 
             for (Hider hider : playerList) {
-                ClientInput input = client.getInputQ().get(hider.getID());
+                Message message = client.getMessageQ().get(hider.getID());
+                ClientInput input = message.input;
                 if (input == null) continue;
 
                 if (hider == loadedPlayers.get(me)) continue;
@@ -167,6 +169,8 @@ public class NetworkManager {
                     input.x,
                     input.y
                 );
+                
+                loadedPlayers.get(hider.getID()).setDead(message.dead);
             }
         } catch(InterruptedException ie) {
             Thread.currentThread().interrupt();
@@ -214,7 +218,18 @@ public class NetworkManager {
         keyPressed.replace(key, pressed);
     }
 
-	public static String getMe() {
+    public static Hider getMe() {
+        Hider me;
+        if ((me = loadedPlayers.get(getMyID())) == null) {
+            App.logger.error(
+                "Tried to get local player before Network initialised"
+            );
+        }
+
+        return me;
+    }
+
+	public static String getMyID() {
 		return me;
 	}
 

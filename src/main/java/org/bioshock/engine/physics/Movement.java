@@ -1,11 +1,8 @@
 package org.bioshock.engine.physics;
 
-import org.bioshock.engine.core.WindowManager;
 import org.bioshock.engine.entity.EntityManager;
 import org.bioshock.engine.entity.Point;
 import org.bioshock.engine.entity.SquareEntity;
-import org.bioshock.engine.scene.SceneManager;
-import org.bioshock.scenes.GameScene;
 
 import javafx.geometry.Point2D;
 import javafx.scene.transform.Rotate;

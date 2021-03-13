@@ -117,7 +117,7 @@ public final class EntityManager {
 		}
 		else {
 			if(NetworkManager.isInGame()) {
-				meObj = NetworkManager.getLoadedPlayers().get(NetworkManager.getMe());
+				meObj = NetworkManager.getMe();
 			}
 		}
 		

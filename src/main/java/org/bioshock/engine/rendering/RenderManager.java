@@ -1,12 +1,6 @@
 package org.bioshock.engine.rendering;
 
-import org.bioshock.main.App;
-
-import static org.bioshock.engine.rendering.RenderManager.getRenHeight;
-import static org.bioshock.engine.rendering.RenderManager.getRenWidth;
-import static org.bioshock.engine.rendering.RenderManager.getRenX;
-import static org.bioshock.engine.rendering.RenderManager.getRenY;
-
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,6 +9,7 @@ import org.bioshock.engine.entity.Entity;
 import org.bioshock.engine.entity.EntityManager;
 import org.bioshock.engine.entity.Hider;
 import org.bioshock.engine.scene.SceneManager;
+import org.bioshock.main.App;
 
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.Canvas;
@@ -50,7 +45,12 @@ public final class RenderManager {
                 try {
                     Method rend = entity.getRenderer().getDeclaredMethods()[0];
                     rend.invoke(null, gc, entity);
-                } catch (Exception e) {
+                }catch (InvocationTargetException e) {
+                	App.logger.error(
+                            "Render function for {} threw an exception",
+                            entity.getRenderer()
+                        );
+                }catch (Exception e) {
                     App.logger.error(
                         "Render function not defined for {}",
                         entity.getRenderer()
@@ -164,21 +164,23 @@ public final class RenderManager {
 	
 	public static void clipToFOV(GraphicsContext gc) {
 		Hider player = EntityManager.getCurrentPlayer();
-		double x = player.getX();
-        double y = player.getY();
-        double radius = player.getRadius();
-        double width = player.getWidth();
-        double height = player.getHeight();
+		if (player != null) {
+			double x = player.getX();
+	        double y = player.getY();
+	        double radius = player.getRadius();
+	        double width = player.getWidth();
+	        double height = player.getHeight();
+			
+			gc.beginPath();
+	    	gc.arc(getRenX(x + width / 2),
+	        		getRenY(y + height / 2),
+	        		getRenWidth(radius), 
+	        		getRenHeight(radius), 
+	        		0, 360);
+//	    	gc.rect(0, 0, gc.getCanvas().getWidth()/2, gc.getCanvas().getHeight()/2);
+	        gc.closePath();
+	        gc.clip();
+		}
 		
-		gc.beginPath();
-    	gc.arc(getRenX(x + width / 2),
-        		getRenY(y + height / 2),
-        		getRenWidth(radius), 
-        		getRenHeight(radius), 
-        		0, 360);
-//    	gc.rect(0, 0, gc.getCanvas().getWidth()/2, gc.getCanvas().getHeight()/2);
-        gc.closePath();
-        gc.stroke();
-        gc.clip();
 	}
 }
