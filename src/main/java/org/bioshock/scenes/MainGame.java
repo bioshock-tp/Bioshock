@@ -29,7 +29,7 @@ import javafx.scene.paint.Color;
 public class MainGame extends GameScene {
 	private boolean cameraLock = true;
 	private double runningTime = 0.0;
-	private static final double endTime = 0*60 + 3; 
+	private static final double endTime = 2*60 + 3; 
 	private Label timer;
 
 	public MainGame() {
@@ -149,7 +149,7 @@ public class MainGame extends GameScene {
 	public void logicTick(double timeDelta) {
 		boolean allDead = false;
 		
-		if(SceneManager.isGameStarted()) {
+		if(SceneManager.isGameStarted() && (!App.isNetworked() || NetworkManager.isInGame())) {
 			runningTime += timeDelta;
 			
 			if (runningTime >= endTime) {
