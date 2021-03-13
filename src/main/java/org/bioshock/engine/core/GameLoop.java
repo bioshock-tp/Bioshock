@@ -4,7 +4,6 @@ import org.bioshock.engine.entity.EntityManager;
 import org.bioshock.engine.networking.NetworkManager;
 import org.bioshock.engine.rendering.RenderManager;
 import org.bioshock.engine.scene.SceneManager;
-import org.bioshock.main.App;
 
 import javafx.animation.AnimationTimer;
 
@@ -19,12 +18,12 @@ public final class GameLoop extends AnimationTimer {
 		long nanoSDelta = now - prev;
 		double sDelta = nanoSDelta / 10e9;
         RenderManager.tick();
-        SceneManager.getScene().renderTick(sDelta);
+        
 
         if (now - lastUpdate >= LOGICRATE) {
             NetworkManager.tick();
             EntityManager.tick(sDelta);
-			
+            SceneManager.getScene().renderTick(sDelta);
 
             lastUpdate = now;
         }
