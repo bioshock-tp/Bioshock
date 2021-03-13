@@ -159,10 +159,11 @@ public class Message implements Serializable {
     @Override
     public String toString() {
         return String.format(
-            "Message{Player Number %d, UUID %s, %s}",
+            "Message{Player Number %d, UUID %s, %s, %b}",
             playerNumber,
             UUID,
-            input
+            input,
+            dead
         );
     }
 

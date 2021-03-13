@@ -123,10 +123,10 @@ public class NetworkManager {
             client.getMutex().acquire();
 
             for (Hider hider : playerList) {
-                Message message = client.getMessageQ().get(hider.getID());
-                ClientInput input = message.input;
+                Message message = client.getMessageQ().getOrDefault(hider.getID(), null);
 
-                if (input == null || hider == loadedPlayers.get(me)) continue;
+                if (message == null || hider == getMe()) continue;
+                ClientInput input = message.input;
 
                 if (hider == playerList.get(0)) {
                     seeker.getMovement().direction(
