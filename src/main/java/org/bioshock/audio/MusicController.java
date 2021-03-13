@@ -57,7 +57,7 @@ public class MusicController {
                     "This music has been disposed, you cannot play it."
                 );
             } catch (IllegalStateException e) {
-                App.logger.error(e.getMessage());
+                App.logger.error(e);
             }
         }
 
@@ -88,7 +88,7 @@ public class MusicController {
                 "This music has been disposed, you cannot pause it."
             );
         } catch (IllegalStateException e) {
-            App.logger.error(e.getMessage());
+            App.logger.error(e);
         }
 
         Platform.runLater(() -> {
@@ -113,7 +113,7 @@ public class MusicController {
                     "This music has been disposed, you cannot stop it."
                 );
             } catch (IllegalStateException e) {
-                App.logger.error(e.getMessage());
+                App.logger.error(e);
             }
         }
 

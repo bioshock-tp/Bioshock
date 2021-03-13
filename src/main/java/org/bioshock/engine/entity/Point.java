@@ -19,7 +19,7 @@ public class Point extends Point2D {
             xField.setAccessible(true);
             yField.setAccessible(true);
         } catch (NoSuchFieldException e) {
-            App.logger.error(e.getMessage());
+            App.logger.error(e);
             App.exit(-1);
         }
     }
@@ -32,7 +32,7 @@ public class Point extends Point2D {
         try {
             xField.set(this, newX);
         } catch (IllegalArgumentException | IllegalAccessException e) {
-            App.logger.error(e.getMessage());
+            App.logger.error(e);
             App.exit(-1);
         }
     }
@@ -45,7 +45,7 @@ public class Point extends Point2D {
         try {
             yField.set(this, newY);
         } catch (IllegalArgumentException | IllegalAccessException e) {
-            App.logger.error(e.getMessage());
+            App.logger.error(e);
             App.exit(-1);
         }
     }

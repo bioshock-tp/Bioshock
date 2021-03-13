@@ -1,13 +1,13 @@
 package org.bioshock.audio;
 
-import java.io.FileNotFoundException;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Duration;
-import java.util.MissingFormatArgumentException;
+import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.github.benmanes.caffeine.cache.Cache;
@@ -26,14 +26,14 @@ public class AudioController {
     /**
      *
      */
-    private static final String audioJsonPath =
+    private static final String AUDIOJSONPATH =
         "src/main/resources/org/bioshock/audio/audio-data.json";
 
     /** A mapping of effect names to URIs. */
-    private final static ConcurrentHashMap<String, Path> effectUris =
+    private static final ConcurrentHashMap<String, Path> effectUris =
         new ConcurrentHashMap<>();
     /** A mapping of music names to URIs. */
-    private final static ConcurrentHashMap<String, Path> musicUris =
+    private static final ConcurrentHashMap<String, Path> musicUris =
         new ConcurrentHashMap<>();
 
     /** A cache of recently loaded music. */
@@ -74,7 +74,7 @@ public class AudioController {
      *          The path of the JSON data.
      */
     public static void initialise() {
-        Path jsonPath = Paths.get(audioJsonPath);
+        Path jsonPath = Paths.get(AUDIOJSONPATH);
         effectUris.clear();
         musicUris.clear();
 
@@ -82,117 +82,92 @@ public class AudioController {
         effectCache.invalidateAll();
 
         JSONArray parser;
+        if (!Files.exists(jsonPath)) {
+            App.logger.error("There is no file at '{}'.", jsonPath);
+        }
+
+        if (Files.isDirectory(jsonPath)) {
+            App.logger.error(
+                "The path '{}' points to a directory, not a file.",
+                jsonPath
+            );
+        }
+
         try {
-            if (!Files.exists(jsonPath)) {
-                throw new FileNotFoundException(
-                    "There is no file at '" + jsonPath + "'."
-                );
-            }
-
-            if (Files.isDirectory(jsonPath)) {
-                throw new IllegalArgumentException(String.format(
-                    "The path '%s' points to a directory, not a file.",
-                    jsonPath.toString()
-                ));
-            }
-
             parser = new JSONArray(Files.readString(
                 jsonPath,
                 StandardCharsets.UTF_8
             ));
-
-            parser.forEach(object -> {
-                final JSONObject jsonObject = (JSONObject) object;
-
-                if (!jsonObject.has("type")) {
-                    throw new MissingFormatArgumentException(
-                        "There is no type"
-                    );
-                }
-
-                if (!jsonObject.has("name")) {
-                    throw new MissingFormatArgumentException(
-                        "There is no name."
-                    );
-                }
-
-                if (!jsonObject.has("path")) {
-                    throw new MissingFormatArgumentException(
-                        "There is no path."
-                    );
-                }
-
-                if (!jsonObject.has("filesystem")) {
-                    throw new MissingFormatArgumentException(
-                        "There is no filesystem."
-                    );
-                }
-
-                String typeObject = (String) jsonObject.get("type");
-                String nameObject = (String) jsonObject.get("name");
-                String pathObject = (String) jsonObject.get("path");
-                String filesystemObject = (String)jsonObject.get("filesystem");
-
-                final String type = typeObject.toLowerCase();
-                final String name = nameObject.toLowerCase();
-                final String path = pathObject;
-                final String filesystem = filesystemObject.toLowerCase();
-
-                if (name.isEmpty()) {
-                    throw new IllegalArgumentException(
-                        "Names cannot be blank."
-                    );
-                }
-
-                final Path nioPath;
-                switch (filesystem) {
-                    case "jar": {
-                        try {
-                            nioPath = Paths.get(
-                                AudioController.class.getResource(path).toURI()
-                            );
-                        } catch (final URISyntaxException e) {
-                            throw new IllegalArgumentException(String.format(
-                                "There is not file, within the JAR, at '%s'.",
-                                path.toString()
-                            ));
-                        }
-                        break;
-                    }
-                    case "local": {
-                        nioPath = Paths.get(path);
-                        break;
-                    }
-                    default: {
-                        throw new IllegalArgumentException(String.format(
-                            "'%s' is not a supported filesystem.",
-                            filesystem
-                        ));
-                    }
-                }
-
-                switch (type) {
-                    case "effect": {
-                        effectUris.put(name, nioPath);
-                        break;
-                    }
-                    case "music": {
-                        musicUris.put(name, nioPath);
-                        break;
-                    }
-                    default: {
-                        throw new IllegalArgumentException(String.format(
-                            "'%s' is not a supported type.",
-                            type
-                        ));
-                    }
-                }
-            });
         } catch (Exception e) {
-            App.logger.error("Error initialising audio: {}", e.getMessage());
+            App.logger.error(e);
+            return;
         }
 
+        parser.forEach(object -> {
+            final JSONObject jsonObject = (JSONObject) object;
 
+            List<String> keys = Arrays.asList(
+                "type", "name", "path", "filesystem"
+            );
+            if (!jsonObject.keySet().containsAll(keys)) {
+                App.logger.error("json has is missing one of '{}'", keys);
+                return;
+            }
+
+            String typeObject = (String) jsonObject.get("type");
+            String nameObject = (String) jsonObject.get("name");
+            String pathObject = (String) jsonObject.get("path");
+            String filesystemObject = (String) jsonObject.get("filesystem");
+
+            final String type = typeObject.toLowerCase();
+            final String name = nameObject.toLowerCase();
+            final String path = pathObject;
+            final String filesystem = filesystemObject.toLowerCase();
+
+            if (name.isEmpty()) {
+                App.logger.error("'Name' key cannot be blank.");
+            }
+
+            final Path nioPath;
+            switch (filesystem) {
+                case "jar":
+                    try {
+                        nioPath = Paths.get(
+                            AudioController.class.getResource(path).toURI()
+                        );
+                    } catch (final URISyntaxException e) {
+                        App.logger.error(
+                            "There is not file, within the JAR, at '{}'.",
+                            path
+                        );
+                        return;
+                    }
+                    break;
+                case "local":
+                    nioPath = Paths.get(path);
+                    break;
+
+                default:
+                    App.logger.error(
+                        "'{}' is not a supported filesystem.",
+                        filesystem
+                    );
+                    return;
+            }
+
+            switch (type) {
+                case "effect":
+                    effectUris.put(name, nioPath);
+                    break;
+
+                case "music":
+                    musicUris.put(name, nioPath);
+                    break;
+
+                default:
+                    App.logger.error("'{}}' is not a supported type.", type);
+            }
+        });
     }
 
     /**
@@ -210,7 +185,7 @@ public class AudioController {
             try {
                 throw new IllegalArgumentException("Names cannot be blank.");
             } catch (IllegalArgumentException e) {
-                App.logger.error(e.getMessage());
+                App.logger.error(e);
             }
         }
 
@@ -240,19 +215,11 @@ public class AudioController {
     public static MusicController loadMusicController(
         final @NonNull String name
     ) {
-
-            if (name.isEmpty()) {
-                try {
-                    throw new IllegalArgumentException(
-                        "Names cannot be blank."
-                    );
-                } catch (IllegalArgumentException e) {
-                    App.logger.error(
-                        "Error loading music controller: {}",
-                        e.getMessage()
-                    );
-                }
-            }
+        if (name.isEmpty()) {
+            App.logger.error(
+                "Error loading music controller: Names cannot be blank."
+            );
+        }
 
         @Nullable MusicController music = musicCache.getIfPresent(name);
         if (music != null) {
