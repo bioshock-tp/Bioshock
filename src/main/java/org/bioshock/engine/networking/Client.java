@@ -67,7 +67,7 @@ public class Client extends WebSocketClient {
         if (string.equals("New Player")) {
             Message queueMessage = Message.inLobby(
                 playerNumber,
-                NetworkManager.getMe()
+                NetworkManager.getMyID()
             );
 
             send(Message.serialise(queueMessage));

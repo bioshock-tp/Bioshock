@@ -214,7 +214,18 @@ public class NetworkManager {
         keyPressed.replace(key, pressed);
     }
 
-	public static String getMe() {
+    public static Hider getMe() {
+        Hider me;
+        if ((me = loadedPlayers.get(getMyID())) == null) {
+            App.logger.error(
+                "Tried to get local player before Network initialised"
+            );
+        }
+
+        return me;
+    }
+
+	public static String getMyID() {
 		return me;
 	}
 
