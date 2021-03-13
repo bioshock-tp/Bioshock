@@ -108,7 +108,7 @@ public class SeekerAI extends SquareEntity {
         });
         if(isSearching){
             if(path.isEmpty()){
-                if(Math.abs(currentRoom.getRoomCenter().getX() - getX()) < 1 && Math.abs(currentRoom.getRoomCenter().getY() - getY()) < 1){
+                if(Math.abs(currentRoom.getRoomCenter().getX() - getX()) < 5 && Math.abs(currentRoom.getRoomCenter().getY() - getY()) < 5){
                     path = createPath(findCurrentRoom());
                     currentRoom = path.remove(0);
                 }
@@ -118,7 +118,7 @@ public class SeekerAI extends SquareEntity {
             }
             else {
                 moveToCentre(currentRoom);
-                if(Math.abs(currentRoom.getRoomCenter().getX() - getX()) < 1 && Math.abs(currentRoom.getRoomCenter().getY() - getY()) < 1){
+                if(Math.abs(currentRoom.getRoomCenter().getX() - getX()) < 5 && Math.abs(currentRoom.getRoomCenter().getY() - getY()) < 5){
                     currentRoom = path.remove(0);
                 }
             }
