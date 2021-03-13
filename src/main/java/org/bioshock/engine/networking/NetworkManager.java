@@ -24,11 +24,15 @@ public class NetworkManager {
     private static String me = UUID.randomUUID().toString();
     private static List<Hider> playerList = new ArrayList<>(App.PLAYERCOUNT);
     private static Map<String, Hider> loadedPlayers = new HashMap<>(App.PLAYERCOUNT);
-    private static SeekerAI seeker;
+	private static SeekerAI seeker;
 
     private static boolean inGame = false;
 
-    private static Client client = new Client();
+    public static boolean isInGame() {
+		return inGame;
+	}
+
+	private static Client client = new Client();
     private static Object gameStartedMutex = new Object();
     private static Object awaitingMessage = new Object();
 
@@ -71,6 +75,7 @@ public class NetworkManager {
                             }
                         }
                     }
+                    App.logger.debug("Register In player");
 
                     Message m = client.getInitialMessages().poll();
 
@@ -103,7 +108,7 @@ public class NetworkManager {
 
         Message.ClientInput input = new Message.ClientInput(x, y, aiX, aiY);
 
-        return new Message(-1, me, input);
+        return new Message(-1, me, input, getMe().isDead());
     }
 
     public static void tick() {
@@ -117,7 +122,9 @@ public class NetworkManager {
             client.getMutex().acquire();
 
             for (Hider hider : playerList) {
-                ClientInput input = client.getInputQ().get(hider.getID());
+                Message message = client.getMessageQ().get(hider.getID());
+                ClientInput input = message.input;
+
                 if (input == null || hider == loadedPlayers.get(me)) continue;
 
                 if (hider == playerList.get(0)) {
@@ -131,6 +138,8 @@ public class NetworkManager {
                     input.x,
                     input.y
                 );
+
+                loadedPlayers.get(hider.getID()).setDead(message.dead);
             }
         } catch(InterruptedException ie) {
             Thread.currentThread().interrupt();
@@ -198,4 +207,9 @@ public class NetworkManager {
     public static Object getMessageMutex() {
         return awaitingMessage;
     }
+
+    public static Map<String, Hider> getLoadedPlayers() {
+		return loadedPlayers;
+	}
+
 }

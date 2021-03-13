@@ -1,6 +1,12 @@
 package org.bioshock.engine.renderers;
 
+import static org.bioshock.engine.rendering.RenderManager.getRenHeight;
+import static org.bioshock.engine.rendering.RenderManager.getRenWidth;
+import static org.bioshock.engine.rendering.RenderManager.getRenX;
+import static org.bioshock.engine.rendering.RenderManager.getRenY;
+
 import org.bioshock.engine.ai.SeekerAI;
+import org.bioshock.engine.rendering.RenderManager;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
@@ -27,31 +33,34 @@ public class SeekerRenderer implements Renderer {
 
         gc.save();
 
+        RenderManager.clipToFOV(gc);
         Rotate r = seeker.getRotate();
         gc.setTransform(
                 r.getMxx(), r.getMyx(), r.getMxy(),
                 r.getMyy(), r.getTx(), r.getTy()
         );
         gc.setFill(seeker.getRendererC().getColor());
-        gc.fillRect(x, y, width, height);
+        gc.fillRect(getRenX(x), getRenY(y), getRenWidth(width), getRenHeight(height));
         gc.setLineWidth(10);
         gc.setStroke(seeker.getRendererC().getColor());
         gc.strokeOval(
-                x - radius + width / 2,
-                y - radius + height / 2,
-                radius * 2, radius * 2
+    		getRenX(x - radius + width / 2),
+    		getRenY(y - radius + height / 2),
+    		getRenWidth(radius * 2),
+    		getRenHeight(radius * 2)
         );
 
         if(isActive) {
             //put animation here instead of gc.fillArc
             gc.fillArc(
-                swatter.getCenterX() - swatter.getRadiusX(),
-                swatter.getCenterY() - swatter.getRadiusY(),
-                swatter.getRadiusX()*2,swatter.getRadiusY()*2,
-                swatter.getStartAngle(),
-                swatter.getLength(),
-                swatter.getType()
-            );
+        		getRenX(swatter.getCenterX() - swatter.getRadiusX()),
+        		getRenY(swatter.getCenterY() - swatter.getRadiusY()),
+        		getRenWidth(swatter.getRadiusX()*2),
+        		getRenHeight(swatter.getRadiusY()*2),
+        		swatter.getStartAngle(),
+        		swatter.getLength(),
+        		swatter.getType()
+    		);
 
             seeker.setActive(false);
         }

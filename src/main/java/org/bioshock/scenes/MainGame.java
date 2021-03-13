@@ -4,13 +4,18 @@ import java.util.List;
 
 import org.bioshock.engine.ai.SeekerAI;
 import org.bioshock.engine.components.NetworkC;
+import org.bioshock.engine.entity.EntityManager;
 import org.bioshock.engine.entity.Hider;
 import org.bioshock.engine.entity.Size;
 import org.bioshock.engine.input.InputManager;
+import org.bioshock.engine.networking.NetworkManager;
+import org.bioshock.engine.rendering.RenderManager;
+import org.bioshock.engine.scene.SceneManager;
 import org.bioshock.entities.map.Room;
 import org.bioshock.entities.map.ThreeByThreeMap;
 import org.bioshock.main.App;
 
+import javafx.geometry.Point2D;
 import javafx.geometry.Point3D;
 import javafx.scene.Cursor;
 import javafx.scene.input.KeyCode;
@@ -19,6 +24,8 @@ import javafx.scene.layout.BackgroundFill;
 import javafx.scene.paint.Color;
 
 public class MainGame extends GameScene {
+	private boolean cameraLock = true;
+
 	public MainGame() {
 		super();
 
@@ -29,8 +36,8 @@ public class MainGame extends GameScene {
             null
         )));
 
-        ThreeByThreeMap map = new ThreeByThreeMap(
-            new Point3D(100, 100, 0),
+		ThreeByThreeMap map = new ThreeByThreeMap(
+            new Point3D(100, 100, 10),
             10,
             new Size(300, 600),
             new Size(90, 90),
@@ -81,6 +88,42 @@ public class MainGame extends GameScene {
         );
 
 		children.add(seeker);
+
+
+		InputManager.onRelease(KeyCode.Y,
+			() ->	{cameraLock = !cameraLock;});
+
+	}
+
+    @Override
+    public void initScene() {
+    	 SceneManager.setGameStarted(true);
+
+         if (App.isNetworked()) {
+             Object mutex = NetworkManager.getMutex();
+             synchronized(mutex) {
+                 mutex.notifyAll();
+             }
+             App.logger.debug("Notified networking thread");
+         } else {
+             assert(App.PLAYERCOUNT == 1);
+             Hider hider = EntityManager.getPlayers().get(0);
+             hider.initMovement();
+         }
+    }
+
+	@Override
+	public void renderTick(double timeDelta) {
+		if(cameraLock) {
+			Hider meObj = EntityManager.getCurrentPlayer();
+
+			if (meObj != null) {
+				RenderManager.setCameraPos(
+						meObj.getCentre().subtract(
+							super.getGameScreen().getWidth()/2,
+							super.getGameScreen().getHeight()/2));
+			}
+		}
 	}
 
     @Override
@@ -89,7 +132,10 @@ public class MainGame extends GameScene {
             KeyCode.W,
             KeyCode.A,
             KeyCode.S,
-            KeyCode.D
+            KeyCode.D,
+            KeyCode.Y
         );
+
+        RenderManager.setCameraPos(new Point2D(0, 0));
     }
 }

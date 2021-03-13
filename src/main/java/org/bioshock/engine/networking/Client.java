@@ -21,7 +21,7 @@ public class Client extends WebSocketClient {
 
     private Semaphore mutex = new Semaphore(1);
     private Queue<Message> initialMessages = new ArrayDeque<>();
-    private Map<String, ClientInput> inputQueue = new HashMap<>(App.PLAYERCOUNT);
+    private Map<String, Message> messageQueue = new HashMap<>(App.PLAYERCOUNT);
     private boolean connected = false;
 
     private Client(URI serverURI) {
@@ -81,6 +81,7 @@ public class Client extends WebSocketClient {
             /* Case of lobby message */
             if (message.playerNumber > 0 && message.input == null) {
                 initialMessages.add(message);
+                App.logger.debug("Player Joined");
 
                 Object messageMutex = NetworkManager.getMessageMutex();
                 synchronized(messageMutex) {
@@ -90,7 +91,7 @@ public class Client extends WebSocketClient {
 
             /* Case of input */
             else {
-                inputQueue.put(message.UUID, message.input);
+                messageQueue.put(message.UUID, message);
             }
         } catch(InterruptedException ie) {
             Thread.currentThread().interrupt();
@@ -124,8 +125,8 @@ public class Client extends WebSocketClient {
         return initialMessages;
     }
 
-	public Map<String, ClientInput> getInputQ() {
-		return inputQueue;
+	public Map<String, Message> getMessageQ() {
+		return messageQueue;
 	}
 
     public Semaphore getMutex() {

@@ -1,6 +1,5 @@
 package org.bioshock.engine.physics;
 
-import org.bioshock.engine.core.WindowManager;
 import org.bioshock.engine.entity.EntityManager;
 import org.bioshock.engine.entity.Point;
 import org.bioshock.engine.entity.SquareEntity;
@@ -49,11 +48,6 @@ public class Movement {
             double disp = target.getY() - y;
             y += disp / Math.abs(disp) * speed;
         }
-
-        while (x < 0) x++;
-        while (y < 0) y++;
-        while (x + entity.getWidth() > WindowManager.getWindowWidth()) x--;
-        while (y + entity.getHeight() > WindowManager.getWindowHeight()) y--;
 
         double oldX = entity.getX();
         double oldY = entity.getY();

@@ -16,6 +16,7 @@ public class Message implements Serializable {
     int playerNumber;
     String UUID;
     ClientInput input;
+    boolean dead;
 
     Message() {}
 
@@ -26,10 +27,11 @@ public class Message implements Serializable {
      * @param UUID Unique ID of player sending message
      * @param input A ClientInput object containing states of player and AI
      */
-    Message(int playerNumber, String UUID, ClientInput input) {
+    Message(int playerNumber, String UUID, ClientInput input, boolean dead) {
         this.playerNumber = playerNumber;
         this.UUID = UUID;
         this.input = input;
+        this.dead = dead;
     }
 
     static class ClientInput implements Serializable {
@@ -104,11 +106,11 @@ public class Message implements Serializable {
     }
 
     static Message inLobby(int playerNumber, String UUID) {
-        return new Message(playerNumber, UUID, null);
+        return new Message(playerNumber, UUID, null, false);
     }
 
-    static Message sendInputState(String UUID, ClientInput input) {
-        return new Message(-1, UUID, input);
+    static Message sendInputState(String UUID, ClientInput input, boolean dead) {
+        return new Message(-1, UUID, input, dead);
     }
 
     public static String serialise(Message message) {
