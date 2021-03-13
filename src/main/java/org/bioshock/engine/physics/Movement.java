@@ -4,8 +4,10 @@ import org.bioshock.engine.core.WindowManager;
 import org.bioshock.engine.entity.EntityManager;
 import org.bioshock.engine.entity.Point;
 import org.bioshock.engine.entity.SquareEntity;
+import org.bioshock.engine.input.InputManager;
 
 import javafx.geometry.Point2D;
+import javafx.scene.input.KeyCode;
 import javafx.scene.transform.Rotate;
 
 public class Movement {
@@ -20,7 +22,7 @@ public class Movement {
         this.entity = entity;
     }
 
-    private Point2D getDirection() {
+    private Point getDirection() {
 		return new Point(xDirection, yDirection);
 	}
 
@@ -65,7 +67,6 @@ public class Movement {
 
                 /* Check if x value was cause of collision */
                 entity.setX(oldX);
-
             }
             if (entity.intersects(child)) {
 
@@ -82,6 +83,18 @@ public class Movement {
         });
     }
 
+    public void initMovement() {
+        InputManager.onPress(  KeyCode.W, () -> direction(0, -speed));
+        InputManager.onPress(  KeyCode.A, () -> direction(-speed, 0));
+        InputManager.onPress(  KeyCode.S, () -> direction(0,  speed));
+        InputManager.onPress(  KeyCode.D, () -> direction(speed,  0));
+
+        InputManager.onRelease(KeyCode.W, () -> direction(0,  speed));
+        InputManager.onRelease(KeyCode.A, () -> direction(speed,  0));
+        InputManager.onRelease(KeyCode.S, () -> direction(0, -speed));
+        InputManager.onRelease(KeyCode.D, () -> direction(-speed, 0));
+    }
+
     public void direction(double newXDirection, double newYDirection) {
         double newX = Math.abs(xDirection + newXDirection);
         if (newX <= speed) xDirection += newXDirection;
@@ -94,7 +107,7 @@ public class Movement {
         direction(targ.getX(), targ.getY());
     }
 
-    public void updateFacing(Point2D trans){
+    public void updateFacing(Point2D trans) {
         double rotation = Math.atan2(trans.getX(), -trans.getY())*180/Math.PI;
         setRotation(rotation);
     }
@@ -114,13 +127,8 @@ public class Movement {
     }
 
     public void setRotation(double newDegree) {
-        Rotate rotate = entity.getRotate();
         Point2D pos = entity.getCentre();
-
-        rotate.setPivotX(pos.getX());
-        rotate.setPivotY(pos.getY());
-
-        rotate.setAngle(newDegree);
+        setRotation(newDegree, pos);
     }
 
     public void setRotation(double newDegree, Point2D pivot) {

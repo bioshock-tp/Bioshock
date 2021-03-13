@@ -1,8 +1,8 @@
 package org.bioshock.engine.entity;
 
 import org.bioshock.engine.components.NetworkC;
+import org.bioshock.engine.components.RendererC;
 import org.bioshock.engine.physics.Movement;
-import org.bioshock.engine.renderers.components.SquareEntityRendererC;
 
 import javafx.geometry.Point3D;
 import javafx.scene.paint.Color;
@@ -18,15 +18,16 @@ public abstract class SquareEntity extends Entity {
     protected Size size;
     protected Circle fov;
 
-    private SquareEntity(Point3D p, Rectangle h, NetworkC com) {
-        super(p, h, com, new SquareEntityRendererC());
+    private SquareEntity(Point3D p, Rectangle h, NetworkC com, RendererC rCom) {
+        super(p, h, com, rCom);
     }
 
-    protected SquareEntity(Point3D p, NetworkC com, Size s, int r, Color c) {
+    protected SquareEntity(Point3D p, NetworkC nCom, RendererC rCom, Size s, int r, Color c) {
         this(
             p,
             new Rectangle(p.getX(), p.getY(), s.getWidth(), s.getHeight()),
-            com
+            nCom,
+            rCom
         );
 
         rendererC.setColor(c);

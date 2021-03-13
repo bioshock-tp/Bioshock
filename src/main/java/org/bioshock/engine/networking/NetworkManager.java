@@ -10,9 +10,7 @@ import java.util.UUID;
 import org.bioshock.engine.ai.SeekerAI;
 import org.bioshock.engine.entity.Hider;
 import org.bioshock.engine.entity.SquareEntity;
-import org.bioshock.engine.input.InputManager;
 import org.bioshock.engine.networking.Message.ClientInput;
-import org.bioshock.engine.physics.Movement;
 import org.bioshock.engine.scene.SceneManager;
 import org.bioshock.main.App;
 
@@ -24,7 +22,7 @@ public class NetworkManager {
     private static Map<KeyCode, Boolean> keyPressed = new EnumMap<>(KeyCode.class);
 
     private static String me = UUID.randomUUID().toString();
-    static List<Hider> playerList = new ArrayList<>(App.PLAYERCOUNT);
+    private static List<Hider> playerList = new ArrayList<>(App.PLAYERCOUNT);
     private static Map<String, Hider> loadedPlayers = new HashMap<>(App.PLAYERCOUNT);
     private static SeekerAI seeker;
 
@@ -81,35 +79,7 @@ public class NetworkManager {
                     loadedPlayers.putIfAbsent(m.UUID, hider);
                 }
 
-                Hider hider = loadedPlayers.get(me);
-                Movement movement = hider.getMovement();
-                double speed = movement.getSpeed();
-
-                InputManager.onPress(
-                    KeyCode.W, () -> movement.direction(0, -speed)
-                );
-                InputManager.onPress(
-                    KeyCode.A, () -> movement.direction(-speed, 0)
-                );
-                InputManager.onPress(
-                    KeyCode.S, () -> movement.direction(0, speed)
-                );
-                InputManager.onPress(
-                    KeyCode.D, () -> movement.direction(speed, 0)
-                );
-
-                InputManager.onRelease(
-                    KeyCode.W, () -> movement.direction(0, speed)
-                );
-                InputManager.onRelease(
-                    KeyCode.A, () -> movement.direction(speed, 0)
-                );
-                InputManager.onRelease(
-                    KeyCode.S, () -> movement.direction(0, -speed)
-                );
-                InputManager.onRelease(
-                    KeyCode.D, () -> movement.direction(-speed, 0)
-                );
+                loadedPlayers.get(me).getMovement().initMovement();
 
                 inGame = true;
 
@@ -128,10 +98,10 @@ public class NetworkManager {
         int y = (int) loadedPlayers.get(me).getY();
 
         Point2D aiPos = seeker.getPosition();
+        double aiX = aiPos.getX();
+        double aiY = aiPos.getY();
 
-        Message.ClientInput input = new Message.ClientInput(
-            x, y, aiPos.getX(), aiPos.getY()
-        );
+        Message.ClientInput input = new Message.ClientInput(x, y, aiX, aiY);
 
         return new Message(-1, me, input);
     }
@@ -148,9 +118,7 @@ public class NetworkManager {
 
             for (Hider hider : playerList) {
                 ClientInput input = client.getInputQ().get(hider.getID());
-                if (input == null) continue;
-
-                if (hider == loadedPlayers.get(me)) continue;
+                if (input == null || hider == loadedPlayers.get(me)) continue;
 
                 if (hider == playerList.get(0)) {
                     seeker.getMovement().direction(
@@ -173,8 +141,6 @@ public class NetworkManager {
 
 	public static void register(SquareEntity entity) {
         if (entity instanceof Hider) {
-            if (playerList.isEmpty()) {
-            }
             playerList.add((Hider) entity);
         }
         else if (entity instanceof SeekerAI) {

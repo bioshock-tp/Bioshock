@@ -4,7 +4,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.ByteBuffer;
 import java.util.ArrayDeque;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Queue;
@@ -33,15 +32,15 @@ public class Client extends WebSocketClient {
         this(DEFURI);
     }
 
-    public Client(String URI) {
-        this(getURI(URI));
+    public Client(String uri) {
+        this(getURI(uri));
     }
 
-    private static URI getURI(String URI) {
+    private static URI getURI(String uri) {
         try {
-            return new URI(URI);
+            return new URI(uri);
         } catch (URISyntaxException e) {
-            App.logger.fatal("Invalid URI {}: {}", URI, e.getMessage());
+            App.logger.fatal("Invalid URI {}: {}", uri, e.getMessage());
             App.exit(-1);
             return null; /* Suppress no return value warning */
         }
@@ -91,9 +90,6 @@ public class Client extends WebSocketClient {
 
             /* Case of input */
             else {
-                if (NetworkManager.playerList.get(0).getID().equals(message.UUID)) {
-                    App.logger.debug(message);
-                }
                 inputQueue.put(message.UUID, message.input);
             }
         } catch(InterruptedException ie) {
@@ -111,11 +107,7 @@ public class Client extends WebSocketClient {
 
     @Override
     public void onError(Exception ex) {
-        App.logger.error(
-            "A network error occurred: {}. StackTrace\n{}",
-            ex.getMessage(),
-            Arrays.toString(ex.getStackTrace()).replace(',', '\n')
-        );
+        App.logger.error("A network error occurred: ", ex);
     }
 
     @Override

@@ -16,12 +16,8 @@ public class FrameRate {
     public static final void tick(long now) {
         if (label == null) {
             label = new Label("0");
-            label.setTranslateX(
-                (double) WindowManager.getWindowWidth() / 2 - 10
-            );
-            label.setTranslateY(
-                10 - (double) WindowManager.getWindowHeight() / 2
-            );
+            label.setTranslateX(WindowManager.getWindowWidth() / 2 - 10);
+            label.setTranslateY(10 - WindowManager.getWindowHeight() / 2);
             SceneManager.getPane().getChildren().add(label);
         }
 

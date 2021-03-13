@@ -14,7 +14,7 @@ public abstract class Entity {
     protected Point position;
     protected Rectangle hitbox;
 
-    protected String UUID = java.util.UUID.randomUUID().toString();
+    protected String uuid = java.util.UUID.randomUUID().toString();
     protected double z;
     protected NetworkC networkC;
     protected RendererC rendererC;
@@ -36,7 +36,7 @@ public abstract class Entity {
 
         rendererC.setZ(p.getZ());
 
-        App.logger.info("New {} with ID {}", this, UUID);
+        App.logger.info("New {} with ID {}", this, uuid);
 	}
 
     protected abstract void tick(double timeDelta);
@@ -93,11 +93,11 @@ public abstract class Entity {
     }
 
     public void setID(String newID) {
-        UUID = newID;
+        uuid = newID;
     }
 
 	public String getID() {
-		return UUID;
+		return uuid;
 	}
 
     public Point getPosition() {

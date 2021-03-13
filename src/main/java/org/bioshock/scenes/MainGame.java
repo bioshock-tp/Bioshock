@@ -69,10 +69,10 @@ public class MainGame extends GameScene {
         }
 
 		double centreX = rooms.get(rooms.size() / 2).getRoomCenter().getX();
-		double centreY = rooms.get(rooms.size() / 2).getRoomCenter().getX();
+		double centreY = rooms.get(rooms.size() / 2).getRoomCenter().getY();
 
 		SeekerAI seeker = new SeekerAI(
-            new Point3D(centreX, centreY, 0.5),
+            new Point3D(centreX, centreY, 0.25),
             new NetworkC(true),
             new Size(40, 40),
             300,

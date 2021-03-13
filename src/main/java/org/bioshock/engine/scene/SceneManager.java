@@ -2,7 +2,6 @@ package org.bioshock.engine.scene;
 
 import org.bioshock.engine.core.WindowManager;
 import org.bioshock.engine.entity.EntityManager;
-import org.bioshock.engine.entity.Hider;
 import org.bioshock.engine.input.InputManager;
 import org.bioshock.engine.networking.NetworkManager;
 import org.bioshock.main.App;
@@ -33,11 +32,11 @@ public final class SceneManager {
         currentScene = scene;
 
         WindowManager.setFullScreen(true);
-        App.logger.debug("1");
+
         EntityManager.unregisterAll();
-        App.logger.debug("1");
+
         InputManager.changeScene();
-        App.logger.debug("1");
+
         stage.setScene(currentScene);
 
         currentScene.renderEntities();
@@ -53,8 +52,7 @@ public final class SceneManager {
                 App.logger.debug("Notified networking thread");
             } else {
                 assert(App.PLAYERCOUNT == 1);
-                Hider hider = EntityManager.getPlayers().get(0);
-                hider.initMovement();
+                EntityManager.getPlayers().get(0).getMovement().initMovement();
             }
         }
 	}

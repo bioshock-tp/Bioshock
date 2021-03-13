@@ -1,21 +1,21 @@
 package org.bioshock.engine.renderers;
 
+import org.bioshock.engine.ai.SeekerAI;
+
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Arc;
 import javafx.scene.transform.Rotate;
-import org.bioshock.engine.ai.SeekerAI;
-import org.bioshock.engine.entity.SquareEntity;
 
 public class SeekerRenderer implements Renderer {
 
     private SeekerRenderer() {}
 
-    public static <E extends SquareEntity> void render(
+    public static <E extends SeekerAI> void render(
             GraphicsContext gc,
             E entity
     ) {
-        SeekerAI seeker = (SeekerAI) entity;
+        SeekerAI seeker = entity;
 
         double x = seeker.getX();
         double y = seeker.getY();
@@ -42,9 +42,16 @@ public class SeekerRenderer implements Renderer {
                 radius * 2, radius * 2
         );
 
-        if(isActive){
+        if(isActive) {
             //put animation here instead of gc.fillArc
-            gc.fillArc(swatter.getCenterX() - swatter.getRadiusX(), swatter.getCenterY() - swatter.getRadiusY(), swatter.getRadiusX()*2,swatter.getRadiusY()*2, swatter.getStartAngle(), swatter.getLength(), swatter.getType());
+            gc.fillArc(
+                swatter.getCenterX() - swatter.getRadiusX(),
+                swatter.getCenterY() - swatter.getRadiusY(),
+                swatter.getRadiusX()*2,swatter.getRadiusY()*2,
+                swatter.getStartAngle(),
+                swatter.getLength(),
+                swatter.getType()
+            );
 
             seeker.setActive(false);
         }

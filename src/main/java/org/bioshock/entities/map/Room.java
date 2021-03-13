@@ -154,7 +154,8 @@ public class Room {
                 ),
 				new NetworkC(false),
 				new Size(wallWidth, wallWidth),
-				c);
+            c
+        );
 		walls.add(corner1);
 
 		//corner connecting bottom and left
@@ -166,7 +167,8 @@ public class Room {
                 ),
 				new NetworkC(false),
 				new Size(wallWidth, wallWidth),
-				c);
+            c
+        );
 		walls.add(corner2);
 
 		//corner connecting top and right
@@ -178,7 +180,8 @@ public class Room {
                 ),
 				new NetworkC(false),
 				new Size(wallWidth, wallWidth),
-				c);
+            c
+        );
 		walls.add(corner3);
 
 		//corner connecting top and left
@@ -190,7 +193,8 @@ public class Room {
                 ),
 				new NetworkC(false),
 				new Size(wallWidth, wallWidth),
-				c);
+            c
+        );
 		walls.add(corner4);
 	}
 
