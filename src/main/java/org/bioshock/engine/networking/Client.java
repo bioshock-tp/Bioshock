@@ -9,7 +9,6 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.Semaphore;
 
-import org.bioshock.engine.networking.Message.ClientInput;
 import org.bioshock.main.App;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;

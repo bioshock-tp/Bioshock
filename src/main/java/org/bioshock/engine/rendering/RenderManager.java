@@ -1,12 +1,5 @@
 package org.bioshock.engine.rendering;
 
-import org.bioshock.main.App;
-
-import static org.bioshock.engine.rendering.RenderManager.getRenHeight;
-import static org.bioshock.engine.rendering.RenderManager.getRenWidth;
-import static org.bioshock.engine.rendering.RenderManager.getRenX;
-import static org.bioshock.engine.rendering.RenderManager.getRenY;
-
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -16,6 +9,7 @@ import org.bioshock.engine.entity.Entity;
 import org.bioshock.engine.entity.EntityManager;
 import org.bioshock.engine.entity.Hider;
 import org.bioshock.engine.scene.SceneManager;
+import org.bioshock.main.App;
 
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.Canvas;

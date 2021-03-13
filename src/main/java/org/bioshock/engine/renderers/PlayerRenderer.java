@@ -1,6 +1,9 @@
 package org.bioshock.engine.renderers;
 
-import static org.bioshock.engine.rendering.RenderManager.* ;
+import static org.bioshock.engine.rendering.RenderManager.getRenHeight;
+import static org.bioshock.engine.rendering.RenderManager.getRenWidth;
+import static org.bioshock.engine.rendering.RenderManager.getRenX;
+import static org.bioshock.engine.rendering.RenderManager.getRenY;
 
 import org.bioshock.engine.entity.EntityManager;
 import org.bioshock.engine.entity.SquareEntity;
@@ -8,7 +11,6 @@ import org.bioshock.engine.rendering.RenderManager;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
 import javafx.scene.transform.Rotate;
 
 public final class PlayerRenderer implements Renderer {
@@ -55,12 +57,12 @@ public final class PlayerRenderer implements Renderer {
         gc.fillRect(getRenX(x), getRenY(y), getRenWidth(width), getRenHeight(height));
         gc.setLineWidth(10);
         gc.setStroke(player.getRendererC().getColor());
-        gc.strokeOval(
-    		getRenX(x - radius + width / 2),
-    		getRenY(y - radius + height / 2),
-    		getRenWidth(radius * 2), 
-    		getRenHeight(radius * 2)
-        );
+//        gc.strokeOval(
+//    		getRenX(x - radius + width / 2),
+//    		getRenY(y - radius + height / 2),
+//    		getRenWidth(radius * 2), 
+//    		getRenHeight(radius * 2)
+//        );
         
         
         

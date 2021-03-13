@@ -3,10 +3,8 @@ package org.bioshock.engine.scene;
 import org.bioshock.engine.core.WindowManager;
 import org.bioshock.engine.entity.EntityManager;
 import org.bioshock.engine.input.InputManager;
-import org.bioshock.engine.networking.NetworkManager;
 import org.bioshock.main.App;
 import org.bioshock.scenes.GameScene;
-import org.bioshock.scenes.MainGame;
 
 import javafx.scene.canvas.Canvas;
 import javafx.scene.layout.StackPane;

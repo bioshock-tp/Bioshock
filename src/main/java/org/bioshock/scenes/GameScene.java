@@ -1,7 +1,6 @@
 package org.bioshock.scenes;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import org.bioshock.engine.core.WindowManager;
 import org.bioshock.engine.entity.Entity;

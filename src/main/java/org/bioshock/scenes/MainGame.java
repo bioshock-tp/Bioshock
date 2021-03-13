@@ -37,7 +37,7 @@ public class MainGame extends GameScene {
         )));
 
 		ThreeByThreeMap map = new ThreeByThreeMap(
-            new Point3D(100, 100, 10),
+            new Point3D(100, 100, 0),
             10,
             new Size(300, 600),
             new Size(90, 90),

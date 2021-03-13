@@ -43,15 +43,15 @@ public class SeekerRenderer implements Renderer {
         gc.fillRect(getRenX(x), getRenY(y), getRenWidth(width), getRenHeight(height));
         gc.setLineWidth(10);
         gc.setStroke(seeker.getRendererC().getColor());
-        gc.strokeOval(
-    		getRenX(x - radius + width / 2),
-    		getRenY(y - radius + height / 2),
-    		getRenWidth(radius * 2),
-    		getRenHeight(radius * 2)
-        );
+//        gc.strokeOval(
+//    		getRenX(x - radius + width / 2),
+//    		getRenY(y - radius + height / 2),
+//    		getRenWidth(radius * 2),
+//    		getRenHeight(radius * 2)
+//        );
 
-        if(isActive) {
-            //put animation here instead of gc.fillArc
+        if(isActive){
+//            put animation here instead of gc.fillArc
             gc.fillArc(
         		getRenX(swatter.getCenterX() - swatter.getRadiusX()),
         		getRenY(swatter.getCenterY() - swatter.getRadiusY()),
