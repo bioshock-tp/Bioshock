@@ -10,6 +10,7 @@ import org.bioshock.engine.entity.Size;
 import org.bioshock.engine.input.InputManager;
 import org.bioshock.engine.networking.NetworkManager;
 import org.bioshock.engine.rendering.RenderManager;
+import org.bioshock.engine.scene.SceneManager;
 import org.bioshock.entities.map.Room;
 import org.bioshock.entities.map.ThreeByThreeMap;
 import org.bioshock.main.App;
@@ -75,7 +76,7 @@ public class MainGame extends GameScene {
         }
 
 		double centreX = rooms.get(rooms.size() / 2).getRoomCenter().getX();
-		double centreY = rooms.get(rooms.size() / 2).getRoomCenter().getX();
+		double centreY = rooms.get(rooms.size() / 2).getRoomCenter().getY();
 
 		SeekerAI seeker = new SeekerAI(
             new Point3D(centreX, centreY, 0.5),
@@ -93,9 +94,26 @@ public class MainGame extends GameScene {
 			() ->	{cameraLock = !cameraLock;});
 		
 	}
+    
+    @Override
+    public void init() {
+    	 SceneManager.setGameStarted(true); 
+
+         if (App.isNetworked()) {
+             Object mutex = NetworkManager.getMutex();
+             synchronized(mutex) {
+                 mutex.notifyAll();
+             }
+             App.logger.debug("Notified networking thread");
+         } else {
+             assert(App.PLAYERCOUNT == 1);
+             Hider hider = EntityManager.getPlayers().get(0);
+             hider.initMovement();
+         }
+    }
 	
 	@Override
-	public void tick(double timeDelta) {
+	public void renderTick(double timeDelta) {
 		if(cameraLock) {
 			Hider meObj = EntityManager.getCurrentPlayer();			
 			

@@ -42,22 +42,7 @@ public final class SceneManager {
         stage.setScene(currentScene);
 
         currentScene.renderEntities();
-
-        if (currentScene instanceof MainGame) {
-            isGameStarted = true;
-
-            if (App.isNetworked()) {
-                Object mutex = NetworkManager.getMutex();
-                synchronized(mutex) {
-                    mutex.notifyAll();
-                }
-                App.logger.debug("Notified networking thread");
-            } else {
-                assert(App.PLAYERCOUNT == 1);
-                Hider hider = EntityManager.getPlayers().get(0);
-                hider.initMovement();
-            }
-        }
+        currentScene.init();
 	}
 
 	public static GameScene getScene() {
@@ -74,5 +59,9 @@ public final class SceneManager {
 
 	public static boolean isGameStarted() {
         return isGameStarted;
+	}
+	
+	public static void setGameStarted(boolean isGameStarted) {
+		SceneManager.isGameStarted = isGameStarted;
 	}
 }

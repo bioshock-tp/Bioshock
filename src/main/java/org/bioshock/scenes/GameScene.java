@@ -77,7 +77,11 @@ public abstract class GameScene extends Scene {
 		
 	}
 	
-	public void tick(double timeDelta) {
+	public void renderTick(double timeDelta) {
+		
+	}
+	
+	public void logicTick(double timeDelta) {
 		
 	}
 	
@@ -85,4 +89,7 @@ public abstract class GameScene extends Scene {
 		return gameScreen;
 	}
 
+ 	public void init() {
+ 		
+ 	}
 }

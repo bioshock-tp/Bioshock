@@ -46,11 +46,6 @@ public final class PlayerRenderer implements Renderer {
         gc.save();
         RenderManager.clipToFOV(gc);
         
-//        gc.setFill(new Color(1, 1, 1, 0.7));
-//        gc.fillRect(0, 0, gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
-        
-//        gc.fillRect(0, 0, gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
-        
         Rotate r = player.getRotate();
         gc.setTransform(
             r.getMxx(), r.getMyx(), r.getMxy(),

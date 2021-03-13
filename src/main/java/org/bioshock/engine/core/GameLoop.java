@@ -19,18 +19,18 @@ public final class GameLoop extends AnimationTimer {
 		long nanoSDelta = now - prev;
 		double sDelta = nanoSDelta / 10e9;
         RenderManager.tick();
-        FrameRate.tick(now);
-
-        App.logger.debug(now);
-        App.logger.debug(now - lastUpdate);
+        SceneManager.getScene().renderTick(sDelta);
 
         if (now - lastUpdate >= LOGICRATE) {
             NetworkManager.tick();
             EntityManager.tick(sDelta);
-			SceneManager.getScene().tick(sDelta);
+			
 
             lastUpdate = now;
         }
+        
+        FrameRate.tick(now);
+        
 		prev = now;
 	}
 }
