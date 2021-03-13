@@ -24,7 +24,7 @@ public abstract class GameScene extends Scene {
         WindowManager.getWindowHeight()
     );
     protected ArrayList<Entity> children = new ArrayList<>();
-    private ScrollPane scrollPane = new ScrollPane();
+//    private ScrollPane scrollPane = new ScrollPane();
 
     private GameScene(StackPane pane) {
         super(pane);

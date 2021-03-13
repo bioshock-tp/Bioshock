@@ -47,10 +47,10 @@ public class App extends Application {
         assert(PLAYERCOUNT > 0);
 
 		WindowManager.initialise(stage);
-        initFXMLScene();
 
         AudioController.initialise();
 		playBackgroundMusic();
+        initFXMLScene();
 
 		stage.setScene(fxmlScene);
 		stage.show();
