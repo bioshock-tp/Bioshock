@@ -1,5 +1,6 @@
 package org.bioshock.engine.ai;
 
+import com.sun.media.jfxmedia.logging.Logger;
 import javafx.geometry.Point2D;
 import org.bioshock.engine.components.NetworkC;
 import org.bioshock.engine.core.WindowManager;
@@ -43,7 +44,7 @@ public class SeekerAI extends SquareEntity {
 
         target = e;
 
-        movement.setSpeed(2.5);
+        movement.setSpeed(3.5);
 
         renderer = SeekerRenderer.class;
 
@@ -51,6 +52,9 @@ public class SeekerAI extends SquareEntity {
 
         swatterHitbox = new Arc(getCentre().getX(), getCentre().getY(), 150,150,30, 120);
         swatterHitbox.setType(ArcType.ROUND);
+
+        currentRoom = findCurrentRoom();
+
 
     }
 
@@ -104,9 +108,13 @@ public class SeekerAI extends SquareEntity {
         });
         if(isSearching){
             if(path.isEmpty()){
-                path = createPath(findCurrentRoom());
-                //setSearch(true);
-                currentRoom = path.remove(0);
+                if(Math.abs(currentRoom.getRoomCenter().getX() - getX()) < 1 && Math.abs(currentRoom.getRoomCenter().getY() - getY()) < 1){
+                    path = createPath(findCurrentRoom());
+                    currentRoom = path.remove(0);
+                }
+                else{
+                    moveToCentre(currentRoom);
+                }
             }
             else {
                 moveToCentre(currentRoom);
@@ -114,9 +122,6 @@ public class SeekerAI extends SquareEntity {
                     currentRoom = path.remove(0);
                 }
             }
-            /*else{
-                setSearch(false);
-            }*/
         }
     }
 
@@ -136,6 +141,10 @@ public class SeekerAI extends SquareEntity {
                 current = room;
             }
         }
+        if(current == null){
+            App.logger.error("Error current = null");
+            return null;
+        }
 
         return current;
     }
@@ -147,12 +156,12 @@ public class SeekerAI extends SquareEntity {
     private List<Room> createPath(Room startRoom){
         List<Room> path = new ArrayList<>();
         List<Room> possibleMoves = new ArrayList<>();
-        List<Room> backupMoves = new ArrayList<>();
         Room[] adjacents;
         Room destination;
         Room current;
         Random rand = new Random();
         int r;
+        int c = 0;
 
         current = startRoom;
         destination = startRoom;
@@ -163,29 +172,32 @@ public class SeekerAI extends SquareEntity {
         }
 
         path.add(startRoom);
+        c++;
 
         while(current != destination){
 
             adjacents = current.getAdjacentRooms();
             for(int i = 0; i < 4; i++){
                 if(adjacents[i] != null){
-                    backupMoves.add(adjacents[i]);
                     if(!path.contains(adjacents[i])){
                         possibleMoves.add(adjacents[i]);
                     }
                 }
             }
 
+
+
             if(!possibleMoves.isEmpty()){
                 r = rand.nextInt(possibleMoves.size());
                 current = possibleMoves.get(r);
             }
             else{
-                r = rand.nextInt(backupMoves.size());
-                current = backupMoves.get(r);
+                destination = current;
             }
 
             path.add(current);
+            possibleMoves.clear();
+            c++;
 
             /*adjacents.removeIf(path::contains);
             adjacents.removeIf(null);

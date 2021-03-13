@@ -55,7 +55,7 @@ public class MainGame extends GameScene {
             new Point3D(x, y, 0.5),
             new NetworkC(true),
             new Size(40, 40),
-            200,
+            300,
             Color.PINK
         );
         children.add(hider);
