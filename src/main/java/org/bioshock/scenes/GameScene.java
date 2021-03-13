@@ -88,5 +88,5 @@ public abstract class GameScene extends Scene {
 		return gameScreen;
 	}
 
- 	public abstract void initScene();
+ 	public void initScene() {}
 }

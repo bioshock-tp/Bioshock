@@ -6,7 +6,7 @@ import org.bioshock.engine.entity.Hider;
 import org.bioshock.engine.entity.Size;
 import org.bioshock.engine.entity.SquareEntity;
 import org.bioshock.engine.renderers.SeekerRenderer;
-import org.bioshock.engine.renderers.components.SquareEntityRendererC;
+import org.bioshock.engine.renderers.components.SimpleRendererC;
 
 import javafx.geometry.Point3D;
 import javafx.scene.paint.Color;
@@ -23,7 +23,7 @@ public class SeekerAI extends SquareEntity {
     private boolean isActive = false;
 
     public SeekerAI(Point3D p, NetworkC com, Size s, int r, Color c, Hider e) {
-        super(p, com, new SquareEntityRendererC(), s, r, c);
+        super(p, com, new SimpleRendererC(), s, r, c);
 
         target = e;
 

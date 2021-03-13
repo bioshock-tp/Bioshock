@@ -108,6 +108,7 @@ public class NetworkManager {
 
         Message.ClientInput input = new Message.ClientInput(x, y, aiX, aiY);
 
+        /* getMe only null when NetworkManager uninitialised */
         return new Message(-1, me, input, getMe().isDead());
     }
 

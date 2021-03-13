@@ -20,34 +20,34 @@ public final class PlayerRenderer implements Renderer {
         GraphicsContext gc,
         E player
     ) {
-    	
-    	
         double x = player.getX();
         double y = player.getY();
         double radius = player.getRadius();
         double width = player.getWidth();
         double height = player.getHeight();
-        
+
         if (player == EntityManager.getCurrentPlayer()) {
-        	gc.save();
+            gc.save();
             gc.beginPath();
-        	gc.arc(getRenX(x + width / 2),
-            		getRenY(y + height / 2),
-            		getRenWidth(radius), 
-            		getRenHeight(radius), 
-            		0, 360);
-        	gc.rect(0, 0, gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
+            gc.arc(
+                getRenX(x + width / 2),
+                getRenY(y + height / 2),
+                getRenWidth(radius),
+                getRenHeight(radius),
+                0, 360
+            );
+            gc.rect(0, 0, gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
             gc.closePath();
             gc.clip();
             gc.setFill(new Color(0, 0, 0, 0.75));
             gc.fillRect(0, 0, gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
             gc.restore();
         }
-        
-        
+
+
         gc.save();
         RenderManager.clipToFOV(gc);
-        
+
         Rotate r = player.getRotate();
         gc.setTransform(
             r.getMxx(), r.getMyx(), r.getMxy(),
@@ -60,12 +60,10 @@ public final class PlayerRenderer implements Renderer {
 //        gc.strokeOval(
 //    		getRenX(x - radius + width / 2),
 //    		getRenY(y - radius + height / 2),
-//    		getRenWidth(radius * 2), 
+//    		getRenWidth(radius * 2),
 //    		getRenHeight(radius * 2)
 //        );
-        
-        
-        
+
         gc.restore();
-    } 
+    }
 }

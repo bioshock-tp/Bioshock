@@ -2,7 +2,7 @@ package org.bioshock.engine.entity;
 
 import org.bioshock.engine.components.NetworkC;
 import org.bioshock.engine.input.InputManager;
-import org.bioshock.engine.renderers.components.SquareEntityRendererC;
+import org.bioshock.engine.renderers.components.SimpleRendererC;
 
 import javafx.geometry.Point3D;
 import javafx.scene.input.KeyCode;
@@ -18,7 +18,7 @@ public class SeekerHuman extends SquareEntity {
     private boolean isActive = false;
 
     public SeekerHuman(Point3D p, NetworkC com, Size s, int r, Color c) {
-        super(p, com, new SquareEntityRendererC(), s, r, c);
+        super(p, com, new SimpleRendererC(), s, r, c);
 
         movement.initMovement();
 

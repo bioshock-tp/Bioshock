@@ -105,22 +105,20 @@ public final class EntityManager {
     public static List<Hider> getPlayers() {
         return players;
     }
-    
+
     public static Hider getCurrentPlayer() {
     	Hider meObj = null;
-		if (!App.isNetworked()) { 
+		if (!App.isNetworked()) {
 			try {
 				meObj = EntityManager.getPlayers().get(0);
 			} catch (Exception e) {
 				return null;
 			}
 		}
-		else {
-			if(NetworkManager.isInGame()) {
-				meObj = NetworkManager.getMe();
-			}
+		else if(NetworkManager.isInGame()) {
+            meObj = NetworkManager.getMe();
 		}
-		
+
 		return meObj;
     }
 }

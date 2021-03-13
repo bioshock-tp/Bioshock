@@ -97,19 +97,19 @@ public class MainGame extends GameScene {
 
     @Override
     public void initScene() {
-    	 SceneManager.setGameStarted(true);
+        SceneManager.setGameStarted(true);
 
-         if (App.isNetworked()) {
-             Object mutex = NetworkManager.getMutex();
-             synchronized(mutex) {
-                 mutex.notifyAll();
-             }
-             App.logger.debug("Notified networking thread");
-         } else {
-             assert(App.PLAYERCOUNT == 1);
-             Hider hider = EntityManager.getPlayers().get(0);
-             hider.initMovement();
-         }
+        if (App.isNetworked()) {
+            Object mutex = NetworkManager.getMutex();
+            synchronized(mutex) {
+                mutex.notifyAll();
+            }
+            App.logger.debug("Notified networking thread");
+        } else {
+            assert(App.PLAYERCOUNT == 1);
+            Hider hider = EntityManager.getPlayers().get(0);
+            hider.initMovement();
+        }
     }
 
 	@Override
@@ -118,10 +118,10 @@ public class MainGame extends GameScene {
 			Hider meObj = EntityManager.getCurrentPlayer();
 
 			if (meObj != null) {
-				RenderManager.setCameraPos(
-						meObj.getCentre().subtract(
-							super.getGameScreen().getWidth()/2,
-							super.getGameScreen().getHeight()/2));
+				RenderManager.setCameraPos(meObj.getCentre().subtract(
+                    getGameScreen().getWidth()/2,
+                    getGameScreen().getHeight()/2)
+                );
 			}
 		}
 	}
