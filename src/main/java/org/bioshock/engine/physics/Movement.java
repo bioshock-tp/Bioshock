@@ -41,8 +41,8 @@ public class Movement {
 
         if (x != target.getX()) {
             double disp = target.getX() - x;
-            if ((x < target.getX() && (x + disp / Math.abs(disp) * speed) < x)
-                    || (x > target.getX() && (x + disp / Math.abs(disp) * speed) > x)) {
+            if ((x < target.getX() && (x + disp / Math.abs(disp) * speed) > target.getX())
+                    || (x > target.getX() && (x + disp / Math.abs(disp) * speed) < target.getX())) {
                 x = target.getX();
             }
             else {
@@ -52,8 +52,8 @@ public class Movement {
 
         if (y != target.getY()) {
             double disp = target.getY() - y;
-            if ((y < target.getY() && (y + disp / Math.abs(disp) * speed) < y)
-                    || (y > target.getY() && (y + disp / Math.abs(disp) * speed) > y)) {
+            if ((y < target.getY() && (y + disp / Math.abs(disp) * speed) > target.getY())
+                    || (y > target.getY() && (y + disp / Math.abs(disp) * speed) < target.getY())) {
                 y = target.getY();
             }
             else {
