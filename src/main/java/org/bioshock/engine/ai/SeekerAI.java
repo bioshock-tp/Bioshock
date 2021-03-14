@@ -29,7 +29,7 @@ public class SeekerAI extends SquareEntity {
 
         target = e;
 
-        movement.setSpeed(3);
+        movement.setSpeed(movement.getSpeed() / 2);
 
         renderer = SeekerRenderer.class;
 
@@ -115,7 +115,7 @@ public class SeekerAI extends SquareEntity {
     public SquareEntity getTarget() { return target; }
 
     public boolean getIsActive() { return isActive; }
-    
+
     @Override
     public Pair<Point2D, Point2D> renderArea() {
     	Point2D centre = getCentre();
