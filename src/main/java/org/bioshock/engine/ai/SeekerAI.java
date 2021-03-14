@@ -1,13 +1,10 @@
 package org.bioshock.engine.ai;
 
-import com.sun.media.jfxmedia.logging.Logger;
+
 import javafx.geometry.Point2D;
 import org.bioshock.engine.components.NetworkC;
 import org.bioshock.engine.core.WindowManager;
-import org.bioshock.engine.entity.EntityManager;
-import org.bioshock.engine.entity.Hider;
-import org.bioshock.engine.entity.Size;
-import org.bioshock.engine.entity.SquareEntity;
+import org.bioshock.engine.entity.*;
 import org.bioshock.engine.renderers.SeekerRenderer;
 
 import javafx.geometry.Point3D;
@@ -20,12 +17,9 @@ import javafx.scene.shape.Shape;
 import org.bioshock.entities.map.Room;
 import org.bioshock.entities.map.ThreeByThreeMap;
 import org.bioshock.main.App;
-import org.bioshock.scenes.MainGame;
-import org.checkerframework.checker.units.qual.A;
-import org.mockito.internal.matchers.Null;
+
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
@@ -35,6 +29,7 @@ public class SeekerAI extends SquareEntity {
     private ThreeByThreeMap map;
     private List<Room> path = new ArrayList<>();
     private Room currentRoom;
+    private Room lastSeenPosition;
 
     private boolean isActive = false;
     private boolean isSearching = false;
@@ -44,7 +39,7 @@ public class SeekerAI extends SquareEntity {
 
         target = e;
 
-        movement.setSpeed(3.5);
+        movement.setSpeed(2.5);
 
         renderer = SeekerRenderer.class;
 
@@ -53,7 +48,7 @@ public class SeekerAI extends SquareEntity {
         swatterHitbox = new Arc(getCentre().getX(), getCentre().getY(), 150,150,30, 120);
         swatterHitbox.setType(ArcType.ROUND);
 
-        currentRoom = findCurrentRoom();
+        currentRoom = findCurrentRoom(this);
 
 
     }
@@ -102,14 +97,27 @@ public class SeekerAI extends SquareEntity {
                             && intersects(entity, "fov")
             ) {
                 setSearch(false);
+                path.clear();
+                lastSeenPosition = findCurrentRoom(entity);
+                App.logger.debug("Last seen position coordinates are "+ lastSeenPosition.getRoomCenter());
+
                 target = entity;
                 movement.move(target.getPosition().subtract(this.getPosition()));
             }
         });
         if(isSearching){
             if(path.isEmpty()){
+                if(lastSeenPosition != null){
+                    currentRoom = lastSeenPosition;
+                }
                 if(Math.abs(currentRoom.getRoomCenter().getX() - getX()) < 5 && Math.abs(currentRoom.getRoomCenter().getY() - getY()) < 5){
-                    path = createPath(findCurrentRoom());
+                    if(lastSeenPosition != null){
+                        path = createPath(lastSeenPosition);
+                        lastSeenPosition = null;
+                    }
+                    else {
+                        path = createPath(findCurrentRoom(this));
+                    }
                     currentRoom = path.remove(0);
                 }
                 else{
@@ -129,13 +137,13 @@ public class SeekerAI extends SquareEntity {
 
     }
 
-    private Room findCurrentRoom(){
+    private Room findCurrentRoom(Entity e){
         Room current = null;
         double temp;
         double shortest = WindowManager.getWindowWidth() * WindowManager.getWindowHeight();
 
         for(Room room : map.getRooms()){
-            temp = (room.getRoomCenter().subtract(new Point3D(this.getX(), this.getY(), room.getZ()))).magnitude();
+            temp = (room.getRoomCenter().subtract(new Point3D(e.getX(), e.getY(), room.getZ()))).magnitude();
             if(temp < shortest){
                 shortest = temp;
                 current = room;
@@ -165,13 +173,16 @@ public class SeekerAI extends SquareEntity {
 
         current = startRoom;
         destination = startRoom;
+        App.logger.debug("Start room is " + startRoom.getRoomCenter());
 
         while(destination == startRoom){
             r = rand.nextInt(map.getRooms().size());
             destination = map.getRooms().get(r);
         }
+        App.logger.debug("Destination room is " + destination.getRoomCenter());
 
         path.add(startRoom);
+        App.logger.debug("Room " + c + " is " + startRoom.getRoomCenter());
         c++;
 
         while(current != destination){
@@ -196,14 +207,9 @@ public class SeekerAI extends SquareEntity {
             }
 
             path.add(current);
+            App.logger.debug("Room " + c + " is " + current.getRoomCenter());
             possibleMoves.clear();
             c++;
-
-            /*adjacents.removeIf(path::contains);
-            adjacents.removeIf(null);
-            r = rand.nextInt(adjacents.size());
-            current = adjacents.get(r);
-            adjacents = Arrays.asList(current.getAdjacentRooms().clone());*/
 
         }
 
