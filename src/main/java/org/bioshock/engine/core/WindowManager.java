@@ -1,6 +1,7 @@
 package org.bioshock.engine.core;
 
 import org.bioshock.engine.input.InputManager;
+import org.bioshock.engine.scene.SceneManager;
 import org.bioshock.main.App;
 
 import javafx.geometry.Rectangle2D;
@@ -13,7 +14,7 @@ public class WindowManager {
 	private static final boolean INITFULLSCREEN = false;
 	private static final boolean INITMAXIMISED = true;
 
-	private static Rectangle2D screenSize = Screen.getPrimary().getBounds();
+//	private static Rectangle2D screenSize = Screen.getPrimary().getBounds();
     private static Stage window;
 
     private WindowManager() {}
@@ -32,6 +33,15 @@ public class WindowManager {
         );
 
         InputManager.onPress(KeyCode.ESCAPE, () -> App.exit(0));
+        
+        stage.widthProperty().addListener((obs, oldVal, newVal) -> {
+    	  SceneManager.getScene().getCanvas().setWidth(newVal.floatValue());
+    	  SceneManager.getScene().scaleCanvas();
+    	});
+    	stage.heightProperty().addListener((obs, oldVal, newVal) -> {
+    		SceneManager.getScene().getCanvas().setHeight(newVal.floatValue());
+    		SceneManager.getScene().scaleCanvas();
+    	});
     }
 
 	private static void toggleFullScreen() {
@@ -43,11 +53,11 @@ public class WindowManager {
     }
 
     public static double getWindowWidth() {
-		return screenSize.getWidth();
+		return window.getWidth();
 	}
 
 	public static double getWindowHeight() {
-		return screenSize.getHeight();
+		return window.getHeight();
 	}
 
 	public static Stage getWindow() {
