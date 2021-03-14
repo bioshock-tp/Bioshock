@@ -16,6 +16,6 @@ public class TexRectEntity extends SquareEntity {
 
 	@Override
 	protected void tick(double timeDelta) {
-		// TODO Auto-generated method stub
+		/* This entity does not change */
 	}
 }
