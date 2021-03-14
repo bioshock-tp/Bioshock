@@ -8,6 +8,7 @@ import org.bioshock.engine.entity.SquareEntity;
 import org.bioshock.engine.renderers.SeekerRenderer;
 import org.bioshock.engine.renderers.components.SimpleRendererC;
 
+import javafx.geometry.Point2D;
 import javafx.geometry.Point3D;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Arc;
@@ -15,6 +16,7 @@ import javafx.scene.shape.ArcType;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
+import javafx.util.Pair;
 
 public class SeekerAI extends SquareEntity {
     private Hider target;
@@ -113,4 +115,14 @@ public class SeekerAI extends SquareEntity {
     public SquareEntity getTarget() { return target; }
 
     public boolean getIsActive() { return isActive; }
+    
+    @Override
+    public Pair<Point2D, Point2D> renderArea() {
+    	Point2D centre = getCentre();
+    	double radius = getRadius();
+    	return new Pair<Point2D, Point2D>(
+    			centre.subtract(radius, radius),
+    			centre.add(radius, radius)
+			);
+    }
 }

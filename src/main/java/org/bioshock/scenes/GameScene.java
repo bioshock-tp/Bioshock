@@ -11,7 +11,6 @@ import org.bioshock.engine.rendering.RenderManager;
 import javafx.geometry.Point2D;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.StackPane;
 

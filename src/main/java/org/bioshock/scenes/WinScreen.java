@@ -1,7 +1,5 @@
 package org.bioshock.scenes;
 
-import org.bioshock.engine.scene.SceneManager;
-
 import javafx.animation.FadeTransition;
 import javafx.geometry.Insets;
 import javafx.scene.Cursor;

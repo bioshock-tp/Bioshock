@@ -5,10 +5,12 @@ import org.bioshock.engine.components.RendererC;
 import org.bioshock.engine.renderers.Renderer;
 import org.bioshock.main.App;
 
+import javafx.geometry.Point2D;
 import javafx.geometry.Point3D;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
+import javafx.util.Pair;
 
 public abstract class Entity {
     protected Point position;
@@ -135,5 +137,11 @@ public abstract class Entity {
     @Override
     public String toString() {
         return getClass().getSimpleName();
+    }
+    
+    public Pair<Point2D, Point2D> renderArea() {
+    	return new Pair<Point2D, Point2D>(
+    			new Point2D(hitbox.getX(), hitbox.getY()), 
+    			new Point2D(hitbox.getX() + hitbox.getWidth(), hitbox.getY() + hitbox.getHeight()));
     }
 }
