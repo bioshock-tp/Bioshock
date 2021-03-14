@@ -106,35 +106,35 @@ public class SeekerAI extends SquareEntity {
             }
         });
         if(isSearching){
-            if(path.isEmpty()){
-                if(lastSeenPosition != null){
-                    currentRoom = lastSeenPosition;
-                }
-                if(Math.abs(currentRoom.getRoomCenter().getX() - getX()) < 5 && Math.abs(currentRoom.getRoomCenter().getY() - getY()) < 5){
-                    if(lastSeenPosition != null){
-                        path = createPath(lastSeenPosition);
-                        lastSeenPosition = null;
-                    }
-                    else {
-                        path = createPath(findCurrentRoom(this));
-                    }
-                    currentRoom = path.remove(0);
-                }
-                else{
-                    moveToCentre(currentRoom);
-                }
-            }
-            else {
-                moveToCentre(currentRoom);
-                if(Math.abs(currentRoom.getRoomCenter().getX() - getX()) < 5 && Math.abs(currentRoom.getRoomCenter().getY() - getY()) < 5){
-                    currentRoom = path.remove(0);
-                }
-            }
+            search();
         }
     }
 
     public void search(){
-
+        if(path.isEmpty()){
+            if(lastSeenPosition != null){
+                currentRoom = lastSeenPosition;
+            }
+            if(Math.abs(currentRoom.getRoomCenter().getX() - getX()) < 5 && Math.abs(currentRoom.getRoomCenter().getY() - getY()) < 5){
+                if(lastSeenPosition != null){
+                    path = createPath(lastSeenPosition);
+                    lastSeenPosition = null;
+                }
+                else {
+                    path = createPath(findCurrentRoom(this));
+                }
+                currentRoom = path.remove(0);
+            }
+            else{
+                moveToCentre(currentRoom);
+            }
+        }
+        else {
+            moveToCentre(currentRoom);
+            if(Math.abs(currentRoom.getRoomCenter().getX() - getX()) < 5 && Math.abs(currentRoom.getRoomCenter().getY() - getY()) < 5){
+                currentRoom = path.remove(0);
+            }
+        }
     }
 
     private Room findCurrentRoom(Entity e){
