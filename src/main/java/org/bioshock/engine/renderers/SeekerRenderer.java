@@ -17,15 +17,11 @@ public class SeekerRenderer implements Renderer {
 
     private SeekerRenderer() {}
 
-    public static <E extends SeekerAI> void render(
-            GraphicsContext gc,
-            E entity
-    ) {
-        SeekerAI seeker = entity;
+    public static <E extends SeekerAI> void render(GraphicsContext gc, E ent) {
+        SeekerAI seeker = ent;
 
         double x = seeker.getX();
         double y = seeker.getY();
-        double radius = seeker.getRadius();
         double width = seeker.getWidth();
         double height = seeker.getHeight();
         Arc swatter = seeker.getSwatterHitbox();
@@ -40,18 +36,17 @@ public class SeekerRenderer implements Renderer {
                 r.getMyy(), r.getTx(), r.getTy()
         );
         gc.setFill(seeker.getRendererC().getColor());
-        gc.fillRect(getRenX(x), getRenY(y), getRenWidth(width), getRenHeight(height));
+        gc.fillRect(
+            getRenX(x),
+            getRenY(y),
+            getRenWidth(width),
+            getRenHeight(height)
+        );
         gc.setLineWidth(10);
         gc.setStroke(seeker.getRendererC().getColor());
-//        gc.strokeOval(
-//    		getRenX(x - radius + width / 2),
-//    		getRenY(y - radius + height / 2),
-//    		getRenWidth(radius * 2),
-//    		getRenHeight(radius * 2)
-//        );
 
         if(isActive){
-//            put animation here instead of gc.fillArc
+            // TODO: put animation here instead of gc.fillArc
             gc.fillArc(
         		getRenX(swatter.getCenterX() - swatter.getRadiusX()),
         		getRenY(swatter.getCenterY() - swatter.getRadiusY()),

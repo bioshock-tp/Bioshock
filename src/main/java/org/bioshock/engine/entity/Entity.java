@@ -1,5 +1,7 @@
 package org.bioshock.engine.entity;
 
+import java.util.UUID;
+
 import org.bioshock.engine.components.NetworkC;
 import org.bioshock.engine.components.RendererC;
 import org.bioshock.engine.renderers.Renderer;
@@ -16,7 +18,7 @@ public abstract class Entity {
     protected Point position;
     protected Rectangle hitbox;
 
-    protected String uuid = java.util.UUID.randomUUID().toString();
+    protected String uuid = UUID.randomUUID().toString();
     protected double z;
     protected NetworkC networkC;
     protected RendererC rendererC;
@@ -98,6 +100,16 @@ public abstract class Entity {
         uuid = newID;
     }
 
+    public Pair<Point2D, Point2D> renderArea() {
+    	return new Pair<>(
+            new Point2D(hitbox.getX(), hitbox.getY()),
+            new Point2D(
+                hitbox.getX() + hitbox.getWidth(),
+                hitbox.getY() + hitbox.getHeight()
+            )
+        );
+    }
+
 	public String getID() {
 		return uuid;
 	}
@@ -137,11 +149,5 @@ public abstract class Entity {
     @Override
     public String toString() {
         return getClass().getSimpleName();
-    }
-    
-    public Pair<Point2D, Point2D> renderArea() {
-    	return new Pair<Point2D, Point2D>(
-    			new Point2D(hitbox.getX(), hitbox.getY()), 
-    			new Point2D(hitbox.getX() + hitbox.getWidth(), hitbox.getY() + hitbox.getHeight()));
     }
 }
