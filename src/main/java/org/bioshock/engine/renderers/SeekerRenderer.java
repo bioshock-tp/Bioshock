@@ -36,8 +36,8 @@ public class SeekerRenderer implements Renderer {
         RenderManager.clipToFOV(gc);
         Rotate r = seeker.getRotate();
         gc.setTransform(
-                r.getMxx(), r.getMyx(), r.getMxy(),
-                r.getMyy(), r.getTx(), r.getTy()
+            r.getMxx(), r.getMyx(), r.getMxy(),
+            r.getMyy(), r.getTx(), r.getTy()
         );
         gc.setFill(seeker.getRendererC().getColor());
         gc.fillRect(getRenX(x), getRenY(y), getRenWidth(width), getRenHeight(height));
