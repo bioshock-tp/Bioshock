@@ -34,7 +34,7 @@ public class SeekerAI extends SquareEntity {
         swatterHitbox = new Arc(
             getCentre().getX(),
             getCentre().getY(),
-            150, 150, 30, 120
+            50, 50, 30, 120
         );
         swatterHitbox.setType(ArcType.ROUND);
     }
