@@ -6,9 +6,11 @@ import org.bioshock.engine.renderers.PlayerRenderer;
 import org.bioshock.engine.renderers.components.PlayerRendererC;
 import org.bioshock.main.App;
 
+import javafx.geometry.Point2D;
 import javafx.geometry.Point3D;
 import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Color;
+import javafx.util.Pair;
 
 public class Hider extends SquareEntity {
     private boolean dead = false;
@@ -78,5 +80,15 @@ public class Hider extends SquareEntity {
 
     public boolean isDead() {
         return dead;
+    }
+    
+    @Override
+    public Pair<Point2D, Point2D> renderArea() {
+    	Point2D centre = getCentre();
+    	double radius = getRadius();
+    	return new Pair<Point2D, Point2D>(
+    			centre.subtract(radius, radius),
+    			centre.add(radius, radius)
+			);
     }
 }

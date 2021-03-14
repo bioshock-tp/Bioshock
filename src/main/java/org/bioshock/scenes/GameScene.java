@@ -11,7 +11,6 @@ import org.bioshock.engine.rendering.RenderManager;
 import javafx.geometry.Point2D;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.StackPane;
 
@@ -24,32 +23,12 @@ public abstract class GameScene extends Scene {
         WindowManager.getWindowHeight()
     );
     protected ArrayList<Entity> children = new ArrayList<>();
-    private ScrollPane scrollPane = new ScrollPane();
 
     private GameScene(StackPane pane) {
         super(pane);
         this.pane = pane;
         pane.getChildren().add(canvas);
-        RenderManager.setScale(new Point2D(
-    		WindowManager.getWindowWidth()/gameScreen.getWidth(),
-    		WindowManager.getWindowHeight()/gameScreen.getHeight())
-		);
-
-//        scrollPane.setPrefSize(WindowManager.getWindowWidth(), WindowManager.getWindowHeight());
-//        scrollPane.setContent(canvas);
-//        //allows panning of the canvas
-//        scrollPane.pannableProperty().set(true);
-//        scrollPane.hbarPolicyProperty().setValue(ScrollPane.ScrollBarPolicy.NEVER);
-//        scrollPane.vbarPolicyProperty().setValue(ScrollPane.ScrollBarPolicy.NEVER);
-//
-//        scrollPane.addEventFilter(ScrollEvent.SCROLL,new EventHandler<ScrollEvent>() {
-//            @Override
-//            public void handle(ScrollEvent event) {
-//                event.consume();
-//            }
-//        });
-
-        //InputManager.onPress( KeyCode.P, () -> scaleCanvas());
+        scaleCanvas();
     }
 
     protected GameScene() {
@@ -70,6 +49,13 @@ public abstract class GameScene extends Scene {
 
 	public Canvas getCanvas() {
 		return canvas;
+	}
+	
+	public void scaleCanvas() {
+		RenderManager.setScale(new Point2D(
+	    		WindowManager.getWindowWidth()/gameScreen.getWidth(),
+	    		WindowManager.getWindowHeight()/gameScreen.getHeight())
+			);
 	}
 
 	public void destroy() {

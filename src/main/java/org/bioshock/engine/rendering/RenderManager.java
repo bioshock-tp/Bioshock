@@ -8,12 +8,15 @@ import java.util.List;
 import org.bioshock.engine.entity.Entity;
 import org.bioshock.engine.entity.EntityManager;
 import org.bioshock.engine.entity.Hider;
+import org.bioshock.engine.entity.Size;
 import org.bioshock.engine.scene.SceneManager;
 import org.bioshock.main.App;
+import org.bioshock.scenes.GameScene;
 
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.util.Pair;
 
 public final class RenderManager {
     private static ArrayList<Entity> renderableEntities = new ArrayList<>();
@@ -42,23 +45,39 @@ public final class RenderManager {
         // renders each entity with the renderer defined in the map
         for (Entity entity : renderableEntities) {
             if (entity.isEnabled()) {
-                try {
-                    Method rend = entity.getRenderer().getDeclaredMethods()[0];
-                    rend.invoke(null, gc, entity);
-                }catch (InvocationTargetException e) {
-                	App.logger.error(
-                            "Render function for {} threw an exception",
-                            entity.getRenderer()
-                        );
-                }catch (Exception e) {
-                    App.logger.error(
-                        "Render function not defined for {}",
-                        entity.getRenderer()
-                    );
-                }
-			}
+            	Pair<Point2D, Point2D> renderArea = entity.renderArea();
+            	if (pointInScreen(renderArea.getKey()) || pointInScreen(renderArea.getValue())) {
+	            	
+	                try {
+	                    Method rend = entity.getRenderer().getDeclaredMethods()[0];
+	                    rend.invoke(null, gc, entity);
+	                }catch (InvocationTargetException e) {
+	                	App.logger.error(
+	                            "Render function for {} threw an exception",
+	                            entity.getRenderer()
+	                        );
+	                }catch (Exception e) {
+	                    App.logger.error(
+	                        "Render function not defined for {}",
+	                        entity.getRenderer()
+	                    );
+	                }
+				}
+            }
 		}
 	}
+    
+    public static boolean pointInScreen(Point2D p) {
+    	Size screen = GameScene.getGameScreen();
+    	if (p.getX() < cameraPos.getX() || 
+    			p.getY() < cameraPos.getY() ||
+    			p.getX() > cameraPos.getX() + screen.getWidth() ||
+    			p.getY() > cameraPos.getY() + screen.getHeight()) {
+    		return false;
+    	}
+    	
+    	return true;
+    }
 
     /**
 	 * A method that sorts a entities of entities in ascending order

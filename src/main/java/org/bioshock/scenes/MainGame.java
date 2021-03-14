@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.bioshock.engine.ai.SeekerAI;
 import org.bioshock.engine.components.NetworkC;
+import org.bioshock.engine.core.WindowManager;
 import org.bioshock.engine.entity.EntityManager;
 import org.bioshock.engine.entity.Hider;
 import org.bioshock.engine.entity.Size;
@@ -18,6 +19,7 @@ import org.bioshock.main.App;
 import javafx.geometry.Point2D;
 import javafx.geometry.Point3D;
 import javafx.scene.Cursor;
+import javafx.scene.control.Label;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
@@ -25,6 +27,9 @@ import javafx.scene.paint.Color;
 
 public class MainGame extends GameScene {
 	private boolean cameraLock = true;
+	private double runningTime = 0.0;
+	private static final double endTime = 2*60 + 3; 
+	private Label timer;
 
 	public MainGame() {
 		super();
@@ -89,6 +94,13 @@ public class MainGame extends GameScene {
 
 		children.add(seeker);
 
+		Size timerSize = new Size(100, 100);
+		timer = new Label("mm:ss.ms");
+		timer.setStyle("-fx-font: 20 arial; -fx-text-fill: black;");
+		timer.setPrefSize(timerSize.getWidth(), timerSize.getHeight());
+		timer.setTranslateX(-timerSize.getWidth()/2);
+		timer.setTranslateY(-WindowManager.getWindowHeight()/2 + timerSize.getHeight()/2);
+		getPane().getChildren().add(timer);
 
 		InputManager.onRelease(KeyCode.Y,
 			() ->	{cameraLock = !cameraLock;});
@@ -114,15 +126,47 @@ public class MainGame extends GameScene {
 
 	@Override
 	public void renderTick(double timeDelta) {
-		if(cameraLock) {
-			Hider meObj = EntityManager.getCurrentPlayer();
-
-			if (meObj != null) {
-				RenderManager.setCameraPos(meObj.getCentre().subtract(
-                    getGameScreen().getWidth()/2,
-                    getGameScreen().getHeight()/2)
-                );
+		if(SceneManager.isGameStarted()) {
+			if(cameraLock) {
+				Hider meObj = EntityManager.getCurrentPlayer();
+	
+				if (meObj != null) {
+					RenderManager.setCameraPos(meObj.getCentre().subtract(
+	                    getGameScreen().getWidth()/2,
+	                    getGameScreen().getHeight()/2)
+	                );
+				}
 			}
+			
+			double timeLeft = endTime - runningTime;
+			int numMins = (int) timeLeft/60;
+			timer.setText(String.format("%d:%.2f", numMins, timeLeft - numMins*60));
+		}
+	}
+	
+	@Override
+	public void logicTick(double timeDelta) {
+		boolean allDead = false;
+		
+		if(SceneManager.isGameStarted() && (!App.isNetworked() || NetworkManager.isInGame())) {
+			runningTime += timeDelta;
+			
+			if (runningTime >= endTime) {
+				SceneManager.setScene(new WinScreen());
+			}
+			
+			for (Hider h:EntityManager.getPlayers()) {
+				allDead = true;
+				if (!h.isDead()) {
+					allDead = false;
+				}
+			}
+			
+			if (allDead) {
+				SceneManager.setScene(new LoseScreen());
+			}
+			
+			
 		}
 	}
 
@@ -137,5 +181,7 @@ public class MainGame extends GameScene {
         );
 
         RenderManager.setCameraPos(new Point2D(0, 0));
+        
+        SceneManager.setGameStarted(false);
     }
 }
