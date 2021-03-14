@@ -40,7 +40,7 @@ public class SeekerAI extends SquareEntity {
 
         target = e;
 
-        movement.setSpeed(3.5);
+        movement.setSpeed(2.5);
 
         renderer = SeekerRenderer.class;
 
