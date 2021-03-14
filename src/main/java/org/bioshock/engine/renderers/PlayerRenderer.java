@@ -12,7 +12,6 @@ public final class PlayerRenderer implements Renderer {
         GraphicsContext gc,
         E player
     ) {
-
         double x = player.getX();
         double y = player.getY();
         double radius = player.getRadius();

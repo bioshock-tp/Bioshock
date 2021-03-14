@@ -3,6 +3,7 @@ package org.bioshock.engine.entity;
 import org.bioshock.engine.components.NetworkC;
 import org.bioshock.engine.input.InputManager;
 import org.bioshock.engine.renderers.PlayerRenderer;
+import org.bioshock.main.App;
 
 import javafx.geometry.Point3D;
 import javafx.scene.input.KeyCode;
@@ -50,6 +51,8 @@ public class Hider extends SquareEntity {
         InputManager.onRelease(
             KeyCode.D, () -> movement.direction(-speed, 0)
         );
+
+        App.logger.info("Initialised movement");
     }
 
     public void setDead(boolean d) {

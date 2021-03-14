@@ -3,7 +3,6 @@ package org.bioshock.engine.core;
 import org.bioshock.engine.entity.EntityManager;
 import org.bioshock.engine.networking.NetworkManager;
 import org.bioshock.engine.rendering.RenderManager;
-import org.bioshock.main.App;
 
 import javafx.animation.AnimationTimer;
 
@@ -19,9 +18,6 @@ public final class GameLoop extends AnimationTimer {
 		double sDelta = nanoSDelta / 10e9;
         RenderManager.tick();
         FrameRate.tick(now);
-
-        App.logger.debug(now);
-        App.logger.debug(now - lastUpdate);
 
         if (now - lastUpdate >= LOGICRATE) {
             NetworkManager.tick();

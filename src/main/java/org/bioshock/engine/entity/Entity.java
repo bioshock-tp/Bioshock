@@ -1,9 +1,10 @@
 package org.bioshock.engine.entity;
 
+import java.util.UUID;
+
 import org.bioshock.engine.components.NetworkC;
 import org.bioshock.engine.components.RendererC;
 import org.bioshock.engine.renderers.Renderer;
-import org.bioshock.main.App;
 
 import javafx.geometry.Point3D;
 import javafx.scene.paint.Color;
@@ -14,7 +15,7 @@ public abstract class Entity {
     protected Point position;
     protected Rectangle hitbox;
 
-    protected String UUID = java.util.UUID.randomUUID().toString();
+    protected String uuid = UUID.randomUUID().toString();
     protected double z;
     protected NetworkC networkC;
     protected RendererC rendererC;
@@ -35,8 +36,6 @@ public abstract class Entity {
         rendererC = renC;
 
         rendererC.setZ(p.getZ());
-
-        App.logger.info("New {} with ID {}", this, UUID);
 	}
 
     protected abstract void tick(double timeDelta);
@@ -93,11 +92,11 @@ public abstract class Entity {
     }
 
     public void setID(String newID) {
-        UUID = newID;
+        uuid = newID;
     }
 
 	public String getID() {
-		return UUID;
+		return uuid;
 	}
 
     public Point getPosition() {

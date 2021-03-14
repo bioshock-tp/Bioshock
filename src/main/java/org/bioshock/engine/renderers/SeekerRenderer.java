@@ -8,7 +8,6 @@ import org.bioshock.engine.ai.SeekerAI;
 import org.bioshock.engine.entity.SquareEntity;
 
 public class SeekerRenderer implements Renderer {
-
     private SeekerRenderer() {}
 
     public static <E extends SquareEntity> void render(

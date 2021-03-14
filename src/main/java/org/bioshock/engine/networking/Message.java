@@ -14,7 +14,7 @@ public class Message implements Serializable {
     private static final long serialVersionUID = 1L;
 
     int playerNumber;
-    String UUID;
+    String uuid;
     ClientInput input;
 
     Message() {}
@@ -23,12 +23,12 @@ public class Message implements Serializable {
      * Constructs a new message to send to web socket server
      * @param playerNumber Should be -1 outside of lobby, otherwise should be
      *     position of player in join queue
-     * @param UUID Unique ID of player sending message
+     * @param uuid Unique ID of player sending message
      * @param input A ClientInput object containing states of player and AI
      */
-    Message(int playerNumber, String UUID, ClientInput input) {
+    Message(int playerNumber, String uuid, ClientInput input) {
         this.playerNumber = playerNumber;
-        this.UUID = UUID;
+        this.uuid = uuid;
         this.input = input;
     }
 
@@ -103,12 +103,12 @@ public class Message implements Serializable {
         }
     }
 
-    static Message inLobby(int playerNumber, String UUID) {
-        return new Message(playerNumber, UUID, null);
+    static Message inLobby(int playerNumber, String uuid) {
+        return new Message(playerNumber, uuid, null);
     }
 
-    static Message sendInputState(String UUID, ClientInput input) {
-        return new Message(-1, UUID, input);
+    static Message sendInputState(String uuid, ClientInput input) {
+        return new Message(-1, uuid, input);
     }
 
     public static String serialise(Message message) {
@@ -116,11 +116,7 @@ public class Message implements Serializable {
         try (ObjectOutputStream oos = new ObjectOutputStream(baos)) {
             oos.writeObject(message);
         } catch (IOException e) {
-            App.logger.error(
-                "Error serialising message {}:\n {}",
-                message,
-                e.getMessage()
-            );
+            App.logger.error("Error serialising {} ", message, e);
 
             if (message.equals(new Message())) {
                 App.logger.fatal(
@@ -143,11 +139,7 @@ public class Message implements Serializable {
         try (ObjectInputStream ois = new ObjectInputStream(bais)) {
             message = (Message) ois.readObject();
         } catch (IOException | ClassNotFoundException e) {
-            App.logger.error(
-                "Error deserialising string {}:\n{}",
-                string,
-                e.getMessage()
-            );
+            App.logger.error("Error deserialising {} ", string, e);
             return new Message();
         }
 
@@ -159,7 +151,7 @@ public class Message implements Serializable {
         return String.format(
             "Message{Player Number %d, UUID %s, %s}",
             playerNumber,
-            UUID,
+            uuid,
             input
         );
     }
@@ -171,7 +163,7 @@ public class Message implements Serializable {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((UUID == null) ? 0 : UUID.hashCode());
+        result = prime * result + ((uuid == null) ? 0 : uuid.hashCode());
         result = prime * result + ((input == null) ? 0 : input.hashCode());
         result = prime * result + playerNumber;
         return result;
@@ -190,18 +182,16 @@ public class Message implements Serializable {
         if (getClass() != obj.getClass())
             return false;
         Message other = (Message) obj;
-        if (UUID == null) {
-            if (other.UUID != null)
+        if (uuid == null) {
+            if (other.uuid != null)
                 return false;
-        } else if (!UUID.equals(other.UUID))
+        } else if (!uuid.equals(other.uuid))
             return false;
         if (input == null) {
             if (other.input != null)
                 return false;
         } else if (!input.equals(other.input))
             return false;
-        if (playerNumber != other.playerNumber)
-            return false;
-        return true;
+        return (playerNumber != other.playerNumber);
     }
 }

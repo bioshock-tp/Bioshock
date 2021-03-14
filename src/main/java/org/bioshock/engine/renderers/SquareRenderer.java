@@ -8,7 +8,10 @@ import javafx.scene.transform.Rotate;
 public class SquareRenderer implements Renderer {
     private SquareRenderer() {}
 
-	public static <E extends SquareEntity> void render(GraphicsContext gc, E rect) {
+	public static <E extends SquareEntity> void render(
+        GraphicsContext gc,
+        E rect
+    ) {
         double x = rect.getX();
         double y = rect.getY();
         double width = rect.getWidth();
