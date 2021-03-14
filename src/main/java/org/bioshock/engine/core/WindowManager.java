@@ -3,7 +3,10 @@ package org.bioshock.engine.core;
 import org.bioshock.engine.input.InputManager;
 import org.bioshock.engine.scene.SceneManager;
 import org.bioshock.main.App;
+import org.bioshock.scenes.GameScene;
 
+import javafx.scene.Scene;
+import javafx.scene.canvas.Canvas;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCombination;
 import javafx.stage.Stage;
@@ -32,12 +35,24 @@ public class WindowManager {
         InputManager.onPress(KeyCode.ESCAPE, () -> App.exit(0));
 
         stage.widthProperty().addListener((obs, oldVal, newVal) -> {
-            SceneManager.getScene().getCanvas().setWidth(newVal.floatValue());
-            SceneManager.getScene().scaleCanvas();
+            GameScene s = SceneManager.getScene();
+            if (s != null) {
+                Canvas c = SceneManager.getScene().getCanvas();
+                if (c != null) {
+                    c.setWidth(newVal.floatValue());
+                    s.scaleCanvas();
+                }
+            }
     	});
     	stage.heightProperty().addListener((obs, oldVal, newVal) -> {
-    		SceneManager.getScene().getCanvas().setHeight(newVal.floatValue());
-    		SceneManager.getScene().scaleCanvas();
+    	    GameScene s = SceneManager.getScene();
+            if (s != null) {
+                Canvas c = SceneManager.getScene().getCanvas();
+                if (c != null) {
+                    c.setHeight(newVal.floatValue());
+                    s.scaleCanvas();
+                }
+            }
     	});
     }
 

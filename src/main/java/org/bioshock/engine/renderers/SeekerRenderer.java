@@ -7,6 +7,7 @@ import static org.bioshock.engine.rendering.RenderManager.getRenY;
 
 import org.bioshock.engine.ai.SeekerAI;
 import org.bioshock.engine.rendering.RenderManager;
+import org.bioshock.main.App;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
@@ -42,6 +43,7 @@ public class SeekerRenderer implements Renderer {
             getRenWidth(width),
             getRenHeight(height)
         );
+        App.logger.debug("Logic X: {}, Logic Y: {}", x, y);
         gc.setLineWidth(10);
         gc.setStroke(seeker.getRendererC().getColor());
 

@@ -149,7 +149,8 @@ public class MainGame extends GameScene {
 
     @Override
     public void logicTick(double timeDelta) {
-        if(!App.isNetworked() || NetworkManager.isInGame()) {
+        if(SceneManager.isGameStarted() && 
+                (!App.isNetworked() || NetworkManager.isInGame())) {
             runningTime += timeDelta;
 
             if (runningTime >= ENDTIME) {
@@ -157,7 +158,8 @@ public class MainGame extends GameScene {
                 return;
             }
 
-            if (EntityManager.getPlayers().stream().allMatch(Hider::isDead)) {
+            if (!EntityManager.getPlayers().isEmpty() 
+                    && EntityManager.getPlayers().stream().allMatch(Hider::isDead)) {
                 SceneManager.setScene(new LoseScreen());
             }
         }
