@@ -21,6 +21,7 @@ import org.bioshock.main.App;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Random;
 
 public class SeekerAI extends SquareEntity {
@@ -39,7 +40,7 @@ public class SeekerAI extends SquareEntity {
 
         target = e;
 
-        movement.setSpeed(2.5);
+        movement.setSpeed(3.5);
 
         renderer = SeekerRenderer.class;
 
@@ -96,13 +97,8 @@ public class SeekerAI extends SquareEntity {
                     EntityManager.isManaged(this, entity)
                             && intersects(entity, "fov")
             ) {
-                setSearch(false);
-                path.clear();
-                lastSeenPosition = findCurrentRoom(entity);
-                App.logger.debug("Last seen position coordinates are "+ lastSeenPosition.getRoomCenter());
-
                 target = entity;
-                movement.move(target.getPosition().subtract(this.getPosition()));
+                chasePlayer(target);
             }
         });
         if(isSearching){
@@ -135,6 +131,22 @@ public class SeekerAI extends SquareEntity {
                 currentRoom = path.remove(0);
             }
         }
+    }
+
+    private void chasePlayer(Entity e){
+        setSearch(false);
+        path.clear();
+        lastSeenPosition = findCurrentRoom(e);
+        App.logger.debug("Last seen position coordinates are "+ lastSeenPosition.getRoomCenter());
+
+
+        if(Objects.equals(findCurrentRoom(e), findCurrentRoom(this))){
+            movement.move(e.getPosition().subtract(this.getPosition()));
+        }
+        else{
+            moveToCentre(lastSeenPosition);
+        }
+
     }
 
     private Room findCurrentRoom(Entity e){
