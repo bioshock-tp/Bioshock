@@ -23,6 +23,7 @@ public final class RenderManager {
     private static Point2D cameraPos = new Point2D(0,0);
     private static Point2D scale = new Point2D(1.0, 1.0);
     private static double padding = 1;
+    private static boolean clipToFOV = false;
 
     private RenderManager() {
     }
@@ -183,7 +184,7 @@ public final class RenderManager {
 	
 	public static void clipToFOV(GraphicsContext gc) {
 		Hider player = EntityManager.getCurrentPlayer();
-		if (player != null) {
+		if (player != null && clipToFOV) {
 			double x = player.getX();
 	        double y = player.getY();
 	        double radius = player.getRadius();
