@@ -25,7 +25,7 @@ public class AnimationPlayer {
             playAnimation(sprite.spriteImages, sprite.playSpeed, x, y, sprite.width*sprite.getScale(), sprite.height*sprite.getScale());
         }
         else {
-            playAnimation(gc, time, sprite.actualSize, sprite.spriteLocationOnSheetX, sprite.spriteLocationOnSheetY, sprite.numberOfFrames, x, y, sprite.width, sprite.height, sprite.getScale(), sprite.resersePlay, sprite.playSpeed);
+            playAnimation(gc, time, sprite.actualSize, sprite.spriteLocationOnSheetX, sprite.spriteLocationOnSheetY, sprite.numberOfFrames, x, y, sprite.width, sprite.height, sprite.getScale(), sprite.reversePlay, sprite.playSpeed);
         }
 
     }

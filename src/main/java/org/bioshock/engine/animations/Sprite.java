@@ -17,7 +17,7 @@ public class Sprite {
     public double height;
     private double scale;
     public int actualSize;
-    public boolean resersePlay;
+    public boolean reversePlay;
     public Image[] spriteImages;
     public boolean hasValidSpriteImages;
     public Entity entityReference;
@@ -33,7 +33,7 @@ public class Sprite {
         this.width = width;
         this.height = height;
         this.scale = scale;
-        resersePlay = leftToRight;
+        reversePlay = leftToRight;
         this.entityReference = e;
     }
 
@@ -54,7 +54,7 @@ public class Sprite {
         this.width = width;
         this.height = height;
         this.scale = scale;
-        resersePlay = leftToRight;
+        reversePlay = leftToRight;
         this.entityReference = e;
         hasValidSpriteImages = true;
         spriteImages = new Image[specifications.size()];

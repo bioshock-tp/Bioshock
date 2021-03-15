@@ -62,6 +62,7 @@ public class PlayerSpriteRenderer implements Renderer {
                 getRenHeight(radius * 2)
         );
 
+        // Handles animations
         AnimationPlayer.playAnimation(Objects.requireNonNull(EntityManager.getCurrentPlayer()).getCurrentSprite(), getRenX(x), getRenY(y));
 
         gc.restore();
