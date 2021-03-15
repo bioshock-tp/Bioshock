@@ -3,7 +3,6 @@ package org.bioshock.engine.animations;
 import javafx.scene.image.Image;
 import javafx.scene.shape.Rectangle;
 import org.bioshock.engine.entity.Entity;
-import org.bioshock.engine.renderers.PlayerSpriteRendererHelper;
 import org.bioshock.utils.GlobalConstants;
 
 import java.util.ArrayList;
@@ -19,7 +18,7 @@ public class PlayerAnimations {
     Sprite die;
 
     public PlayerAnimations(Entity e, int scale) {
-        Image img = PlayerSpriteRendererHelper.getSpriteSheet();
+        Image img = AnimationPlayer.getSpriteSheet();
 
         List<Rectangle> specs = new ArrayList<>();
         specs.add(new Rectangle(149, 0,20,21));
