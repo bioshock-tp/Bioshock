@@ -18,7 +18,7 @@ public final class GameLoop extends AnimationTimer {
 		long nanoSDelta = now - prev;
 		double sDelta = nanoSDelta / 1e9;
 
-        if (now - lastUpdate >= (1/LOGICRATE)*1e9) {
+        if (now - lastUpdate >= LOGICRATE) {
             NetworkManager.tick();
             EntityManager.tick(sDelta);
             SceneManager.getScene().logicTick(sDelta);
