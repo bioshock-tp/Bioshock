@@ -15,14 +15,14 @@ public class ImageUtils {
 //        System.out.println("Before Imagepath " + imagePath);
         if (File.separatorChar == '\\') {
             // From Windows to Linux/Mac
-            imagePath=imagePath.replace('/', File.separatorChar);
+            imagePath = imagePath.replace('/', File.separatorChar);
             imagePath = imagePath.replace("\\", "\\\\");
         } else {
             // From Linux/Mac to Windows
-            imagePath=imagePath.replace('\\', File.separatorChar);
+            imagePath = imagePath.replace('\\', File.separatorChar);
 
         }
-        imagePath="file:"+imagePath;
+        imagePath = "file:" + imagePath;
 //        System.out.println("After Imagepath " + imagePath);
 
         return new Image(imagePath);

@@ -1,27 +1,22 @@
 package org.bioshock.engine.renderers;
 
-import static org.bioshock.engine.rendering.RenderManager.getRenHeight;
-import static org.bioshock.engine.rendering.RenderManager.getRenWidth;
-import static org.bioshock.engine.rendering.RenderManager.getRenX;
-import static org.bioshock.engine.rendering.RenderManager.getRenY;
-
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.Image;
+import javafx.scene.paint.Color;
+import javafx.scene.transform.Rotate;
 import org.bioshock.engine.animations.Sprite;
 import org.bioshock.engine.core.GameLoop;
 import org.bioshock.engine.entity.EntityManager;
-import org.bioshock.engine.entity.SpriteEntity;
 import org.bioshock.engine.entity.SquareEntity;
 import org.bioshock.engine.rendering.RenderManager;
 import org.bioshock.engine.scene.SceneManager;
 import org.bioshock.main.App;
 import org.bioshock.utils.ImageUtils;
 
-import com.sun.media.jfxmedia.events.PlayerStateEvent;
+import java.util.Objects;
 
-import javafx.scene.canvas.Canvas;
-import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.image.Image;
-import javafx.scene.paint.Color;
-import javafx.scene.transform.Rotate;
+import static org.bioshock.engine.rendering.RenderManager.*;
 
 public class PlayerSpriteRendererHelper implements Renderer{
     public PlayerSpriteRendererHelper() {}
@@ -74,7 +69,7 @@ public class PlayerSpriteRendererHelper implements Renderer{
           getRenHeight(radius * 2)
         );
 
-
+        playAnimation(Objects.requireNonNull(EntityManager.getCurrentPlayer()).getCurrentSprite());
 
         gc.restore();
     }

@@ -7,12 +7,10 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
 import org.bioshock.engine.ai.SeekerAI;
 import org.bioshock.engine.components.NetworkC;
 import org.bioshock.engine.entity.EntityManager;
 import org.bioshock.engine.entity.Hider;
-import org.bioshock.engine.entity.SeekerHuman;
 import org.bioshock.engine.entity.Size;
 import org.bioshock.engine.input.InputManager;
 import org.bioshock.engine.networking.NetworkManager;
@@ -122,6 +120,7 @@ public class MainGame extends GameScene {
              assert(App.PLAYERCOUNT == 1);
              Hider hider = EntityManager.getPlayers().get(0);
              hider.initMovement();
+             hider.initAnimations();
          }
     }
 
