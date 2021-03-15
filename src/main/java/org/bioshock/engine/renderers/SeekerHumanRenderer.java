@@ -1,14 +1,9 @@
 package org.bioshock.engine.renderers;
 
-import javafx.geometry.Rectangle2D;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Arc;
 import org.bioshock.engine.entity.SeekerHuman;
 import org.bioshock.engine.entity.SpriteEntity;
-
-import static org.bioshock.engine.scene.SceneManager.getPane;
 
 public class SeekerHumanRenderer implements Renderer {
 
@@ -37,22 +32,8 @@ public class SeekerHumanRenderer implements Renderer {
 //        );
 //        gc.setFill(seeker.getRendererC().getColor());
 
-        //gc.drawImage(seeker.getImage(), x, y);
-        //ImageView imageView = entity.getSpriteImageView();
-        ImageView imageView = new ImageView(seeker.getImage());
-//        imageView.setSmooth(true);dw
-//        imageView.setCache(true);
+        gc.drawImage(seeker.getImage(), 48,0, 16, 32, x, y, 16, 32);
 
-        imageView.setX(x);
-        imageView.setY(y);
-//        imageView.setLayoutY(x);
-//        imageView.setLayoutY(y);
-//        imageView.setTranslateX(x);
-//        imageView.setTranslateY(y);
-        imageView.setViewport(new Rectangle2D(0,0,16,32));
-        StackPane pane = getPane();
-        pane.getChildren().add(imageView);
-        //gc.fillRect(x, y, width, height);
         gc.setLineWidth(10);
         gc.setStroke(seeker.getRendererC().getColor());
         gc.strokeOval(
