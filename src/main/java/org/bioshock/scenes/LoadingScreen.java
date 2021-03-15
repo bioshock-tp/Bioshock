@@ -13,7 +13,7 @@ import javafx.scene.paint.Color;
 import javafx.util.Duration;
 
 public class LoadingScreen extends GameScene {
-	public LoadingScreen () {
+	public LoadingScreen (boolean isNetworked) {
         super();
 
 		Label label = new Label("Team Project");
@@ -41,6 +41,10 @@ public class LoadingScreen extends GameScene {
 
         fadeIn.setOnFinished(e -> fadeOut.play());
 
-        fadeOut.setOnFinished(e -> SceneManager.setScene(new MainGame()));
+        if (isNetworked) {
+            fadeOut.setOnFinished(e -> SceneManager.setScene(new Lobby()));
+        } else {
+            fadeOut.setOnFinished(e -> SceneManager.setScene(new MainGame()));
+        }
 	}
 }

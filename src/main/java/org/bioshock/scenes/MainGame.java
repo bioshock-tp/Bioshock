@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.bioshock.engine.ai.SeekerAI;
 import org.bioshock.engine.components.NetworkC;
+import org.bioshock.engine.entity.EntityManager;
 import org.bioshock.engine.entity.Hider;
 import org.bioshock.engine.entity.Size;
 import org.bioshock.engine.input.InputManager;
@@ -53,7 +54,7 @@ public class MainGame extends GameScene {
         );
         children.add(hider);
 
-        for (int i = 1; i < App.PLAYERCOUNT; i++) {
+        for (int i = 1; i < App.playerCount(); i++) {
             int roomNumber = i % rooms.size();
             if (roomNumber >= rooms.size() / 2) roomNumber++;
             x = rooms.get(roomNumber % rooms.size()).getRoomCenter().getX();
@@ -84,7 +85,19 @@ public class MainGame extends GameScene {
 	}
 
     @Override
+    public void initScene() {
+        renderEntities();
+
+        if (!App.isNetworked()) {
+            assert(App.playerCount() == 1);
+            EntityManager.getPlayers().get(0).initMovement();
+        }
+    }
+
+    @Override
     public void destroy() {
+        super.destroy();
+
         InputManager.removeKeyListeners(
             KeyCode.W,
             KeyCode.A,

@@ -12,7 +12,6 @@ import org.bioshock.audio.settings.MusicSettings;
 import org.bioshock.engine.core.GameLoop;
 import org.bioshock.engine.core.WindowManager;
 import org.bioshock.engine.input.InputManager;
-import org.bioshock.engine.networking.NetworkManager;
 import org.bioshock.engine.scene.SceneManager;
 import org.bioshock.gui.MainController;
 import org.bioshock.scenes.GameScene;
@@ -27,12 +26,10 @@ import javafx.stage.Stage;
 
 public class App extends Application {
     public static final String NAME = "BuzzKill";
-    public static int PLAYERCOUNT = 2;
 
     public static final Logger logger = LogManager.getLogger(App.class);
-
+    private static int playerCount = 2;
     private static Scene fxmlScene;
-	private MusicController musicController;
     private static boolean networked;
 
 	@Override
@@ -44,7 +41,7 @@ public class App extends Application {
                 Arrays.toString(e.getStackTrace()).replace(',', '\n')
             )
         );
-        assert(PLAYERCOUNT > 0);
+        assert(playerCount > 0);
 
 		WindowManager.initialise(stage);
         initFXMLScene();
@@ -61,50 +58,48 @@ public class App extends Application {
         GameScene initScene,
         boolean isNetworked
     ) {
-        networked = isNetworked;
+        try {
+            networked = isNetworked;
 
-		SceneManager.initialise(primaryStage, initScene);
-        InputManager.initialise();
-        InputManager.onPress(KeyCode.C, () ->
-            App.logger.debug(SceneManager.getScene())
-        );
+            SceneManager.initialise(primaryStage, initScene);
+            InputManager.initialise();
+            InputManager.onPress(KeyCode.C, () ->
+                App.logger.debug(SceneManager.getScene())
+            );
 
-        if (isNetworked) {
-            NetworkManager.initialise();
-        }
-
-        InputManager.onPress(KeyCode.R, () -> {
-            App.logger.debug("Resetting Scene...");
-            try {
-
-                GameScene scene = SceneManager.getScene();
-                scene.destroy();
-                Class<? extends GameScene> sceCl = scene.getClass();
-                GameScene nSce = sceCl.getDeclaredConstructor().newInstance();
-                SceneManager.setScene(nSce);
-            } catch (Exception e) {
-                App.logger.error(
-                    "Error whilst changing scene: {}",
-                    e.getMessage()
-                );
+            if (isNetworked) {
+                InputManager.onPress(KeyCode.R, () -> {
+                    App.logger.debug("Resetting Scene...");
+                    try {
+                        GameScene scene = SceneManager.getScene();
+                        scene.destroy();
+                        Class<? extends GameScene> sceCl = scene.getClass();
+                        GameScene nSce = sceCl.getDeclaredConstructor().newInstance();
+                        SceneManager.setScene(nSce);
+                    } catch (Exception e) {
+                        App.logger.error("Error whilst changing scene: ", e);
+                    }
+                });
             }
-        });
 
-		primaryStage.setScene(SceneManager.getScene());
-		primaryStage.show();
+            primaryStage.setScene(SceneManager.getScene());
 
-		new GameLoop().start();
+            new GameLoop().start();
+        } catch (Exception e) {
+            App.logger.error(
+                "{}\n{}",
+                e,
+                Arrays.toString(e.getStackTrace()).replace(',', '\n')
+            ); /* Necessary as GUI invocation overwrites exceptions */
+        }
 	}
 
 	public void stopBackgroundMusic() {
-		musicController = AudioController.loadMusicController(
-            "background-music"
-        );
-		musicController.stop();
+		AudioController.loadMusicController("background-music").stop();
 	}
 
 	public void playBackgroundMusic() {
-		musicController = AudioController.loadMusicController(
+		MusicController musicController = AudioController.loadMusicController(
             "background-music"
         );
 		final MusicSettings settings = new MusicSettings();
@@ -127,11 +122,7 @@ public class App extends Application {
             FXMLLoader fxmlLoader = new FXMLLoader(location);
             return fxmlLoader.load();
         } catch (IOException e) {
-            App.logger.error(
-                "Error loading FXML: {} {}",
-                fxml,
-                e.getMessage()
-            );
+            App.logger.error("Error loading FXML: {}", fxml, e);
             exit(-1);
             return null; /* Prevents no return value warning */
         }
@@ -150,5 +141,11 @@ public class App extends Application {
 		launch();
 	}
 
+    public static void setPlayerCount(int playerCount) {
+        App.playerCount = playerCount;
+    }
 
+    public static int playerCount() {
+        return playerCount;
+    }
 }

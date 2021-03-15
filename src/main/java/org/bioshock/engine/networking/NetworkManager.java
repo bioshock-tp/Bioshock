@@ -10,29 +10,33 @@ import java.util.UUID;
 import org.bioshock.engine.ai.SeekerAI;
 import org.bioshock.engine.entity.Hider;
 import org.bioshock.engine.entity.SquareEntity;
-import org.bioshock.engine.input.InputManager;
 import org.bioshock.engine.networking.Message.ClientInput;
-import org.bioshock.engine.physics.Movement;
 import org.bioshock.engine.scene.SceneManager;
 import org.bioshock.main.App;
 
+import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.geometry.Point2D;
 import javafx.scene.input.KeyCode;
 
 public class NetworkManager {
-    private static Map<KeyCode, Boolean> keyPressed = new EnumMap<>(KeyCode.class);
+    private static Map<KeyCode, Boolean> keyPressed = new EnumMap<>(
+        KeyCode.class
+    );
 
-    private static String me = UUID.randomUUID().toString();
-    static List<Hider> playerList = new ArrayList<>(App.PLAYERCOUNT);
-    private static Map<String, Hider> loadedPlayers = new HashMap<>(App.PLAYERCOUNT);
+    private static String myID = UUID.randomUUID().toString();
+    private static Hider me;
     private static SeekerAI seeker;
+
+    private static List<Hider> playerList = new ArrayList<>(App.playerCount());
+    private static Map<String, Hider> loadedPlayers = new HashMap<>(
+        App.playerCount()
+    );
 
     private static boolean inGame = false;
 
     private static Client client = new Client();
-    private static Object gameStartedMutex = new Object();
-    private static Object awaitingMessage = new Object();
+    private static Object awaitingPlayerLock = new Object();
 
     private NetworkManager() {}
 
@@ -45,71 +49,44 @@ public class NetworkManager {
         Thread initThread = new Thread(new Task<>() {
             @Override
             protected Object call() {
+                try {
+                    App.logger.info("Connecting to web socket...");
+                    client.connectBlocking();
+                    App.logger.info("Connected to web socket");
 
-                /* Wait until game loads, then connect to server */
-                synchronized (gameStartedMutex) {
-                    while (!SceneManager.isGameStarted()) {
-                        try {
-                            gameStartedMutex.wait();
-
-                            App.logger.info("Connecting to web socket...");
-                            client.connectBlocking();
-                            App.logger.info("Connected to web socket");
-
-                        } catch (InterruptedException e) {
-                            Thread.currentThread().interrupt();
-                        }
-                    }
+                } catch (InterruptedException e) {
+                    App.logger.error(e);
+                    Thread.currentThread().interrupt();
                 }
 
                 /* Wait until players join then add them to loadedPlayers */
-                while (loadedPlayers.size() < App.PLAYERCOUNT) {
-                    synchronized(awaitingMessage) {
+                while (loadedPlayers.size() < App.playerCount()) {
+                    synchronized(awaitingPlayerLock) {
                         while (client.getInitialMessages().isEmpty()) {
                             try {
-                                awaitingMessage.wait();
+                                awaitingPlayerLock.wait();
                             } catch (InterruptedException e) {
+                                App.logger.error(e);
                                 Thread.currentThread().interrupt();
                             }
                         }
                     }
 
-                    Message m = client.getInitialMessages().poll();
+                    Message message = client.getInitialMessages().remove();
 
-                    Hider hider = playerList.get(m.playerNumber - 1);
-                    hider.setID(m.UUID);
-                    loadedPlayers.putIfAbsent(m.UUID, hider);
+                    Hider hider = playerList.get(message.playerNumber - 1);
+                    hider.setID(message.uuid);
+                    loadedPlayers.putIfAbsent(message.uuid, hider);
+
+                    Platform.runLater(() ->
+                        SceneManager.lobby().updatePlayerCount()
+                    );
                 }
 
-                Hider hider = loadedPlayers.get(me);
-                Movement movement = hider.getMovement();
-                double speed = movement.getSpeed();
+                me = loadedPlayers.get(myID);
 
-                InputManager.onPress(
-                    KeyCode.W, () -> movement.direction(0, -speed)
-                );
-                InputManager.onPress(
-                    KeyCode.A, () -> movement.direction(-speed, 0)
-                );
-                InputManager.onPress(
-                    KeyCode.S, () -> movement.direction(0, speed)
-                );
-                InputManager.onPress(
-                    KeyCode.D, () -> movement.direction(speed, 0)
-                );
-
-                InputManager.onRelease(
-                    KeyCode.W, () -> movement.direction(0, speed)
-                );
-                InputManager.onRelease(
-                    KeyCode.A, () -> movement.direction(speed, 0)
-                );
-                InputManager.onRelease(
-                    KeyCode.S, () -> movement.direction(0, -speed)
-                );
-                InputManager.onRelease(
-                    KeyCode.D, () -> movement.direction(-speed, 0)
-                );
+                // me.initMovement();
+                Platform.runLater(() -> me.initMovement());
 
                 inGame = true;
 
@@ -124,8 +101,8 @@ public class NetworkManager {
 
     // TDDO
     private static Message pollInputs() {
-        int x = (int) loadedPlayers.get(me).getX();
-        int y = (int) loadedPlayers.get(me).getY();
+        int x = (int) me().getX();
+        int y = (int) me().getY();
 
         Point2D aiPos = seeker.getPosition();
 
@@ -133,48 +110,48 @@ public class NetworkManager {
             x, y, aiPos.getX(), aiPos.getY()
         );
 
-        return new Message(-1, me, input);
+        return new Message(-1, myID, input);
     }
 
     public static void tick() {
         if (!inGame || playerList.isEmpty()) return;
 
-        if (loadedPlayers.get(me) != null) {
+        if (me() != null) {
             client.send(Message.serialise(pollInputs()));
         }
 
         try {
             client.getMutex().acquire();
+        } catch(InterruptedException e) {
+            App.logger.error(e);
+            Thread.currentThread().interrupt();
+        }
 
-            for (Hider hider : playerList) {
-                ClientInput input = client.getInputQ().get(hider.getID());
-                if (input == null) continue;
+        App.logger.debug("acquired");
+        for (Hider hider : playerList) {
+            App.logger.debug("message");
+            ClientInput input = client.getInputQ().get(hider.getID());
 
-                if (hider == loadedPlayers.get(me)) continue;
+            if (input == null || hider == me()) continue;
 
-                if (hider == playerList.get(0)) {
-                    seeker.getMovement().direction(
-                        input.aiX,
-                        input.aiY
-                    );
-                }
-
-                loadedPlayers.get(hider.getID()).getMovement().moveTo(
-                    input.x,
-                    input.y
+            if (hider == playerList.get(0)) {
+                seeker.getMovement().direction(
+                    input.aiX,
+                    input.aiY
                 );
             }
-        } catch(InterruptedException ie) {
-            Thread.currentThread().interrupt();
-        } finally {
-            client.getMutex().release();
+
+            loadedPlayers.get(hider.getID()).getMovement().moveTo(
+                input.x,
+                input.y
+            );
         }
+
+        client.getMutex().release();
 	}
 
 	public static void register(SquareEntity entity) {
         if (entity instanceof Hider) {
-            if (playerList.isEmpty()) {
-            }
             playerList.add((Hider) entity);
         }
         else if (entity instanceof SeekerAI) {
@@ -210,26 +187,19 @@ public class NetworkManager {
         keyPressed.replace(key, pressed);
     }
 
-    public static Hider getMe() {
-        Hider me;
-        if ((me = loadedPlayers.get(getMyID())) == null) {
-            App.logger.error(
-                "Tried to get local player before Network initialised"
-            );
-        }
+    public static int playerCount() {
+        return loadedPlayers.size();
+    }
 
+    public static Hider me() {
         return me;
     }
 
 	public static String getMyID() {
-		return me;
+		return myID;
 	}
 
-    public static Object getMutex() {
-        return gameStartedMutex;
-    }
-
-    public static Object getMessageMutex() {
-        return awaitingMessage;
+    public static Object getPlayerJoinLock() {
+        return awaitingPlayerLock;
     }
 }

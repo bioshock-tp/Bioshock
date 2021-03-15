@@ -1,13 +1,10 @@
 package org.bioshock.engine.scene;
 
 import org.bioshock.engine.core.WindowManager;
-import org.bioshock.engine.entity.EntityManager;
-import org.bioshock.engine.entity.Hider;
 import org.bioshock.engine.input.InputManager;
-import org.bioshock.engine.networking.NetworkManager;
 import org.bioshock.main.App;
 import org.bioshock.scenes.GameScene;
-import org.bioshock.scenes.MainGame;
+import org.bioshock.scenes.Lobby;
 
 import javafx.scene.canvas.Canvas;
 import javafx.scene.layout.StackPane;
@@ -16,7 +13,7 @@ import javafx.stage.Stage;
 public final class SceneManager {
     private static Stage stage;
     private static GameScene currentScene;
-    private static boolean isGameStarted = false;
+    private static boolean inLobby = false;
     private static boolean initialised = false;
 
     private SceneManager() {}
@@ -30,34 +27,21 @@ public final class SceneManager {
 	}
 
 	public static void setScene(GameScene scene) {
+        if (currentScene != null) currentScene.destroy();
         currentScene = scene;
 
         WindowManager.setFullScreen(true);
-        App.logger.debug("1");
-        EntityManager.unregisterAll();
-        App.logger.debug("1");
+
         InputManager.changeScene();
-        App.logger.debug("1");
+
         stage.setScene(currentScene);
 
-        currentScene.renderEntities();
-
-        if (currentScene instanceof MainGame) {
-            isGameStarted = true;
-
-            if (App.isNetworked()) {
-                Object mutex = NetworkManager.getMutex();
-                synchronized(mutex) {
-                    mutex.notifyAll();
-                }
-                App.logger.debug("Notified networking thread");
-            } else {
-                assert(App.PLAYERCOUNT == 1);
-                Hider hider = EntityManager.getPlayers().get(0);
-                hider.initMovement();
-            }
-        }
+        currentScene.initScene();
 	}
+
+    public static void setInLobby(boolean b) {
+        inLobby = b;
+    }
 
 	public static GameScene getScene() {
 		return currentScene;
@@ -71,7 +55,16 @@ public final class SceneManager {
 		return currentScene.getCanvas();
 	}
 
-	public static boolean isGameStarted() {
-        return isGameStarted;
+	public static boolean inLobby() {
+        return inLobby;
 	}
+
+    public static Lobby lobby() {
+        if (!(currentScene instanceof Lobby)) {
+            App.logger.error("Tried to access lobby when not in one");
+            return null;
+        } else {
+            return (Lobby) currentScene;
+        }
+    }
 }

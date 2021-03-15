@@ -1,13 +1,13 @@
 package org.bioshock.engine.rendering;
 
-import org.bioshock.main.App;
-
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.bioshock.engine.entity.Entity;
+import org.bioshock.engine.entity.SquareEntity;
 import org.bioshock.engine.scene.SceneManager;
+import org.bioshock.main.App;
 
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -74,21 +74,29 @@ public final class RenderManager {
      * order with regards to it's Y value given in it's render component
      * @param toAdd
      */
-    public static void register(Entity entityToAdd) {
+    public static void register(Entity entity) {
+        if (entity.getRendererC() == null) {
+            return;
+        }
+
+        if (entity instanceof SquareEntity) {
+            SceneManager.getPane().getChildren().add(entity.getHitbox());
+        }
+
         if (entities.isEmpty()) {
-            entities.add(entityToAdd);
+            entities.add(entity);
         } else {
             int i;
             Entity currEnt = entities.get(0);
             for (
                 i = 1;
-                (currEnt.getZ() < entityToAdd.getZ()) && i < entities.size();
+                (currEnt.getZ() < entity.getZ()) && i < entities.size();
                 i++
             ) {
                 currEnt = entities.get(i);
             }
 
-            entities.add(i, entityToAdd);
+            entities.add(i, entity);
         }
     }
 

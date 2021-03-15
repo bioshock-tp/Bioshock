@@ -4,7 +4,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.ByteBuffer;
 import java.util.ArrayDeque;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Queue;
@@ -22,7 +21,9 @@ public class Client extends WebSocketClient {
 
     private Semaphore mutex = new Semaphore(1);
     private Queue<Message> initialMessages = new ArrayDeque<>();
-    private Map<String, ClientInput> inputQueue = new HashMap<>(App.PLAYERCOUNT);
+    private Map<String, ClientInput> inputQueue = new HashMap<>(
+        App.playerCount()
+    );
     private boolean connected = false;
 
     private Client(URI serverURI) {
@@ -33,15 +34,15 @@ public class Client extends WebSocketClient {
         this(DEFURI);
     }
 
-    public Client(String URI) {
-        this(getURI(URI));
+    public Client(String uri) {
+        this(getURI(uri));
     }
 
-    private static URI getURI(String URI) {
+    private static URI getURI(String uri) {
         try {
-            return new URI(URI);
+            return new URI(uri);
         } catch (URISyntaxException e) {
-            App.logger.fatal("Invalid URI {}: {}", URI, e.getMessage());
+            App.logger.fatal("Invalid URI {}: ", uri, e);
             App.exit(-1);
             return null; /* Suppress no return value warning */
         }
@@ -83,7 +84,7 @@ public class Client extends WebSocketClient {
             if (message.playerNumber > 0 && message.input == null) {
                 initialMessages.add(message);
 
-                Object messageMutex = NetworkManager.getMessageMutex();
+                Object messageMutex = NetworkManager.getPlayerJoinLock();
                 synchronized(messageMutex) {
                     messageMutex.notifyAll();
                 }
@@ -91,12 +92,10 @@ public class Client extends WebSocketClient {
 
             /* Case of input */
             else {
-                if (NetworkManager.playerList.get(0).getID().equals(message.UUID)) {
-                    App.logger.debug(message);
-                }
-                inputQueue.put(message.UUID, message.input);
+                inputQueue.put(message.uuid, message.input);
             }
         } catch(InterruptedException ie) {
+            App.logger.error("InterruptedException");
             Thread.currentThread().interrupt();
         } finally {
             mutex.release();
@@ -111,11 +110,7 @@ public class Client extends WebSocketClient {
 
     @Override
     public void onError(Exception ex) {
-        App.logger.error(
-            "A network error occurred: {}. StackTrace\n{}",
-            ex.getMessage(),
-            Arrays.toString(ex.getStackTrace()).replace(',', '\n')
-        );
+        App.logger.error("A network error occurred: ", ex);
     }
 
     @Override

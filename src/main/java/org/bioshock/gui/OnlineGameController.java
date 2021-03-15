@@ -24,6 +24,6 @@ public class OnlineGameController {
 
     public void launchGame(ActionEvent actionEvent) {
         Stage stage = (Stage) launchButton.getScene().getWindow();
-        App.startGame(stage, new LoadingScreen(), true);
+        App.startGame(stage, new LoadingScreen(true), true);
     }
 }

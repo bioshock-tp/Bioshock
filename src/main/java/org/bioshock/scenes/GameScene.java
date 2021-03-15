@@ -6,6 +6,7 @@ import java.util.List;
 import org.bioshock.engine.core.WindowManager;
 import org.bioshock.engine.entity.Entity;
 import org.bioshock.engine.entity.EntityManager;
+import org.bioshock.engine.rendering.RenderManager;
 
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
@@ -30,8 +31,25 @@ public abstract class GameScene extends Scene {
         this(new StackPane());
     }
 
-	public void renderEntities() {
+    public void initScene() {
+        registerEntities();
+        renderEntities();
+    }
+
+    public void registerEntities() {
         children.forEach(EntityManager::register);
+	}
+
+	public void renderEntities() {
+        children.forEach(RenderManager::register);
+	}
+
+    public void unregisterEntities() {
+        children.forEach(EntityManager::unregister);
+	}
+
+	public void destroyEntities() {
+        children.forEach(RenderManager::unregister);
 	}
 
     public void setBackground(Background background) {
@@ -47,5 +65,7 @@ public abstract class GameScene extends Scene {
 	}
 
 	public void destroy() {
+        unregisterEntities();
+        destroyEntities();
 	}
 }
