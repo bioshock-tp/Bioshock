@@ -8,6 +8,8 @@ import org.bioshock.engine.animations.Sprite;
 import org.bioshock.engine.components.NetworkC;
 import org.bioshock.engine.input.InputManager;
 import org.bioshock.engine.renderers.PlayerSpriteRenderer;
+import org.bioshock.main.App;
+import org.bioshock.utils.GlobalConstants;
 
 public class Hider extends SquareEntity {
     private boolean dead = false;
@@ -81,7 +83,7 @@ public class Hider extends SquareEntity {
     }
 
     public void initAnimations() {
-        playerAnimations = new PlayerAnimations(this,3);
+        playerAnimations = new PlayerAnimations(this, GlobalConstants.PLAYER_SCALE);
         currentSprite = playerAnimations.getPlayerIdleSprite();
     }
 
@@ -89,7 +91,7 @@ public class Hider extends SquareEntity {
         if (s != null) {
             currentSprite = s;
         } else {
-            System.out.println("Sprite missing!");
+            App.logger.debug("Sprite is missing!");
         }
     }
 
