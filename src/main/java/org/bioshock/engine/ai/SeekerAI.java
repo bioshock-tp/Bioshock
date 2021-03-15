@@ -120,9 +120,9 @@ public class SeekerAI extends SquareEntity {
     public Pair<Point2D, Point2D> renderArea() {
     	Point2D centre = getCentre();
     	double radius = getRadius();
-    	return new Pair<Point2D, Point2D>(
-    			centre.subtract(radius, radius),
-    			centre.add(radius, radius)
-			);
+    	return new Pair<>(
+            centre.subtract(radius, radius),
+            centre.add(radius, radius)
+        );
     }
 }

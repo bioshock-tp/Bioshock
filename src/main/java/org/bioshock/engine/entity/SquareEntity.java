@@ -18,11 +18,18 @@ public abstract class SquareEntity extends Entity {
     protected Size size;
     protected Circle fov;
 
-    private SquareEntity(Point3D p, Rectangle h, NetworkC com, RendererC rCom) {
-        super(p, h, com, rCom);
+    private SquareEntity(Point3D p, Rectangle h, NetworkC nC, RendererC rC) {
+        super(p, h, nC, rC);
     }
 
-    protected SquareEntity(Point3D p, NetworkC nCom, RendererC rCom, Size s, int r, Color c) {
+    protected SquareEntity(
+        Point3D p,
+        NetworkC nCom,
+        RendererC rCom,
+        Size s,
+        int r,
+        Color c
+    ) {
         this(
             p,
             new Rectangle(p.getX(), p.getY(), s.getWidth(), s.getHeight()),

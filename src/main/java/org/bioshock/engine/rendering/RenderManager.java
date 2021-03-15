@@ -37,7 +37,7 @@ public final class RenderManager {
         Canvas canvas = SceneManager.getCanvas();
         GraphicsContext gc = canvas.getGraphicsContext2D();
 
-        // Set Background to LightGray
+        // Set Background to LightGrey
         gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
 
         sort(renderableEntities);
@@ -45,49 +45,50 @@ public final class RenderManager {
         // renders each entity with the renderer defined in the map
         for (Entity entity : renderableEntities) {
             if (entity.isEnabled()) {
-            	Pair<Point2D, Point2D> renderArea = entity.renderArea();
-            	if (pointInScreen(renderArea.getKey()) || pointInScreen(renderArea.getValue())) {
-	            	
-	                try {
-	                    Method rend = entity.getRenderer().getDeclaredMethods()[0];
-	                    rend.invoke(null, gc, entity);
-	                }catch (InvocationTargetException e) {
-	                	App.logger.error(
-	                            "Render function for {} threw an exception",
-	                            entity.getRenderer()
-	                        );
-	                }catch (Exception e) {
-	                    App.logger.error(
-	                        "Render function not defined for {}",
-	                        entity.getRenderer()
-	                    );
-	                }
-				}
+                Pair<Point2D, Point2D> renderArea = entity.renderArea();
+                if (
+                    pointInScreen(renderArea.getKey())
+                    || pointInScreen(renderArea.getValue())
+                ) {
+                    try {
+                        Method rend = entity.getRenderer().getDeclaredMethods()[0];
+                        rend.invoke(null, gc, entity);
+                    } catch (InvocationTargetException e) {
+                        App.logger.error(
+                            "Render function not defined for {}",
+                            entity.getRenderer()
+                        );
+                    } catch (Exception e) {
+                        App.logger.error(
+                            "Render function for {} threw an exception",
+                            entity.getRenderer(),
+                            e
+                        );
+                    }
+                }
             }
-		}
-	}
-    
+        }
+    }
+
     public static boolean pointInScreen(Point2D p) {
-    	Size screen = GameScene.getGameScreen();
-    	if (p.getX() < cameraPos.getX() || 
-    			p.getY() < cameraPos.getY() ||
-    			p.getX() > cameraPos.getX() + screen.getWidth() ||
-    			p.getY() > cameraPos.getY() + screen.getHeight()) {
-    		return false;
-    	}
-    	
-    	return true;
+        Size screen = GameScene.getGameScreen();
+        return !(
+            p.getX() < cameraPos.getX()
+            || p.getY() < cameraPos.getY()
+            || p.getX() > cameraPos.getX() + screen.getWidth()
+            || p.getY() > cameraPos.getY() + screen.getHeight()
+        );
     }
 
     /**
-	 * A method that sorts a entities of entities in ascending order
-	 * Current Implementation uses Insertion sort as there is likely to be
+     * A method that sorts a entities of entities in ascending order
+     * Current Implementation uses Insertion sort as there is likely to be
      * minimal changes from frame to frame in order
-	 * @param entityList entities to be sorted by ref
-	 */
-	public static void sort(List<Entity> entityList) {
+     * @param entityList entities to be sorted by ref
+     */
+    public static void sort(List<Entity> entityList) {
         for (int j = 1; j < entityList.size(); j++) {
-        	Entity key = entityList.get(j);
+            Entity key = entityList.get(j);
 
             int i;
             for (
@@ -108,7 +109,7 @@ public final class RenderManager {
      */
     public static void register(Entity entityToAdd) {
         if (renderableEntities.isEmpty()) {
-        	renderableEntities.add(entityToAdd);
+            renderableEntities.add(entityToAdd);
         } else {
             int i;
             Entity currEnt = renderableEntities.get(0);
@@ -117,10 +118,10 @@ public final class RenderManager {
                 (currEnt.getZ() < entityToAdd.getZ()) && i < renderableEntities.size();
                 i++
             ) {
-				currEnt = renderableEntities.get(i);
+                currEnt = renderableEntities.get(i);
             }
 
-			renderableEntities.add(i, entityToAdd);
+            renderableEntities.add(i, entityToAdd);
         }
     }
 
@@ -139,67 +140,68 @@ public final class RenderManager {
 
     public static void unregisterAll(List<Entity> entities) {
         entities.forEach(RenderManager::unregister);
-	}
+    }
 
-	public static Point2D getCameraPos() {
-		return cameraPos;
-	}
+    public static void clipToFOV(GraphicsContext gc) {
+        Hider player = EntityManager.getCurrentPlayer();
+        if (player != null) {
+            double x = player.getX();
+            double y = player.getY();
+            double radius = player.getRadius();
+            double width = player.getWidth();
+            double height = player.getHeight();
 
-	public static void setCameraPos(Point2D cameraPos) {
-		RenderManager.cameraPos = cameraPos;
-	}
-	
-	public static void moveCameraX(double x) {
-		cameraPos.add(x, 0);
-	}
-	
-	public static void moveCameraY(double y) {
-		cameraPos.add(0, y);
-	}
-	
-	public static double getRenWidth(double w) {
-		return w*scale.getX() + padding;
-	}
-	
-	public static double getRenX(double x) {
-		return getRenWidth(x - cameraPos.getX());
-	}
-	
-	public static double getRenHeight(double h) {
-		return h*scale.getY() + padding;
-	}
-	
-	public static double getRenY(double y) {
-		return getRenHeight(y - cameraPos.getY());
-	}
+            gc.beginPath();
+            gc.arc(
+                getRenX(x + width / 2),
+                getRenY(y + height / 2),
+                getRenWidth(radius),
+                getRenHeight(radius),
+                0,
+                360
+            );
+            gc.closePath();
+            gc.clip();
+        }
+    }
+
+    public static void moveCameraX(double x) {
+        cameraPos.add(x, 0);
+    }
+
+    public static void moveCameraY(double y) {
+        cameraPos.add(0, y);
+    }
+
+    public static void setCameraPos(Point2D cameraPos) {
+        RenderManager.cameraPos = cameraPos;
+    }
+
+    public static void setScale(Point2D scale) {
+        RenderManager.scale = scale;
+    }
+
+    public static Point2D getCameraPos() {
+        return cameraPos;
+    }
+
+    public static double getRenWidth(double w) {
+        return w*scale.getX() + padding;
+    }
+
+    public static double getRenX(double x) {
+        return getRenWidth(x - cameraPos.getX());
+    }
+
+    public static double getRenHeight(double h) {
+        return h * scale.getY() + padding;
+    }
+
+    public static double getRenY(double y) {
+        return getRenHeight(y - cameraPos.getY());
+    }
 
     public static Point2D getScale() {
-		return scale;
-	}
-
-	public static void setScale(Point2D scale) {
-		RenderManager.scale = scale;
-	}
-	
-	public static void clipToFOV(GraphicsContext gc) {
-		Hider player = EntityManager.getCurrentPlayer();
-		if (player != null) {
-			double x = player.getX();
-	        double y = player.getY();
-	        double radius = player.getRadius();
-	        double width = player.getWidth();
-	        double height = player.getHeight();
-			
-			gc.beginPath();
-	    	gc.arc(getRenX(x + width / 2),
-	        		getRenY(y + height / 2),
-	        		getRenWidth(radius), 
-	        		getRenHeight(radius), 
-	        		0, 360);
-//	    	gc.rect(0, 0, gc.getCanvas().getWidth()/2, gc.getCanvas().getHeight()/2);
-	        gc.closePath();
-	        gc.clip();
-		}
-		
-	}
+        return scale;
+    }
 }
