@@ -12,11 +12,12 @@ public final class GameLoop extends AnimationTimer {
 
 	private long prev = 0;
     private long lastUpdate = 0;
+    private static double sDelta = 0;
 
 	@Override
 	public void handle(long now) {
 		long nanoSDelta = now - prev;
-		double sDelta = nanoSDelta / 10e9;
+		sDelta = nanoSDelta / 1e9;
         RenderManager.tick();
         
 
@@ -32,4 +33,9 @@ public final class GameLoop extends AnimationTimer {
         
 		prev = now;
 	}
+
+	public static double getSDelta() {
+        return sDelta;
+    }
+
 }

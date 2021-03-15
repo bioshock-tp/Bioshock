@@ -7,10 +7,12 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 import org.bioshock.engine.ai.SeekerAI;
 import org.bioshock.engine.components.NetworkC;
 import org.bioshock.engine.entity.EntityManager;
 import org.bioshock.engine.entity.Hider;
+import org.bioshock.engine.entity.SeekerHuman;
 import org.bioshock.engine.entity.Size;
 import org.bioshock.engine.input.InputManager;
 import org.bioshock.engine.networking.NetworkManager;
@@ -49,6 +51,14 @@ public class MainGame extends GameScene {
         double x = rooms.get(0).getRoomCenter().getX();
         double y = rooms.get(0).getRoomCenter().getY();
 
+        SeekerHuman human = new SeekerHuman(
+            new Point3D(x, y, 10),
+                new Rectangle(40, 40),
+            new NetworkC(true),
+            300
+        );
+        children.add(human);
+
         /* Players must render in exact order, do not play with z values */
         Hider hider = new Hider(
             new Point3D(x, y, 0.5),
@@ -59,13 +69,7 @@ public class MainGame extends GameScene {
         );
         children.add(hider);
 
-//        SeekerHuman human = new SeekerHuman(
-//            new Point3D(x, y, 0.5),
-//                new Rectangle(40, 40),
-//            new NetworkC(true),
-//            300
-//        );
-//        children.add(human);
+
 
         for (int i = 1; i < App.PLAYERCOUNT; i++) {
             int roomNumber = i % rooms.size();
@@ -116,7 +120,7 @@ public class MainGame extends GameScene {
          } else {
              assert(App.PLAYERCOUNT == 1);
              Hider hider = EntityManager.getPlayers().get(0);
-             hider.initMovement();
+//             hider.initMovement();
          }
     }
 
