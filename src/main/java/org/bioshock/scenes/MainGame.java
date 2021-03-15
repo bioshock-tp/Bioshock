@@ -1,7 +1,12 @@
 package org.bioshock.scenes;
 
-import java.util.List;
-
+import javafx.geometry.Point2D;
+import javafx.geometry.Point3D;
+import javafx.scene.Cursor;
+import javafx.scene.input.KeyCode;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.paint.Color;
 import org.bioshock.engine.ai.SeekerAI;
 import org.bioshock.engine.components.NetworkC;
 import org.bioshock.engine.entity.EntityManager;
@@ -15,13 +20,7 @@ import org.bioshock.entities.map.Room;
 import org.bioshock.entities.map.ThreeByThreeMap;
 import org.bioshock.main.App;
 
-import javafx.geometry.Point2D;
-import javafx.geometry.Point3D;
-import javafx.scene.Cursor;
-import javafx.scene.input.KeyCode;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.paint.Color;
+import java.util.List;
 
 public class MainGame extends GameScene {
 	private boolean cameraLock = true;
@@ -59,6 +58,14 @@ public class MainGame extends GameScene {
             Color.PINK
         );
         children.add(hider);
+
+//        SeekerHuman human = new SeekerHuman(
+//            new Point3D(x, y, 0.5),
+//                new Rectangle(40, 40),
+//            new NetworkC(true),
+//            300
+//        );
+//        children.add(human);
 
         for (int i = 1; i < App.PLAYERCOUNT; i++) {
             int roomNumber = i % rooms.size();
