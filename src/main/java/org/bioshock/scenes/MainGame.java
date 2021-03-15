@@ -51,13 +51,14 @@ public class MainGame extends GameScene {
         double x = rooms.get(0).getRoomCenter().getX();
         double y = rooms.get(0).getRoomCenter().getY();
 
-        SeekerHuman human = new SeekerHuman(
-            new Point3D(x, y, 10),
-                new Rectangle(40, 40),
-            new NetworkC(true),
-            300
-        );
-        children.add(human);
+//        SeekerHuman human = new SeekerHuman(
+//            new Point3D(x, y, -1),
+//            new NetworkC(true),
+//            new Size(40, 40),
+//            300,
+//            Color.BLACK
+//        );
+//        children.add(human);
 
         /* Players must render in exact order, do not play with z values */
         Hider hider = new Hider(
@@ -120,7 +121,7 @@ public class MainGame extends GameScene {
          } else {
              assert(App.PLAYERCOUNT == 1);
              Hider hider = EntityManager.getPlayers().get(0);
-//             hider.initMovement();
+             hider.initMovement();
          }
     }
 

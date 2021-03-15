@@ -1,13 +1,14 @@
 package org.bioshock.engine.animations;
 
-import javafx.scene.image.Image;
-import javafx.scene.shape.Rectangle;
-import org.bioshock.engine.entity.Entity;
-import org.bioshock.engine.renderers.PlayerSpriteRenderer;
-import org.bioshock.utils.GlobalConstants;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import org.bioshock.engine.entity.Entity;
+import org.bioshock.engine.renderers.PlayerSpriteRendererHelper;
+import org.bioshock.utils.GlobalConstants;
+
+import javafx.scene.image.Image;
+import javafx.scene.shape.Rectangle;
 
 public class PlayerAnimations {
 
@@ -19,7 +20,7 @@ public class PlayerAnimations {
     Sprite die;
     double playSpeed;
     public PlayerAnimations(Entity e, int scale) {
-        Image img = PlayerSpriteRenderer.getSpriteSheet();
+        Image img = PlayerSpriteRendererHelper.getSpriteSheet();
         playSpeed = 0.1;
         moveDown  = new Sprite(e, 30, 0.1, 0,  0, 3, GlobalConstants.PLAYER_WIDTH, GlobalConstants.PLAYER_HEIGHT, scale, false);
         moveLeft  = new Sprite(e, 30, 0.1, 30, 0, 3, GlobalConstants.PLAYER_WIDTH, GlobalConstants.PLAYER_HEIGHT, scale, false);

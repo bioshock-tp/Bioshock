@@ -2,7 +2,7 @@ package org.bioshock.engine.entity;
 
 import org.bioshock.engine.components.NetworkC;
 import org.bioshock.engine.input.InputManager;
-import org.bioshock.engine.renderers.PlayerRenderer;
+import org.bioshock.engine.renderers.PlayerSpriteRenderer;
 
 import javafx.geometry.Point3D;
 import javafx.scene.input.KeyCode;
@@ -14,7 +14,7 @@ public class Hider extends SquareEntity {
     public Hider(Point3D p, NetworkC com, Size s, int r, Color c) {
     	super(p, com, s, r, c);
 
-        renderer = PlayerRenderer.class;
+        renderer = PlayerSpriteRenderer.class;
     }
 
 	protected void tick(double timeDelta) {
