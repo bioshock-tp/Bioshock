@@ -27,9 +27,12 @@ import javafx.scene.paint.Color;
 
 public class MainGame extends GameScene {
     private static final double ENDTIME = 2 * 60f + 3;
+    private static final double LOSEDELAY = 5;
 
     private boolean cameraLock = true;
     private double runningTime = 0;
+    private boolean losing = false;
+    private double timeLosing = 0;
 
     private Label timer;
 
@@ -149,7 +152,8 @@ public class MainGame extends GameScene {
 
     @Override
     public void logicTick(double timeDelta) {
-        if(SceneManager.isGameStarted() && 
+        if(!losing && 
+                SceneManager.isGameStarted() && 
                 (!App.isNetworked() || NetworkManager.isInGame())) {
             runningTime += timeDelta;
 
@@ -160,6 +164,12 @@ public class MainGame extends GameScene {
 
             if (!EntityManager.getPlayers().isEmpty() 
                     && EntityManager.getPlayers().stream().allMatch(Hider::isDead)) {
+                losing = true;
+            }
+        }
+        else if (losing) {
+            timeLosing += timeDelta;
+            if (timeLosing >= LOSEDELAY) {
                 SceneManager.setScene(new LoseScreen());
             }
         }

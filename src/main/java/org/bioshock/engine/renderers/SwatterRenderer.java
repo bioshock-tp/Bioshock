@@ -9,6 +9,7 @@ import org.bioshock.engine.entity.SquareEntity;
 import org.bioshock.engine.rendering.RenderManager;
 
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.Image;
 import javafx.scene.transform.Rotate;
 
 public final class SwatterRenderer implements Renderer {
