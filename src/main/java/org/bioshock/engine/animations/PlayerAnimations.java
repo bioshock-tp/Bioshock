@@ -1,6 +1,5 @@
 package org.bioshock.engine.animations;
 
-import javafx.scene.image.Image;
 import org.bioshock.engine.entity.Entity;
 import org.bioshock.utils.GlobalConstants;
 
@@ -14,17 +13,6 @@ public class PlayerAnimations {
     Sprite die;
 
     public PlayerAnimations(Entity e, int scale) {
-        Image img = AnimationPlayer.getSpriteSheet();
-
-//        List<Rectangle> specs = new ArrayList<>();
-//        specs.add(new Rectangle(149, 0,20,21));
-//        specs.add(new Rectangle(179, 1,19,20));
-//        specs.add(new Rectangle(118, 30,21,21));
-//        specs.add(new Rectangle(149, 30,20,21));
-//        specs.add(new Rectangle(179, 30,19,21));
-//        specs.add(new Rectangle(118, 60,21,21));
-//        specs.add(new Rectangle(147, 60,23,22));
-
         moveDown  = new Sprite(
                 e,
                 30,
