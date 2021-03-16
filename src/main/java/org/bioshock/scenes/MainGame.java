@@ -5,28 +5,43 @@ import java.util.List;
 import org.bioshock.engine.ai.SeekerAI;
 import org.bioshock.engine.components.NetworkC;
 import org.bioshock.engine.core.FrameRate;
+import org.bioshock.engine.core.WindowManager;
 import org.bioshock.engine.entity.EntityManager;
 import org.bioshock.engine.entity.Hider;
 import org.bioshock.engine.entity.Size;
 import org.bioshock.engine.input.InputManager;
+import org.bioshock.engine.networking.NetworkManager;
+import org.bioshock.engine.rendering.RenderManager;
 import org.bioshock.engine.scene.SceneManager;
 import org.bioshock.entities.map.Room;
 import org.bioshock.entities.map.ThreeByThreeMap;
 import org.bioshock.main.App;
 
+import javafx.geometry.Point2D;
 import javafx.geometry.Point3D;
 import javafx.scene.Cursor;
+import javafx.scene.control.Label;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.paint.Color;
 
 public class MainGame extends GameScene {
-	public MainGame() {
-		super();
+    private static final double ENDTIME = 2 * 60f + 3;
+    private static final double LOSEDELAY = 5;
 
-		setCursor(Cursor.HAND);
-		setBackground(new Background(new BackgroundFill(
+    private boolean cameraLock = true;
+    private double runningTime = 0;
+    private boolean losing = false;
+    private double timeLosing = 0;
+
+    private Label timer;
+
+    public MainGame() {
+        super();
+
+        setCursor(Cursor.HAND);
+        setBackground(new Background(new BackgroundFill(
             Color.LIGHTGRAY,
             null,
             null
@@ -39,7 +54,7 @@ public class MainGame extends GameScene {
             new Size(90, 90),
             Color.SADDLEBROWN
         );
-		children.addAll(map.getWalls());
+        children.addAll(map.getWalls());
 
         List<Room> rooms = map.getRooms();
 
@@ -71,11 +86,11 @@ public class MainGame extends GameScene {
             ));
         }
 
-		double centreX = rooms.get(rooms.size() / 2).getRoomCenter().getX();
-		double centreY = rooms.get(rooms.size() / 2).getRoomCenter().getY();
+        double centreX = rooms.get(rooms.size() / 2).getRoomCenter().getX();
+        double centreY = rooms.get(rooms.size() / 2).getRoomCenter().getY();
 
-		SeekerAI seeker = new SeekerAI(
-            new Point3D(centreX, centreY, 0.5),
+        SeekerAI seeker = new SeekerAI(
+            new Point3D(centreX, centreY, 0.25),
             new NetworkC(true),
             new Size(40, 40),
             300,
@@ -83,23 +98,93 @@ public class MainGame extends GameScene {
             hider
         );
 
-		children.add(seeker);
+        children.add(seeker);
+
+        Size timerSize = new Size(100, 100);
+        timer = new Label("mm:ss.ms");
+        timer.setStyle("-fx-font: 20 arial; -fx-text-fill: black;");
+        timer.setPrefSize(timerSize.getWidth(), timerSize.getHeight());
+        timer.setTranslateX(-timerSize.getWidth()/2);
+        timer.setTranslateY(
+            -WindowManager.getWindowHeight() / 2 + timerSize.getHeight() / 2
+        );
+        getPane().getChildren().add(timer);
+
+        InputManager.onRelease(KeyCode.Y, () ->	cameraLock = !cameraLock);
 
         registerEntities();
-	}
+    }
 
     @Override
     public void initScene() {
         renderEntities();
 
+        FrameRate.initialise();
+
         SceneManager.setInLobby(false);
         SceneManager.setInGame(true);
 
-        FrameRate.initialise();
-
-        if (!App.isNetworked()) {
+        if (App.isNetworked()) {
+            Object mutex = NetworkManager.getPlayerJoinLock();
+            synchronized(mutex) {
+                mutex.notifyAll();
+            }
+            App.logger.debug("Notified networking thread");
+        } else {
             assert(App.playerCount() == 1);
             EntityManager.getPlayers().get(0).initMovement();
+        }
+    }
+
+    @Override
+    public void renderTick(double timeDelta) {
+        if(SceneManager.inGame()) {
+            if(cameraLock) {
+                Hider meObj = EntityManager.getCurrentPlayer();
+
+                if (meObj != null) {
+                    RenderManager.setCameraPos(meObj.getCentre().subtract(
+                        getGameScreen().getWidth()/2,
+                        getGameScreen().getHeight()/2)
+                    );
+                }
+            }
+
+            double timeLeft = ENDTIME - runningTime;
+            int numMins = (int) timeLeft / 60;
+            timer.setText(String.format(
+                "%d:%.2f",
+                numMins,
+                timeLeft - numMins * 60
+            ));
+        }
+    }
+
+    @Override
+    public void logicTick(double timeDelta) {
+        if(
+            !losing
+            && SceneManager.inGame()
+        ) {
+            runningTime += timeDelta;
+
+            if (runningTime >= ENDTIME) {
+                SceneManager.setScene(new WinScreen());
+                return;
+            }
+
+            if (
+                !EntityManager.getPlayers().isEmpty()
+                && EntityManager.getPlayers().stream().allMatch(Hider::isDead)
+            ) {
+                losing = true;
+            }
+        }
+        else if (losing) {
+            timeLosing += timeDelta;
+            if (timeLosing >= LOSEDELAY) {
+                SceneManager.setScene(new LoseScreen());
+            }
         }
     }
 
@@ -107,11 +192,18 @@ public class MainGame extends GameScene {
     public void destroy() {
         super.destroy();
 
+        SceneManager.setInGame(false);
+
         InputManager.removeKeyListeners(
             KeyCode.W,
             KeyCode.A,
             KeyCode.S,
-            KeyCode.D
+            KeyCode.D,
+            KeyCode.Y
         );
+
+        RenderManager.setCameraPos(new Point2D(0, 0));
+
+        SceneManager.setInGame(false);
     }
 }

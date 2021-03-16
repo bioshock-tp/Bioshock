@@ -2,7 +2,9 @@ package org.bioshock.engine.entity;
 
 import org.bioshock.engine.components.NetworkC;
 import org.bioshock.engine.input.InputManager;
+import org.bioshock.engine.renderers.components.SimpleRendererC;
 
+import javafx.geometry.Point2D;
 import javafx.geometry.Point3D;
 import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Color;
@@ -10,6 +12,7 @@ import javafx.scene.shape.Arc;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
+import javafx.util.Pair;
 
 public class SeekerHuman extends SquareEntity {
     private Arc swatterHitbox;
@@ -17,22 +20,9 @@ public class SeekerHuman extends SquareEntity {
     private boolean isActive = false;
 
     public SeekerHuman(Point3D p, NetworkC com, Size s, int r, Color c) {
-        super(p, com, s, r, c);
+        super(p, com, new SimpleRendererC(), s, r, c);
 
-        final int speed = (int) movement.getSpeed();
-
-        InputManager.onPress(
-            KeyCode.W, () -> movement.direction(0, -speed)
-        );
-        InputManager.onPress(
-            KeyCode.A, () -> movement.direction(-speed, 0)
-        );
-        InputManager.onPress(
-            KeyCode.S, () -> movement.direction(0,  speed)
-        );
-        InputManager.onPress(
-            KeyCode.D, () -> movement.direction(speed,  0)
-        );
+        movement.initMovement();
 
         InputManager.onPress(
             KeyCode.UP, () -> {
@@ -58,28 +48,18 @@ public class SeekerHuman extends SquareEntity {
                 setActive(true);
             }
         );
-
-        InputManager.onRelease(
-            KeyCode.W, () -> movement.direction(0,  speed)
-        );
-        InputManager.onRelease(
-            KeyCode.A, () -> movement.direction(speed,  0)
-        );
-        InputManager.onRelease(
-            KeyCode.S, () -> movement.direction(0, -speed)
-        );
-        InputManager.onRelease(
-            KeyCode.D, () -> movement.direction(-speed, 0)
-        );
     }
 
     private boolean intersects(SquareEntity entity, String type) {
         Shape intersect;
         Rectangle entityHitbox = new Rectangle(
-            entity.getX(), entity.getY(), entity.getWidth(), entity.getHeight()
+            entity.getX(),
+            entity.getY(),
+            entity.getWidth(),
+            entity.getHeight()
         );
 
-        switch(type){
+        switch(type) {
             case "fov":
                 Circle fovC = new Circle(
                     getCentre().getX(),
@@ -126,4 +106,14 @@ public class SeekerHuman extends SquareEntity {
     public Arc getSwatterHitbox() { return swatterHitbox; }
 
     public boolean getIsActive() { return isActive; }
+
+    @Override
+    public Pair<Point2D, Point2D> renderArea() {
+        Point2D centre = getCentre();
+        double radius = getRadius();
+        return new Pair<>(
+                centre.subtract(radius, radius),
+                centre.add(radius, radius)
+            );
+    }
 }

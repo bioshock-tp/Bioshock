@@ -6,8 +6,10 @@ import java.util.List;
 import org.bioshock.engine.core.WindowManager;
 import org.bioshock.engine.entity.Entity;
 import org.bioshock.engine.entity.EntityManager;
+import org.bioshock.engine.entity.Size;
 import org.bioshock.engine.rendering.RenderManager;
 
+import javafx.geometry.Point2D;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.layout.Background;
@@ -15,7 +17,7 @@ import javafx.scene.layout.StackPane;
 
 
 /**
- * The base class for this games scenes
+ * The base class for this game's scenes
  */
 public abstract class GameScene extends Scene {
     /**
@@ -31,6 +33,8 @@ public abstract class GameScene extends Scene {
         WindowManager.getWindowWidth(),
         WindowManager.getWindowHeight()
     );
+
+    private static Size gameScreen = new Size(1920, 1080); //1080p 16:9
 
 
     /**
@@ -50,6 +54,7 @@ public abstract class GameScene extends Scene {
         super(pane);
         this.pane = pane;
         pane.getChildren().add(canvas);
+        scaleCanvas();
     }
 
 
@@ -85,16 +90,16 @@ public abstract class GameScene extends Scene {
      */
     public void registerEntities() {
         children.forEach(EntityManager::register);
-	}
+    }
 
     /**
      * Registers the scene's {@link #children} to the
      * {@link org.bioshock.engine.rendering.RenderManager RenderManager}
      * @see #registerEntities()
      */
-	public void renderEntities() {
+    public void renderEntities() {
         children.forEach(RenderManager::register);
-	}
+    }
 
 
     /**
@@ -104,7 +109,7 @@ public abstract class GameScene extends Scene {
      */
     public void unregisterEntities() {
         children.forEach(EntityManager::unregister);
-	}
+    }
 
 
     /**
@@ -112,9 +117,20 @@ public abstract class GameScene extends Scene {
      * {@link org.bioshock.engine.rendering.RenderManager RenderManager}
      * @see #unregisterEntities()
      */
-	public void destroyEntities() {
+    public void destroyEntities() {
         children.forEach(RenderManager::unregister);
-	}
+    }
+
+    public void scaleCanvas() {
+        RenderManager.setScale(new Point2D(
+            WindowManager.getWindowWidth() / gameScreen.getWidth(),
+            WindowManager.getWindowHeight() / gameScreen.getHeight())
+        );
+    }
+
+    public void renderTick(double timeDelta) {}
+
+    public void logicTick(double timeDelta) {}
 
 
     /**
@@ -123,7 +139,7 @@ public abstract class GameScene extends Scene {
      */
     public void setBackground(Background background) {
         pane.setBackground(background);
-	}
+    }
 
 
     /**
@@ -141,9 +157,14 @@ public abstract class GameScene extends Scene {
      * @see Canvas#getGraphicsContext2D()
      */
     public Canvas getCanvas() {
-		return canvas;
-	}
+        return canvas;
+    }
 
+
+
+     public static Size getGameScreen() {
+        return gameScreen;
+    }
 
     /**
      * Destroys the scene and unregisters the scene's {@link #children} from
@@ -154,8 +175,8 @@ public abstract class GameScene extends Scene {
      * {@link org.bioshock.engine.scene.SceneManager#setScene(GameScene)
      * SceneManager.setScene(GameScene)}
      */
-	public void destroy() {
-        unregisterEntities();
+    public void destroy() {
         destroyEntities();
-	}
+        unregisterEntities();
+    }
 }

@@ -7,15 +7,23 @@ import java.util.List;
 
 import org.bioshock.engine.core.FrameRate;
 import org.bioshock.engine.entity.Entity;
+import org.bioshock.engine.entity.EntityManager;
+import org.bioshock.engine.entity.Hider;
+import org.bioshock.engine.entity.Size;
 import org.bioshock.engine.entity.SquareEntity;
 import org.bioshock.engine.scene.SceneManager;
 import org.bioshock.main.App;
+import org.bioshock.scenes.GameScene;
 
+import javafx.geometry.Point2D;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 
 public final class RenderManager {
     private static List<Entity> entities = new ArrayList<>();
+    private static Point2D cameraPos = new Point2D(0,0);
+    private static Point2D scale = new Point2D(1.0, 1.0);
+    private static double padding = 1;
 
     private RenderManager() {}
 
@@ -23,7 +31,7 @@ public final class RenderManager {
      * A method that attempts to render every entity registered to the
      * RenderManager in Ascending Y order but cannot render if it has no canvas
      * to render entities on before rendering it sets the entire canvas to
-     * LIGHTGREY
+     * Colour.LIGHTGRAY
      */
     public static void tick() {
         Canvas canvas = SceneManager.getCanvas();
@@ -44,6 +52,16 @@ public final class RenderManager {
                 );
             }
         });
+    }
+
+    public static boolean pointInScreen(Point2D p) {
+        Size screen = GameScene.getGameScreen();
+        return !(
+            p.getX() < cameraPos.getX()
+            || p.getY() < cameraPos.getY()
+            || p.getX() > cameraPos.getX() + screen.getWidth()
+            || p.getY() > cameraPos.getY() + screen.getHeight()
+        );
     }
 
     /**
@@ -92,7 +110,70 @@ public final class RenderManager {
         entities.forEach(RenderManager::unregister);
     }
 
+    public static void clipToFOV(GraphicsContext gc) {
+        Hider player = EntityManager.getCurrentPlayer();
+        if (player != null) {
+            double x = player.getX();
+            double y = player.getY();
+            double radius = player.getRadius();
+            double width = player.getWidth();
+            double height = player.getHeight();
+
+            gc.beginPath();
+            gc.arc(
+                getRenX(x + width / 2),
+                getRenY(y + height / 2),
+                getRenWidth(radius),
+                getRenHeight(radius),
+                0,
+                360
+            );
+            gc.closePath();
+            gc.clip();
+        }
+    }
+
+    public static void moveCameraX(double x) {
+        cameraPos.add(x, 0);
+    }
+
+    public static void moveCameraY(double y) {
+        cameraPos.add(0, y);
+    }
+
     public static void updateScreenSize() {
         FrameRate.updatePosition();
+    }
+
+    public static void setCameraPos(Point2D cameraPos) {
+        RenderManager.cameraPos = cameraPos;
+    }
+
+    public static void setScale(Point2D scale) {
+        RenderManager.scale = scale;
+    }
+
+    public static Point2D getCameraPos() {
+        return cameraPos;
+    }
+
+    public static double getRenWidth(double w) {
+        return w * scale.getX() + padding;
+    }
+
+    public static double getRenX(double x) {
+        return getRenWidth(x - cameraPos.getX());
+    }
+
+    public static double getRenHeight(double h) {
+        return h * scale.getY() + padding;
+    }
+
+    public static double getRenY(double y) {
+        return getRenHeight(y - cameraPos.getY());
+    }
+
+    public static Point2D getScale() {
+        return scale;
     }
 }

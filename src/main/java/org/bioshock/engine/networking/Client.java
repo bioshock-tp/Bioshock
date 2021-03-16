@@ -9,7 +9,6 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.Semaphore;
 
-import org.bioshock.engine.networking.Message.ClientInput;
 import org.bioshock.main.App;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
@@ -21,7 +20,7 @@ public class Client extends WebSocketClient {
 
     private Semaphore mutex = new Semaphore(1);
     private Queue<Message> initialMessages = new ArrayDeque<>();
-    private Map<String, ClientInput> inputQueue = new HashMap<>(
+    private Map<String, Message> messageQueue = new HashMap<>(
         App.playerCount()
     );
     private boolean connected = false;
@@ -83,6 +82,7 @@ public class Client extends WebSocketClient {
             /* Case of lobby message */
             if (message.playerNumber > 0 && message.input == null) {
                 initialMessages.add(message);
+                App.logger.debug("Player Joined");
 
                 Object messageMutex = NetworkManager.getPlayerJoinLock();
                 synchronized(messageMutex) {
@@ -92,7 +92,7 @@ public class Client extends WebSocketClient {
 
             /* Case of input */
             else {
-                inputQueue.put(message.uuid, message.input);
+                messageQueue.put(message.uuid, message);
             }
         } catch(InterruptedException ie) {
             App.logger.error("InterruptedException");
@@ -127,9 +127,9 @@ public class Client extends WebSocketClient {
         return initialMessages;
     }
 
-	public Map<String, ClientInput> getInputQ() {
-		return inputQueue;
-	}
+    public Map<String, Message> getMessageQ() {
+        return messageQueue;
+    }
 
     public Semaphore getMutex() {
         return mutex;

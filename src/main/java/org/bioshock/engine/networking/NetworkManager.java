@@ -106,12 +106,13 @@ public class NetworkManager {
         int y = (int) me().getY();
 
         Point2D aiPos = seeker.getPosition();
+        double aiX = aiPos.getX();
+        double aiY = aiPos.getY();
 
-        Message.ClientInput input = new Message.ClientInput(
-            x, y, aiPos.getX(), aiPos.getY()
-        );
+        Message.ClientInput input = new Message.ClientInput(x, y, aiX, aiY);
 
-        return new Message(-1, myID, input);
+        /* getMe only null when NetworkManager uninitialised */
+        return new Message(-1, myID, input, me.isDead());
     }
 
     public static void tick() {
@@ -128,18 +129,19 @@ public class NetworkManager {
             Thread.currentThread().interrupt();
         }
 
-        App.logger.debug("acquired");
         for (Hider hider : playerList) {
-            App.logger.debug("message");
-            ClientInput input = client.getInputQ().get(hider.getID());
+            Message message = client.getMessageQ().getOrDefault(hider.getID(), null);
 
-            if (input == null || hider == me()) continue;
+            if (message == null || hider == me()) continue;
+            ClientInput input = message.input;
 
             if (hider == playerList.get(0)) {
                 seeker.getMovement().direction(
                     input.aiX,
                     input.aiY
                 );
+
+                loadedPlayers.get(hider.getID()).setDead(message.dead);
             }
 
             loadedPlayers.get(hider.getID()).getMovement().moveTo(
@@ -149,9 +151,9 @@ public class NetworkManager {
         }
 
         client.getMutex().release();
-	}
+    }
 
-	public static void register(SquareEntity entity) {
+    public static void register(SquareEntity entity) {
         if (entity instanceof Hider) {
             playerList.add((Hider) entity);
         }
@@ -161,22 +163,22 @@ public class NetworkManager {
         else {
             App.logger.error("Tried to register non player entity {}", entity);
         }
-	}
+    }
 
     public static void registerAll(Collection<SquareEntity> entities) {
         entities.forEach(NetworkManager::register);
-	}
+    }
 
-	public static void unregister(Entity entity) {
+    public static void unregister(Entity entity) {
         playerList.remove(entity);
         loadedPlayers.remove(entity.getID());
 
-		if (entity == seeker) seeker = null;
-	}
+        if (entity == seeker) seeker = null;
+    }
 
-	public static void unregisterAll(Collection<Entity> entities) {
+    public static void unregisterAll(Collection<Entity> entities) {
        entities.forEach(NetworkManager::unregister);
-	}
+    }
 
     public static void setKeysPressed(KeyCode key, boolean pressed) {
         keyPressed.replace(key, pressed);
@@ -190,11 +192,15 @@ public class NetworkManager {
         return me;
     }
 
-	public static String getMyID() {
-		return myID;
-	}
+    public static String getMyID() {
+        return myID;
+    }
 
     public static Object getPlayerJoinLock() {
         return awaitingPlayerLock;
+    }
+
+    public static Map<String, Hider> getLoadedPlayers() {
+        return loadedPlayers;
     }
 }

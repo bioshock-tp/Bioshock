@@ -32,8 +32,8 @@ public class App extends Application {
     private static Scene fxmlScene;
     private static boolean networked;
 
-	@Override
-	public void start(Stage stage) {
+    @Override
+    public void start(Stage stage) {
         Thread.setDefaultUncaughtExceptionHandler((thread, exception) ->
             App.logger.error(
                 "{}\n{}",
@@ -43,14 +43,14 @@ public class App extends Application {
         );
         assert(playerCount > 0);
 
-		WindowManager.initialise(stage);
-        initFXMLScene();
+        WindowManager.initialise(stage);
 
         AudioController.initialise();
-		playBackgroundMusic();
+        playBackgroundMusic();
+        initFXMLScene();
 
-		stage.setScene(fxmlScene);
-		stage.show();
+        stage.setScene(fxmlScene);
+        stage.show();
     }
 
     public static void startGame(
@@ -92,25 +92,25 @@ public class App extends Application {
                 Arrays.toString(e.getStackTrace()).replace(',', '\n')
             ); /* Necessary as GUI invocation overwrites exceptions */
         }
-	}
+    }
 
-	public void stopBackgroundMusic() {
-		AudioController.loadMusicController("background-music").stop();
-	}
+    public void stopBackgroundMusic() {
+        AudioController.loadMusicController("background-music").stop();
+    }
 
-	public void playBackgroundMusic() {
-		MusicController musicController = AudioController.loadMusicController(
+    public void playBackgroundMusic() {
+        MusicController musicController = AudioController.loadMusicController(
             "background-music"
         );
-		final MusicSettings settings = new MusicSettings();
-		settings.setVolume(0.5);
-		settings.setCycleCount(-1);
-		musicController.play(settings);
-	}
+        final MusicSettings settings = new MusicSettings();
+        settings.setVolume(0.5);
+        settings.setCycleCount(-1);
+        musicController.play(settings);
+    }
 
-	public static void setFXMLRoot(String fxml) {
-		fxmlScene.setRoot(loadFXML(fxml));
-	}
+    public static void setFXMLRoot(String fxml) {
+        fxmlScene.setRoot(loadFXML(fxml));
+    }
 
     private static void initFXMLScene() {
         fxmlScene = new Scene(loadFXML("main"));
@@ -126,7 +126,7 @@ public class App extends Application {
             exit(-1);
             return null; /* Prevents no return value warning */
         }
-	}
+    }
 
     public static void setPlayerCount(int playerCount) {
         App.playerCount = playerCount;
@@ -140,12 +140,12 @@ public class App extends Application {
         return networked;
     }
 
-	public static void exit(int code) {
+    public static void exit(int code) {
         Platform.exit();
         System.exit(code);
-	}
+    }
 
     public static void main(String[] args) {
-		launch();
-	}
+        launch();
+    }
 }

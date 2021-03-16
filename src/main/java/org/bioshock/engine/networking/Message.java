@@ -16,6 +16,7 @@ public class Message implements Serializable {
     int playerNumber;
     String uuid;
     ClientInput input;
+    boolean dead;
 
     Message() {}
 
@@ -26,10 +27,11 @@ public class Message implements Serializable {
      * @param uuid Unique ID of player sending message
      * @param input A ClientInput object containing states of player and AI
      */
-    Message(int playerNumber, String uuid, ClientInput input) {
+    Message(int playerNumber, String uuid, ClientInput input, boolean dead) {
         this.playerNumber = playerNumber;
         this.uuid = uuid;
         this.input = input;
+        this.dead = dead;
     }
 
     static class ClientInput implements Serializable {
@@ -61,9 +63,6 @@ public class Message implements Serializable {
             return String.format("ClientInput{x=%d, y=%d, aiX=%f, aiY=%f}", x, y, aiX, aiY);
         }
 
-        /**
-         * Automatically generated
-         */
         @Override
         public int hashCode() {
             final int prime = 31;
@@ -78,10 +77,6 @@ public class Message implements Serializable {
             return result;
         }
 
-        /**
-         * Automatically generated, checks if fields are same, if not
-         * identical reference
-         */
         @Override
         public boolean equals(Object obj) {
             if (this == obj)
@@ -104,11 +99,11 @@ public class Message implements Serializable {
     }
 
     static Message inLobby(int playerNumber, String uuid) {
-        return new Message(playerNumber, uuid, null);
+        return new Message(playerNumber, uuid, null, false);
     }
 
-    static Message sendInputState(String uuid, ClientInput input) {
-        return new Message(-1, uuid, input);
+    static Message sendInputState(String uuid, ClientInput input, boolean dead) {
+        return new Message(-1, uuid, input, dead);
     }
 
     public static String serialise(Message message) {
@@ -149,16 +144,14 @@ public class Message implements Serializable {
     @Override
     public String toString() {
         return String.format(
-            "Message{Player Number %d, UUID %s, %s}",
+            "Message{Player Number %d, UUID %s, %s, %b}",
             playerNumber,
             uuid,
-            input
+            input,
+            dead
         );
     }
 
-    /**
-     * Automatically generated
-     */
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -169,10 +162,6 @@ public class Message implements Serializable {
         return result;
     }
 
-    /**
-     * Automatically generated, checks if fields are same, if not
-     * identical reference
-     */
     @Override
     public boolean equals(Object obj) {
         if (this == obj)

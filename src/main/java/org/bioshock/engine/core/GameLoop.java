@@ -8,28 +8,34 @@ import org.bioshock.engine.scene.SceneManager;
 import javafx.animation.AnimationTimer;
 
 public final class GameLoop extends AnimationTimer {
-    private static final int LOGICRATE = 60;
+    private static final double LOGICRATE = 60;
 
-	private long prev = 0;
-    private long lastUpdate = 0;
+    private long prev = 0;
+    private long lastLogicTick = 0;
 
-	@Override
-	public void handle(long now) {
-		long nanoSDelta = now - prev;
-		double sDelta = nanoSDelta / 10e9;
-
-        if (SceneManager.inGame()) {
-            RenderManager.tick();
-            FrameRate.tick(now);
-
-            if (now - lastUpdate >= LOGICRATE) {
-                NetworkManager.tick();
-                EntityManager.tick(sDelta);
-
-                lastUpdate = now;
-            }
+    @Override
+    public void handle(long now) {
+        if (!SceneManager.inGame()) {
+            prev = now;
+            lastLogicTick = now;
+            return;
         }
-        
-		prev = now;
-	}
+
+        double sDelta = (now - prev) / 1e9;
+
+        double tickDelta = (now - lastLogicTick) / 1e9;
+        if (tickDelta * 1e9 >= 1 / LOGICRATE) {
+            NetworkManager.tick();
+            EntityManager.tick(tickDelta);
+            SceneManager.getScene().logicTick(tickDelta);
+
+            lastLogicTick = now;
+        }
+
+        SceneManager.getScene().renderTick(sDelta);
+        RenderManager.tick();
+        FrameRate.tick(now);
+
+        prev = now;
+    }
 }

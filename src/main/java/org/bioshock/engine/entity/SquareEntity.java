@@ -1,8 +1,8 @@
 package org.bioshock.engine.entity;
 
 import org.bioshock.engine.components.NetworkC;
+import org.bioshock.engine.components.RendererC;
 import org.bioshock.engine.physics.Movement;
-import org.bioshock.engine.renderers.components.SquareEntityRendererC;
 
 import javafx.geometry.Point3D;
 import javafx.scene.paint.Color;
@@ -18,15 +18,23 @@ public abstract class SquareEntity extends Entity {
     protected Size size;
     protected Circle fov;
 
-    private SquareEntity(Point3D p, Rectangle h, NetworkC com) {
-        super(p, h, com, new SquareEntityRendererC());
+    private SquareEntity(Point3D p, Rectangle h, NetworkC nC, RendererC rC) {
+        super(p, h, nC, rC);
     }
 
-    protected SquareEntity(Point3D p, NetworkC com, Size s, int r, Color c) {
+    protected SquareEntity(
+        Point3D p,
+        NetworkC nCom,
+        RendererC rCom,
+        Size s,
+        int r,
+        Color c
+    ) {
         this(
             p,
             new Rectangle(p.getX(), p.getY(), s.getWidth(), s.getHeight()),
-            com
+            nCom,
+            rCom
         );
 
         rendererC.setColour(c);
@@ -49,27 +57,27 @@ public abstract class SquareEntity extends Entity {
     }
 
     public void setSize(Size size) {
-		this.size = size;
-	}
+        this.size = size;
+    }
 
     public Point getCentre() {
-		return new Point(getX() + getWidth() / 2, getY() + getHeight() / 2);
-	}
+        return new Point(getX() + getWidth() / 2, getY() + getHeight() / 2);
+    }
 
     public Size getSize() {
-		return size;
-	}
+        return size;
+    }
 
-	public double getWidth() {
-		return size.getWidth();
-	}
+    public double getWidth() {
+        return size.getWidth();
+    }
 
-	public double getHeight() {
-		return size.getHeight();
-	}
+    public double getHeight() {
+        return size.getHeight();
+    }
 
     public double getRadius() {
-    	return fov.getRadius();
+        return fov.getRadius();
     }
 
     public Rotate getRotate() {
@@ -77,6 +85,6 @@ public abstract class SquareEntity extends Entity {
     }
 
     public Movement getMovement() {
-		return movement;
-	}
+        return movement;
+    }
 }

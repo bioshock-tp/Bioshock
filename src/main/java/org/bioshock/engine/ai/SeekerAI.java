@@ -6,7 +6,9 @@ import org.bioshock.engine.entity.Hider;
 import org.bioshock.engine.entity.Size;
 import org.bioshock.engine.entity.SquareEntity;
 import org.bioshock.engine.renderers.SeekerRenderer;
+import org.bioshock.engine.renderers.components.SimpleRendererC;
 
+import javafx.geometry.Point2D;
 import javafx.geometry.Point3D;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Arc;
@@ -14,6 +16,7 @@ import javafx.scene.shape.ArcType;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
+import javafx.util.Pair;
 
 public class SeekerAI extends SquareEntity {
     private Hider target;
@@ -22,15 +25,19 @@ public class SeekerAI extends SquareEntity {
     private boolean isActive = false;
 
     public SeekerAI(Point3D p, NetworkC com, Size s, int r, Color c, Hider e) {
-        super(p, com, s, r, c);
+        super(p, com, new SimpleRendererC(), s, r, c);
 
         target = e;
 
-        movement.setSpeed(2.5);
+        movement.setSpeed(movement.getSpeed() / 2);
 
         renderer = SeekerRenderer.class;
 
-        swatterHitbox = new Arc(getCentre().getX(), getCentre().getY(), 150,150,30, 120);
+        swatterHitbox = new Arc(
+            getCentre().getX(),
+            getCentre().getY(),
+            50, 50, 30, 120
+        );
         swatterHitbox.setType(ArcType.ROUND);
     }
 
@@ -40,7 +47,7 @@ public class SeekerAI extends SquareEntity {
             entity.getX(), entity.getY(), entity.getWidth(), entity.getHeight()
         );
 
-        switch(type){
+        switch(type) {
             case "fov":
                 Circle fovC = new Circle(
                     getCentre().getX(),
@@ -60,17 +67,18 @@ public class SeekerAI extends SquareEntity {
         return intersect.getBoundsInLocal().getWidth() != -1;
     }
 
-	protected void tick(double timeDelta) {
+    protected void tick(double timeDelta) {
         doActions();
         setSwatterPos();
         setSwatterRot();
-	}
+    }
 
     public void doActions() {
         EntityManager.getPlayers().forEach(entity -> {
             if (
                 EntityManager.isManaged(this, entity)
                 && intersects(entity, "swatter")
+                && !entity.isDead()
             ) {
                 setActive(true);
                 entity.setDead(true);
@@ -79,9 +87,11 @@ public class SeekerAI extends SquareEntity {
             if (
                 EntityManager.isManaged(this, entity)
                 && intersects(entity, "fov")
+                && !entity.isDead()
             ) {
                 target = entity;
-                movement.move(target.getPosition().subtract(this.getPosition()));
+                movement.move(target.getPosition().subtract(getPosition()));
+
             }
         });
     }
@@ -93,14 +103,26 @@ public class SeekerAI extends SquareEntity {
         swatterHitbox.setCenterY(getCentre().getY());
     }
 
-    public void setSwatterRot(){
-        double r = movement.getFacingRotate(target.getPosition().subtract(this.getPosition()));
+    public void setSwatterRot() {
+        double r = movement.getFacingRotate(
+            target.getPosition().subtract(getPosition())
+        );
         swatterHitbox.setStartAngle(390-r);
     }
 
-	public Arc getSwatterHitbox() { return swatterHitbox; }
+    public Arc getSwatterHitbox() { return swatterHitbox; }
 
     public SquareEntity getTarget() { return target; }
 
     public boolean getIsActive() { return isActive; }
+
+    @Override
+    public Pair<Point2D, Point2D> renderArea() {
+        Point2D centre = getCentre();
+        double radius = getRadius();
+        return new Pair<>(
+            centre.subtract(radius, radius),
+            centre.add(radius, radius)
+        );
+    }
 }

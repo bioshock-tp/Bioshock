@@ -1,24 +1,26 @@
 package org.bioshock.engine.renderers;
 
+import static org.bioshock.engine.rendering.RenderManager.getRenHeight;
+import static org.bioshock.engine.rendering.RenderManager.getRenWidth;
+import static org.bioshock.engine.rendering.RenderManager.getRenX;
+import static org.bioshock.engine.rendering.RenderManager.getRenY;
+
+import org.bioshock.engine.ai.SeekerAI;
+import org.bioshock.engine.rendering.RenderManager;
+
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Arc;
 import javafx.scene.transform.Rotate;
-import org.bioshock.engine.ai.SeekerAI;
-import org.bioshock.engine.entity.SquareEntity;
 
 public class SeekerRenderer implements Renderer {
     private SeekerRenderer() {}
 
-    public static <E extends SquareEntity> void render(
-            GraphicsContext gc,
-            E entity
-    ) {
-        SeekerAI seeker = (SeekerAI) entity;
+    public static <E extends SeekerAI> void render(GraphicsContext gc, E ent) {
+        SeekerAI seeker = ent;
 
         double x = seeker.getX();
         double y = seeker.getY();
-        double radius = seeker.getRadius();
         double width = seeker.getWidth();
         double height = seeker.getHeight();
         Arc swatter = seeker.getSwatterHitbox();
@@ -26,24 +28,36 @@ public class SeekerRenderer implements Renderer {
 
         gc.save();
 
+        RenderManager.clipToFOV(gc);
         Rotate r = seeker.getRotate();
         gc.setTransform(
-                r.getMxx(), r.getMyx(), r.getMxy(),
-                r.getMyy(), r.getTx(), r.getTy()
+            r.getMxx(), r.getMyx(), r.getMxy(),
+            r.getMyy(), r.getTx(), r.getTy()
         );
         gc.setFill(seeker.getRendererC().getColour());
-        gc.fillRect(x, y, width, height);
+        gc.fillRect(
+            getRenX(x),
+            getRenY(y),
+            getRenWidth(width),
+            getRenHeight(height)
+        );
         gc.setLineWidth(10);
         gc.setStroke(seeker.getRendererC().getColour());
-        gc.strokeOval(
-                x - radius + width / 2,
-                y - radius + height / 2,
-                radius * 2, radius * 2
-        );
+
+        gc.setLineWidth(10);
+        gc.setStroke(seeker.getRendererC().getColour());
 
         if(isActive){
-            //put animation here instead of gc.fillArc
-            gc.fillArc(swatter.getCenterX() - swatter.getRadiusX(), swatter.getCenterY() - swatter.getRadiusY(), swatter.getRadiusX()*2,swatter.getRadiusY()*2, swatter.getStartAngle(), swatter.getLength(), swatter.getType());
+            // TODO: put animation here instead of gc.fillArc
+            gc.fillArc(
+                getRenX(swatter.getCenterX() - swatter.getRadiusX()),
+                getRenY(swatter.getCenterY() - swatter.getRadiusY()),
+                getRenWidth(swatter.getRadiusX()*2),
+                getRenHeight(swatter.getRadiusY()*2),
+                swatter.getStartAngle(),
+                swatter.getLength(),
+                swatter.getType()
+            );
 
             seeker.setActive(false);
         }
