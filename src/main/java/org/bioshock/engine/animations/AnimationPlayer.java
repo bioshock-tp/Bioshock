@@ -37,7 +37,7 @@ public class AnimationPlayer {
         GraphicsContext gc = canvas.getGraphicsContext2D();
         int numberOfFrames = imgs.length;
         int index = findCurrentFrame(time, numberOfFrames, speed);
-        gc.drawImage(imgs[index], x, y, w, h);
+        gc.drawImage(imgs[index], x, y, RenderManager.getRenWidth(w), RenderManager.getRenHeight(h));
     }
 
     public static void playAnimation(GraphicsContext gc, double time, int actualSize, int startingPointX, int startingPointY, int numberOfFrames, double x, double y, double width, double height, double scale, boolean reversePlay, double playSpeed) {
