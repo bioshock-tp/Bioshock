@@ -4,6 +4,7 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import org.bioshock.engine.core.GameLoop;
+import org.bioshock.engine.rendering.RenderManager;
 import org.bioshock.engine.scene.SceneManager;
 import org.bioshock.utils.ImageUtils;
 
@@ -51,7 +52,7 @@ public class AnimationPlayer {
         // newY represents the X coordinate of image in the sprite-sheet image to be drawn on screen
         int newSpriteSheetY = reversePlay ? startingPointY : startingPointY + index * actualSize;
 
-        gc.drawImage(img, newSpriteSheetX, newSpriteSheetY, width, height, x, y, width * scale, height * scale);
+        gc.drawImage(img, newSpriteSheetX, newSpriteSheetY, width, height, x, y, RenderManager.getRenWidth(width * scale), RenderManager.getRenHeight(height * scale));
     }
 
     private static int findCurrentFrame(double time, int totalFrames, double speed) {
