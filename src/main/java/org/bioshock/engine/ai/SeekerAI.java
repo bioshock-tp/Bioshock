@@ -2,6 +2,7 @@ package org.bioshock.engine.ai;
 
 
 import javafx.geometry.Point2D;
+import javafx.scene.shape.*;
 import org.bioshock.engine.components.NetworkC;
 import org.bioshock.engine.core.WindowManager;
 import org.bioshock.engine.entity.*;
@@ -9,11 +10,7 @@ import org.bioshock.engine.renderers.SeekerRenderer;
 
 import javafx.geometry.Point3D;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Arc;
-import javafx.scene.shape.ArcType;
-import javafx.scene.shape.Circle;
-import javafx.scene.shape.Rectangle;
-import javafx.scene.shape.Shape;
+import org.bioshock.entities.TexRectEntity;
 import org.bioshock.entities.map.Room;
 import org.bioshock.entities.map.ThreeByThreeMap;
 import org.bioshock.main.App;
@@ -56,6 +53,7 @@ public class SeekerAI extends SquareEntity {
 
     private boolean intersects(SquareEntity entity, String type) {
         Shape intersect;
+        //Rectangle entityHitbox = entity.getHitbox();
         Rectangle entityHitbox = new Rectangle(
             entity.getX(), entity.getY(), entity.getWidth(), entity.getHeight()
         );
@@ -91,19 +89,43 @@ public class SeekerAI extends SquareEntity {
             ) {
                 setActive(true);
                 entity.setDead(true);
-                rendererC.setColor(Color.GREEN);
             }
             if (
                     EntityManager.isManaged(this, entity)
                             && intersects(entity, "fov")
             ) {
-                target = entity;
-                chasePlayer(target);
+                if(checkLineOfSight(entity)){
+                    rendererC.setColor(Color.ORANGE);
+                    target = entity;
+                    chasePlayer(target);
+                }
             }
         });
         if(isSearching){
             search();
         }
+    }
+
+    private boolean checkLineOfSight(SquareEntity entity) {
+
+        Rectangle wallHitbox;
+
+        Line line = new Line(getCentre().getX(), getCentre().getY(), entity.getCentre().getX(), entity.getCentre().getY());
+
+        List<Room> roomsToCheck = new ArrayList<>();
+        roomsToCheck.add(currentRoom);
+        roomsToCheck.add(findCurrentRoom(entity));
+
+        for(Room room : roomsToCheck){
+            for(TexRectEntity wall : room.getWalls()){
+                wallHitbox = new Rectangle(wall.getX(), wall.getY(), wall.getWidth(), wall.getHeight());
+                wallHitbox.getTransforms().add(wall.getRotate());
+                if (Shape.intersect(line, wallHitbox).getBoundsInLocal().getWidth() != -1){
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     public void search(){
