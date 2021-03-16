@@ -10,20 +10,20 @@ import javafx.animation.AnimationTimer;
 public final class GameLoop extends AnimationTimer {
     private static final double LOGICRATE = 60;
 
-	private long prev = 0;
-    private long lastUpdate = 0;
+    private long prev = 0;
+    private long lastLogicTick = 0;
 
 	@Override
 	public void handle(long now) {
-		long nanoSDelta = now - prev;
-		double sDelta = nanoSDelta / 1e9;
+		double sDelta = (now - prev) / 1e9;
 
-        if (now - lastUpdate >= LOGICRATE) {
+        double tickDelta = (now - lastLogicTick) / 1e9;
+        if (tickDelta * 1e9 >= 1 / LOGICRATE) {
             NetworkManager.tick();
-            EntityManager.tick(sDelta);
-            SceneManager.getScene().logicTick(sDelta);
+            EntityManager.tick(tickDelta);
+            SceneManager.getScene().logicTick(tickDelta);
 
-            lastUpdate = now;
+            lastLogicTick = now;
         }
 
         SceneManager.getScene().renderTick(sDelta);
