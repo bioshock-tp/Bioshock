@@ -41,24 +41,12 @@ public class Movement {
 
         if (x != target.getX()) {
             double disp = target.getX() - x;
-            if ((x < target.getX() && (x + disp / Math.abs(disp) * speed) > target.getX())
-                    || (x > target.getX() && (x + disp / Math.abs(disp) * speed) < target.getX())) {
-                x = target.getX();
-            }
-            else {
-                x += disp / Math.abs(disp) * speed;
-            }            
+            x += disp / Math.abs(disp) * speed;                
         }
 
         if (y != target.getY()) {
-            double disp = target.getY() - y;
-            if ((y < target.getY() && (y + disp / Math.abs(disp) * speed) > target.getY())
-                    || (y > target.getY() && (y + disp / Math.abs(disp) * speed) < target.getY())) {
-                y = target.getY();
-            }
-            else {
-                y += disp / Math.abs(disp) * speed;
-            }               
+            double disp = target.getY() - y;            
+            y += disp / Math.abs(disp) * speed;                       
         }
 
         double oldX = entity.getX();
