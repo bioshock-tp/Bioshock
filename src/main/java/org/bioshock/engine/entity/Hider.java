@@ -97,6 +97,7 @@ public class Hider extends SquareEntity {
 
     public void setDead(boolean d) {
         dead = d;
+        setCurrentSprite(playerAnimations.getPlayerDying());
     }
 
     public boolean isDead() {
