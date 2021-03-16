@@ -62,7 +62,7 @@ public class MainGame extends GameScene {
         Hider hider = new Hider(
             new Point3D(x, y, 0.5),
             new NetworkC(true),
-            new Size(40, 40),
+            new Size(54, 61),
             300,
             Color.PINK
         );
