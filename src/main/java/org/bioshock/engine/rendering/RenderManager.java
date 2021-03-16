@@ -47,13 +47,13 @@ public final class RenderManager {
                     rend.invoke(null, gc, entity);
                 }catch (InvocationTargetException e) {
                 	App.logger.error(
-                            "Render function for {} threw an exception",
-                            entity.getRenderer()
+                            "Render function for {} threw an exception {}",
+                            entity.getRenderer(), e
                         );
                 }catch (Exception e) {
                     App.logger.error(
-                        "Render function not defined for {}",
-                        entity.getRenderer()
+                        "Render function not defined for {} \n {}",
+                        entity.getRenderer(), e
                     );
                 }
 			}
@@ -163,24 +163,24 @@ public final class RenderManager {
 	}
 	
 	public static void clipToFOV(GraphicsContext gc) {
-		Hider player = EntityManager.getCurrentPlayer();
-		if (player != null) {
-			double x = player.getX();
-	        double y = player.getY();
-	        double radius = player.getRadius();
-	        double width = player.getWidth();
-	        double height = player.getHeight();
-			
-			gc.beginPath();
-	    	gc.arc(getRenX(x + width / 2),
-	        		getRenY(y + height / 2),
-	        		getRenWidth(radius), 
-	        		getRenHeight(radius), 
-	        		0, 360);
-//	    	gc.rect(0, 0, gc.getCanvas().getWidth()/2, gc.getCanvas().getHeight()/2);
-	        gc.closePath();
-	        gc.clip();
-		}
+//		Hider player = EntityManager.getCurrentPlayer();
+//		if (player != null) {
+//			double x = player.getX();
+//	        double y = player.getY();
+//	        double radius = player.getRadius();
+//	        double width = player.getWidth();
+//	        double height = player.getHeight();
+//			
+//			gc.beginPath();
+//	    	gc.arc(getRenX(x + width / 2),
+//	        		getRenY(y + height / 2),
+//	        		getRenWidth(radius), 
+//	        		getRenHeight(radius), 
+//	        		0, 360);
+////	    	gc.rect(0, 0, gc.getCanvas().getWidth()/2, gc.getCanvas().getHeight()/2);
+//	        gc.closePath();
+//	        gc.clip();
+//		}
 		
 	}
 }

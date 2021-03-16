@@ -12,13 +12,15 @@ public final class GameLoop extends AnimationTimer {
 
 	private long prev = 0;
     private long lastUpdate = 0;
+    final static double startNanoTime = System.nanoTime();
+    static double currentGameTime;
 
 	@Override
 	public void handle(long now) {
 		long nanoSDelta = now - prev;
-		double sDelta = nanoSDelta / 10e9;
+        double sDelta = nanoSDelta / 1e9;
+        currentGameTime = (now - startNanoTime) / 1e9;
         RenderManager.tick();
-        
 
         if (now - lastUpdate >= LOGICRATE) {
             NetworkManager.tick();
@@ -32,4 +34,9 @@ public final class GameLoop extends AnimationTimer {
         
 		prev = now;
 	}
+
+	public static double getCurrentGameTime() {
+        return currentGameTime;
+    }
+
 }
