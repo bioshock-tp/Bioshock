@@ -19,7 +19,7 @@ public class AnimationPlayer {
     }
 
     public static void playAnimation(Sprite sprite, double x, double y) {
-        double time = GameLoop.getSDelta();
+        double time = GameLoop.getCurrentGameTime();
         Canvas canvas = SceneManager.getCanvas();
         GraphicsContext gc = canvas.getGraphicsContext2D();
         if (sprite.hasValidSpriteImages) {
@@ -32,7 +32,7 @@ public class AnimationPlayer {
     }
 
     public static void playAnimation(Image[] imgs, double speed, double x, double y, double w, double h) {
-        double time = GameLoop.getSDelta();
+        double time = GameLoop.getCurrentGameTime();
         Canvas canvas = SceneManager.getCanvas();
         GraphicsContext gc = canvas.getGraphicsContext2D();
         int numberOfFrames = imgs.length;
