@@ -3,8 +3,8 @@ package org.bioshock.engine.components;
 import javafx.scene.paint.Color;
 
 public interface RendererC {
-    public void setZ(double newY);
-    public void setColor(Color newColor);
+    public void setZ(double newZ);
+    public void setColour(Color newColour);
 	public double getZ();
-	public Color getColor();
+	public Color getColour();
 }

@@ -25,10 +25,10 @@ public final class SwatterRenderer implements Renderer {
             r.getMxx(), r.getMyx(), r.getMxy(),
             r.getMyy(), r.getTx(), r.getTy()
         );
-        gc.setFill(swatter.getRendererC().getColor());
+        gc.setFill(swatter.getRendererC().getColour());
         gc.fillRect(x, y, width, height);
         gc.setLineWidth(10);
-        gc.setStroke(swatter.getRendererC().getColor());
+        gc.setStroke(swatter.getRendererC().getColour());
 
         gc.restore();
     }

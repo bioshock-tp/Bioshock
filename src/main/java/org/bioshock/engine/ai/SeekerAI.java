@@ -74,7 +74,7 @@ public class SeekerAI extends SquareEntity {
             ) {
                 setActive(true);
                 entity.setDead(true);
-                rendererC.setColor(Color.GREEN);
+                rendererC.setColour(Color.GREEN);
             }
             if (
                 EntityManager.isManaged(this, entity)

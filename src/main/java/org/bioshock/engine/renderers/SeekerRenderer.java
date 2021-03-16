@@ -31,10 +31,10 @@ public class SeekerRenderer implements Renderer {
                 r.getMxx(), r.getMyx(), r.getMxy(),
                 r.getMyy(), r.getTx(), r.getTy()
         );
-        gc.setFill(seeker.getRendererC().getColor());
+        gc.setFill(seeker.getRendererC().getColour());
         gc.fillRect(x, y, width, height);
         gc.setLineWidth(10);
-        gc.setStroke(seeker.getRendererC().getColor());
+        gc.setStroke(seeker.getRendererC().getColour());
         gc.strokeOval(
                 x - radius + width / 2,
                 y - radius + height / 2,
@@ -50,6 +50,6 @@ public class SeekerRenderer implements Renderer {
 
         gc.restore();
 
-        seeker.getRendererC().setColor(Color.INDIANRED);
+        seeker.getRendererC().setColour(Color.INDIANRED);
     }
 }

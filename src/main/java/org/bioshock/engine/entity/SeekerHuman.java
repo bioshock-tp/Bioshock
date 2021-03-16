@@ -111,7 +111,7 @@ public class SeekerHuman extends SquareEntity {
                 && getIsActive()
             ) {
                 player.setDead(true);
-                rendererC.setColor(Color.GREEN);
+                rendererC.setColour(Color.GREEN);
             }
         });
     }

@@ -25,10 +25,10 @@ public final class PlayerRenderer implements Renderer {
             r.getMxx(), r.getMyx(), r.getMxy(),
             r.getMyy(), r.getTx(), r.getTy()
         );
-        gc.setFill(player.getRendererC().getColor());
+        gc.setFill(player.getRendererC().getColour());
         gc.fillRect(x, y, width, height);
         gc.setLineWidth(10);
-        gc.setStroke(player.getRendererC().getColor());
+        gc.setStroke(player.getRendererC().getColour());
         gc.strokeOval(
             x - radius + width / 2,
             y - radius + height / 2,

@@ -21,7 +21,7 @@ public class SquareRenderer implements Renderer {
 
         Rotate r = rect.getRotate();
         gc.setTransform(r.getMxx(), r.getMyx(), r.getMxy(), r.getMyy(), r.getTx(), r.getTy());
-        gc.setFill(rect.getRendererC().getColor());
+        gc.setFill(rect.getRendererC().getColour());
         gc.fillRect(x, y, width, height);
 
         gc.restore();

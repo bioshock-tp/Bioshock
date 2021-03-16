@@ -29,7 +29,7 @@ public abstract class SquareEntity extends Entity {
             com
         );
 
-        rendererC.setColor(c);
+        rendererC.setColour(c);
 
         size = s;
 

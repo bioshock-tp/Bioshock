@@ -5,8 +5,15 @@ import org.bioshock.engine.components.RendererC;
 import javafx.scene.paint.Color;
 
 public class SquareEntityRendererC implements RendererC {
+    /**
+     * The order in which this {@code Entity} should be rendered
+     */
 	private double z;
-	private Color color;
+
+    /**
+     * The colour of this {@code Entity}
+     */
+	private Color colour;
 
 	public double getZ() {
 		return this.z;
@@ -16,11 +23,11 @@ public class SquareEntityRendererC implements RendererC {
 		this.z = newZ;
 	}
 
-	public Color getColor() {
-		return this.color;
+	public Color getColour() {
+		return this.colour;
 	}
 
-	public void setColor(Color newColor) {
-		this.color = newColor;
+	public void setColour(Color newColor) {
+		this.colour = newColor;
 	}
 }
