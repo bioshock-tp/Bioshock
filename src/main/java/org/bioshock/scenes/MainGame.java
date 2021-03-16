@@ -26,29 +26,34 @@ import javafx.scene.layout.BackgroundFill;
 import javafx.scene.paint.Color;
 
 public class MainGame extends GameScene {
-	private boolean cameraLock = true;
-	private double runningTime = 0.0;
-	private static final double endTime = 2*60 + 3; 
-	private Label timer;
+    private static final double ENDTIME = 2 * 60f + 3;
+    private static final double LOSEDELAY = 5;
 
-	public MainGame() {
-		super();
+    private boolean cameraLock = true;
+    private double runningTime = 0;
+    private boolean losing = false;
+    private double timeLosing = 0;
 
-		setCursor(Cursor.HAND);
-		setBackground(new Background(new BackgroundFill(
+    private Label timer;
+
+    public MainGame() {
+        super();
+
+        setCursor(Cursor.HAND);
+        setBackground(new Background(new BackgroundFill(
             Color.LIGHTGRAY,
             null,
             null
         )));
 
-		ThreeByThreeMap map = new ThreeByThreeMap(
+        ThreeByThreeMap map = new ThreeByThreeMap(
             new Point3D(100, 100, 0),
             10,
             new Size(300, 600),
             new Size(90, 90),
             Color.SADDLEBROWN
         );
-		children.addAll(map.getWalls());
+        children.addAll(map.getWalls());
 
         List<Room> rooms = map.getRooms();
 
@@ -80,10 +85,10 @@ public class MainGame extends GameScene {
             ));
         }
 
-		double centreX = rooms.get(rooms.size() / 2).getRoomCenter().getX();
-		double centreY = rooms.get(rooms.size() / 2).getRoomCenter().getY();
+        double centreX = rooms.get(rooms.size() / 2).getRoomCenter().getX();
+        double centreY = rooms.get(rooms.size() / 2).getRoomCenter().getY();
 
-		SeekerAI seeker = new SeekerAI(
+        SeekerAI seeker = new SeekerAI(
             new Point3D(centreX, centreY, 0.25),
             new NetworkC(true),
             new Size(40, 40),
@@ -92,20 +97,21 @@ public class MainGame extends GameScene {
             hider
         );
 
-		children.add(seeker);
+        children.add(seeker);
 
-		Size timerSize = new Size(100, 100);
-		timer = new Label("mm:ss.ms");
-		timer.setStyle("-fx-font: 20 arial; -fx-text-fill: black;");
-		timer.setPrefSize(timerSize.getWidth(), timerSize.getHeight());
-		timer.setTranslateX(-timerSize.getWidth()/2);
-		timer.setTranslateY(-WindowManager.getWindowHeight()/2 + timerSize.getHeight()/2);
-		getPane().getChildren().add(timer);
+        Size timerSize = new Size(100, 100);
+        timer = new Label("mm:ss.ms");
+        timer.setStyle("-fx-font: 20 arial; -fx-text-fill: black;");
+        timer.setPrefSize(timerSize.getWidth(), timerSize.getHeight());
+        timer.setTranslateX(-timerSize.getWidth()/2);
+        timer.setTranslateY(
+            -WindowManager.getWindowHeight() / 2 + timerSize.getHeight() / 2
+        );
+        getPane().getChildren().add(timer);
 
-		InputManager.onRelease(KeyCode.Y,
-			() ->	{cameraLock = !cameraLock;});
+        InputManager.onRelease(KeyCode.Y, () ->	cameraLock = !cameraLock);
 
-	}
+    }
 
     @Override
     public void initScene() {
@@ -124,51 +130,50 @@ public class MainGame extends GameScene {
         }
     }
 
-	@Override
-	public void renderTick(double timeDelta) {
-		if(SceneManager.isGameStarted()) {
-			if(cameraLock) {
-				Hider meObj = EntityManager.getCurrentPlayer();
-	
-				if (meObj != null) {
-					RenderManager.setCameraPos(meObj.getCentre().subtract(
-	                    getGameScreen().getWidth()/2,
-	                    getGameScreen().getHeight()/2)
-	                );
-				}
-			}
-			
-			double timeLeft = endTime - runningTime;
-			int numMins = (int) timeLeft/60;
-			timer.setText(String.format("%d:%.2f", numMins, timeLeft - numMins*60));
-		}
-	}
-	
-	@Override
-	public void logicTick(double timeDelta) {
-		boolean allDead = false;
-		
-		if(SceneManager.isGameStarted() && (!App.isNetworked() || NetworkManager.isInGame())) {
-			runningTime += timeDelta;
-			
-			if (runningTime >= endTime) {
-				SceneManager.setScene(new WinScreen());
-			}
-			
-			for (Hider h:EntityManager.getPlayers()) {
-				allDead = true;
-				if (!h.isDead()) {
-					allDead = false;
-				}
-			}
-			
-			if (allDead) {
-				SceneManager.setScene(new LoseScreen());
-			}
-			
-			
-		}
-	}
+    @Override
+    public void renderTick(double timeDelta) {
+        if(SceneManager.isGameStarted()) {
+            if(cameraLock) {
+                Hider meObj = EntityManager.getCurrentPlayer();
+
+                if (meObj != null) {
+                    RenderManager.setCameraPos(meObj.getCentre().subtract(
+                        getGameScreen().getWidth()/2,
+                        getGameScreen().getHeight()/2)
+                    );
+                }
+            }
+
+            double timeLeft = ENDTIME - runningTime;
+            int numMins = (int) timeLeft/60;
+            timer.setText(String.format("%d:%.2f", numMins, timeLeft - numMins*60));
+        }
+    }
+
+    @Override
+    public void logicTick(double timeDelta) {
+        if(!losing &&
+                SceneManager.isGameStarted() &&
+                (!App.isNetworked() || NetworkManager.isInGame())) {
+            runningTime += timeDelta;
+
+            if (runningTime >= ENDTIME) {
+                SceneManager.setScene(new WinScreen());
+                return;
+            }
+
+            if (!EntityManager.getPlayers().isEmpty()
+                    && EntityManager.getPlayers().stream().allMatch(Hider::isDead)) {
+                losing = true;
+            }
+        }
+        else if (losing) {
+            timeLosing += timeDelta;
+            if (timeLosing >= LOSEDELAY) {
+                SceneManager.setScene(new LoseScreen());
+            }
+        }
+    }
 
     @Override
     public void destroy() {
@@ -181,7 +186,7 @@ public class MainGame extends GameScene {
         );
 
         RenderManager.setCameraPos(new Point2D(0, 0));
-        
+
         SceneManager.setGameStarted(false);
     }
 }

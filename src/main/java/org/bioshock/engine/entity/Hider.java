@@ -4,7 +4,6 @@ import org.bioshock.engine.components.NetworkC;
 import org.bioshock.engine.input.InputManager;
 import org.bioshock.engine.renderers.PlayerRenderer;
 import org.bioshock.engine.renderers.components.PlayerRendererC;
-import org.bioshock.main.App;
 
 import javafx.geometry.Point2D;
 import javafx.geometry.Point3D;
@@ -16,9 +15,7 @@ public class Hider extends SquareEntity {
     private boolean dead = false;
 
     public Hider(Point3D p, NetworkC com, Size s, int r, Color c) {
-    	super(p, com, new PlayerRendererC(), s, r, c);
-
-        ((PlayerRendererC) rendererC).setOriginalColour(c);
+        super(p, com, new PlayerRendererC(), s, r, c);
 
         renderer = PlayerRenderer.class;
     }
@@ -53,42 +50,29 @@ public class Hider extends SquareEntity {
         );
     }
 
-	protected void tick(double timeDelta) {
+    protected void tick(double timeDelta) {
         movement.tick(timeDelta);
-	}
+    }
 
     public void setDead(boolean d) {
         dead = d;
 
         if (dead) {
             rendererC.setColor(Color.GREY);
-
-            new Thread(() -> {
-                try {
-                    Thread.sleep(5000);
-                    App.logger.debug("Revived PogU");
-                    setDead(false);
-                } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();;
-                }
-
-            }).start();
-        } else {
-            ((PlayerRendererC) rendererC).revertColour();
         }
     }
 
     public boolean isDead() {
         return dead;
     }
-    
+
     @Override
     public Pair<Point2D, Point2D> renderArea() {
-    	Point2D centre = getCentre();
-    	double radius = getRadius();
-    	return new Pair<Point2D, Point2D>(
-    			centre.subtract(radius, radius),
-    			centre.add(radius, radius)
-			);
+        Point2D centre = getCentre();
+        double radius = getRadius();
+        return new Pair<>(
+            centre.subtract(radius, radius),
+            centre.add(radius, radius)
+        );
     }
 }

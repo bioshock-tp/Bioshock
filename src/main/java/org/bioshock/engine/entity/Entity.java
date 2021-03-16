@@ -1,5 +1,7 @@
 package org.bioshock.engine.entity;
 
+import java.util.UUID;
+
 import org.bioshock.engine.components.NetworkC;
 import org.bioshock.engine.components.RendererC;
 import org.bioshock.engine.renderers.Renderer;
@@ -16,7 +18,7 @@ public abstract class Entity {
     protected Point position;
     protected Rectangle hitbox;
 
-    protected String uuid = java.util.UUID.randomUUID().toString();
+    protected String uuid = UUID.randomUUID().toString();
     protected double z;
     protected NetworkC networkC;
     protected RendererC rendererC;
@@ -39,15 +41,15 @@ public abstract class Entity {
         rendererC.setZ(p.getZ());
 
         App.logger.info("New {} with ID {}", this, uuid);
-	}
+    }
 
     protected abstract void tick(double timeDelta);
 
     public final void safeTick(double timeDelta) {
-		if (enabled) {
-			this.tick(timeDelta);
-		}
-	}
+        if (enabled) {
+            this.tick(timeDelta);
+        }
+    }
 
     public boolean intersects(Entity entity) {
         Shape intersects = Shape.intersect(
@@ -63,12 +65,12 @@ public abstract class Entity {
     }
 
     public void setX(double newX) {
-		setPosition(newX, getY());
-	}
+        setPosition(newX, getY());
+    }
 
-	public void setY(double newY) {
-		setPosition(getX(), newY);
-	}
+    public void setY(double newY) {
+        setPosition(getX(), newY);
+    }
 
     public void setPosition(double x, double y) {
         position.setX(x);
@@ -80,15 +82,15 @@ public abstract class Entity {
 
     public void setPosition(Point point) {
         setPosition(point.getX(), point.getY());
-	}
+    }
 
     public void setPosition(Point3D point) {
         setPosition(point.getX(), point.getY());
-	}
+    }
 
-	public void setRenderC(RendererC renderC) {
-		this.rendererC = renderC;
-	}
+    public void setRenderC(RendererC renderC) {
+        this.rendererC = renderC;
+    }
 
     public void setNetwokC(NetworkC component) {
         this.networkC = component;
@@ -98,21 +100,31 @@ public abstract class Entity {
         uuid = newID;
     }
 
-	public String getID() {
-		return uuid;
-	}
+    public Pair<Point2D, Point2D> renderArea() {
+        return new Pair<>(
+            new Point2D(hitbox.getX(), hitbox.getY()),
+            new Point2D(
+                hitbox.getX() + hitbox.getWidth(),
+                hitbox.getY() + hitbox.getHeight()
+            )
+        );
+    }
+
+    public String getID() {
+        return uuid;
+    }
 
     public Point getPosition() {
         return position;
     }
 
-	public double getX() {
-		return position.getX();
-	}
+    public double getX() {
+        return position.getX();
+    }
 
-	public double getY() {
-		return position.getY();
-	}
+    public double getY() {
+        return position.getY();
+    }
 
     public double getZ() {
         return rendererC.getZ();
@@ -120,15 +132,15 @@ public abstract class Entity {
 
     public Rectangle getHitbox() {
         return hitbox;
-	}
+    }
 
-	public Class<? extends Renderer> getRenderer() {
-		return renderer;
-	}
+    public Class<? extends Renderer> getRenderer() {
+        return renderer;
+    }
 
-	public RendererC getRendererC() {
-		return rendererC;
-	}
+    public RendererC getRendererC() {
+        return rendererC;
+    }
 
     public NetworkC getNetworkC() {
         return networkC;
@@ -137,11 +149,5 @@ public abstract class Entity {
     @Override
     public String toString() {
         return getClass().getSimpleName();
-    }
-    
-    public Pair<Point2D, Point2D> renderArea() {
-    	return new Pair<Point2D, Point2D>(
-    			new Point2D(hitbox.getX(), hitbox.getY()), 
-    			new Point2D(hitbox.getX() + hitbox.getWidth(), hitbox.getY() + hitbox.getHeight()));
     }
 }

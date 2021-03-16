@@ -24,7 +24,7 @@ public final class SwatterRenderer implements Renderer {
         double height = swatter.getHeight();
 
         gc.save();
-        
+
         RenderManager.clipToFOV(gc);
         Rotate r = swatter.getRotate();
 

@@ -31,7 +31,7 @@ public final class RenderManager {
      * A method that attempts to render every entity registered to the
      * RenderManager in Ascending Y order but cannot render if it has no canvas
      * to render entities on before rendering it sets the entire canvas to
-     * Color.LIGHTGRAY
+     * Colour.LIGHTGRAY
      */
     public static void tick() {
         Canvas canvas = SceneManager.getCanvas();

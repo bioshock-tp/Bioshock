@@ -21,9 +21,7 @@ public class Movement {
         this.entity = entity;
     }
 
-    private Point getDirection() {
-		return new Point(xDirection, yDirection);
-	}
+
 
     public void tick(double timeDelta) {
         if (xDirection != 0 || yDirection != 0) move(getDirection());
@@ -114,6 +112,10 @@ public class Movement {
         rotate.setPivotY(pos.getY());
 
         setRotation(entity.getRotate().getAngle() + degree);
+    }
+
+    private Point getDirection() {
+        return new Point(xDirection, yDirection);
     }
 
     public double getFacingRotate(Point2D trans) {
