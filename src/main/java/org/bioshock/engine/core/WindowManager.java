@@ -1,11 +1,9 @@
 package org.bioshock.engine.core;
 
+import org.bioshock.engine.input.InputManager;
+import org.bioshock.engine.rendering.RenderManager;
 import org.bioshock.main.App;
 
-import org.bioshock.engine.input.InputManager;
-
-import javafx.geometry.BoundingBox;
-import javafx.geometry.Bounds;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCombination;
 import javafx.stage.Stage;
@@ -14,7 +12,6 @@ public class WindowManager {
 	private static final boolean INITFULLSCREEN = false;
 	private static final boolean INITMAXIMISED = true;
 
-	private static Bounds screenSize = new BoundingBox(0, 0, 1920, 1080);
     private static Stage window;
 
     private WindowManager() {}
@@ -27,6 +24,14 @@ public class WindowManager {
 
 		window.setFullScreenExitHint("");
 		window.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
+
+        window.widthProperty().addListener((obs, oldVal, newVal) ->
+            RenderManager.updateScreenSize()
+        );
+
+        window.heightProperty().addListener((obs, oldVal, newVal) ->
+            RenderManager.updateScreenSize()
+        );
 
         InputManager.onPress(
             KeyCode.F11, WindowManager::toggleFullScreen
@@ -44,11 +49,11 @@ public class WindowManager {
     }
 
     public static double getWindowWidth() {
-		return screenSize.getWidth();
+		return window.getWidth();
 	}
 
 	public static double getWindowHeight() {
-		return screenSize.getHeight();
+		return window.getHeight();
 	}
 
 	public static Stage getWindow() {

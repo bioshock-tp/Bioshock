@@ -4,10 +4,12 @@ import java.util.List;
 
 import org.bioshock.engine.ai.SeekerAI;
 import org.bioshock.engine.components.NetworkC;
+import org.bioshock.engine.core.FrameRate;
 import org.bioshock.engine.entity.EntityManager;
 import org.bioshock.engine.entity.Hider;
 import org.bioshock.engine.entity.Size;
 import org.bioshock.engine.input.InputManager;
+import org.bioshock.engine.scene.SceneManager;
 import org.bioshock.entities.map.Room;
 import org.bioshock.entities.map.ThreeByThreeMap;
 import org.bioshock.main.App;
@@ -70,7 +72,7 @@ public class MainGame extends GameScene {
         }
 
 		double centreX = rooms.get(rooms.size() / 2).getRoomCenter().getX();
-		double centreY = rooms.get(rooms.size() / 2).getRoomCenter().getX();
+		double centreY = rooms.get(rooms.size() / 2).getRoomCenter().getY();
 
 		SeekerAI seeker = new SeekerAI(
             new Point3D(centreX, centreY, 0.5),
@@ -82,11 +84,18 @@ public class MainGame extends GameScene {
         );
 
 		children.add(seeker);
+
+        registerEntities();
 	}
 
     @Override
     public void initScene() {
         renderEntities();
+
+        SceneManager.setInLobby(false);
+        SceneManager.setInGame(true);
+
+        FrameRate.initialise();
 
         if (!App.isNetworked()) {
             assert(App.playerCount() == 1);

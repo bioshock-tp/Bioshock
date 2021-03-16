@@ -13,29 +13,33 @@ public class FrameRate {
 
     private FrameRate() {}
 
-    public static final void tick(long now) {
-        if (label == null) {
-            label = new Label("0");
-            label.setTranslateX(
-                (double) WindowManager.getWindowWidth() / 2 - 10
-            );
-            label.setTranslateY(
-                10 - (double) WindowManager.getWindowHeight() / 2
-            );
-            SceneManager.getPane().getChildren().add(label);
-        }
+    public static void initialise() {
+        label = new Label("0");
+        updatePosition();
+        SceneManager.getPane().getChildren().add(label);
+    }
 
+    public static final void tick(long now) {
         long oldFrameTime = frames[frameTimeIndex];
         frames[frameTimeIndex] = now;
         frameTimeIndex = (frameTimeIndex + 1) % N;
+
         if (frameTimeIndex == 0) {
             arrayFilled = true;
         }
+
         if (arrayFilled) {
             long elapsedNanos = now - oldFrameTime;
             long elapsedNanosPerFrame = elapsedNanos / N;
-            double frameRate = 1_000_000_000.0 / elapsedNanosPerFrame;
+            double frameRate = 1e9 / elapsedNanosPerFrame;
             label.setText(String.format("%.0f", frameRate));
+        }
+    }
+
+    public static void updatePosition() {
+        if (label != null) {
+            label.setTranslateX(WindowManager.getWindowWidth() / 2 - 10);
+            label.setTranslateY(10 - WindowManager.getWindowHeight() / 2);
         }
     }
 }

@@ -1,6 +1,7 @@
 package org.bioshock.engine.networking;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
@@ -8,6 +9,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.bioshock.engine.ai.SeekerAI;
+import org.bioshock.engine.entity.Entity;
 import org.bioshock.engine.entity.Hider;
 import org.bioshock.engine.entity.SquareEntity;
 import org.bioshock.engine.networking.Message.ClientInput;
@@ -79,14 +81,13 @@ public class NetworkManager {
                     loadedPlayers.putIfAbsent(message.uuid, hider);
 
                     Platform.runLater(() ->
-                        SceneManager.lobby().updatePlayerCount()
+                        SceneManager.getLobby().updatePlayerCount()
                     );
                 }
 
                 me = loadedPlayers.get(myID);
 
-                // me.initMovement();
-                Platform.runLater(() -> me.initMovement());
+                me.initMovement();
 
                 inGame = true;
 
@@ -162,24 +163,18 @@ public class NetworkManager {
         }
 	}
 
-    public static void registerAll(List<SquareEntity> entities) {
+    public static void registerAll(Collection<SquareEntity> entities) {
         entities.forEach(NetworkManager::register);
 	}
 
-	public static void unregister(SquareEntity entity) {
-        if (entity instanceof Hider) {
-            playerList.remove(entity);
-            loadedPlayers.remove(entity.getID());
-        }
-		else if (entity instanceof SeekerAI) {
-            seeker = null;
-        }
-        else {
-            App.logger.error("Tried to register non player entity {}", entity);
-        }
+	public static void unregister(Entity entity) {
+        playerList.remove(entity);
+        loadedPlayers.remove(entity.getID());
+
+		if (entity == seeker) seeker = null;
 	}
 
-	public static void unregisterAll(List<SquareEntity> entities) {
+	public static void unregisterAll(Collection<Entity> entities) {
        entities.forEach(NetworkManager::unregister);
 	}
 

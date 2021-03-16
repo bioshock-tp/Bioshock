@@ -14,6 +14,7 @@ public final class SceneManager {
     private static Stage stage;
     private static GameScene currentScene;
     private static boolean inLobby = false;
+    private static boolean inGame = false;
     private static boolean initialised = false;
 
     private SceneManager() {}
@@ -43,6 +44,10 @@ public final class SceneManager {
         inLobby = b;
     }
 
+    public static void setInGame(boolean inGame) {
+        SceneManager.inGame = inGame;
+    }
+
 	public static GameScene getScene() {
 		return currentScene;
 	}
@@ -55,16 +60,20 @@ public final class SceneManager {
 		return currentScene.getCanvas();
 	}
 
-	public static boolean inLobby() {
-        return inLobby;
-	}
-
-    public static Lobby lobby() {
+    public static Lobby getLobby() {
         if (!(currentScene instanceof Lobby)) {
             App.logger.error("Tried to access lobby when not in one");
             return null;
         } else {
             return (Lobby) currentScene;
         }
+    }
+
+	public static boolean inLobby() {
+        return inLobby;
+	}
+
+    public static boolean inGame() {
+        return inGame;
     }
 }

@@ -34,11 +34,11 @@ public class App extends Application {
 
 	@Override
 	public void start(Stage stage) {
-        Thread.setDefaultUncaughtExceptionHandler((Thread t, Throwable e) ->
+        Thread.setDefaultUncaughtExceptionHandler((thread, exception) ->
             App.logger.error(
                 "{}\n{}",
-                e,
-                Arrays.toString(e.getStackTrace()).replace(',', '\n')
+                exception,
+                Arrays.toString(exception.getStackTrace()).replace(',', '\n')
             )
         );
         assert(playerCount > 0);
@@ -67,7 +67,9 @@ public class App extends Application {
                 App.logger.debug(SceneManager.getScene())
             );
 
-            if (isNetworked) {
+            if (!networked) {
+                App.setPlayerCount(1);
+
                 InputManager.onPress(KeyCode.R, () -> {
                     App.logger.debug("Resetting Scene...");
                     try {
@@ -81,8 +83,6 @@ public class App extends Application {
                     }
                 });
             }
-
-            primaryStage.setScene(SceneManager.getScene());
 
             new GameLoop().start();
         } catch (Exception e) {
@@ -128,6 +128,14 @@ public class App extends Application {
         }
 	}
 
+    public static void setPlayerCount(int playerCount) {
+        App.playerCount = playerCount;
+    }
+
+    public static int playerCount() {
+        return playerCount;
+    }
+
     public static boolean isNetworked() {
         return networked;
     }
@@ -140,12 +148,4 @@ public class App extends Application {
     public static void main(String[] args) {
 		launch();
 	}
-
-    public static void setPlayerCount(int playerCount) {
-        App.playerCount = playerCount;
-    }
-
-    public static int playerCount() {
-        return playerCount;
-    }
 }

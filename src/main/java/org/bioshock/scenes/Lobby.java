@@ -25,7 +25,6 @@ public class Lobby extends GameScene {
         )));
 
         mainGame = new MainGame();
-        mainGame.registerEntities();
 
         Label waitingText = new Label("Waiting for players...");
 
