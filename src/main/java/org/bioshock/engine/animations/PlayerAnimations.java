@@ -16,7 +16,7 @@ public class PlayerAnimations {
     Sprite die;
 
     public PlayerAnimations(Entity entity, int scale) {
-        moveDown  = new Sprite(
+        moveDown = new Sprite(
             entity,
             new Point2D(0, 0),
             new Size(
@@ -29,7 +29,7 @@ public class PlayerAnimations {
             false
         );
 
-        moveLeft  = new Sprite(
+        moveLeft = new Sprite(
             entity,
             new Point2D(30, 0),
             new Size(
@@ -72,7 +72,7 @@ public class PlayerAnimations {
             entity,
             new Point2D(118, 0),
             new Size(
-                GlobalConstants.PLAYER_WIDTH,
+                GlobalConstants.PLAYER_WIDTH + 2,
                 GlobalConstants.PLAYER_HEIGHT
             ),
             30,
@@ -83,7 +83,7 @@ public class PlayerAnimations {
 
         die = new Sprite(
             entity,
-            new Point2D(1480, 0),
+            new Point2D(148, 0),
             new Size(
                 GlobalConstants.PLAYER_WIDTH + 4,
                 GlobalConstants.PLAYER_HEIGHT + 2

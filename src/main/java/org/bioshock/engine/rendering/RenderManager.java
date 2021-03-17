@@ -8,6 +8,8 @@ import java.util.List;
 
 import org.bioshock.engine.core.FrameRate;
 import org.bioshock.engine.entity.Entity;
+import org.bioshock.engine.entity.EntityManager;
+import org.bioshock.engine.entity.Hider;
 import org.bioshock.engine.entity.Size;
 import org.bioshock.engine.entity.SquareEntity;
 import org.bioshock.engine.scene.SceneManager;
@@ -17,12 +19,16 @@ import org.bioshock.scenes.GameScene;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.util.Pair;
 
 public final class RenderManager {
+    private static final boolean CLIP = true;
+
     private static List<Entity> entities = new ArrayList<>();
     private static Point2D cameraPos = new Point2D(0,0);
     private static Point2D scale = new Point2D(1.0, 1.0);
     private static double padding = 1;
+
 
     private RenderManager() {}
 
@@ -41,19 +47,25 @@ public final class RenderManager {
 
         // renders each entity
         entities.stream().filter(Entity::isEnabled).forEach(entity -> {
-            try {
-                Method rend = entity.getRenderer().getDeclaredMethods()[0];
-                rend.invoke(null, gc, entity);
-            } catch (
-                  InvocationTargetException
-                | IllegalAccessException
-                | IllegalArgumentException e
+            Pair<Point2D, Point2D> renderArea = entity.getRenderArea();
+            if (
+                pointInScreen(renderArea.getKey())
+                || pointInScreen(renderArea.getValue())
             ) {
-                App.logger.error(
-                    "Render function not correctly defined for {}",
-                    entity.getRenderer(),
-                    e
-                );
+                try {
+                    Method rend = entity.getRenderer().getDeclaredMethods()[0];
+                    rend.invoke(null, gc, entity);
+                } catch (
+                    InvocationTargetException
+                    | IllegalAccessException
+                    | IllegalArgumentException e
+                ) {
+                    App.logger.error(
+                        "Render function not correctly defined for {}",
+                        entity.getRenderer(),
+                        e
+                    );
+                }
             }
         });
     }
@@ -115,7 +127,26 @@ public final class RenderManager {
     }
 
     public static void clipToFOV(GraphicsContext gc) {
-        // TODO
+        Hider player = EntityManager.getCurrentPlayer();
+        if (CLIP && player != null) {
+            double x = player.getX();
+            double y = player.getY();
+            double radius = player.getRadius();
+            double width = player.getWidth();
+            double height = player.getHeight();
+
+            gc.beginPath();
+            gc.arc(
+                getRenX(x + width / 2),
+                getRenY(y + height / 2),
+                getRenWidth(radius),
+                getRenHeight(radius),
+                0,
+                360
+            );
+            gc.closePath();
+            gc.clip();
+        }
     }
 
     public static void moveCameraX(double x) {

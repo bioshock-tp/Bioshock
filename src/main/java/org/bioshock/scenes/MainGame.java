@@ -84,7 +84,7 @@ public class MainGame extends GameScene {
                 new Point3D(x, y, i),
                 new NetworkC(true),
                 new Size(40, 40),
-                200,
+                300,
                 Color.PINK
             ));
         }
@@ -135,7 +135,7 @@ public class MainGame extends GameScene {
             App.logger.debug("Notified networking thread");
         } else {
             assert(App.playerCount() == 1);
-            EntityManager.getPlayers().get(0).initMovement();
+            EntityManager.getPlayers().get(0).getMovement().initMovement();
             EntityManager.getPlayers().get(0).initAnimations();
         }
     }

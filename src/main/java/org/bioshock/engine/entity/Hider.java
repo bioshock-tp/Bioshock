@@ -3,7 +3,6 @@ package org.bioshock.engine.entity;
 import org.bioshock.engine.animations.PlayerAnimations;
 import org.bioshock.engine.animations.Sprite;
 import org.bioshock.engine.components.NetworkC;
-import org.bioshock.engine.input.InputManager;
 import org.bioshock.engine.networking.NetworkManager;
 import org.bioshock.engine.renderers.PlayerSpriteRenderer;
 import org.bioshock.engine.renderers.components.PlayerRendererC;
@@ -12,14 +11,13 @@ import org.bioshock.utils.GlobalConstants;
 
 import javafx.geometry.Point2D;
 import javafx.geometry.Point3D;
-import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Color;
 import javafx.util.Pair;
 
 public class Hider extends SquareEntity {
     private boolean dead = false;
-    Sprite currentSprite;
-    PlayerAnimations playerAnimations;
+    private Sprite currentSprite;
+    private PlayerAnimations playerAnimations;
 
 
     public Hider(Point3D p, NetworkC com, Size s, int r, Color c) {
@@ -29,7 +27,7 @@ public class Hider extends SquareEntity {
     }
 
     protected void tick(double timeDelta) {
-        movement.tick(timeDelta);
+        if (!dead) movement.tick(timeDelta);
     }
 
     public void initAnimations() {
@@ -38,60 +36,6 @@ public class Hider extends SquareEntity {
             GlobalConstants.PLAYER_SCALE
         );
         currentSprite = playerAnimations.getPlayerIdleSprite();
-    }
-
-    public void initMovement() {
-        final double speed = movement.getSpeed();
-
-        InputManager.onPress(
-            KeyCode.W, () -> {
-                movement.direction(0, -speed);
-                setCurrentSprite(playerAnimations.getMoveUpSprite());
-            }
-        );
-        InputManager.onPress(
-            KeyCode.A, () -> {
-                movement.direction(-speed, 0);
-                setCurrentSprite(playerAnimations.getMoveLeftSprite());
-            }
-        );
-        InputManager.onPress(
-            KeyCode.S, () -> {
-                movement.direction(0,  speed);
-                setCurrentSprite(playerAnimations.getMoveDownSprite());
-            }
-        );
-        InputManager.onPress(
-            KeyCode.D, () -> {
-                movement.direction(speed,  0);
-                setCurrentSprite(playerAnimations.getMoveRightSprite());
-            }
-        );
-
-        InputManager.onRelease(
-            KeyCode.W, () -> {
-                movement.direction(0,  speed);
-                setCurrentSprite(playerAnimations.getPlayerIdleSprite());
-            }
-        );
-        InputManager.onRelease(
-            KeyCode.A, () -> {
-                movement.direction(speed,  0);
-                setCurrentSprite(playerAnimations.getPlayerIdleSprite());
-            }
-        );
-        InputManager.onRelease(
-            KeyCode.S, () -> {
-                movement.direction(0, -speed);
-                setCurrentSprite(playerAnimations.getPlayerIdleSprite());
-            }
-        );
-        InputManager.onRelease(
-            KeyCode.D, () -> {
-                movement.direction(-speed, 0);
-                setCurrentSprite(playerAnimations.getPlayerIdleSprite());
-            }
-        );
     }
 
     private void setCurrentSprite(Sprite s) {
@@ -103,14 +47,34 @@ public class Hider extends SquareEntity {
     }
 
     public void setDead(boolean d) {
-        dead = d;
-
-        if (dead) {
+        if (!dead && d) {
             rendererC.setColour(Color.GREY);
             if (App.isNetworked()) NetworkManager.kill(this);
         }
 
+        dead = d;
+
         setCurrentSprite(playerAnimations.getPlayerDying());
+    }
+
+    @Override
+    public void setAnimation() {
+        Point2D translation = movement.getDirection();
+
+        int x = (int) translation.getX();
+        int y = (int) translation.getY();
+
+        Sprite animation = playerAnimations.getPlayerIdleSprite();
+        
+        if (x > 0) animation = playerAnimations.getMoveRightSprite();
+
+        else if (x < 0) animation = playerAnimations.getMoveLeftSprite();
+
+        else if (y > 0) animation = playerAnimations.getMoveDownSprite();
+
+        else if (y < 0) animation = playerAnimations.getMoveUpSprite();
+
+        setCurrentSprite(animation);
     }
 
     public boolean isDead() {

@@ -58,7 +58,7 @@ public class AnimationPlayer {
         }
     }
 
-    public static void playAnimation(
+    private static void playAnimation(
         Image[] imgs,
         double speed,
         Point2D position,
@@ -79,7 +79,7 @@ public class AnimationPlayer {
         );
     }
 
-    public static void playAnimation(
+    private static void playAnimation(
         GraphicsContext gc,
         double time,
         int actualSize,
@@ -105,7 +105,7 @@ public class AnimationPlayer {
          */
         int newSpriteSheetX = (int) (reversePlay ?
             startingPoint.getX() + index * actualSize
-            : startingPoint.getY());
+            : startingPoint.getX());
 
         /*
          * newY represents the Y coordinate of image in the sprite-sheet image

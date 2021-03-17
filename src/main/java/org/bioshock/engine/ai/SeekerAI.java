@@ -74,6 +74,8 @@ public class SeekerAI extends SquareEntity {
 
     private void doActions() {
         setSearch(true);
+        Hider firstPlayer = EntityManager.getPlayers().get(0);
+        boolean masterPlayer = firstPlayer == EntityManager.getCurrentPlayer();
         EntityManager.getPlayers().forEach(entity -> {
             if (
                 EntityManager.isManaged(this, entity)
@@ -91,13 +93,11 @@ public class SeekerAI extends SquareEntity {
             ) {
                 rendererC.setColour(Color.ORANGE);
                 target = entity;
-                chasePlayer(target);
+                if (masterPlayer) chasePlayer(target);
             }
         });
 
-        if (isSearching) {
-            search();
-        }
+        if (masterPlayer && isSearching) search();
     }
 
     private boolean intersects(SquareEntity entity, String type) {
@@ -142,7 +142,12 @@ public class SeekerAI extends SquareEntity {
 
         for (Room room : roomsToCheck) {
             for(TexRectEntity wall : room.getWalls()) {
-                wallHitbox = new Rectangle(wall.getX(), wall.getY(), wall.getWidth(), wall.getHeight());
+                wallHitbox = new Rectangle(
+                    wall.getX(),
+                    wall.getY(),
+                    wall.getWidth(),
+                    wall.getHeight()
+                );
                 wallHitbox.getTransforms().add(wall.getRotate());
                 Shape intersect = Shape.intersect(line, wallHitbox);
                 if (intersect.getBoundsInLocal().getWidth() != -1) {
@@ -171,20 +176,19 @@ public class SeekerAI extends SquareEntity {
     }
 
     private Room findCurrentRoom(Entity e) {
-        Room current = null;
-        double temp;
-        double shortest = WindowManager.getWindowWidth() * WindowManager.getWindowHeight();
+        Room current = map.getRooms().get(0);
+        Point3D temp;
+        double shortest =
+            WindowManager.getWindowWidth() * WindowManager.getWindowHeight();
 
-        for(Room room : map.getRooms()) {
-            temp = (room.getRoomCenter().subtract(new Point3D(e.getX(), e.getY(), room.getZ()))).magnitude();
-            if(temp < shortest) {
-                shortest = temp;
+        for (Room room : map.getRooms()) {
+            temp = room.getRoomCenter().subtract(
+                new Point3D(e.getX(), e.getY(), room.getZ())
+            );
+            if (temp.magnitude() < shortest) {
+                shortest = temp.magnitude();
                 current = room;
             }
-        }
-        if(current == null) {
-            App.logger.error("Error current = null");
-            return null;
         }
 
         return current;
@@ -230,7 +234,7 @@ public class SeekerAI extends SquareEntity {
                     adjacents[i] != null
                     && !pathToFollow.contains(adjacents[i])
                 ) {
-                        possibleMoves.add(adjacents[i]);
+                    possibleMoves.add(adjacents[i]);
                 }
             }
 
@@ -279,7 +283,9 @@ public class SeekerAI extends SquareEntity {
         }
         else {
             moveToCentre(currRoom);
-            if(Math.abs(currRoom.getRoomCenter().getX() - getX()) < 5 && Math.abs(currRoom.getRoomCenter().getY() - getY()) < 5) {
+            double absX = Math.abs(currRoom.getRoomCenter().getX() - getX());
+            double absY = Math.abs(currRoom.getRoomCenter().getY() - getY());
+            if (absX < 5 && absY < 5) {
                 currRoom = path.remove(0);
             }
         }

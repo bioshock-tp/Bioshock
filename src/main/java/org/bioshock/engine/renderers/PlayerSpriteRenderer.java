@@ -72,12 +72,6 @@ public class PlayerSpriteRenderer implements Renderer {
 
         gc.setLineWidth(10);
         gc.setStroke(player.getRendererC().getColour());
-        gc.strokeOval(
-            getRenX(x - radius + width / 2),
-            getRenY(y - radius + height / 2),
-            getRenWidth(radius * 2),
-            getRenHeight(radius * 2)
-        );
 
         // Handles animations
         AnimationPlayer.playAnimation(

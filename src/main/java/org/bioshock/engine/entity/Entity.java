@@ -100,6 +100,8 @@ public abstract class Entity {
         uuid = newID;
     }
 
+    public void setAnimation() {}
+
     public String getID() {
         return uuid;
     }

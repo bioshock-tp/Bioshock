@@ -88,7 +88,7 @@ public class NetworkManager {
 
                 me = loadedPlayers.get(myID);
 
-                me.initMovement();
+                me.getMovement().initMovement();
                 playerList.forEach(Hider::initAnimations);
 
                 App.logger.info("Networking initialised");
@@ -136,6 +136,8 @@ public class NetworkManager {
             if (input == null) {
                 if (message.dead) messageFrom.setDead(true);
             } else {
+                updateDirection(input, messageFrom);
+                
                 if (messageFrom == masterHider) {
                     seeker.getMovement().moveTo(
                         input.aiX,
@@ -151,6 +153,16 @@ public class NetworkManager {
         }
 
         client.getMutex().release();
+    }
+
+    private static void updateDirection(ClientInput input, Hider messageFrom) {
+        int dispX = (int) (input.x - messageFrom.getX());
+        if (dispX != 0) dispX = dispX / Math.abs(dispX);
+
+        int dispY = (int) (input.y - messageFrom.getY());
+        if (dispY != 0) dispY = dispY / Math.abs(dispY);
+
+        messageFrom.getMovement().direction(dispX, dispY);
     }
 
     public static void register(SquareEntity entity) {
@@ -181,6 +193,7 @@ public class NetworkManager {
     }
 
     public static void kill(Hider hider) {
+        App.logger.debug("killing");
         client.send(Message.serialise(
             new Message(-1, hider.getID(), null, true)
         ));
