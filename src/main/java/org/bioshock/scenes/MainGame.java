@@ -37,6 +37,8 @@ public class MainGame extends GameScene {
 
     private Label timer;
 
+    private ThreeByThreeMap map;
+
     public MainGame() {
         super();
 
@@ -47,13 +49,14 @@ public class MainGame extends GameScene {
             null
         )));
 
-        ThreeByThreeMap map = new ThreeByThreeMap(
+        map = new ThreeByThreeMap(
             new Point3D(100, 100, 0),
             10,
             new Size(300, 600),
             new Size(90, 90),
             Color.SADDLEBROWN
         );
+        SceneManager.setMap(map);
         children.addAll(map.getWalls());
 
         List<Room> rooms = map.getRooms();
@@ -65,8 +68,8 @@ public class MainGame extends GameScene {
         Hider hider = new Hider(
             new Point3D(x, y, 0.5),
             new NetworkC(true),
-            new Size(40, 40),
-            200,
+            new Size(54, 61),
+            300,
             Color.PINK
         );
         children.add(hider);
@@ -132,30 +135,9 @@ public class MainGame extends GameScene {
             App.logger.debug("Notified networking thread");
         } else {
             assert(App.playerCount() == 1);
-            EntityManager.getPlayers().get(0).getMovement().initMovement();
+            EntityManager.getPlayers().get(0).initMovement();
+            EntityManager.getPlayers().get(0).initAnimations();
         }
-    }
-
-    @Override
-    public void renderTick(double timeDelta) {
-        if(cameraLock) {
-            Hider hider = EntityManager.getCurrentPlayer();
-
-            if (hider != null) {
-                RenderManager.setCameraPos(hider.getCentre().subtract(
-                    getGameScreen().getWidth() / 2,
-                    getGameScreen().getHeight() / 2)
-                );
-            }
-        }
-
-        double timeLeft = ENDTIME - runningTime;
-        int numMins = (int) timeLeft / 60;
-        timer.setText(String.format(
-            "%d:%.2f",
-            numMins,
-            timeLeft - numMins * 60
-        ));
     }
 
     @Override
@@ -181,6 +163,27 @@ public class MainGame extends GameScene {
                 SceneManager.setScene(new LoseScreen());
             }
         }
+    }
+
+    @Override
+    public void renderTick(double timeDelta) {
+        Hider hider = EntityManager.getCurrentPlayer();
+        if(cameraLock && hider != null) {
+            RenderManager.setCameraPos(
+                hider.getCentre().subtract(
+                    getGameScreen().getWidth() / 2,
+                    getGameScreen().getHeight() / 2
+                )
+            );
+        }
+
+        double timeLeft = ENDTIME - runningTime;
+        int numMins = (int) timeLeft / 60;
+        timer.setText(String.format(
+            "%d:%.2f",
+            numMins,
+            timeLeft - numMins * 60
+        ));
     }
 
     @Override

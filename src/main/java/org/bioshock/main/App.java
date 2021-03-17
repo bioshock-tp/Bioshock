@@ -1,9 +1,12 @@
 package org.bioshock.main;
 
-import java.io.IOException;
-import java.net.URL;
-import java.util.Arrays;
-
+import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.input.KeyCode;
+import javafx.stage.Stage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bioshock.audio.AudioController;
@@ -14,15 +17,13 @@ import org.bioshock.engine.core.WindowManager;
 import org.bioshock.engine.input.InputManager;
 import org.bioshock.engine.scene.SceneManager;
 import org.bioshock.gui.MainController;
+import org.bioshock.gui.SettingsController;
 import org.bioshock.scenes.GameScene;
 
-import javafx.application.Application;
-import javafx.application.Platform;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.input.KeyCode;
-import javafx.stage.Stage;
+import java.io.IOException;
+import java.net.URL;
+import java.util.Arrays;
+import java.util.prefs.Preferences;
 
 public class App extends Application {
     public static final String NAME = "BuzzKill";
@@ -44,10 +45,9 @@ public class App extends Application {
         assert(playerCount > 0);
 
         WindowManager.initialise(stage);
-
-        AudioController.initialise();
-        playBackgroundMusic();
         initFXMLScene();
+
+        initialiseAudio();
 
         stage.setScene(fxmlScene);
         stage.show();
@@ -94,19 +94,31 @@ public class App extends Application {
         }
     }
 
-    public void stopBackgroundMusic() {
-        AudioController.loadMusicController("background-music").stop();
+	private void initialiseAudio() {
+        AudioController.initialise();
+        Preferences prefs = Preferences.userNodeForPackage(SettingsController.class);
+        double volume = prefs.getDouble("musicVolume", 1.0);
+        if(prefs.getBoolean("musicOn", true)) {
+            playBackgroundMusic(volume);
+        }
     }
 
-    public void playBackgroundMusic() {
-        MusicController musicController = AudioController.loadMusicController(
+	public void stopBackgroundMusic() {
+		MusicController musicController = AudioController.loadMusicController(
             "background-music"
         );
-        final MusicSettings settings = new MusicSettings();
-        settings.setVolume(0.5);
-        settings.setCycleCount(-1);
-        musicController.play(settings);
-    }
+		musicController.stop();
+	}
+
+	public void playBackgroundMusic(double vol) {
+		MusicController musicController = AudioController.loadMusicController(
+            "background-music"
+        );
+		final MusicSettings settings = new MusicSettings();
+		settings.setVolume(vol);
+		settings.setCycleCount(-1);
+		musicController.play(settings);
+	}
 
     public static void setFXMLRoot(String fxml) {
         fxmlScene.setRoot(loadFXML(fxml));

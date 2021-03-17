@@ -116,6 +116,41 @@ public class ThreeByThreeMap {
             new Exits(true, false, true, false),
             c)
         );
+
+		setAdjacents();
+	}
+
+	private void setAdjacents() {
+		for(Room room : rooms) {
+			double x = room.getRoomCenter().getX();
+			double y = room.getRoomCenter().getY();
+			for(Room adj : rooms) {
+				if(adj != room) {
+					double xa = adj.getRoomCenter().getX();
+					double ya = adj.getRoomCenter().getY();
+
+					double roomH = room.getTotalSize().getHeight();
+					double roomW = room.getTotalSize().getWidth();
+					if(x == xa) {
+						if((ya-y) == -roomH) {
+							room.addAdjacent(adj, 0);
+						}
+						else if((ya-y) == roomH) {
+							room.addAdjacent(adj, 1);
+						}
+					}
+					else if(y == ya) {
+						if((xa-x) == -roomW) {
+							room.addAdjacent(adj, 2);
+						}
+						else if((xa-x) == roomW) {
+							room.addAdjacent(adj, 3);
+						}
+					}
+
+				}
+			}
+		}
 	}
 
 	/***

@@ -88,7 +88,8 @@ public class NetworkManager {
 
                 me = loadedPlayers.get(myID);
 
-                me.getMovement().initMovement();
+                me.initMovement();
+                playerList.forEach(Hider::initAnimations);
 
                 App.logger.info("Networking initialised");
 

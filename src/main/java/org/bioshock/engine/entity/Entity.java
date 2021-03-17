@@ -104,7 +104,7 @@ public abstract class Entity {
         return uuid;
     }
 
-    public Pair<Point2D, Point2D> renderArea() {
+    public Pair<Point2D, Point2D> getRenderArea() {
         return new Pair<>(
             new Point2D(hitbox.getX(), hitbox.getY()),
             new Point2D(

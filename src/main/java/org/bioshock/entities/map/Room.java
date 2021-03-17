@@ -16,6 +16,7 @@ public class Room {
     private List<TexRectEntity> walls = new ArrayList<>();
     private double z;
     private Point3D pos;
+    private Room[] adjacentRooms = new Room[4]; //[N,S,W,E]
 
     /***
      * Generates a room with the position being the top left of the room
@@ -147,55 +148,69 @@ public class Room {
 
         //corner connecting bottom and right
         TexRectEntity corner1 = new TexRectEntity(
-                pos.add(
-                    coriSize.getHeight() - wallWidth,
-                    coriSize.getHeight() - wallWidth,
-                    0
-                ),
-                new NetworkC(false),
-                new Size(wallWidth, wallWidth),
+            pos.add(
+                coriSize.getHeight() - wallWidth,
+                coriSize.getHeight() - wallWidth,
+                0
+            ),
+            new NetworkC(false),
+            new Size(wallWidth, wallWidth),
             c
         );
         walls.add(corner1);
 
         //corner connecting bottom and left
         TexRectEntity corner2 = new TexRectEntity(
-                pos.add(
-                    coriSize.getHeight() + roomSize.getWidth(),
-                    coriSize.getHeight() - wallWidth,
-                    0
-                ),
-                new NetworkC(false),
-                new Size(wallWidth, wallWidth),
+            pos.add(
+                coriSize.getHeight() + roomSize.getWidth(),
+                coriSize.getHeight() - wallWidth,
+                0
+            ),
+            new NetworkC(false),
+            new Size(wallWidth, wallWidth),
             c
         );
         walls.add(corner2);
 
         //corner connecting top and right
         TexRectEntity corner3 = new TexRectEntity(
-                pos.add(
-                    coriSize.getHeight() - wallWidth,
-                    coriSize.getHeight() + roomSize.getHeight(),
-                    0
-                ),
-                new NetworkC(false),
-                new Size(wallWidth, wallWidth),
+            pos.add(
+                coriSize.getHeight() - wallWidth,
+                coriSize.getHeight() + roomSize.getHeight(),
+                0
+            ),
+            new NetworkC(false),
+            new Size(wallWidth, wallWidth),
             c
         );
         walls.add(corner3);
 
         //corner connecting top and left
         TexRectEntity corner4 = new TexRectEntity(
-                pos.add(
-                    coriSize.getHeight() + roomSize.getWidth(),
-                    coriSize.getHeight() + roomSize.getHeight(),
-                    0
-                ),
-                new NetworkC(false),
-                new Size(wallWidth, wallWidth),
+            pos.add(
+                coriSize.getHeight() + roomSize.getWidth(),
+                coriSize.getHeight() + roomSize.getHeight(),
+                0
+            ),
+            new NetworkC(false),
+            new Size(wallWidth, wallWidth),
             c
         );
         walls.add(corner4);
+    }
+
+    public void addAdjacent(Room r, int i) {
+        adjacentRooms[i] = r;
+    }
+
+    /***
+     * sets the Z value of all the walls in the room to the newZ
+     * @param newZ
+     */
+    public void setZ(double newZ) {
+        for (TexRectEntity e : walls) {
+            e.getRendererC().setZ(newZ);
+        }
     }
 
     /***
@@ -222,19 +237,8 @@ public class Room {
         return roomSize;
     }
 
-
     public double getZ() {
         return z;
-    }
-
-    /***
-     * sets the Z value of all the walls in the room to the newZ
-     * @param newZ
-     */
-    public void setZ(double newZ) {
-        for (TexRectEntity e : walls) {
-            e.getRendererC().setZ(newZ);
-        }
     }
 
     /***
@@ -242,10 +246,12 @@ public class Room {
      * @return the centre of the room for AI purposes
      */
     public Point3D getRoomCenter() {
-        return pos.add(
+		return pos.add(
             totalSize.getWidth() / 2,
             totalSize.getHeight() / 2,
             0
         );
     }
+
+    public Room[] getAdjacentRooms() { return adjacentRooms; }
 }

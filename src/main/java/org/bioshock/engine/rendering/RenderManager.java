@@ -1,5 +1,6 @@
 package org.bioshock.engine.rendering;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -7,8 +8,6 @@ import java.util.List;
 
 import org.bioshock.engine.core.FrameRate;
 import org.bioshock.engine.entity.Entity;
-import org.bioshock.engine.entity.EntityManager;
-import org.bioshock.engine.entity.Hider;
 import org.bioshock.engine.entity.Size;
 import org.bioshock.engine.entity.SquareEntity;
 import org.bioshock.engine.scene.SceneManager;
@@ -45,10 +44,15 @@ public final class RenderManager {
             try {
                 Method rend = entity.getRenderer().getDeclaredMethods()[0];
                 rend.invoke(null, gc, entity);
-            } catch (Exception e) {
+            } catch (
+                  InvocationTargetException
+                | IllegalAccessException
+                | IllegalArgumentException e
+            ) {
                 App.logger.error(
-                    "Render function not defined for {}",
-                    entity.getRenderer()
+                    "Render function not correctly defined for {}",
+                    entity.getRenderer(),
+                    e
                 );
             }
         });
@@ -111,26 +115,7 @@ public final class RenderManager {
     }
 
     public static void clipToFOV(GraphicsContext gc) {
-        Hider player = EntityManager.getCurrentPlayer();
-        if (player != null) {
-            double x = player.getX();
-            double y = player.getY();
-            double radius = player.getRadius();
-            double width = player.getWidth();
-            double height = player.getHeight();
-
-            gc.beginPath();
-            gc.arc(
-                getRenX(x + width / 2),
-                getRenY(y + height / 2),
-                getRenWidth(radius),
-                getRenHeight(radius),
-                0,
-                360
-            );
-            gc.closePath();
-            gc.clip();
-        }
+        // TODO
     }
 
     public static void moveCameraX(double x) {

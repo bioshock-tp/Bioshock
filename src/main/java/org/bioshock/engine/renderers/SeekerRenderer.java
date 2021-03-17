@@ -47,7 +47,7 @@ public class SeekerRenderer implements Renderer {
         gc.setLineWidth(10);
         gc.setStroke(seeker.getRendererC().getColour());
 
-        if(isActive){
+        if(isActive) {
             // TODO: put animation here instead of gc.fillArc
             gc.fillArc(
                 getRenX(swatter.getCenterX() - swatter.getRadiusX()),

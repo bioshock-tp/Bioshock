@@ -1,13 +1,10 @@
 package org.bioshock.engine.physics;
 
+import org.bioshock.engine.entity.Entity;
 import org.bioshock.engine.entity.EntityManager;
 import org.bioshock.engine.entity.Point;
-import org.bioshock.engine.entity.SquareEntity;
-import org.bioshock.engine.input.InputManager;
 
 import javafx.geometry.Point2D;
-import javafx.scene.input.KeyCode;
-import javafx.scene.transform.Rotate;
 
 public class Movement {
     private double speed = 5;
@@ -15,9 +12,9 @@ public class Movement {
     private double xDirection = 0;
     private double yDirection = 0;
 
-    private SquareEntity entity;
+    private Entity entity;
 
-    public Movement(SquareEntity entity) {
+    public Movement(Entity entity) {
         this.entity = entity;
     }
 
@@ -68,8 +65,6 @@ public class Movement {
         });
     }
 
-
-
     public void moveTo(Point2D target) {
         for (int i = 0; i < speed; i++) {
             move(target.subtract(entity.getPosition()));
@@ -94,53 +89,12 @@ public class Movement {
         direction(targ.getX(), targ.getY());
     }
 
-    public void initMovement() {
-        InputManager.onPress(  KeyCode.W, () -> direction(0, -speed));
-        InputManager.onPress(  KeyCode.A, () -> direction(-speed, 0));
-        InputManager.onPress(  KeyCode.S, () -> direction(0,  speed));
-        InputManager.onPress(  KeyCode.D, () -> direction(speed,  0));
-
-        InputManager.onRelease(KeyCode.W, () -> direction(0,  speed));
-        InputManager.onRelease(KeyCode.A, () -> direction(speed,  0));
-        InputManager.onRelease(KeyCode.S, () -> direction(0, -speed));
-        InputManager.onRelease(KeyCode.D, () -> direction(-speed, 0));
-    }
-
-    public void updateFacing(Point2D trans) {
-        double rotation = Math.atan2(trans.getX(), -trans.getY())*180/Math.PI;
-        setRotation(rotation);
-    }
-
-    public void rotate(double degree) {
-        Rotate rotate = entity.getRotate();
-        Point2D pos = entity.getCentre();
-
-        rotate.setPivotX(pos.getX());
-        rotate.setPivotY(pos.getY());
-
-        setRotation(entity.getRotate().getAngle() + degree);
-    }
-
     private Point getDirection() {
         return new Point(xDirection, yDirection);
     }
 
     public static double getFacingRotate(Point2D trans) {
         return Math.atan2(trans.getX(), -trans.getY())*180/Math.PI;
-    }
-
-    public void setRotation(double newDegree) {
-        Point2D pos = entity.getCentre();
-        setRotation(newDegree, pos);
-    }
-
-    public void setRotation(double newDegree, Point2D pivot) {
-        Rotate rotate = entity.getRotate();
-
-        rotate.setPivotX(pivot.getX());
-        rotate.setPivotY(pivot.getY());
-
-        rotate.setAngle(newDegree);
     }
 
     public void setSpeed(double newSpeed) {

@@ -9,15 +9,21 @@ import javafx.animation.AnimationTimer;
 
 public final class GameLoop extends AnimationTimer {
     private static final double LOGICRATE = 60;
+    private static final double START = System.nanoTime();
 
     private long prev = 0;
     private long lastLogicTick = 0;
 
+    public static double currentGameTime;
+
     @Override
     public void handle(long now) {
+        currentGameTime = (now - START) / 1e9;
+
         if (!SceneManager.inGame() || prev == 0) {
             prev = now;
             lastLogicTick = now;
+
             return;
         }
 
@@ -37,5 +43,9 @@ public final class GameLoop extends AnimationTimer {
         FrameRate.tick(now);
 
         prev = now;
+    }
+
+	public static double getCurrentGameTime() {
+        return currentGameTime;
     }
 }
