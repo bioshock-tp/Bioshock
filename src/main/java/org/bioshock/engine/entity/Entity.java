@@ -70,6 +70,9 @@ public abstract class Entity {
     }
 
     public void setPosition(double x, double y) {
+        x = (int) x;
+        y = (int) y;
+
         position.setX(x);
         position.setY(y);
 

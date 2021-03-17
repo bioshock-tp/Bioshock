@@ -49,6 +49,8 @@ public abstract class SquareEntity extends Entity {
     @Override
     public void setPosition(double x, double y) {
         super.setPosition(x, y);
+        x = (int) x;
+        y = (int) y;
 
         if (fov != null) {
             fov.setTranslateX(x);

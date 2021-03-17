@@ -21,29 +21,26 @@ public class Movement {
         this.entity = entity;
     }
 
-
     public void tick(double timeDelta) {
-        if (xDirection != 0 || yDirection != 0) move(getDirection());
+        if (xDirection != 0 || yDirection != 0) {
+            moveTo(entity.getPosition().add(getDirection()));
+        }
     }
 
-    public void moveTo(double x, double y) {
-        move(new Point2D(x, y).subtract(entity.getPosition()));
-    }
-
-    public void move(Point2D trans) {
+    private void move(Point2D trans) {
         Point2D target = trans.add(entity.getPosition());
 
         double x = entity.getX();
         double y = entity.getY();
 
         if (x != target.getX()) {
-            double disp = target.getX() - x;
-            x += disp / Math.abs(disp) * speed;
+            double dispX = trans.getX();
+            x += dispX / Math.abs(dispX);
         }
 
         if (y != target.getY()) {
-            double disp = target.getY() - y;
-            y += disp / Math.abs(disp) * speed;
+            double dispY = trans.getY();
+            y += dispY / Math.abs(dispY);
         }
 
         double oldX = entity.getX();
@@ -55,23 +52,46 @@ public class Movement {
             if (child == entity) return;
 
             if (entity.intersects(child)) {
-
                 /* Check if x value was cause of collision */
                 entity.setX(oldX);
-            }
-            if (entity.intersects(child)) {
 
-                /* In this case x was not cause, so check y */
-                entity.setX(newX);
-                entity.setY(oldY);
+                if (entity.intersects(child)) {
+                    /* In this case x was not cause, so check y */
+                    entity.setPosition(newX, oldY);
 
-            }
-            if (entity.intersects(child)) {
-
-                /* In this case both x and y were cause */
-                entity.setPosition(oldX, oldY);
+                    if (entity.intersects(child)) {
+                        /* In this case both x and y were cause */
+                        entity.setPosition(oldX, oldY);
+                    }
+                }
             }
         });
+    }
+
+
+
+    public void moveTo(Point2D target) {
+        for (int i = 0; i < speed; i++) {
+            move(target.subtract(entity.getPosition()));
+        }
+    }
+
+    public void moveTo(double x, double y) {
+        moveTo(new Point(x, y));
+    }
+
+    public void direction(double newXDirection, double newYDirection) {
+        if (Math.abs(xDirection + newXDirection) <= speed) {
+            xDirection += newXDirection;
+        }
+
+        if (Math.abs(yDirection + newYDirection) <= speed) {
+            yDirection += newYDirection;
+        }
+    }
+
+    public void direction(Point2D targ) {
+        direction(targ.getX(), targ.getY());
     }
 
     public void initMovement() {
@@ -84,18 +104,6 @@ public class Movement {
         InputManager.onRelease(KeyCode.A, () -> direction(speed,  0));
         InputManager.onRelease(KeyCode.S, () -> direction(0, -speed));
         InputManager.onRelease(KeyCode.D, () -> direction(-speed, 0));
-    }
-
-    public void direction(double newXDirection, double newYDirection) {
-        double newX = Math.abs(xDirection + newXDirection);
-        if (newX <= speed) xDirection += newXDirection;
-
-        double newY = Math.abs(yDirection + newYDirection);
-        if (newY <= speed) yDirection += newYDirection;
-    }
-
-    public void direction(Point2D targ) {
-        direction(targ.getX(), targ.getY());
     }
 
     public void updateFacing(Point2D trans) {
@@ -117,7 +125,7 @@ public class Movement {
         return new Point(xDirection, yDirection);
     }
 
-    public double getFacingRotate(Point2D trans) {
+    public static double getFacingRotate(Point2D trans) {
         return Math.atan2(trans.getX(), -trans.getY())*180/Math.PI;
     }
 

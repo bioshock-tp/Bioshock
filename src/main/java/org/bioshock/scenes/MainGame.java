@@ -125,47 +125,42 @@ public class MainGame extends GameScene {
         SceneManager.setInGame(true);
 
         if (App.isNetworked()) {
-            Object mutex = NetworkManager.getPlayerJoinLock();
-            synchronized(mutex) {
-                mutex.notifyAll();
+            Object lock = NetworkManager.getPlayerJoinLock();
+            synchronized(lock) {
+                lock.notifyAll();
             }
             App.logger.debug("Notified networking thread");
         } else {
             assert(App.playerCount() == 1);
-            EntityManager.getPlayers().get(0).initMovement();
+            EntityManager.getPlayers().get(0).getMovement().initMovement();
         }
     }
 
     @Override
     public void renderTick(double timeDelta) {
-        if(SceneManager.inGame()) {
-            if(cameraLock) {
-                Hider meObj = EntityManager.getCurrentPlayer();
+        if(cameraLock) {
+            Hider hider = EntityManager.getCurrentPlayer();
 
-                if (meObj != null) {
-                    RenderManager.setCameraPos(meObj.getCentre().subtract(
-                        getGameScreen().getWidth()/2,
-                        getGameScreen().getHeight()/2)
-                    );
-                }
+            if (hider != null) {
+                RenderManager.setCameraPos(hider.getCentre().subtract(
+                    getGameScreen().getWidth() / 2,
+                    getGameScreen().getHeight() / 2)
+                );
             }
-
-            double timeLeft = ENDTIME - runningTime;
-            int numMins = (int) timeLeft / 60;
-            timer.setText(String.format(
-                "%d:%.2f",
-                numMins,
-                timeLeft - numMins * 60
-            ));
         }
+
+        double timeLeft = ENDTIME - runningTime;
+        int numMins = (int) timeLeft / 60;
+        timer.setText(String.format(
+            "%d:%.2f",
+            numMins,
+            timeLeft - numMins * 60
+        ));
     }
 
     @Override
     public void logicTick(double timeDelta) {
-        if(
-            !losing
-            && SceneManager.inGame()
-        ) {
+        if(!losing) {
             runningTime += timeDelta;
 
             if (runningTime >= ENDTIME) {
@@ -180,7 +175,7 @@ public class MainGame extends GameScene {
                 losing = true;
             }
         }
-        else if (losing) {
+        else {
             timeLosing += timeDelta;
             if (timeLosing >= LOSEDELAY) {
                 SceneManager.setScene(new LoseScreen());

@@ -28,14 +28,13 @@ public class NetworkManager {
 
     private static String myID = UUID.randomUUID().toString();
     private static Hider me;
+    private static Hider masterHider;
     private static SeekerAI seeker;
 
     private static List<Hider> playerList = new ArrayList<>(App.playerCount());
     private static Map<String, Hider> loadedPlayers = new HashMap<>(
         App.playerCount()
     );
-
-    private static boolean inGame = false;
 
     private static Client client = new Client();
     private static Object awaitingPlayerLock = new Object();
@@ -85,11 +84,11 @@ public class NetworkManager {
                     );
                 }
 
+                masterHider = playerList.get(0);
+
                 me = loadedPlayers.get(myID);
 
-                me.initMovement();
-
-                inGame = true;
+                me.getMovement().initMovement();
 
                 App.logger.info("Networking initialised");
 
@@ -100,25 +99,21 @@ public class NetworkManager {
         initThread.start();
     }
 
-    // TDDO
     private static Message pollInputs() {
-        int x = (int) me().getX();
-        int y = (int) me().getY();
+        int x = (int) me.getX();
+        int y = (int) me.getY();
 
         Point2D aiPos = seeker.getPosition();
-        double aiX = aiPos.getX();
-        double aiY = aiPos.getY();
+        int aiX = (int) aiPos.getX();
+        int aiY = (int) aiPos.getY();
 
         Message.ClientInput input = new Message.ClientInput(x, y, aiX, aiY);
 
-        /* getMe only null when NetworkManager uninitialised */
         return new Message(-1, myID, input, me.isDead());
     }
 
     public static void tick() {
-        if (!inGame || playerList.isEmpty()) return;
-
-        if (me() != null) {
+        if (me != null) {
             client.send(Message.serialise(pollInputs()));
         }
 
@@ -129,25 +124,29 @@ public class NetworkManager {
             Thread.currentThread().interrupt();
         }
 
-        for (Hider hider : playerList) {
-            Message message = client.getMessageQ().getOrDefault(hider.getID(), null);
+        Message message;
+        while ((message = client.getMessageQ().poll()) != null) {
+            /* The hider the message came from */
+            Hider messageFrom = loadedPlayers.get(message.uuid);
+            if (messageFrom == me) continue;
 
-            if (message == null || hider == me()) continue;
             ClientInput input = message.input;
 
-            if (hider == playerList.get(0)) {
-                seeker.getMovement().direction(
-                    input.aiX,
-                    input.aiY
+            if (input == null) {
+                if (message.dead) messageFrom.setDead(true);
+            } else {
+                if (messageFrom == masterHider) {
+                    seeker.getMovement().moveTo(
+                        input.aiX,
+                        input.aiY
+                    );
+                }
+
+                messageFrom.getMovement().moveTo(
+                    input.x,
+                    input.y
                 );
-
-                loadedPlayers.get(hider.getID()).setDead(message.dead);
             }
-
-            loadedPlayers.get(hider.getID()).getMovement().moveTo(
-                input.x,
-                input.y
-            );
         }
 
         client.getMutex().release();
@@ -178,6 +177,12 @@ public class NetworkManager {
 
     public static void unregisterAll(Collection<Entity> entities) {
        entities.forEach(NetworkManager::unregister);
+    }
+
+    public static void kill(Hider hider) {
+        client.send(Message.serialise(
+            new Message(-1, hider.getID(), null, true)
+        ));
     }
 
     public static void setKeysPressed(KeyCode key, boolean pressed) {

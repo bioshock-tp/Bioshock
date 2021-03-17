@@ -18,14 +18,15 @@ public class Message implements Serializable {
     ClientInput input;
     boolean dead;
 
-    Message() {}
+    private Message() {}
 
     /**
      * Constructs a new message to send to web socket server
      * @param playerNumber Should be -1 outside of lobby, otherwise should be
-     *     position of player in join queue
+     * position of player in join queue
      * @param uuid Unique ID of player sending message
      * @param input A ClientInput object containing states of player and AI
+     * @param dead True if sending player is dead
      */
     Message(int playerNumber, String uuid, ClientInput input, boolean dead) {
         this.playerNumber = playerNumber;
@@ -40,8 +41,8 @@ public class Message implements Serializable {
         final int x;
         final int y;
 
-        final double aiX;
-        final double aiY;
+        final int aiX;
+        final int aiY;
 
         /**
          * Information to send in message containing player POS/DIR
@@ -50,7 +51,7 @@ public class Message implements Serializable {
          * @param aiX Coordinate X of AI
          * @param aiY Coordinate Y of AI
          */
-        ClientInput(int x, int y, double aiX, double aiY) {
+        ClientInput(int x, int y, int aiX, int aiY) {
             this.x = x;
             this.y = y;
 

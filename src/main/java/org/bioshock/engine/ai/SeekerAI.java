@@ -5,6 +5,7 @@ import org.bioshock.engine.entity.EntityManager;
 import org.bioshock.engine.entity.Hider;
 import org.bioshock.engine.entity.Size;
 import org.bioshock.engine.entity.SquareEntity;
+import org.bioshock.engine.physics.Movement;
 import org.bioshock.engine.renderers.SeekerRenderer;
 import org.bioshock.engine.renderers.components.SimpleRendererC;
 
@@ -90,8 +91,7 @@ public class SeekerAI extends SquareEntity {
                 && !entity.isDead()
             ) {
                 target = entity;
-                movement.move(target.getPosition().subtract(getPosition()));
-
+                movement.moveTo(target.getPosition());
             }
         });
     }
@@ -104,10 +104,10 @@ public class SeekerAI extends SquareEntity {
     }
 
     public void setSwatterRot() {
-        double r = movement.getFacingRotate(
+        double r = Movement.getFacingRotate(
             target.getPosition().subtract(getPosition())
         );
-        swatterHitbox.setStartAngle(390-r);
+        swatterHitbox.setStartAngle(390 - r);
     }
 
     public Arc getSwatterHitbox() { return swatterHitbox; }

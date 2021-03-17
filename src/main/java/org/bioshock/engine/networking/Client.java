@@ -4,8 +4,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.ByteBuffer;
 import java.util.ArrayDeque;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.Semaphore;
 
@@ -20,9 +18,7 @@ public class Client extends WebSocketClient {
 
     private Semaphore mutex = new Semaphore(1);
     private Queue<Message> initialMessages = new ArrayDeque<>();
-    private Map<String, Message> messageQueue = new HashMap<>(
-        App.playerCount()
-    );
+    private Queue<Message> messageQueue = new ArrayDeque<>();
     private boolean connected = false;
 
     private Client(URI serverURI) {
@@ -80,7 +76,7 @@ public class Client extends WebSocketClient {
             mutex.acquire();
 
             /* Case of lobby message */
-            if (message.playerNumber > 0 && message.input == null) {
+            if (message.playerNumber > 0) {
                 initialMessages.add(message);
                 App.logger.debug("Player Joined");
 
@@ -92,7 +88,7 @@ public class Client extends WebSocketClient {
 
             /* Case of input */
             else {
-                messageQueue.put(message.uuid, message);
+                messageQueue.add(message);
             }
         } catch(InterruptedException ie) {
             App.logger.error("InterruptedException");
@@ -127,7 +123,7 @@ public class Client extends WebSocketClient {
         return initialMessages;
     }
 
-    public Map<String, Message> getMessageQ() {
+    public Queue<Message> getMessageQ() {
         return messageQueue;
     }
 
