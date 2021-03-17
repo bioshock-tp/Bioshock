@@ -43,22 +43,22 @@ public class WindowManager {
         InputManager.onPress(KeyCode.ESCAPE, () -> App.exit(0));
 
         stage.widthProperty().addListener((obs, oldVal, newVal) -> {
-            GameScene s = SceneManager.getScene();
-            if (s != null) {
-                Canvas c = SceneManager.getScene().getCanvas();
-                if (c != null) {
-                    c.setWidth(newVal.floatValue());
-                    s.scaleCanvas();
+            GameScene scene = SceneManager.getScene();
+            if (scene != null) {
+                Canvas canvas = SceneManager.getScene().getCanvas();
+                if (canvas != null) {
+                    canvas.setWidth(newVal.floatValue());
+                    scene.scaleCanvas();
                 }
             }
         });
         stage.heightProperty().addListener((obs, oldVal, newVal) -> {
-            GameScene s = SceneManager.getScene();
-            if (s != null) {
-                Canvas c = SceneManager.getScene().getCanvas();
-                if (c != null) {
-                    c.setHeight(newVal.floatValue());
-                    s.scaleCanvas();
+            GameScene scene = SceneManager.getScene();
+            if (scene != null) {
+                Canvas canvas = SceneManager.getScene().getCanvas();
+                if (canvas != null) {
+                    canvas.setHeight(newVal.floatValue());
+                    scene.scaleCanvas();
                 }
             }
         });

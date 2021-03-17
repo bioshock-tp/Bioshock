@@ -3,8 +3,6 @@ package org.bioshock.main;
 import java.util.Arrays;
 
 import org.bioshock.engine.core.WindowManager;
-import org.bioshock.engine.scene.SceneManager;
-import org.bioshock.scenes.LoadingScreen;
 import org.bioshock.scenes.MainGame;
 
 import javafx.stage.Stage;
@@ -22,8 +20,7 @@ public class Debug extends App {
 
         App.setPlayerCount(1);
 		WindowManager.initialise(stage);
-        startGame(stage, new LoadingScreen(false), false);
-        SceneManager.setScene(new MainGame());
+        startGame(stage, new MainGame(), false);
 
         stage.show();
 	}

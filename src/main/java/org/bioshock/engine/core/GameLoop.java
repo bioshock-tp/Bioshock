@@ -15,7 +15,7 @@ public final class GameLoop extends AnimationTimer {
 
     @Override
     public void handle(long now) {
-        if (!SceneManager.inGame()) {
+        if (!SceneManager.inGame() || prev == 0) {
             prev = now;
             lastLogicTick = now;
             return;
