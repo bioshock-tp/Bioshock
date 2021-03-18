@@ -13,7 +13,9 @@ import org.bioshock.main.App;
 import java.util.prefs.Preferences;
 
 public class SettingsController extends App {
+    @FXML
     private Slider musicVolumeSlider;
+    @FXML
     private Slider sfxVolumeSlider;
     @FXML
     private Button backButton;
