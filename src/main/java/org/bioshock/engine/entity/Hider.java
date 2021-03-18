@@ -12,6 +12,7 @@ import org.bioshock.utils.GlobalConstants;
 import javafx.geometry.Point2D;
 import javafx.geometry.Point3D;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 import javafx.util.Pair;
 
 public class Hider extends SquareEntity {
@@ -50,6 +51,8 @@ public class Hider extends SquareEntity {
         if (!dead && d) {
             rendererC.setColour(Color.GREY);
             if (App.isNetworked()) NetworkManager.kill(this);
+
+            hitbox = new Rectangle();
         }
 
         dead = d;
@@ -65,7 +68,7 @@ public class Hider extends SquareEntity {
         int y = (int) translation.getY();
 
         Sprite animation = playerAnimations.getPlayerIdleSprite();
-        
+
         if (x > 0) animation = playerAnimations.getMoveRightSprite();
 
         else if (x < 0) animation = playerAnimations.getMoveLeftSprite();
