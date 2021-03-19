@@ -247,8 +247,8 @@ public class SeekerAI extends SquareEntity {
      */
     private void moveToCentre(Room room) {
         movement.moveTo(
-            room.getRoomCenter().getX(),
-            room.getRoomCenter().getY()
+            room.getRoomCenter().getX() - getWidth()/2,
+            room.getRoomCenter().getY() - getHeight()/2
         );
     }
 
@@ -326,8 +326,8 @@ public class SeekerAI extends SquareEntity {
                 currRoom = lastSeenPosition;
             }
 
-            double absX = Math.abs(currRoom.getRoomCenter().getX() - getX());
-            double absY = Math.abs(currRoom.getRoomCenter().getY() - getY());
+            double absX = Math.abs(currRoom.getRoomCenter().getX() - getWidth()/2 - getX());
+            double absY = Math.abs(currRoom.getRoomCenter().getY() - getHeight()/2 - getY());
             if (
                 absX < 5
                 && absY < 5
@@ -347,8 +347,8 @@ public class SeekerAI extends SquareEntity {
         }
         else {
             moveToCentre(currRoom);
-            double absX = Math.abs(currRoom.getRoomCenter().getX() - getX());
-            double absY = Math.abs(currRoom.getRoomCenter().getY() - getY());
+            double absX = Math.abs(currRoom.getRoomCenter().getX() - getWidth()/2 - getX());
+            double absY = Math.abs(currRoom.getRoomCenter().getY() - getHeight()/2 - getY());
             if (absX < 5 && absY < 5) {
                 currRoom = path.remove(0);
             }
