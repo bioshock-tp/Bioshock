@@ -4,8 +4,8 @@ import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.Map;
 
-import org.bioshock.engine.scene.SceneManager;
 import org.bioshock.main.App;
+import org.bioshock.scenes.SceneManager;
 
 import javafx.scene.input.KeyCode;
 

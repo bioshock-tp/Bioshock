@@ -1,6 +1,6 @@
 package org.bioshock.engine.core;
 
-import org.bioshock.engine.scene.SceneManager;
+import org.bioshock.scenes.SceneManager;
 
 import javafx.scene.control.Label;
 

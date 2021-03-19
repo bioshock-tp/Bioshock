@@ -3,8 +3,7 @@ package org.bioshock.entities.map;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bioshock.engine.entity.Size;
-import org.bioshock.entities.TexRectEntity;
+import org.bioshock.utils.Size;
 
 import javafx.geometry.Point3D;
 import javafx.scene.paint.Color;

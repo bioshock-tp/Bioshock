@@ -15,10 +15,10 @@ import org.bioshock.audio.settings.MusicSettings;
 import org.bioshock.engine.core.GameLoop;
 import org.bioshock.engine.core.WindowManager;
 import org.bioshock.engine.input.InputManager;
-import org.bioshock.engine.scene.SceneManager;
 import org.bioshock.gui.MainController;
 import org.bioshock.gui.SettingsController;
 import org.bioshock.scenes.GameScene;
+import org.bioshock.scenes.SceneManager;
 
 import java.io.IOException;
 import java.net.URL;

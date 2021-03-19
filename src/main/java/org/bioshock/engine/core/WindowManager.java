@@ -1,10 +1,10 @@
 package org.bioshock.engine.core;
 
 import org.bioshock.engine.input.InputManager;
-import org.bioshock.engine.rendering.RenderManager;
-import org.bioshock.engine.scene.SceneManager;
 import org.bioshock.main.App;
+import org.bioshock.rendering.RenderManager;
 import org.bioshock.scenes.GameScene;
+import org.bioshock.scenes.SceneManager;
 
 import javafx.scene.canvas.Canvas;
 import javafx.scene.input.KeyCode;

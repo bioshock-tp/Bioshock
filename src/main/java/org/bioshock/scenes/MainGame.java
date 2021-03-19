@@ -2,20 +2,19 @@ package org.bioshock.scenes;
 
 import java.util.List;
 
-import org.bioshock.engine.ai.SeekerAI;
-import org.bioshock.engine.components.NetworkC;
+import org.bioshock.components.NetworkC;
 import org.bioshock.engine.core.FrameRate;
 import org.bioshock.engine.core.WindowManager;
-import org.bioshock.engine.entity.EntityManager;
-import org.bioshock.engine.entity.Hider;
-import org.bioshock.engine.entity.Size;
 import org.bioshock.engine.input.InputManager;
-import org.bioshock.engine.networking.NetworkManager;
-import org.bioshock.engine.rendering.RenderManager;
-import org.bioshock.engine.scene.SceneManager;
+import org.bioshock.entities.EntityManager;
 import org.bioshock.entities.map.Room;
 import org.bioshock.entities.map.ThreeByThreeMap;
+import org.bioshock.entities.players.Hider;
+import org.bioshock.entities.players.SeekerAI;
 import org.bioshock.main.App;
+import org.bioshock.networking.NetworkManager;
+import org.bioshock.rendering.RenderManager;
+import org.bioshock.utils.Size;
 
 import javafx.geometry.Point2D;
 import javafx.geometry.Point3D;

@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bioshock.engine.core.WindowManager;
-import org.bioshock.engine.entity.Entity;
-import org.bioshock.engine.entity.EntityManager;
-import org.bioshock.engine.entity.Size;
-import org.bioshock.engine.rendering.RenderManager;
+import org.bioshock.entities.Entity;
+import org.bioshock.entities.EntityManager;
+import org.bioshock.rendering.RenderManager;
+import org.bioshock.utils.Size;
 
 import javafx.geometry.Point2D;
 import javafx.scene.Scene;
@@ -70,11 +70,11 @@ public abstract class GameScene extends Scene {
 
     /**
      * Initialises the scene and registers the scene's {@link #children} to
-     * both the {@link org.bioshock.engine.entity.EntityManager EntityManager}
+     * both the {@link org.bioshock.entities.EntityManager EntityManager}
      * and the
-     * {@link org.bioshock.engine.rendering.RenderManager RenderManager}.
+     * {@link org.bioshock.rendering.RenderManager RenderManager}.
      * Called in
-     * {@link org.bioshock.engine.scene.SceneManager#setScene(GameScene)
+     * {@link org.bioshock.scenes.SceneManager#setScene(GameScene)
      * SceneManager.setScene(GameScene)}
      */
     public void initScene() {
@@ -85,7 +85,7 @@ public abstract class GameScene extends Scene {
 
     /**
      * Registers the scene's {@link #children} to the
-     * {@link org.bioshock.engine.entity.EntityManager EntityManager}
+     * {@link org.bioshock.entities.EntityManager EntityManager}
      * @see #renderEntities()
      */
     public void registerEntities() {
@@ -94,7 +94,7 @@ public abstract class GameScene extends Scene {
 
     /**
      * Registers the scene's {@link #children} to the
-     * {@link org.bioshock.engine.rendering.RenderManager RenderManager}
+     * {@link org.bioshock.rendering.RenderManager RenderManager}
      * @see #registerEntities()
      */
     public void renderEntities() {
@@ -104,7 +104,7 @@ public abstract class GameScene extends Scene {
 
     /**
      * Unregisters the scene's {@link #children} from the
-     * {@link org.bioshock.engine.entity.EntityManager EntityManager}
+     * {@link org.bioshock.entities.EntityManager EntityManager}
      * @see #destroyEntities()
      */
     public void unregisterEntities() {
@@ -114,7 +114,7 @@ public abstract class GameScene extends Scene {
 
     /**
      * Unregisters the scene's {@link #children} from the
-     * {@link org.bioshock.engine.rendering.RenderManager RenderManager}
+     * {@link org.bioshock.rendering.RenderManager RenderManager}
      * @see #unregisterEntities()
      */
     public void destroyEntities() {
@@ -168,11 +168,11 @@ public abstract class GameScene extends Scene {
 
     /**
      * Destroys the scene and unregisters the scene's {@link #children} from
-     * both the {@link org.bioshock.engine.entity.EntityManager EntityManager}
+     * both the {@link org.bioshock.entities.EntityManager EntityManager}
      * and the
-     * {@link org.bioshock.engine.rendering.RenderManager RenderManager}.
+     * {@link org.bioshock.rendering.RenderManager RenderManager}.
      * Called in
-     * {@link org.bioshock.engine.scene.SceneManager#setScene(GameScene)
+     * {@link org.bioshock.scenes.SceneManager#setScene(GameScene)
      * SceneManager.setScene(GameScene)}
      */
     public void destroy() {

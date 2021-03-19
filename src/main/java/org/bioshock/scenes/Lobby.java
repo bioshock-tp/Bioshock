@@ -1,8 +1,7 @@
 package org.bioshock.scenes;
 
-import org.bioshock.engine.networking.NetworkManager;
-import org.bioshock.engine.scene.SceneManager;
 import org.bioshock.main.App;
+import org.bioshock.networking.NetworkManager;
 
 import javafx.scene.Cursor;
 import javafx.scene.control.Label;
