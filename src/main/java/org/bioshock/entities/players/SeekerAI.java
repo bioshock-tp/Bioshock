@@ -45,6 +45,17 @@ public class SeekerAI extends SquareEntity {
 
     private Random rand = new Random();
 
+    /**
+     *
+     * Constructor
+     *
+     * @param p The location to spawn at
+     * @param com The network component
+     * @param s The width and height of the seeker
+     * @param r Radius of fov
+     * @param c Colour of seeker
+     * @param e The initial player to follow
+     */
     public SeekerAI(Point3D p, NetworkC com, Size s, int r, Color c, Hider e) {
         super(p, com, new SimpleRendererC(), s, r, c);
 
@@ -71,6 +82,9 @@ public class SeekerAI extends SquareEntity {
         setSwatterRot();
     }
 
+    /**
+     * The main behaviour tree for the seeker
+     */
     private void doActions() {
         setSearch(true);
         Hider firstPlayer = EntityManager.getPlayers().get(0);
@@ -99,6 +113,14 @@ public class SeekerAI extends SquareEntity {
         if (masterPlayer && isSearching) search();
     }
 
+    /**
+     *
+     * Can check intersections between an entity and the type given
+     *
+     * @param entity The entity to check collisions with
+     * @param type The type of collision to check (fov etc)
+     * @return true if it intersects, false otherwise
+     */
     private boolean intersects(SquareEntity entity, String type) {
         Shape intersect;
         Rectangle entityHitbox = new Rectangle(
@@ -125,6 +147,15 @@ public class SeekerAI extends SquareEntity {
         return intersect.getBoundsInLocal().getWidth() != -1;
     }
 
+
+    /**
+     *
+     * Checks line of sight from the seeker to the entity given
+     * Draws a line and if line hits a wall then it is not in line of sight
+     *
+     * @param entity The entity to check line of sight with
+     * @return true if in line of sight, false otherwise
+     */
     private boolean checkLineOfSight(SquareEntity entity) {
         Rectangle wallHitbox;
 
@@ -157,24 +188,39 @@ public class SeekerAI extends SquareEntity {
         return true;
     }
 
-    private void chasePlayer(Entity e) {
+
+    /**
+     *
+     * Contains behaviour tree for chasing the entity
+     *
+     * @param entity the entity to chase
+     */
+    private void chasePlayer(Entity entity) {
         setSearch(false);
         path.clear();
-        lastSeenPosition = findCurrentRoom(e);
+        lastSeenPosition = findCurrentRoom(entity);
         App.logger.debug(
             "Last seen position coordinates are {}",
             lastSeenPosition.getRoomCenter()
         );
 
-        if(Objects.equals(findCurrentRoom(e), findCurrentRoom(this))) {
-            movement.moveTo(e.getPosition());
+        if(Objects.equals(findCurrentRoom(entity), findCurrentRoom(this))) {
+            movement.moveTo(entity.getPosition());
         }
         else{
             moveToCentre(lastSeenPosition);
         }
     }
 
-    private Room findCurrentRoom(Entity e) {
+
+    /**
+     *
+     * Finds the current room that an entity is in
+     *
+     * @param entity the entity to find current room of
+     * @return the current room of the entity
+     */
+    private Room findCurrentRoom(Entity entity) {
         Room current = map.getRooms().get(0);
         Point3D temp;
         double shortest =
@@ -182,7 +228,7 @@ public class SeekerAI extends SquareEntity {
 
         for (Room room : map.getRooms()) {
             temp = room.getRoomCenter().subtract(
-                new Point3D(e.getX(), e.getY(), room.getZ())
+                new Point3D(entity.getX(), entity.getY(), room.getZ())
             );
             if (temp.magnitude() < shortest) {
                 shortest = temp.magnitude();
@@ -193,6 +239,12 @@ public class SeekerAI extends SquareEntity {
         return current;
     }
 
+    /**
+     *
+     * Moves seeker a step towards the room centre
+     *
+     * @param room the room that has the centre to move towards
+     */
     private void moveToCentre(Room room) {
         movement.moveTo(
             room.getRoomCenter().getX(),
@@ -200,6 +252,16 @@ public class SeekerAI extends SquareEntity {
         );
     }
 
+
+    /**
+     *
+     * Makes a random path of rooms given a start room
+     * Picks random destination
+     * Will not visit the same room twice
+     *
+     * @param startRoom the room to start from
+     * @return the list of rooms that form the path
+     */
     private List<Room> createPath(Room startRoom) {
         List<Room> pathToFollow = new ArrayList<>();
         List<Room> possibleMoves = new ArrayList<>();
@@ -255,6 +317,9 @@ public class SeekerAI extends SquareEntity {
         return pathToFollow;
     }
 
+    /**
+     * Contains the behaviour tree for patrolling the map
+     */
     public void search() {
         if (path.isEmpty()) {
             if (lastSeenPosition != null) {
