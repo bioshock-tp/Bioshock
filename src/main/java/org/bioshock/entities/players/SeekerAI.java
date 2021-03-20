@@ -39,7 +39,11 @@ public class SeekerAI extends SquareEntity {
     private List<Room> path = new ArrayList<>();
     private Room currRoom;
     private Point2D lastSeenPosition;
-    private Room lastSeenRoom;
+
+    private static final double TIME_BETWEEN_SWINGS = 1.0;
+    private static final double TIME_SWINGING = 1.0;
+    private double timeBetweenSwings = 0;
+    private double timeSwinging = 0;
 
     private boolean isActive = false;
     private boolean isSearching = false;
@@ -78,6 +82,10 @@ public class SeekerAI extends SquareEntity {
     }
 
     protected void tick(double timeDelta) {
+        timeBetweenSwings += timeDelta;
+        if(getIsActive()){
+            timeSwinging += timeDelta;
+        }
         doActions();
         setSwatterPos();
         setSwatterRot();
@@ -94,9 +102,9 @@ public class SeekerAI extends SquareEntity {
             if (
                     EntityManager.isManaged(this, entity)
                             && intersects(entity, "swatter")
+                            && getIsActive()
                             && !entity.isDead()
             ) {
-                setActive(true);
                 entity.setDead(true);
             }
             if (
@@ -105,6 +113,14 @@ public class SeekerAI extends SquareEntity {
                             && !entity.isDead()
                             && checkLineOfSight(entity)
             ) {
+                if(timeBetweenSwings >= TIME_BETWEEN_SWINGS){
+                    setActive(true);
+                    if(timeSwinging >= TIME_SWINGING){
+                        setActive(false);
+                        timeSwinging = 0;
+                        timeBetweenSwings = 0;
+                    }
+                }
                 rendererC.setColour(Color.ORANGE);
                 target = entity;
                 if (masterPlayer) chasePlayer(target);
@@ -237,31 +253,6 @@ public class SeekerAI extends SquareEntity {
         return current;
     }
 
-    /**
-     *
-     * Finds the current room that an entity is in
-     *
-     * @param position the entity to find current room of
-     * @return the current room of the entity
-     */
-    private Room findCurrentRoom(Point2D position) {
-        Room current = map.getRooms().get(0);
-        Point3D temp;
-        double shortest =
-                WindowManager.getWindowWidth() * WindowManager.getWindowHeight();
-
-        for (Room room : map.getRooms()) {
-            temp = room.getRoomCenter().subtract(
-                    new Point3D(position.getX(), position.getY(), room.getZ())
-            );
-            if (temp.magnitude() < shortest) {
-                shortest = temp.magnitude();
-                current = room;
-            }
-        }
-
-        return current;
-    }
 
     /**
      *
@@ -345,7 +336,7 @@ public class SeekerAI extends SquareEntity {
      * Contains the behaviour tree for patrolling the map
      */
     public void search() {
-
+        setActive(false);
 
         if(path.isEmpty()){
             //move to last seen position
@@ -380,43 +371,16 @@ public class SeekerAI extends SquareEntity {
             }
         }
 
-        /*if (path.isEmpty()) {
-            if (lastSeenPosition != null) {
-                currRoom = lastSeenPosition;
-            }
-
-            double absX = Math.abs(currRoom.getRoomCenter().getX() - getWidth()/2 - getX());
-            double absY = Math.abs(currRoom.getRoomCenter().getY() - getHeight()/2 - getY());
-            if (
-                absX < 5
-                && absY < 5
-            ) {
-                if (lastSeenPosition != null) {
-                    path = createPath(lastSeenPosition);
-                    lastSeenPosition = null;
-                }
-                else {
-                    path = createPath(findCurrentRoom(this));
-                }
-                currRoom = path.remove(0);
-            }
-            else{
-                moveToCentre(currRoom);
-            }
-        }
-        else {
-            moveToCentre(currRoom);
-            double absX = Math.abs(currRoom.getRoomCenter().getX() - getWidth()/2 - getX());
-            double absY = Math.abs(currRoom.getRoomCenter().getY() - getHeight()/2 - getY());
-            if (absX < 5 && absY < 5) {
-                currRoom = path.remove(0);
-            }
-        }*/
     }
 
     public void setActive(boolean b) { isActive = b; }
 
     public void setSearch(boolean b) {isSearching = b;}
+
+    public void setSwatterRange(double range){
+        swatterHitbox.setRadiusX(range);
+        swatterHitbox.setRadiusY(range);
+    }
 
     public void setSwatterPos() {
         swatterHitbox.setCenterX(getCentre().getX());

@@ -67,7 +67,6 @@ public class SeekerRenderer implements Renderer {
                 swatter.getType()
             );
 
-            seeker.setActive(false);
         }
 
         gc.restore();
