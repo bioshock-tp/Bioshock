@@ -38,7 +38,8 @@ public class SeekerAI extends SquareEntity {
     private ThreeByThreeMap map = SceneManager.getMap();
     private List<Room> path = new ArrayList<>();
     private Room currRoom;
-    private Room lastSeenPosition;
+    private Point2D lastSeenPosition;
+    private Room lastSeenRoom;
 
     private boolean isActive = false;
     private boolean isSearching = false;
@@ -66,9 +67,9 @@ public class SeekerAI extends SquareEntity {
         renderer = SeekerRenderer.class;
 
         swatterHitbox = new Arc(
-            getCentre().getX(),
-            getCentre().getY(),
-            50, 50, 30, 120
+                getCentre().getX(),
+                getCentre().getY(),
+                50, 50, 30, 120
         );
 
         swatterHitbox.setType(ArcType.ROUND);
@@ -91,18 +92,18 @@ public class SeekerAI extends SquareEntity {
         boolean masterPlayer = firstPlayer == EntityManager.getCurrentPlayer();
         EntityManager.getPlayers().forEach(entity -> {
             if (
-                EntityManager.isManaged(this, entity)
-                && intersects(entity, "swatter")
-                && !entity.isDead()
+                    EntityManager.isManaged(this, entity)
+                            && intersects(entity, "swatter")
+                            && !entity.isDead()
             ) {
                 setActive(true);
                 entity.setDead(true);
             }
             if (
-                EntityManager.isManaged(this, entity)
-                && intersects(entity, "fov")
-                && !entity.isDead()
-                && checkLineOfSight(entity)
+                    EntityManager.isManaged(this, entity)
+                            && intersects(entity, "fov")
+                            && !entity.isDead()
+                            && checkLineOfSight(entity)
             ) {
                 rendererC.setColour(Color.ORANGE);
                 target = entity;
@@ -124,15 +125,15 @@ public class SeekerAI extends SquareEntity {
     private boolean intersects(SquareEntity entity, String type) {
         Shape intersect;
         Rectangle entityHitbox = new Rectangle(
-            entity.getX(), entity.getY(), entity.getWidth(), entity.getHeight()
+                entity.getX(), entity.getY(), entity.getWidth(), entity.getHeight()
         );
 
         switch(type) {
             case "fov":
                 Circle fovC = new Circle(
-                    getCentre().getX(),
-                    getCentre().getY(),
-                    getRadius()
+                        getCentre().getX(),
+                        getCentre().getY(),
+                        getRadius()
                 );
                 intersect = Shape.intersect(fovC, entityHitbox);
                 break;
@@ -160,10 +161,10 @@ public class SeekerAI extends SquareEntity {
         Rectangle wallHitbox;
 
         Line line = new Line(
-            getCentre().getX(),
-            getCentre().getY(),
-            entity.getCentre().getX(),
-            entity.getCentre().getY()
+                getCentre().getX(),
+                getCentre().getY(),
+                entity.getCentre().getX(),
+                entity.getCentre().getY()
         );
 
         List<Room> roomsToCheck = new ArrayList<>();
@@ -173,10 +174,10 @@ public class SeekerAI extends SquareEntity {
         for (Room room : roomsToCheck) {
             for(TexRectEntity wall : room.getWalls()) {
                 wallHitbox = new Rectangle(
-                    wall.getX(),
-                    wall.getY(),
-                    wall.getWidth(),
-                    wall.getHeight()
+                        wall.getX(),
+                        wall.getY(),
+                        wall.getWidth(),
+                        wall.getHeight()
                 );
                 wallHitbox.getTransforms().add(wall.getRotate());
                 Shape intersect = Shape.intersect(line, wallHitbox);
@@ -198,18 +199,15 @@ public class SeekerAI extends SquareEntity {
     private void chasePlayer(Entity entity) {
         setSearch(false);
         path.clear();
-        lastSeenPosition = findCurrentRoom(entity);
+        lastSeenPosition = new Point2D(entity.getX(), entity.getY());
         App.logger.debug(
-            "Last seen position coordinates are {}",
-            lastSeenPosition.getRoomCenter()
+                "Last seen position coordinates are {}",
+                lastSeenPosition
         );
 
-        if(Objects.equals(findCurrentRoom(entity), findCurrentRoom(this))) {
-            movement.moveTo(entity.getPosition());
-        }
-        else{
-            moveToCentre(lastSeenPosition);
-        }
+
+        movement.moveTo(lastSeenPosition);
+
     }
 
 
@@ -224,11 +222,37 @@ public class SeekerAI extends SquareEntity {
         Room current = map.getRooms().get(0);
         Point3D temp;
         double shortest =
-            WindowManager.getWindowWidth() * WindowManager.getWindowHeight();
+                WindowManager.getWindowWidth() * WindowManager.getWindowHeight();
 
         for (Room room : map.getRooms()) {
             temp = room.getRoomCenter().subtract(
-                new Point3D(entity.getX(), entity.getY(), room.getZ())
+                    new Point3D(entity.getX(), entity.getY(), room.getZ())
+            );
+            if (temp.magnitude() < shortest) {
+                shortest = temp.magnitude();
+                current = room;
+            }
+        }
+
+        return current;
+    }
+
+    /**
+     *
+     * Finds the current room that an entity is in
+     *
+     * @param position the entity to find current room of
+     * @return the current room of the entity
+     */
+    private Room findCurrentRoom(Point2D position) {
+        Room current = map.getRooms().get(0);
+        Point3D temp;
+        double shortest =
+                WindowManager.getWindowWidth() * WindowManager.getWindowHeight();
+
+        for (Room room : map.getRooms()) {
+            temp = room.getRoomCenter().subtract(
+                    new Point3D(position.getX(), position.getY(), room.getZ())
             );
             if (temp.magnitude() < shortest) {
                 shortest = temp.magnitude();
@@ -247,8 +271,8 @@ public class SeekerAI extends SquareEntity {
      */
     private void moveToCentre(Room room) {
         movement.moveTo(
-            room.getRoomCenter().getX() - getWidth()/2,
-            room.getRoomCenter().getY() - getHeight()/2
+                room.getRoomCenter().getX() - getWidth()/2,
+                room.getRoomCenter().getY() - getHeight()/2
         );
     }
 
@@ -280,8 +304,8 @@ public class SeekerAI extends SquareEntity {
             destination = map.getRooms().get(r);
         }
         App.logger.debug(
-            "Destination room is {}",
-            destination.getRoomCenter()
+                "Destination room is {}",
+                destination.getRoomCenter()
         );
 
         pathToFollow.add(startRoom);
@@ -292,8 +316,8 @@ public class SeekerAI extends SquareEntity {
             adjacents = current.getAdjacentRooms();
             for (int i = 0; i < 4; i++) {
                 if (
-                    adjacents[i] != null
-                    && !pathToFollow.contains(adjacents[i])
+                        adjacents[i] != null
+                                && !pathToFollow.contains(adjacents[i])
                 ) {
                     possibleMoves.add(adjacents[i]);
                 }
@@ -321,7 +345,42 @@ public class SeekerAI extends SquareEntity {
      * Contains the behaviour tree for patrolling the map
      */
     public void search() {
-        if (path.isEmpty()) {
+
+
+        if(path.isEmpty()){
+            //move to last seen position
+            if(lastSeenPosition != null){
+                double absX = Math.abs(lastSeenPosition.getX() - getX());
+                double absY = Math.abs(lastSeenPosition.getY() - getY());
+                if(absX < 2 && absY < 2){
+                    //make new path
+                    currRoom = findCurrentRoom(this);
+                    path = createPath(currRoom);
+                    lastSeenPosition = null;
+                }
+                else{
+                    App.logger.debug("Last seen position is {}", lastSeenPosition);
+                    movement.moveTo(lastSeenPosition);
+                }
+            }
+            else{
+                currRoom = findCurrentRoom(this);
+                path = createPath(currRoom);
+            }
+
+        }
+        else{
+            //continue searching
+            moveToCentre(currRoom);
+
+            double absX = Math.abs(currRoom.getRoomCenter().getX() - getWidth()/2 - getX());
+            double absY = Math.abs(currRoom.getRoomCenter().getY() - getHeight()/2 - getY());
+            if(absX < 5 && absY < 5){
+                currRoom = path.remove(0);
+            }
+        }
+
+        /*if (path.isEmpty()) {
             if (lastSeenPosition != null) {
                 currRoom = lastSeenPosition;
             }
@@ -352,7 +411,7 @@ public class SeekerAI extends SquareEntity {
             if (absX < 5 && absY < 5) {
                 currRoom = path.remove(0);
             }
-        }
+        }*/
     }
 
     public void setActive(boolean b) { isActive = b; }
@@ -366,7 +425,7 @@ public class SeekerAI extends SquareEntity {
 
     public void setSwatterRot() {
         double r = Movement.getFacingRotate(
-            target.getPosition().subtract(getPosition())
+                target.getPosition().subtract(getPosition())
         );
         swatterHitbox.setStartAngle(390 - r);
     }
@@ -382,8 +441,8 @@ public class SeekerAI extends SquareEntity {
         Point2D centre = getCentre();
         double radius = getRadius();
         return new Pair<>(
-            centre.subtract(radius, radius),
-            centre.add(radius, radius)
+                centre.subtract(radius, radius),
+                centre.add(radius, radius)
         );
     }
 }
