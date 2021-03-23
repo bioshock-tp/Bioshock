@@ -3,6 +3,7 @@ package org.bioshock.entities.map;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bioshock.engine.pathfinding.Graph;
 import org.bioshock.utils.Size;
 
 import javafx.geometry.Point3D;
@@ -11,6 +12,8 @@ import javafx.scene.paint.Color;
 public class ThreeByThreeMap {
 	//stores the rooms in a map
 	private List<Room> rooms = new ArrayList<>();
+
+	private Graph<Room> roomGraph = new Graph<>();
 
 	/***
 	 * Generates a new ThreeByThreeMap
@@ -121,6 +124,7 @@ public class ThreeByThreeMap {
 
 	private void setAdjacents() {
 		for(Room room : rooms) {
+			roomGraph.addNode(room);
 			double x = room.getRoomCenter().getX();
 			double y = room.getRoomCenter().getY();
 			for(Room adj : rooms) {
@@ -132,18 +136,18 @@ public class ThreeByThreeMap {
 					double roomW = room.getTotalSize().getWidth();
 					if(x == xa) {
 						if((ya-y) == -roomH) {
-							room.addAdjacent(adj, 0);
+							roomGraph.addEdge(room, adj);
 						}
 						else if((ya-y) == roomH) {
-							room.addAdjacent(adj, 1);
+							roomGraph.addEdge(room, adj);
 						}
 					}
 					else if(y == ya) {
 						if((xa-x) == -roomW) {
-							room.addAdjacent(adj, 2);
+							roomGraph.addEdge(room, adj);
 						}
 						else if((xa-x) == roomW) {
-							room.addAdjacent(adj, 3);
+							roomGraph.addEdge(room, adj);
 						}
 					}
 
@@ -170,5 +174,9 @@ public class ThreeByThreeMap {
 			walls.addAll(r.getWalls());
 		}
 		return walls;
+	}
+
+	public Graph<Room> getRoomGraph(){
+		return roomGraph;
 	}
 }

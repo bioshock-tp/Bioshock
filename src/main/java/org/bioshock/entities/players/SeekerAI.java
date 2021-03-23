@@ -8,6 +8,7 @@ import java.util.Random;
 
 import org.bioshock.components.NetworkC;
 import org.bioshock.engine.core.WindowManager;
+import org.bioshock.engine.pathfinding.Graph;
 import org.bioshock.entities.Entity;
 import org.bioshock.entities.EntityManager;
 import org.bioshock.entities.SquareEntity;
@@ -34,8 +35,8 @@ import javafx.util.Pair;
 
 public class SeekerAI extends SquareEntity {
     private Hider target;
-    private Arc swatterHitbox;
-    private ThreeByThreeMap map = SceneManager.getMap();
+    private final Arc swatterHitbox;
+    private final Graph<Room> roomGraph = SceneManager.getMap().getRoomGraph();
     private List<Room> path = new ArrayList<>();
     private Room currRoom;
     private Point2D lastSeenPosition;
@@ -235,12 +236,12 @@ public class SeekerAI extends SquareEntity {
      * @return the current room of the entity
      */
     private Room findCurrentRoom(Entity entity) {
-        Room current = map.getRooms().get(0);
+        Room current = roomGraph.getNodes().get(0);
         Point3D temp;
         double shortest =
                 WindowManager.getWindowWidth() * WindowManager.getWindowHeight();
 
-        for (Room room : map.getRooms()) {
+        for (Room room : roomGraph.getNodes()) {
             temp = room.getRoomCenter().subtract(
                     new Point3D(entity.getX(), entity.getY(), room.getZ())
             );
@@ -280,7 +281,7 @@ public class SeekerAI extends SquareEntity {
     private List<Room> createPath(Room startRoom) {
         List<Room> pathToFollow = new ArrayList<>();
         List<Room> possibleMoves = new ArrayList<>();
-        Room[] adjacents;
+        List<Room> adjacents;
         Room destination;
         Room current;
         int r;
@@ -291,8 +292,8 @@ public class SeekerAI extends SquareEntity {
         App.logger.debug("Start room is {}", startRoom.getRoomCenter());
 
         while(destination == startRoom) {
-            r = rand.nextInt(map.getRooms().size());
-            destination = map.getRooms().get(r);
+            r = rand.nextInt(roomGraph.getNodes().size());
+            destination = roomGraph.getNodes().get(r);
         }
         App.logger.debug(
                 "Destination room is {}",
@@ -304,13 +305,10 @@ public class SeekerAI extends SquareEntity {
         c++;
 
         while (current != destination) {
-            adjacents = current.getAdjacentRooms();
-            for (int i = 0; i < 4; i++) {
-                if (
-                        adjacents[i] != null
-                                && !pathToFollow.contains(adjacents[i])
-                ) {
-                    possibleMoves.add(adjacents[i]);
+            adjacents = roomGraph.getConnections(current);
+            for(Room room : adjacents){
+                if(!pathToFollow.contains(room)){
+                    possibleMoves.add(room);
                 }
             }
 

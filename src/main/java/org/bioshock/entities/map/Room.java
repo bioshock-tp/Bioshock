@@ -15,7 +15,6 @@ public class Room {
     private List<TexRectEntity> walls = new ArrayList<>();
     private double z;
     private Point3D pos;
-    private Room[] adjacentRooms = new Room[4]; //[N,S,W,E]
 
     /***
      * Generates a room with the position being the top left of the room
@@ -198,10 +197,6 @@ public class Room {
         walls.add(corner4);
     }
 
-    public void addAdjacent(Room r, int i) {
-        adjacentRooms[i] = r;
-    }
-
     /***
      * sets the Z value of all the walls in the room to the newZ
      * @param newZ
@@ -252,5 +247,4 @@ public class Room {
         );
     }
 
-    public Room[] getAdjacentRooms() { return adjacentRooms; }
 }
