@@ -12,6 +12,7 @@ import org.bioshock.engine.pathfinding.Graph;
 import org.bioshock.entities.Entity;
 import org.bioshock.entities.EntityManager;
 import org.bioshock.entities.SquareEntity;
+import org.bioshock.entities.map.ConnType;
 import org.bioshock.entities.map.Room;
 import org.bioshock.entities.map.TexRectEntity;
 import org.bioshock.entities.map.ThreeByThreeMap;
@@ -20,6 +21,7 @@ import org.bioshock.physics.Movement;
 import org.bioshock.rendering.renderers.SeekerRenderer;
 import org.bioshock.rendering.renderers.components.SimpleRendererC;
 import org.bioshock.scenes.SceneManager;
+import org.bioshock.utils.Direction;
 import org.bioshock.utils.Size;
 
 import javafx.geometry.Point2D;
@@ -36,7 +38,7 @@ import javafx.util.Pair;
 public class SeekerAI extends SquareEntity {
     private Hider target;
     private final Arc swatterHitbox;
-    private final Graph<Room> roomGraph = SceneManager.getMap().getRoomGraph();
+    private final Graph<Room,Pair<Direction,ConnType>> roomGraph = SceneManager.getMap().getRoomGraph();
     private List<Room> path = new ArrayList<>();
     private Room currRoom;
     private Point2D lastSeenPosition;
@@ -305,7 +307,7 @@ public class SeekerAI extends SquareEntity {
         c++;
 
         while (current != destination) {
-            adjacents = roomGraph.getConnections(current);
+            adjacents = roomGraph.getConnectedNodes(current);
             for(Room room : adjacents){
                 if(!pathToFollow.contains(room)){
                     possibleMoves.add(room);

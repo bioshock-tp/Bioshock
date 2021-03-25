@@ -4,16 +4,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bioshock.engine.pathfinding.Graph;
+import org.bioshock.utils.Direction;
 import org.bioshock.utils.Size;
 
 import javafx.geometry.Point3D;
 import javafx.scene.paint.Color;
+import javafx.util.Pair;
 
 public class ThreeByThreeMap {
 	//stores the rooms in a map
 	private List<Room> rooms = new ArrayList<>();
 
-	private Graph<Room> roomGraph = new Graph<>();
+	private Graph<Room,Pair<Direction,ConnType>> roomGraph = new Graph<>();
 
 	/***
 	 * Generates a new ThreeByThreeMap
@@ -134,20 +136,53 @@ public class ThreeByThreeMap {
 
 					double roomH = room.getTotalSize().getHeight();
 					double roomW = room.getTotalSize().getWidth();
+					
 					if(x == xa) {
+					    //if true adj is directly north of room
 						if((ya-y) == -roomH) {
-							roomGraph.addEdge(room, adj);
+							roomGraph.addEdge(
+						        room, 
+						        new Pair<Room, Pair<Direction, ConnType>>(
+					                adj,
+					                new Pair<Direction, ConnType>(
+				                        Direction.NORTH, 
+				                        ConnType.ROOM_TO_ROOM)), 
+						        true);
 						}
+						//if true adj is directly south of room
 						else if((ya-y) == roomH) {
-							roomGraph.addEdge(room, adj);
+						    roomGraph.addEdge(
+                                room, 
+                                new Pair<Room, Pair<Direction, ConnType>>(
+                                    adj,
+                                    new Pair<Direction, ConnType>(
+                                        Direction.SOUTH, 
+                                        ConnType.ROOM_TO_ROOM)), 
+                                true);
 						}
 					}
 					else if(y == ya) {
+					    //if true adj is directly west of room
 						if((xa-x) == -roomW) {
-							roomGraph.addEdge(room, adj);
+						    roomGraph.addEdge(
+                                room, 
+                                new Pair<Room, Pair<Direction, ConnType>>(
+                                    adj,
+                                    new Pair<Direction, ConnType>(
+                                        Direction.WEST, 
+                                        ConnType.ROOM_TO_ROOM)), 
+                                true);
 						}
+						//if true adj is directly east of room
 						else if((xa-x) == roomW) {
-							roomGraph.addEdge(room, adj);
+						    roomGraph.addEdge(
+                                room, 
+                                new Pair<Room, Pair<Direction, ConnType>>(
+                                    adj,
+                                    new Pair<Direction, ConnType>(
+                                        Direction.EAST, 
+                                        ConnType.ROOM_TO_ROOM)), 
+                                true);
 						}
 					}
 
@@ -176,7 +211,7 @@ public class ThreeByThreeMap {
 		return walls;
 	}
 
-	public Graph<Room> getRoomGraph(){
+	public Graph<Room,Pair<Direction,ConnType>> getRoomGraph(){
 		return roomGraph;
 	}
 }

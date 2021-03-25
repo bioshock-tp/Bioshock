@@ -5,16 +5,41 @@ import java.util.List;
 
 import org.bioshock.components.NetworkC;
 import org.bioshock.utils.Size;
+import org.mockito.internal.util.collections.Sets;
 
 import javafx.geometry.Point3D;
 import javafx.scene.paint.Color;
+import javafx.util.Pair;
 
 public class Room {
+    /***
+     *  Stores the total size of the room
+     *  i.e. the roomSize + corridor width*2 in both dimensions 
+     */
     private Size totalSize;
+    /***
+     * Stores the internal room size
+     */
     private Size roomSize;
+    /***
+     * Stores a list of all the walls that make up the room
+     */
     private List<TexRectEntity> walls = new ArrayList<>();
-    private double z;
+    /***
+     * Stores the position of the top left of the room
+     */
     private Point3D pos;
+    /***
+     * Stores the connection to the rooms to the north south east and west
+     * as a pair containing the room it's connecting to and the Connection type
+     */
+    private ArrayList<Pair<Room,ConnType>> connections = new ArrayList<Pair<Room,ConnType>>(); //N,S,E,W
+    {
+        connections.add(new Pair<Room, ConnType>(null, ConnType.ROOM_TO_ROOM)); //N
+        connections.add(new Pair<Room, ConnType>(null, ConnType.ROOM_TO_ROOM)); //S
+        connections.add(new Pair<Room, ConnType>(null, ConnType.ROOM_TO_ROOM)); //E
+        connections.add(new Pair<Room, ConnType>(null, ConnType.ROOM_TO_ROOM)); //W
+    }
 
     /***
      * Generates a room with the position being the top left of the room
@@ -34,7 +59,6 @@ public class Room {
         Color c
     ) {
         this.pos = newPos;
-        this.z = pos.getZ();
         this.roomSize = newRoomSize;
         this.totalSize = new Size(
             roomSize.getWidth() + 2 * coriSize.getHeight(),
@@ -196,6 +220,20 @@ public class Room {
         );
         walls.add(corner4);
     }
+    
+    /***
+     * 
+     */
+    public void init(
+        Point3D newPos,
+        double wallWidth,
+        Size newRoomSize,
+        Size coriSize,
+        Exits exits,
+        Color c
+    ) {
+        
+    }
 
     /***
      * sets the Z value of all the walls in the room to the newZ
@@ -206,7 +244,53 @@ public class Room {
             e.getRendererC().setZ(newZ);
         }
     }
+    
+    /***
+     * Sets new values of the room connections
+     * @param north the new value of the north connection
+     * @param south the new value of the south connection
+     * @param east the new value of the east connection
+     * @param west the new value of the west connection
+     */
+    public void setConnTypes(ConnType north, ConnType south, ConnType east, ConnType west) {
+        setNorthConnType(north);
+        setSouthConnType(south);
+        setEastConnType(east);
+        setWestConnType(west);
+    }
+    
+    /***
+     * Sets the value of the north connection
+     * @param north
+     */
+    public void setNorthConnType(ConnType north) {
+        connections.set(0, new Pair<Room, ConnType>(connections.get(0).getKey(), north));
+    }
 
+    /***
+     * Sets the value of the south connection
+     * @param south
+     */
+    public void setSouthConnType(ConnType south) {
+        connections.set(1, new Pair<Room, ConnType>(connections.get(1).getKey(), south));
+    }
+    
+    /***
+     * Sets the value of the east connection
+     * @param east
+     */
+    public void setEastConnType(ConnType east) {
+        connections.set(2, new Pair<Room, ConnType>(connections.get(2).getKey(), east));
+    }
+    
+    /***
+     * Sets the value of the west connection
+     * @param west
+     */
+    public void setWestConnType(ConnType west) {
+        connections.set(3, new Pair<Room, ConnType>(connections.get(3).getKey(), west));
+    }
+    
     /***
      *
      * @return The walls that make up the room
@@ -231,8 +315,12 @@ public class Room {
         return roomSize;
     }
 
+    /***
+     * 
+     * @return the z value of the room for rendering purposes
+     */
     public double getZ() {
-        return z;
+        return pos.getZ();
     }
 
     /***
