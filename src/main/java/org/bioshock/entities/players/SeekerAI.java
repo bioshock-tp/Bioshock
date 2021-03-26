@@ -328,6 +328,8 @@ public class SeekerAI extends SquareEntity {
             c++;
 
         }
+        
+        pathToFollow.add(pathToFollow.get(pathToFollow.size()-1));
 
         return pathToFollow;
     }
@@ -355,14 +357,16 @@ public class SeekerAI extends SquareEntity {
                 }
             }
             else{
+                
                 currRoom = findCurrentRoom(this);
                 path = createPath(currRoom);
+                
             }
 
         }
         else{
             //continue searching
-            moveToCentre(path.get(0));
+            moveToCentre(currRoom);
 
             double absX = Math.abs(currRoom.getRoomCenter().getX() - getWidth()/2 - getX());
             double absY = Math.abs(currRoom.getRoomCenter().getY() - getHeight()/2 - getY());
