@@ -291,19 +291,19 @@ public class SeekerAI extends SquareEntity {
 
         current = startRoom;
         destination = startRoom;
-        App.logger.debug("Start room is {}", startRoom.getRoomCenter());
+//        App.logger.debug("Start room is {}", startRoom.getRoomCenter());
 
         while(destination == startRoom) {
             r = rand.nextInt(roomGraph.getNodes().size());
             destination = roomGraph.getNodes().get(r);
         }
-        App.logger.debug(
-                "Destination room is {}",
-                destination.getRoomCenter()
-        );
+//        App.logger.debug(
+//                "Destination room is {}",
+//                destination.getRoomCenter()
+//        );
 
         pathToFollow.add(startRoom);
-        App.logger.debug("Room {} is {}", c, startRoom.getRoomCenter());
+//        App.logger.debug("Room {} is {}", c, startRoom.getRoomCenter());
         c++;
 
         while (current != destination) {
@@ -323,7 +323,7 @@ public class SeekerAI extends SquareEntity {
             }
 
             pathToFollow.add(current);
-            App.logger.debug("Room {} is {}", c, current.getRoomCenter());
+//            App.logger.debug("Room {} is {}", c, current.getRoomCenter());
             possibleMoves.clear();
             c++;
 
@@ -362,7 +362,7 @@ public class SeekerAI extends SquareEntity {
         }
         else{
             //continue searching
-            moveToCentre(currRoom);
+            moveToCentre(path.get(0));
 
             double absX = Math.abs(currRoom.getRoomCenter().getX() - getWidth()/2 - getX());
             double absY = Math.abs(currRoom.getRoomCenter().getY() - getHeight()/2 - getY());

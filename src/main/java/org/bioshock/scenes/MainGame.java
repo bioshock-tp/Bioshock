@@ -144,10 +144,10 @@ public class MainGame extends GameScene {
         if(!losing) {
             runningTime += timeDelta;
 
-            if (runningTime >= ENDTIME) {
-                SceneManager.setScene(new WinScreen());
-                return;
-            }
+//            if (runningTime >= ENDTIME) {
+//                SceneManager.setScene(new WinScreen());
+//                return;
+//            }
 
             if (
                 !EntityManager.getPlayers().isEmpty()

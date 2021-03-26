@@ -57,6 +57,12 @@ public class Graph<T,S> {
         return nodes;
     }
     
+    public List<S> getEdgesInfo(T node){
+        List<S> edgesInfo = new ArrayList<>();
+        nodeMap.get(node).forEach(pair -> edgesInfo.add(pair.getValue()));
+        return edgesInfo;
+    }
+    
     /***
      * 
      * @param node

@@ -1,9 +1,11 @@
 package org.bioshock.entities.map;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.bioshock.components.NetworkC;
+import org.bioshock.utils.Direction;
 import org.bioshock.utils.Size;
 import org.mockito.internal.util.collections.Sets;
 
@@ -29,17 +31,9 @@ public class Room {
      * Stores the position of the top left of the room
      */
     private Point3D pos;
-    /***
-     * Stores the connection to the rooms to the north south east and west
-     * as a pair containing the room it's connecting to and the Connection type
-     */
-    private ArrayList<Pair<Room,ConnType>> connections = new ArrayList<Pair<Room,ConnType>>(); //N,S,E,W
-    {
-        connections.add(new Pair<Room, ConnType>(null, ConnType.ROOM_TO_ROOM)); //N
-        connections.add(new Pair<Room, ConnType>(null, ConnType.ROOM_TO_ROOM)); //S
-        connections.add(new Pair<Room, ConnType>(null, ConnType.ROOM_TO_ROOM)); //E
-        connections.add(new Pair<Room, ConnType>(null, ConnType.ROOM_TO_ROOM)); //W
-    }
+    private double wallWidth;
+    private Size coriSize;
+    private Color c;
 
     /***
      * Generates a room with the position being the top left of the room
@@ -55,119 +49,45 @@ public class Room {
         double wallWidth,
         Size newRoomSize,
         Size coriSize,
-        Exits exits,
-        Color c
-    ) {
+        Color c) {
         this.pos = newPos;
+        this.wallWidth = wallWidth;
         this.roomSize = newRoomSize;
         this.totalSize = new Size(
             roomSize.getWidth() + 2 * coriSize.getHeight(),
             roomSize.getHeight() + 2 * coriSize.getHeight()
         );
-
-        //chooses either a top side with or without an exit
-        if (exits.isTop()) {
-            walls.addAll(Sides.tExit(
-                pos.add(coriSize.getHeight(), 0, 0),
-                wallWidth,
-                roomSize.getWidth(),
-                coriSize.getWidth(),
-                coriSize.getHeight(),
-                c
-            ));
+        this.coriSize = coriSize;
+        this.c = c;
+    }
+    
+    /***
+     * 
+     */
+    public void init(
+        List<Pair<Direction,ConnType>> edges
+    ) {
+        
+        /***
+         * Stores the connection type for each direction
+         */
+        HashMap<Direction,ConnType> connections = new HashMap<>();
+        connections.put(Direction.NORTH, ConnType.NO_EXIT);
+        connections.put(Direction.SOUTH, ConnType.NO_EXIT);
+        connections.put(Direction.EAST, ConnType.NO_EXIT);
+        connections.put(Direction.WEST, ConnType.NO_EXIT);
+        
+        //Add the connection type for each direction
+        for (Pair<Direction,ConnType> edge : edges) {
+            connections.replace(edge.getKey(), edge.getValue());
         }
-        else {
-            walls.addAll(Sides.tNoExit(
-                pos.add(coriSize.getHeight(), 0, 0),
-                wallWidth,
-                roomSize.getWidth(),
-                coriSize.getWidth(),
-                coriSize.getHeight(),
-                c
-            ));
-        }
-
-        //chooses either a bottom side with or without an exit
-        if (exits.isBot()) {
-            walls.addAll(Sides.bExit(
-                pos.add(
-                    coriSize.getHeight(),
-                    coriSize.getHeight() + roomSize.getHeight(),
-                    0
-                ),
-                wallWidth,
-                roomSize.getWidth(),
-                coriSize.getWidth(),
-                coriSize.getHeight(),
-                c
-            ));
-        }
-        else {
-            walls.addAll(Sides.bNoExit(
-                pos.add(
-                    coriSize.getHeight(),
-                    coriSize.getHeight() + roomSize.getHeight(),
-                    0
-                ),
-                wallWidth,
-                roomSize.getWidth(),
-                coriSize.getWidth(),
-                coriSize.getHeight(),
-                c
-            ));
-        }
-
-        //chooses either a left side with or without an exit
-        if (exits.isLeft()) {
-            walls.addAll(Sides.lExit(
-                pos.add(0, coriSize.getHeight(), 0),
-                wallWidth, roomSize.getHeight(),
-                coriSize.getWidth(),
-                coriSize.getHeight(),
-                c
-            ));
-        }
-        else {
-            walls.addAll(Sides.lNoExit(
-                pos.add(0, coriSize.getHeight(), 0),
-                wallWidth,
-                roomSize.getHeight(),
-                coriSize.getWidth(),
-                coriSize.getHeight(),
-                c
-            ));
-        }
-
-        //chooses either a right side with or without an exit
-        if (exits.isRight()) {
-            walls.addAll(Sides.rExit(
-                pos.add(
-                    coriSize.getHeight() + roomSize.getWidth(),
-                    coriSize.getHeight(),
-                    0
-                ),
-                wallWidth,
-                roomSize.getHeight(),
-                coriSize.getWidth(),
-                coriSize.getHeight(),
-                c
-            ));
-        }
-        else {
-            walls.addAll(Sides.rNoExit(
-                pos.add(
-                    coriSize.getHeight() + roomSize.getWidth(),
-                    coriSize.getHeight(),
-                    0
-                ),
-                wallWidth,
-                roomSize.getHeight(),
-                coriSize.getWidth(),
-                coriSize.getHeight(),
-                c
-            ));
-        }
-
+        
+        //Add the sides relevant for the connection type in each direction
+        topSide(wallWidth, coriSize, c, connections.get(Direction.NORTH));
+        botSide(wallWidth, coriSize, c, connections.get(Direction.SOUTH));
+        rightSide(wallWidth, coriSize, c, connections.get(Direction.EAST));
+        leftSide(wallWidth, coriSize, c, connections.get(Direction.WEST));
+        
         //corner connecting bottom and right
         TexRectEntity corner1 = new TexRectEntity(
             pos.add(
@@ -222,19 +142,181 @@ public class Room {
     }
     
     /***
-     * 
+     * Adds a top side depending on the connection type
+     * @param wallWidth
+     * @param coriSize
+     * @param c
+     * @param con
      */
-    public void init(
-        Point3D newPos,
+    private void topSide(
         double wallWidth,
-        Size newRoomSize,
         Size coriSize,
-        Exits exits,
-        Color c
-    ) {
-        
+        Color c,
+        ConnType con) {
+        //chooses either a top side with or without an exit
+        switch(con) {
+        case NO_EXIT:
+            walls.addAll(Sides.tNoExit(
+                pos.add(coriSize.getHeight(), 0, 0),
+                wallWidth,
+                roomSize.getWidth(),
+                coriSize.getWidth(),
+                coriSize.getHeight(),
+                c
+            ));
+            break;
+        case ROOM_TO_ROOM:
+            walls.addAll(Sides.tExit(
+                pos.add(coriSize.getHeight(), 0, 0),
+                wallWidth,
+                roomSize.getWidth(),
+                coriSize.getWidth(),
+                coriSize.getHeight(),
+                c
+            ));
+            break;
+        default:
+            break;
+        }
+    }
+    
+    /***
+     * Adds a bottom side depending on the connection type
+     * @param wallWidth
+     * @param coriSize
+     * @param c
+     * @param con
+     */
+    private void botSide(
+        double wallWidth,
+        Size coriSize,
+        Color c,
+        ConnType con) {
+      //chooses either a bottom side with or without an exit
+        switch(con) {
+        case ROOM_TO_ROOM: 
+            walls.addAll(Sides.bExit(
+                pos.add(
+                    coriSize.getHeight(),
+                    coriSize.getHeight() + roomSize.getHeight(),
+                    0
+                ),
+                wallWidth,
+                roomSize.getWidth(),
+                coriSize.getWidth(),
+                coriSize.getHeight(),
+                c
+            ));
+            break;
+        case NO_EXIT:
+            walls.addAll(Sides.bNoExit(
+                pos.add(
+                    coriSize.getHeight(),
+                    coriSize.getHeight() + roomSize.getHeight(),
+                    0
+                ),
+                wallWidth,
+                roomSize.getWidth(),
+                coriSize.getWidth(),
+                coriSize.getHeight(),
+                c
+            ));
+            break;
+        default:
+            break;
+        }
+    }
+    
+    /***
+     * Adds a left side depending on the connection type
+     * @param wallWidth
+     * @param coriSize
+     * @param c
+     * @param con
+     */
+    private void rightSide(
+        double wallWidth,
+        Size coriSize,
+        Color c,
+        ConnType con) {
+        //chooses either a right side with or without an exit
+        switch(con) {
+        case NO_EXIT:
+            walls.addAll(Sides.rNoExit(
+                pos.add(
+                    coriSize.getHeight() + roomSize.getWidth(),
+                    coriSize.getHeight(),
+                    0
+                ),
+                wallWidth,
+                roomSize.getHeight(),
+                coriSize.getWidth(),
+                coriSize.getHeight(),
+                c
+            ));
+            break;
+        case ROOM_TO_ROOM:
+            walls.addAll(Sides.rExit(
+                pos.add(
+                    coriSize.getHeight() + roomSize.getWidth(),
+                    coriSize.getHeight(),
+                    0
+                ),
+                wallWidth,
+                roomSize.getHeight(),
+                coriSize.getWidth(),
+                coriSize.getHeight(),
+                c
+            ));
+            break;
+        default:
+            break;
+        }
     }
 
+    /***
+     * Adds a left side depending on the connection type
+     * @param wallWidth
+     * @param coriSize
+     * @param c
+     * @param con
+     */
+    private void leftSide(
+        double wallWidth,
+        Size coriSize,
+        Color c,
+        ConnType con) {
+        //chooses either a left side with or without an exit
+        switch(con) {
+        case NO_EXIT:
+            walls.addAll(Sides.lNoExit(
+                pos.add(0, coriSize.getHeight(), 0),
+                wallWidth,
+                roomSize.getHeight(),
+                coriSize.getWidth(),
+                coriSize.getHeight(),
+                c
+            ));            
+            break;
+        case ROOM_TO_ROOM:
+            walls.addAll(Sides.lExit(
+                pos.add(0, coriSize.getHeight(), 0),
+                wallWidth, roomSize.getHeight(),
+                coriSize.getWidth(),
+                coriSize.getHeight(),
+                c
+            ));
+            break;
+        default:
+            break;
+          
+        }
+    }    
+    
+    private boolean isSolid(ConnType con) {
+        return true;
+    }
+    
     /***
      * sets the Z value of all the walls in the room to the newZ
      * @param newZ
@@ -243,52 +325,6 @@ public class Room {
         for (TexRectEntity e : walls) {
             e.getRendererC().setZ(newZ);
         }
-    }
-    
-    /***
-     * Sets new values of the room connections
-     * @param north the new value of the north connection
-     * @param south the new value of the south connection
-     * @param east the new value of the east connection
-     * @param west the new value of the west connection
-     */
-    public void setConnTypes(ConnType north, ConnType south, ConnType east, ConnType west) {
-        setNorthConnType(north);
-        setSouthConnType(south);
-        setEastConnType(east);
-        setWestConnType(west);
-    }
-    
-    /***
-     * Sets the value of the north connection
-     * @param north
-     */
-    public void setNorthConnType(ConnType north) {
-        connections.set(0, new Pair<Room, ConnType>(connections.get(0).getKey(), north));
-    }
-
-    /***
-     * Sets the value of the south connection
-     * @param south
-     */
-    public void setSouthConnType(ConnType south) {
-        connections.set(1, new Pair<Room, ConnType>(connections.get(1).getKey(), south));
-    }
-    
-    /***
-     * Sets the value of the east connection
-     * @param east
-     */
-    public void setEastConnType(ConnType east) {
-        connections.set(2, new Pair<Room, ConnType>(connections.get(2).getKey(), east));
-    }
-    
-    /***
-     * Sets the value of the west connection
-     * @param west
-     */
-    public void setWestConnType(ConnType west) {
-        connections.set(3, new Pair<Room, ConnType>(connections.get(3).getKey(), west));
     }
     
     /***

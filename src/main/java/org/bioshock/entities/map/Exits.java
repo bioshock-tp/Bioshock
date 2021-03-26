@@ -6,7 +6,23 @@ package org.bioshock.entities.map;
  */
 public class Exits {
 	boolean top = false;
-	boolean bot = false;
+	public void setTop(boolean top) {
+        this.top = top;
+    }
+
+    public void setBot(boolean bot) {
+        this.bot = bot;
+    }
+
+    public void setLeft(boolean left) {
+        this.left = left;
+    }
+
+    public void setRight(boolean right) {
+        this.right = right;
+    }
+
+    boolean bot = false;
 	boolean left = false;
 	boolean right = false;
 
