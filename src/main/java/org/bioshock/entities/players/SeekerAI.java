@@ -329,8 +329,6 @@ public class SeekerAI extends SquareEntity {
 
         }
         
-        pathToFollow.add(pathToFollow.get(pathToFollow.size()-1));
-
         return pathToFollow;
     }
 
