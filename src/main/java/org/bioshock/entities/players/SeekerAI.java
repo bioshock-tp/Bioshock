@@ -3,7 +3,6 @@ package org.bioshock.entities.players;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Random;
 
 import org.bioshock.components.NetworkC;
@@ -15,7 +14,6 @@ import org.bioshock.entities.SquareEntity;
 import org.bioshock.entities.map.ConnType;
 import org.bioshock.entities.map.Room;
 import org.bioshock.entities.map.TexRectEntity;
-import org.bioshock.entities.map.ThreeByThreeMap;
 import org.bioshock.main.App;
 import org.bioshock.physics.Movement;
 import org.bioshock.rendering.renderers.SeekerRenderer;

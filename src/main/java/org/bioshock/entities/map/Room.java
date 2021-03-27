@@ -7,7 +7,6 @@ import java.util.List;
 import org.bioshock.components.NetworkC;
 import org.bioshock.utils.Direction;
 import org.bioshock.utils.Size;
-import org.mockito.internal.util.collections.Sets;
 
 import javafx.geometry.Point3D;
 import javafx.scene.paint.Color;
@@ -313,7 +312,8 @@ public class Room {
         }
     }    
     
-    private boolean isSolid(ConnType con) {
+    @SuppressWarnings("unused")
+	private boolean isSolid(ConnType con) {
         return true;
     }
     

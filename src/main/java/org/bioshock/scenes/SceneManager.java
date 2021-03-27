@@ -2,7 +2,7 @@ package org.bioshock.scenes;
 
 import org.bioshock.engine.core.WindowManager;
 import org.bioshock.engine.input.InputManager;
-import org.bioshock.entities.map.ThreeByThreeMap;
+import org.bioshock.entities.map.Map;
 import org.bioshock.main.App;
 
 import javafx.scene.canvas.Canvas;
@@ -15,7 +15,7 @@ public final class SceneManager {
     private static boolean inLobby = false;
     private static boolean inGame = false;
     private static boolean initialised = false;
-    private static ThreeByThreeMap gameMap;
+    private static Map gameMap;
 
     private SceneManager() {}
 
@@ -48,7 +48,7 @@ public final class SceneManager {
         SceneManager.inGame = inGame;
     }
 
-    public static void setMap(ThreeByThreeMap map) {
+    public static void setMap(Map map) {
         gameMap = map;
     }
 
@@ -81,7 +81,7 @@ public final class SceneManager {
         return inGame;
     }
 
-    public static ThreeByThreeMap getMap() {
+    public static Map getMap() {
         return gameMap;
     }
 }
