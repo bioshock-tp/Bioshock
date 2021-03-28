@@ -2,6 +2,8 @@ package org.bioshock.engine.pathfinding;
 
 import java.util.*;
 
+import org.bioshock.utils.DeepCopy;
+
 import javafx.util.Pair;
 
 /***
@@ -88,5 +90,58 @@ public class Graph<T,S> {
     public List<T> getNodes(){
         return new ArrayList<>(nodeMap.keySet());
     }
-
+    
+    /***
+     * gets a new Graph which only contains nodes you can 
+     * traverse to and from the provided node
+     * @param node the node all other nodes will be connected to
+     * @return a deep copy of the new subgraph graph 
+     */
+    public Graph<T,S> getConnectedSubgraph(T node, DeepCopy<T> d) {
+        return null;
+    }
+    
+    /***
+     * 
+     * @param node
+     * @return a list of all nodes that are indirectly 
+     * connected to the given node including itself
+     */
+    public List<T> getIndirectlyConnectedNodes(T node){
+        if(node == null) {
+            throw new RuntimeException("node is null");
+        }
+        if(!nodeMap.containsKey(node)) {
+            throw new RuntimeException("Node provided is not in graph");
+        }
+        
+        ArrayList<T> visited = new ArrayList<>();
+        ArrayList<T> frontier = new ArrayList<>();
+        frontier.add(node);
+        
+        while(!frontier.isEmpty()) {
+            T currNode = frontier.get(0);
+            frontier.remove(0);            
+            visited.add(currNode);
+            
+            for(T dirConNode : getConnectedNodes(currNode)) {
+                if(!visited.contains(dirConNode) && !frontier.contains(dirConNode)) {
+                    frontier.add(dirConNode);
+                }
+            }
+        }
+        return null;
+    }
+    
+    /***
+     * gets a graph that only contains the given nodes and only has 
+     * connections to nodes in the trimmed graph
+     * @param nodes the list of all nodes to contained in the trimmed graph
+     * @param the function to deep copy a node T 
+     * @return a deep copy of of the new trimmed graph
+     */
+    public Graph<T,S> getTrimmedGraph(List<T> nodes, DeepCopy<T> d) {
+        return null;
+    }
+    
 }
