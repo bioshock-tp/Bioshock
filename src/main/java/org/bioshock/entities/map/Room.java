@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.bioshock.components.NetworkC;
+import org.bioshock.utils.DeepCopy;
 import org.bioshock.utils.Direction;
 import org.bioshock.utils.Size;
 
@@ -12,7 +13,7 @@ import javafx.geometry.Point3D;
 import javafx.scene.paint.Color;
 import javafx.util.Pair;
 
-public class Room {
+public class Room{
     /***
      *  Stores the total size of the room
      *  i.e. the roomSize + corridor width*2 in both dimensions 
@@ -370,5 +371,20 @@ public class Room {
             0
         );
     }
+
+    /***
+     * 
+     * @return an uninitialised deep copy of the current room
+     * i.e. you need to call init() on the room with edge info
+     */
+    public Room deepCopy() {
+        return new Room(
+            this.pos,
+            this.wallWidth, 
+            this.roomSize,  
+            this.coriSize, 
+            this.c
+        );
+}
 
 }

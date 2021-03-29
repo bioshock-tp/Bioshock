@@ -95,10 +95,29 @@ public class Graph<T,S> {
      * gets a new Graph which only contains nodes you can 
      * traverse to and from the provided node
      * @param node the node all other nodes will be connected to
+     * @param a deep copy function on the type T that returns a 
+     * new object with all the same values of the given object
      * @return a deep copy of the new subgraph graph 
      */
-    public Graph<T,S> getConnectedSubgraph(T node, DeepCopy<T> d) {
-        return null;
+    public Graph<T,S> getConnectedSubgraph(T node, DeepCopy<T> dc) {
+        /***
+         * list of nodes reachable from the given node
+         */
+        List<T> reachableNodes = getIndirectlyConnectedNodes(node);
+        /***
+         * list of nodes which you can reach from the given node and can traverse to the given node
+         * i.e. if there was a one directional edge from A->B but not from B->A B wouldn't be in the list
+         */
+        ArrayList<T> bidirectionalNodes = new ArrayList<>();
+        
+        for(T testNode: reachableNodes) {
+            //if you can reach node from the testNode add to bidirectionalNodes
+            if(getIndirectlyConnectedNodes(testNode).contains(node)) {
+                bidirectionalNodes.add(testNode);
+            }
+        }
+        
+        return getTrimmedGraph(bidirectionalNodes, dc);
     }
     
     /***
@@ -115,33 +134,76 @@ public class Graph<T,S> {
             throw new RuntimeException("Node provided is not in graph");
         }
         
+        /***
+         * list to store all the nodes that have been visited in the search
+         */
         ArrayList<T> visited = new ArrayList<>();
+        /***
+         * list to store all nodes that can be visited but haven't been yet
+         */
         ArrayList<T> frontier = new ArrayList<>();
+        //add the first node to initialise the search
         frontier.add(node);
         
+        //this search is an implementation  of breadth first search
+        //loop while there are still nodes to explore
         while(!frontier.isEmpty()) {
+            //visit the first node in the frontier
             T currNode = frontier.get(0);
             frontier.remove(0);            
             visited.add(currNode);
             
+            //for every node directly connected to the node we are visiting add 
+            //to the frontier if they haven't already been visited and aren't 
+            //already in the frontier            
             for(T dirConNode : getConnectedNodes(currNode)) {
                 if(!visited.contains(dirConNode) && !frontier.contains(dirConNode)) {
                     frontier.add(dirConNode);
                 }
             }
         }
-        return null;
+        return visited;
     }
     
     /***
      * gets a graph that only contains the given nodes and only has 
      * connections to nodes in the trimmed graph
      * @param nodes the list of all nodes to contained in the trimmed graph
-     * @param the function to deep copy a node T 
+     * @param a deep copy function on the type T that returns a 
+     * new object with all the same values of the given object
      * @return a deep copy of of the new trimmed graph
      */
-    public Graph<T,S> getTrimmedGraph(List<T> nodes, DeepCopy<T> d) {
-        return null;
-    }
-    
+    public Graph<T,S> getTrimmedGraph(List<T> nodes, DeepCopy<T> dc) {
+        /***
+         * A mapping from old nodes to new nodes
+         */
+        HashMap<T,T> oldToNew = new HashMap<>();
+        /***
+         * The trimmed graph we're going to add
+         */
+        Graph<T,S> trimmedGraph = new Graph<>();
+        for(T node:nodes) {
+            //make a copy of each node and add to the mapping and the new graph
+            T nodeCopy = dc.deepCopy(node);
+            oldToNew.put(node, nodeCopy);
+            trimmedGraph.addNode(nodeCopy);
+        }
+        
+        for(T node:nodes) {        
+            //for each edge coming out of the node in the parent graph
+            for(Pair<T,S> edge:nodeMap.get(node)) {
+                //if that edge connects to a node we want to have in the new graph
+                if(nodes.contains(edge.getKey())) {
+                    //add the edge to the new graph but with the new 
+                    trimmedGraph.addEdge(
+                        oldToNew.get(node), 
+                        new Pair<T,S>(oldToNew.get(edge.getKey()),edge.getValue()), 
+                        false
+                    );
+                }
+            }
+            
+        }
+        return trimmedGraph;
+    }    
 }

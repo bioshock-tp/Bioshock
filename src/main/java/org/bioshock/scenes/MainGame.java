@@ -56,7 +56,7 @@ public class MainGame extends GameScene {
         		new Size(300, 600), 
         		new Size(90, 90), 
         		Color.SADDLEBROWN, 
-        		GlobalConstants.threeByThreeMap
+        		GlobalConstants.testMap
     		);
 
 //        map = new ThreeByThreeMap(
@@ -124,7 +124,16 @@ public class MainGame extends GameScene {
         getPane().getChildren().add(timer);
 
         InputManager.onRelease(KeyCode.Y, () ->	cameraLock = !cameraLock);
-
+        InputManager.onRelease(KeyCode.C, () -> RenderManager.setClip(!RenderManager.isClip()));
+        InputManager.onPress(KeyCode.LEFT, 
+                () -> RenderManager.setCameraPos(RenderManager.getCameraPos().add(-10,0)));
+        InputManager.onPress(KeyCode.RIGHT, 
+                () -> RenderManager.setCameraPos(RenderManager.getCameraPos().add(10,0)));
+        InputManager.onPress(KeyCode.UP, 
+                () -> RenderManager.setCameraPos(RenderManager.getCameraPos().add(0,-10)));
+        InputManager.onPress(KeyCode.DOWN, 
+                () -> RenderManager.setCameraPos(RenderManager.getCameraPos().add(0,10)));
+        
         registerEntities();
     }
 
@@ -170,7 +179,7 @@ public class MainGame extends GameScene {
         else {
             timeLosing += timeDelta;
             if (timeLosing >= LOSEDELAY) {
-                SceneManager.setScene(new LoseScreen());
+//                SceneManager.setScene(new LoseScreen());
             }
         }
     }

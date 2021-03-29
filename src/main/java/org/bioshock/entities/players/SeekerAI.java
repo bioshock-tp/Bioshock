@@ -92,7 +92,7 @@ public class SeekerAI extends SquareEntity {
         setSwatterRot();
     }
 
-    /**
+    /***
      * The main behaviour tree for the seeker
      */
     private void doActions() {

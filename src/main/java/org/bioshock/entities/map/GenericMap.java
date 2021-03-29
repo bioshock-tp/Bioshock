@@ -95,10 +95,19 @@ public class GenericMap implements Map{
                     safeAddEdge(i, j, i, j+1, EAST, roomTypes, rooms);
                     safeAddEdge(i, j, i, j-1, WEST, roomTypes, rooms);
                     
-                    //Initialise the room with the newly created edges
-                    rooms[i][j].init(roomGraph.getEdgesInfo(rooms[i][j]));
+//                    //Initialise the room with the newly created edges
+//                    rooms[i][j].init(roomGraph.getEdgesInfo(rooms[i][j]));
                 }
             }
+        }        
+        roomGraph = roomGraph.getConnectedSubgraph(roomGraph.getNodes().get(0), new DeepCopyRoom());
+        
+        initRoomsFromGraph();
+    }
+    
+    private void initRoomsFromGraph() {
+        for(Room r: roomGraph.getNodes()) {
+            r.init(roomGraph.getEdgesInfo(r));
         }
     }
     
