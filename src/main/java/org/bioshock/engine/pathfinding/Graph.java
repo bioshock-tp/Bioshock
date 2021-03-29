@@ -51,7 +51,7 @@ public class Graph<T,S> {
     /***
      * 
      * @param node
-     * @return a list of all nodes connected to the given node
+     * @return a list of all nodes connected to the given node not including the node itself
      */
     public List<T> getConnectedNodes(T node){        
         List<T> nodes = new ArrayList<>();

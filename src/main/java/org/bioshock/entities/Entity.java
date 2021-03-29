@@ -4,7 +4,10 @@ import java.util.UUID;
 
 import org.bioshock.components.NetworkC;
 import org.bioshock.components.RendererC;
+import org.bioshock.engine.core.WindowManager;
+import org.bioshock.entities.map.Room;
 import org.bioshock.rendering.renderers.Renderer;
+import org.bioshock.scenes.SceneManager;
 import org.bioshock.utils.Point;
 
 import javafx.geometry.Point2D;
@@ -153,4 +156,30 @@ public abstract class Entity {
     public String toString() {
         return getClass().getSimpleName();
     }
+    
+    /**
+    *
+    * Finds the current room that an entity is in
+    *
+    * @param entity the entity to find current room of
+    * @return the current room of the entity
+    */
+   public static Room findCurrentRoom(Entity entity) {
+       Room current = SceneManager.getMap().getRoomGraph().getNodes().get(0);
+       Point3D temp;
+       double shortest =
+               WindowManager.getWindowWidth() * WindowManager.getWindowHeight();
+
+       for (Room room : SceneManager.getMap().getRoomGraph().getNodes()) {
+           temp = room.getRoomCenter().subtract(
+                   new Point3D(entity.getX(), entity.getY(), room.getZ())
+           );
+           if (temp.magnitude() < shortest) {
+               shortest = temp.magnitude();
+               current = room;
+           }
+       }
+
+       return current;
+   }
 }
