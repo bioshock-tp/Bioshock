@@ -26,7 +26,7 @@ public final class PlayerRenderer implements Renderer {
         double width = player.getWidth();
         double height = player.getHeight();
 
-        if (player == EntityManager.getCurrentPlayer()) {
+        if (player == EntityManager.getCurrentPlayer() && RenderManager.isClip()) {
             gc.save();
             gc.beginPath();
             gc.arc(

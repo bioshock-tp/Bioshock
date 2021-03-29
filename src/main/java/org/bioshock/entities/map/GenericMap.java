@@ -10,8 +10,10 @@ import static org.bioshock.utils.Direction.WEST;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Random;
 
 import org.bioshock.engine.pathfinding.Graph;
+import org.bioshock.gui.NewGameController;
 import org.bioshock.utils.Direction;
 import org.bioshock.utils.Size;
 
@@ -99,9 +101,25 @@ public class GenericMap implements Map{
 //                    rooms[i][j].init(roomGraph.getEdgesInfo(rooms[i][j]));
                 }
             }
-        }        
-        roomGraph = roomGraph.getConnectedSubgraph(roomGraph.getNodes().get(0), new DeepCopyRoom());
+        }
+
+        /***
+         * list of all unchecked rooms in the parentGraph
+         */
+        List<Room> uncheckedRooms = roomGraph.getNodes();
+        Graph<Room,Pair<Direction,ConnType>> currGraph = new Graph<>();
         
+        //Find the biggest connected subgraph and set the room graph to be the biggest connected subgraph
+        while(!uncheckedRooms.isEmpty()) {
+            Graph<Room,Pair<Direction,ConnType>> newGraph = roomGraph.getConnectedSubgraph(uncheckedRooms.get(0), null);            
+            uncheckedRooms.removeAll(newGraph.getNodes());
+            
+            if(currGraph.getNodes().size()<newGraph.getNodes().size()) {
+                currGraph = newGraph;
+            }
+        }        
+        
+        roomGraph = currGraph;
         initRoomsFromGraph();
     }
     

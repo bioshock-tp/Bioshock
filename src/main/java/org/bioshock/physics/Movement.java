@@ -9,7 +9,7 @@ import javafx.geometry.Point2D;
 import javafx.scene.input.KeyCode;
 
 public class Movement {
-    private double speed = 10;
+    private double speed = 5;
 
     private double xDirection = 0;
     private double yDirection = 0;

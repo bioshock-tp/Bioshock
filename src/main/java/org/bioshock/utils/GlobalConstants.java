@@ -16,9 +16,11 @@ public final class GlobalConstants {
 		{NO_ROOM, SINGLE_ROOM, SINGLE_ROOM, SINGLE_ROOM}};
     
     public static final RoomType[][] testMap = 
-        {{B, A, B, B},
-        {B, A, A, B},
-        {B, A, B, B}};
+       {{B,A,B,B,A,B},
+        {B,A,A,B,B,B},
+        {B,A,B,B,A,B},
+        {B,B,A,B,B,A},
+        {B,A,B,B,A,B}};
 
     private GlobalConstants() {}
 }

@@ -97,6 +97,8 @@ public class Graph<T,S> {
      * @param node the node all other nodes will be connected to
      * @param a deep copy function on the type T that returns a 
      * new object with all the same values of the given object
+     * 
+     * if this is null it doesn't do a deep copy
      * @return a deep copy of the new subgraph graph 
      */
     public Graph<T,S> getConnectedSubgraph(T node, DeepCopy<T> dc) {
@@ -171,6 +173,8 @@ public class Graph<T,S> {
      * @param nodes the list of all nodes to contained in the trimmed graph
      * @param a deep copy function on the type T that returns a 
      * new object with all the same values of the given object
+     * 
+     * if this is null it doesn't do a deep copy
      * @return a deep copy of of the new trimmed graph
      */
     public Graph<T,S> getTrimmedGraph(List<T> nodes, DeepCopy<T> dc) {
@@ -184,7 +188,13 @@ public class Graph<T,S> {
         Graph<T,S> trimmedGraph = new Graph<>();
         for(T node:nodes) {
             //make a copy of each node and add to the mapping and the new graph
-            T nodeCopy = dc.deepCopy(node);
+            T nodeCopy;
+            if(dc == null) {
+                nodeCopy = node;
+            }
+            else {
+                nodeCopy = dc.deepCopy(node);
+            }
             oldToNew.put(node, nodeCopy);
             trimmedGraph.addNode(nodeCopy);
         }
