@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.bioshock.components.NetworkC;
+import org.bioshock.entities.map.utils.ConnType;
 import org.bioshock.utils.DeepCopy;
 import org.bioshock.utils.Direction;
 import org.bioshock.utils.Size;

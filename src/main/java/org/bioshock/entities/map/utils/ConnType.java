@@ -1,4 +1,4 @@
-package org.bioshock.entities.map;
+package org.bioshock.entities.map.utils;
 
 public enum ConnType {
     NO_EXIT,

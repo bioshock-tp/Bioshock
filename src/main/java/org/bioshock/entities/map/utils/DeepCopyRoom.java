@@ -1,5 +1,6 @@
-package org.bioshock.entities.map;
+package org.bioshock.entities.map.utils;
 
+import org.bioshock.entities.map.Room;
 import org.bioshock.utils.DeepCopy;
 
 public class DeepCopyRoom extends DeepCopy<Room>{

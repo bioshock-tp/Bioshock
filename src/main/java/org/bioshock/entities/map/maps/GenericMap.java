@@ -1,7 +1,7 @@
-package org.bioshock.entities.map;
+package org.bioshock.entities.map.maps;
 
-import static org.bioshock.entities.map.ConnType.ROOM_TO_ROOM;
-import static org.bioshock.entities.map.RoomType.SINGLE_ROOM;
+import static org.bioshock.entities.map.utils.ConnType.ROOM_TO_ROOM;
+import static org.bioshock.entities.map.utils.RoomType.SINGLE_ROOM;
 import static org.bioshock.utils.Direction.EAST;
 import static org.bioshock.utils.Direction.NORTH;
 import static org.bioshock.utils.Direction.SOUTH;
@@ -10,10 +10,12 @@ import static org.bioshock.utils.Direction.WEST;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Random;
 
 import org.bioshock.engine.pathfinding.Graph;
-import org.bioshock.gui.NewGameController;
+import org.bioshock.entities.map.Room;
+import org.bioshock.entities.map.TexRectEntity;
+import org.bioshock.entities.map.utils.ConnType;
+import org.bioshock.entities.map.utils.RoomType;
 import org.bioshock.utils.Direction;
 import org.bioshock.utils.Size;
 

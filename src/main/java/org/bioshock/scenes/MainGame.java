@@ -7,9 +7,10 @@ import org.bioshock.engine.core.FrameRate;
 import org.bioshock.engine.core.WindowManager;
 import org.bioshock.engine.input.InputManager;
 import org.bioshock.entities.EntityManager;
-import org.bioshock.entities.map.GenericMap;
-import org.bioshock.entities.map.Map;
 import org.bioshock.entities.map.Room;
+import org.bioshock.entities.map.maps.GenericMap;
+import org.bioshock.entities.map.maps.Map;
+import org.bioshock.entities.map.maps.RandomMap;
 import org.bioshock.entities.players.Hider;
 import org.bioshock.entities.players.SeekerAI;
 import org.bioshock.main.App;
@@ -50,7 +51,8 @@ public class MainGame extends GameScene {
             null
         )));
         
-        map = new GenericMap(
+        if(App.isNetworked()) {
+            map = new GenericMap(
         		new Point3D(0, 0, 0),
         		10, 
         		new Size(300, 600), 
@@ -58,14 +60,21 @@ public class MainGame extends GameScene {
         		Color.SADDLEBROWN, 
         		GlobalConstants.testMap
     		);
-
-//        map = new ThreeByThreeMap(
-//            new Point3D(100, 100, 0),
-//            10,
-//            new Size(300, 600),
-//            new Size(90, 90),
-//            Color.SADDLEBROWN
-//        );
+        }
+        else {
+            map = new RandomMap(
+                new Point3D(0, 0, 0), 
+                10, 
+                new Size(300, 600), 
+                new Size(90, 90), 
+                Color.SADDLEBROWN, 
+                new Size(5, 10), 
+                null, 
+                null
+            );
+        }
+        
+        
         SceneManager.setMap(map);
         children.addAll(map.getWalls());
 

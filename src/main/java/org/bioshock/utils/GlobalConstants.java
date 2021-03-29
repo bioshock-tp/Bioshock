@@ -1,8 +1,8 @@
 package org.bioshock.utils;
 
-import static org.bioshock.entities.map.RoomType.*;
+import static org.bioshock.entities.map.utils.RoomType.*;
 
-import org.bioshock.entities.map.RoomType;
+import org.bioshock.entities.map.utils.RoomType;
 
 public final class GlobalConstants {
     public static final double PLAYER_WIDTH = 18;

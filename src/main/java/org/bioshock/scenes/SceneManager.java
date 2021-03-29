@@ -2,7 +2,7 @@ package org.bioshock.scenes;
 
 import org.bioshock.engine.core.WindowManager;
 import org.bioshock.engine.input.InputManager;
-import org.bioshock.entities.map.Map;
+import org.bioshock.entities.map.maps.Map;
 import org.bioshock.main.App;
 
 import javafx.scene.canvas.Canvas;
