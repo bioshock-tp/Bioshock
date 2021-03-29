@@ -126,6 +126,12 @@ public final class RenderManager {
         entities.forEach(RenderManager::unregister);
     }
 
+
+    /**
+     * Used in renderers of entities that should only be visible whilst within
+     * the FOV of the player
+     * @param gc The {@link GraphicsContext} to draw on
+     */
     public static void clipToFOV(GraphicsContext gc) {
         Hider player = EntityManager.getCurrentPlayer();
         if (CLIP && player != null) {

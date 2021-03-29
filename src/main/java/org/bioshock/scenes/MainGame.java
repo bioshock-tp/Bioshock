@@ -7,6 +7,11 @@ import org.bioshock.engine.core.FrameRate;
 import org.bioshock.engine.core.WindowManager;
 import org.bioshock.engine.input.InputManager;
 import org.bioshock.entities.EntityManager;
+import org.bioshock.entities.items.food.Burger;
+import org.bioshock.entities.items.food.Dessert;
+import org.bioshock.entities.items.food.Donut;
+import org.bioshock.entities.items.food.HotDog;
+import org.bioshock.entities.items.food.Pizza;
 import org.bioshock.entities.map.Room;
 import org.bioshock.entities.map.ThreeByThreeMap;
 import org.bioshock.entities.players.Hider;
@@ -29,14 +34,22 @@ public class MainGame extends GameScene {
     private static final double ENDTIME = 2 * 60f + 3;
     private static final double LOSEDELAY = 5;
 
+    /**
+     * Number of food items to be collected to win
+     */
+    private static final int FOOD_TO_WIN = 5;
+
     private boolean cameraLock = true;
     private double runningTime = 0;
     private boolean losing = false;
     private double timeLosing = 0;
 
+    private int collectedFood = 0;
+
     private Label timer;
 
     private ThreeByThreeMap map;
+    private Hider hider;
 
     public MainGame() {
         super();
@@ -48,6 +61,14 @@ public class MainGame extends GameScene {
             null
         )));
 
+        initEntites();
+
+        InputManager.onRelease(KeyCode.Y, () ->	cameraLock = !cameraLock);
+
+        registerEntities();
+    }
+
+    private void initMap() {
         map = new ThreeByThreeMap(
             new Point3D(100, 100, 0),
             10,
@@ -57,14 +78,15 @@ public class MainGame extends GameScene {
         );
         SceneManager.setMap(map);
         children.addAll(map.getWalls());
+    }
 
+    private void initHiders() {
         List<Room> rooms = map.getRooms();
 
         double x = rooms.get(0).getRoomCenter().getX();
         double y = rooms.get(0).getRoomCenter().getY();
 
-        /* Players must render in exact order, do not play with z values */
-        Hider hider = new Hider(
+        hider = new Hider(
             new Point3D(x, y, 0.5),
             new NetworkC(true),
             new Size(54, 61),
@@ -87,6 +109,10 @@ public class MainGame extends GameScene {
                 Color.PINK
             ));
         }
+    }
+
+    private void initSeeker() {
+        List<Room> rooms = map.getRooms();
 
         double centreX = rooms.get(rooms.size() / 2).getRoomCenter().getX();
         double centreY = rooms.get(rooms.size() / 2).getRoomCenter().getY();
@@ -101,7 +127,9 @@ public class MainGame extends GameScene {
         );
 
         children.add(seeker);
+    }
 
+    private void initTimer() {
         Size timerSize = new Size(100, 100);
         timer = new Label("mm:ss.ms");
         timer.setStyle("-fx-font: 20 arial; -fx-text-fill: black;");
@@ -111,10 +139,26 @@ public class MainGame extends GameScene {
             -WindowManager.getWindowHeight() / 2 + timerSize.getHeight() / 2
         );
         getPane().getChildren().add(timer);
+    }
 
-        InputManager.onRelease(KeyCode.Y, () ->	cameraLock = !cameraLock);
+    private void initItems() {
+        children.add(new Burger());
+        children.add(new Dessert());
+        children.add(new Donut());
+        children.add(new HotDog());
+        children.add(new Pizza());
+    }
 
-        registerEntities();
+    private void initEntites() {
+        initMap();
+
+        initHiders();
+
+        initSeeker();
+
+        initItems();
+
+        initTimer();
     }
 
     @Override
@@ -166,7 +210,7 @@ public class MainGame extends GameScene {
 
     @Override
     public void renderTick(double timeDelta) {
-        Hider hider = EntityManager.getCurrentPlayer();
+        hider = EntityManager.getCurrentPlayer();
         if(cameraLock && hider != null) {
             RenderManager.setCameraPos(
                 hider.getCentre().subtract(
@@ -183,6 +227,12 @@ public class MainGame extends GameScene {
             numMins,
             timeLeft - numMins * 60
         ));
+    }
+
+    public void collectFood() {
+        if (++collectedFood == FOOD_TO_WIN) {
+            SceneManager.setScene(new WinScreen());
+        }
     }
 
     @Override
@@ -203,4 +253,5 @@ public class MainGame extends GameScene {
 
         SceneManager.setInGame(false);
     }
+
 }

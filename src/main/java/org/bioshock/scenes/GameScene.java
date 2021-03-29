@@ -38,7 +38,7 @@ public abstract class GameScene extends Scene {
 
 
     /**
-     * The entities that extends {@link Entity} to be drawn on the
+     * The entities that extend {@link Entity} to be drawn on the
      * {@link #canvas}
      */
     protected List<Entity> children = new ArrayList<>();
