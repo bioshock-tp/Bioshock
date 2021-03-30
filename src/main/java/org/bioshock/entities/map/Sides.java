@@ -10,6 +10,7 @@ import javafx.geometry.Point3D;
 import javafx.scene.paint.Color;
 
 public class Sides {
+    private static int padding = 1;
     private Sides() {}
 
     /**
@@ -61,7 +62,7 @@ public class Sides {
                     0
                 ),
                 new NetworkC(false),
-                new Size(coriLen - wallWidth, wallWidth),
+                new Size(coriLen - wallWidth + padding, wallWidth),
                 c
             );
 
@@ -70,7 +71,7 @@ public class Sides {
             new TexRectEntity(
                 pos.add(0, (roomHeight + coriWidth) / 2, 0),
                 new NetworkC(false),
-                new Size(coriLen - wallWidth, wallWidth),
+                new Size(coriLen - wallWidth + padding, wallWidth),
                 c
             );
 
@@ -155,7 +156,7 @@ public class Sides {
                     0
                 ),
                 new NetworkC(false),
-                new Size(coriLen - wallWidth, wallWidth),
+                new Size(coriLen - wallWidth + padding, wallWidth),
                 c
             );
 
@@ -164,7 +165,7 @@ public class Sides {
             new TexRectEntity(
                 pos.add(wallWidth, (roomHeight + coriWidth) / 2, 0),
                 new NetworkC(false),
-                new Size(coriLen - wallWidth, wallWidth),
+                new Size(coriLen - wallWidth + padding, wallWidth),
                 c
             );
 
@@ -245,7 +246,7 @@ public class Sides {
                     0
                 ),
                 new NetworkC(false),
-                new Size(wallWidth, coriLen - wallWidth),
+                new Size(wallWidth, coriLen - wallWidth + padding),
                 c
             );
 
@@ -254,7 +255,7 @@ public class Sides {
             new TexRectEntity(
                 pos.add((roomWidth + coriWidth) / 2, 0, 0),
                 new NetworkC(false),
-                new Size(wallWidth, coriLen - wallWidth),
+                new Size(wallWidth, coriLen - wallWidth + padding),
                 c
             );
 
@@ -339,7 +340,7 @@ public class Sides {
                     0
                 ),
                 new NetworkC(false),
-                new Size(wallWidth, coriLen - wallWidth),
+                new Size(wallWidth, coriLen - wallWidth + padding),
                 c
             );
 
@@ -348,7 +349,7 @@ public class Sides {
             new TexRectEntity(
                 pos.add((roomWidth + coriWidth) / 2, wallWidth, 0),
                 new NetworkC(false),
-                new Size(wallWidth, coriLen - wallWidth),
+                new Size(wallWidth, coriLen - wallWidth + padding),
                 c
             );
 

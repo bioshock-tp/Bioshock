@@ -13,11 +13,13 @@ import org.bioshock.entities.EntityManager;
 import org.bioshock.entities.SquareEntity;
 import org.bioshock.entities.map.Room;
 import org.bioshock.entities.map.TexRectEntity;
+import org.bioshock.entities.map.utils.ConnType;
 import org.bioshock.main.App;
 import org.bioshock.physics.Movement;
 import org.bioshock.rendering.renderers.SeekerRenderer;
 import org.bioshock.rendering.renderers.components.SimpleRendererC;
 import org.bioshock.scenes.SceneManager;
+import org.bioshock.utils.Direction;
 import org.bioshock.utils.Size;
 
 import javafx.geometry.Point2D;
@@ -25,6 +27,7 @@ import javafx.geometry.Point3D;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Arc;
 import javafx.scene.shape.ArcType;
+import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
@@ -33,19 +36,15 @@ import javafx.util.Pair;
 public class SeekerAI extends SquareEntity {
     private Hider target;
     private final Arc swatterHitbox;
-    private final Arc coneFov;
-    private final Graph<Room> roomGraph = SceneManager.getMap().getRoomGraph();
+    private final Graph<Room,Pair<Direction,ConnType>> roomGraph = SceneManager.getMap().getRoomGraph();
     private List<Room> path = new ArrayList<>();
     private Room currRoom;
     private Point2D lastSeenPosition;
-    private double startAngleOffset;
 
     private static final double TIME_BETWEEN_SWINGS = 1.0;
     private static final double TIME_SWINGING = 1.0;
     private double timeBetweenSwings = 0;
     private double timeSwinging = 0;
-
-    private Point2D lastPosition;
 
     private boolean isActive = false;
     private boolean isSearching = false;
@@ -80,18 +79,7 @@ public class SeekerAI extends SquareEntity {
 
         swatterHitbox.setType(ArcType.ROUND);
 
-        coneFov = new Arc(
-                getCentre().getX(),
-                getCentre().getY(),
-                getRadius(), getRadius(),
-                55, 70
-        );
-        startAngleOffset = coneFov.getStartAngle();
-
-        coneFov.setType(ArcType.ROUND);
-
         currRoom = findCurrentRoom(this);
-        lastPosition = getCentre();
     }
 
     protected void tick(double timeDelta) {
@@ -101,11 +89,10 @@ public class SeekerAI extends SquareEntity {
         }
         doActions();
         setSwatterPos();
-        setConeFovPos();
         setSwatterRot();
     }
 
-    /**
+    /***
      * The main behaviour tree for the seeker
      */
     private void doActions() {
@@ -160,12 +147,12 @@ public class SeekerAI extends SquareEntity {
 
         switch(type) {
             case "fov":
-                /*Circle fovC = new Circle(
+                Circle fovC = new Circle(
                         getCentre().getX(),
                         getCentre().getY(),
                         getRadius()
-                );*/
-                intersect = Shape.intersect(coneFov, entityHitbox);
+                );
+                intersect = Shape.intersect(fovC, entityHitbox);
                 break;
 
             case "swatter":
@@ -237,36 +224,11 @@ public class SeekerAI extends SquareEntity {
 
 
         movement.moveTo(lastSeenPosition);
-        setConeFovRot(lastSeenPosition);
 
     }
 
 
-    /**
-     *
-     * Finds the current room that an entity is in
-     *
-     * @param entity the entity to find current room of
-     * @return the current room of the entity
-     */
-    private Room findCurrentRoom(Entity entity) {
-        Room current = roomGraph.getNodes().get(0);
-        Point3D temp;
-        double shortest =
-                WindowManager.getWindowWidth() * WindowManager.getWindowHeight();
-
-        for (Room room : roomGraph.getNodes()) {
-            temp = room.getRoomCenter().subtract(
-                    new Point3D(entity.getX(), entity.getY(), room.getZ())
-            );
-            if (temp.magnitude() < shortest) {
-                shortest = temp.magnitude();
-                current = room;
-            }
-        }
-
-        return current;
-    }
+    
 
 
     /**
@@ -276,15 +238,10 @@ public class SeekerAI extends SquareEntity {
      * @param room the room that has the centre to move towards
      */
     private void moveToCentre(Room room) {
-        Point2D roomCentre = new Point2D(
+        movement.moveTo(
                 room.getRoomCenter().getX() - getWidth()/2,
                 room.getRoomCenter().getY() - getHeight()/2
         );
-
-        movement.moveTo(
-                roomCentre
-        );
-        setConeFovRot(roomCentre);
     }
 
 
@@ -308,23 +265,23 @@ public class SeekerAI extends SquareEntity {
 
         current = startRoom;
         destination = startRoom;
-        App.logger.debug("Start room is {}", startRoom.getRoomCenter());
+//        App.logger.debug("Start room is {}", startRoom.getRoomCenter());
 
         while(destination == startRoom) {
             r = rand.nextInt(roomGraph.getNodes().size());
             destination = roomGraph.getNodes().get(r);
         }
-        App.logger.debug(
-                "Destination room is {}",
-                destination.getRoomCenter()
-        );
+//        App.logger.debug(
+//                "Destination room is {}",
+//                destination.getRoomCenter()
+//        );
 
         pathToFollow.add(startRoom);
-        App.logger.debug("Room {} is {}", c, startRoom.getRoomCenter());
+//        App.logger.debug("Room {} is {}", c, startRoom.getRoomCenter());
         c++;
 
         while (current != destination) {
-            adjacents = roomGraph.getConnections(current);
+            adjacents = roomGraph.getConnectedNodes(current);
             for(Room room : adjacents){
                 if(!pathToFollow.contains(room)){
                     possibleMoves.add(room);
@@ -340,13 +297,12 @@ public class SeekerAI extends SquareEntity {
             }
 
             pathToFollow.add(current);
-            App.logger.debug("Room {} is {}", c, current.getRoomCenter());
+//            App.logger.debug("Room {} is {}", c, current.getRoomCenter());
             possibleMoves.clear();
             c++;
 
         }
-        pathToFollow.add(current);
-
+        
         return pathToFollow;
     }
 
@@ -361,7 +317,7 @@ public class SeekerAI extends SquareEntity {
             if(lastSeenPosition != null){
                 double absX = Math.abs(lastSeenPosition.getX() - getX());
                 double absY = Math.abs(lastSeenPosition.getY() - getY());
-                if(absX < getWidth() && absY < getHeight()){
+                if(absX < 2 && absY < 2){
                     //make new path
                     currRoom = findCurrentRoom(this);
                     path = createPath(currRoom);
@@ -370,15 +326,13 @@ public class SeekerAI extends SquareEntity {
                 else{
                     App.logger.debug("Last seen position is {}", lastSeenPosition);
                     movement.moveTo(lastSeenPosition);
-                    if(lastPosition == getCentre()){
-
-                    }
-                    setConeFovRot(lastSeenPosition);
                 }
             }
             else{
+                
                 currRoom = findCurrentRoom(this);
                 path = createPath(currRoom);
+                
             }
 
         }
@@ -388,7 +342,7 @@ public class SeekerAI extends SquareEntity {
 
             double absX = Math.abs(currRoom.getRoomCenter().getX() - getWidth()/2 - getX());
             double absY = Math.abs(currRoom.getRoomCenter().getY() - getHeight()/2 - getY());
-            if(absX < getWidth() && absY < getHeight()){
+            if(absX < 5 && absY < 5){
                 currRoom = path.remove(0);
             }
         }
@@ -409,27 +363,11 @@ public class SeekerAI extends SquareEntity {
         swatterHitbox.setCenterY(getCentre().getY());
     }
 
-    public void setConeFovPos(){
-        coneFov.setCenterX(getCentre().getX());
-        coneFov.setCenterY(getCentre().getY());
-    }
-
     public void setSwatterRot() {
         double r = Movement.getFacingRotate(
                 target.getPosition().subtract(getPosition())
         );
-        swatterHitbox.setStartAngle(30 + r);
-    }
-
-    public void setConeFovRot(Point2D location) {
-        double r = Movement.getFacingRotate(
-                location.subtract(getCentre())
-        );
-
-        // 0 < r < 360
-
-        coneFov.setStartAngle(startAngleOffset + r);
-
+        swatterHitbox.setStartAngle(390 - r);
     }
 
     public Arc getSwatterHitbox() { return swatterHitbox; }
@@ -437,8 +375,6 @@ public class SeekerAI extends SquareEntity {
     public SquareEntity getTarget() { return target; }
 
     public boolean getIsActive() { return isActive; }
-
-    public Arc getConeFov(){ return coneFov; }
 
     @Override
     public Pair<Point2D, Point2D> getRenderArea() {

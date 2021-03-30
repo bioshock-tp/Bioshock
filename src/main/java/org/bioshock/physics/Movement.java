@@ -1,8 +1,13 @@
 package org.bioshock.physics;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.bioshock.engine.input.InputManager;
 import org.bioshock.entities.Entity;
 import org.bioshock.entities.EntityManager;
+import org.bioshock.entities.map.Room;
+import org.bioshock.scenes.SceneManager;
 import org.bioshock.utils.Point;
 
 import javafx.geometry.Point2D;
@@ -48,7 +53,16 @@ public class Movement {
         entity.setPosition(x, y);
 
         final double newX = x;
-        EntityManager.getEntityList().forEach(child -> {
+        
+        //Find current room and add the walls of the room for collision
+        Room currRoom = Entity.findCurrentRoom(entity);
+        List<Entity> collisionCheck = new ArrayList<>(currRoom.getWalls());
+        //Add other players for collision
+        //note would need to update to allow to collide with other objects
+        collisionCheck.add(EntityManager.getSeeker());
+        collisionCheck.addAll(EntityManager.getPlayers());
+        
+        collisionCheck.forEach(child -> {
             if (child == entity) return;
 
             if (entity.intersects(child)) {

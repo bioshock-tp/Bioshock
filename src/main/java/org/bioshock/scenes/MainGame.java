@@ -8,12 +8,15 @@ import org.bioshock.engine.core.WindowManager;
 import org.bioshock.engine.input.InputManager;
 import org.bioshock.entities.EntityManager;
 import org.bioshock.entities.map.Room;
-import org.bioshock.entities.map.ThreeByThreeMap;
+import org.bioshock.entities.map.maps.GenericMap;
+import org.bioshock.entities.map.maps.Map;
+import org.bioshock.entities.map.maps.RandomMap;
 import org.bioshock.entities.players.Hider;
 import org.bioshock.entities.players.SeekerAI;
 import org.bioshock.main.App;
 import org.bioshock.networking.NetworkManager;
 import org.bioshock.rendering.RenderManager;
+import org.bioshock.utils.GlobalConstants;
 import org.bioshock.utils.Size;
 
 import javafx.geometry.Point2D;
@@ -36,7 +39,7 @@ public class MainGame extends GameScene {
 
     private Label timer;
 
-    private ThreeByThreeMap map;
+    private Map map;
 
     public MainGame() {
         super();
@@ -47,14 +50,31 @@ public class MainGame extends GameScene {
             null,
             null
         )));
-
-        map = new ThreeByThreeMap(
-            new Point3D(100, 100, 0),
-            10,
-            new Size(300, 600),
-            new Size(90, 90),
-            Color.SADDLEBROWN
-        );
+        
+        if(App.isNetworked()) {
+            map = new GenericMap(
+        		new Point3D(0, 0, 0),
+        		10, 
+        		new Size(300, 600), 
+        		new Size(90, 90), 
+        		Color.SADDLEBROWN, 
+        		GlobalConstants.testMap
+    		);
+        }
+        else {
+            map = new RandomMap(
+                new Point3D(0, 0, 0), 
+                10, 
+                new Size(300, 600), 
+                new Size(90, 90), 
+                Color.SADDLEBROWN, 
+                new Size(5, 10), 
+                null, 
+                null
+            );
+        }
+        
+        
         SceneManager.setMap(map);
         children.addAll(map.getWalls());
 
@@ -113,7 +133,16 @@ public class MainGame extends GameScene {
         getPane().getChildren().add(timer);
 
         InputManager.onRelease(KeyCode.Y, () ->	cameraLock = !cameraLock);
-
+        InputManager.onRelease(KeyCode.C, () -> RenderManager.setClip(!RenderManager.isClip()));
+        InputManager.onPress(KeyCode.LEFT, 
+                () -> RenderManager.setCameraPos(RenderManager.getCameraPos().add(-10,0)));
+        InputManager.onPress(KeyCode.RIGHT, 
+                () -> RenderManager.setCameraPos(RenderManager.getCameraPos().add(10,0)));
+        InputManager.onPress(KeyCode.UP, 
+                () -> RenderManager.setCameraPos(RenderManager.getCameraPos().add(0,-10)));
+        InputManager.onPress(KeyCode.DOWN, 
+                () -> RenderManager.setCameraPos(RenderManager.getCameraPos().add(0,10)));
+        
         registerEntities();
     }
 
@@ -144,10 +173,10 @@ public class MainGame extends GameScene {
         if(!losing) {
             runningTime += timeDelta;
 
-            if (runningTime >= ENDTIME) {
-                SceneManager.setScene(new WinScreen());
-                return;
-            }
+//            if (runningTime >= ENDTIME) {
+//                SceneManager.setScene(new WinScreen());
+//                return;
+//            }
 
             if (
                 !EntityManager.getPlayers().isEmpty()
@@ -159,7 +188,7 @@ public class MainGame extends GameScene {
         else {
             timeLosing += timeDelta;
             if (timeLosing >= LOSEDELAY) {
-                SceneManager.setScene(new LoseScreen());
+//                SceneManager.setScene(new LoseScreen());
             }
         }
     }

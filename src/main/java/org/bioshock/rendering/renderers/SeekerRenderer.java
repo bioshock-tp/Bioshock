@@ -25,7 +25,6 @@ public class SeekerRenderer implements Renderer {
         double height = seeker.getHeight();
         double radius = seeker.getRadius();
         Arc swatter = seeker.getSwatterHitbox();
-        Arc coneFov = seeker.getConeFov();
         boolean isActive = seeker.getIsActive();
 
         gc.save();
@@ -71,16 +70,6 @@ public class SeekerRenderer implements Renderer {
             );
 
         }
-
-        gc.strokeArc(
-                getRenX(coneFov.getCenterX() - coneFov.getRadiusX()),
-                getRenY(coneFov.getCenterY() - coneFov.getRadiusY()),
-                getRenWidth(coneFov.getRadiusX()*2),
-                getRenHeight(coneFov.getRadiusY()*2),
-                coneFov.getStartAngle(),
-                coneFov.getLength(),
-                coneFov.getType()
-        );
 
         gc.restore();
 

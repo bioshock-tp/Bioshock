@@ -22,7 +22,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.util.Pair;
 
 public final class RenderManager {
-    private static final boolean CLIP = true;
+    private static boolean clip = true;
 
     private static List<Entity> entities = new ArrayList<>();
     private static Point2D cameraPos = new Point2D(0,0);
@@ -42,7 +42,7 @@ public final class RenderManager {
         Canvas canvas = SceneManager.getCanvas();
         GraphicsContext gc = canvas.getGraphicsContext2D();
 
-        // Set Background to LightGrey
+        // clear the entire canvas
         gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
 
         // renders each entity
@@ -128,7 +128,7 @@ public final class RenderManager {
 
     public static void clipToFOV(GraphicsContext gc) {
         Hider player = EntityManager.getCurrentPlayer();
-        if (CLIP && player != null) {
+        if (clip && player != null) {
             double x = player.getX();
             double y = player.getY();
             double radius = player.getRadius();
@@ -191,5 +191,13 @@ public final class RenderManager {
 
     public static Point2D getScale() {
         return scale;
+    }
+
+    public static boolean isClip() {
+        return clip;
+    }
+
+    public static void setClip(boolean clip) {
+        RenderManager.clip = clip;
     }
 }
