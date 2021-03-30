@@ -20,6 +20,7 @@ import org.bioshock.rendering.renderers.SeekerRenderer;
 import org.bioshock.rendering.renderers.components.SimpleRendererC;
 import org.bioshock.scenes.SceneManager;
 import org.bioshock.utils.Direction;
+import org.bioshock.utils.Point;
 import org.bioshock.utils.Size;
 
 import javafx.geometry.Point2D;
@@ -40,11 +41,15 @@ public class SeekerAI extends SquareEntity {
     private List<Room> path = new ArrayList<>();
     private Room currRoom;
     private Point2D lastSeenPosition;
+    private Point lastSeekerPosition;
 
     private static final double TIME_BETWEEN_SWINGS = 1.0;
     private static final double TIME_SWINGING = 1.0;
+    private static final double TIME_STILL = 0.5;
+
     private double timeBetweenSwings = 0;
     private double timeSwinging = 0;
+    private double timeStill = 0;
 
     private boolean isActive = false;
     private boolean isSearching = false;
@@ -80,6 +85,7 @@ public class SeekerAI extends SquareEntity {
         swatterHitbox.setType(ArcType.ROUND);
 
         currRoom = findCurrentRoom(this);
+        lastSeekerPosition = getCentre();
     }
 
     protected void tick(double timeDelta) {
@@ -88,8 +94,19 @@ public class SeekerAI extends SquareEntity {
             timeSwinging += timeDelta;
         }
         doActions();
+        checkStill(timeDelta, getCentre());
+        lastSeekerPosition = getCentre();
         setSwatterPos();
         setSwatterRot();
+    }
+
+    private void checkStill(double timeDelta, Point centre) {
+        if (centre.equals(lastSeekerPosition)){
+            timeStill+=timeDelta;
+        }
+        else{
+            timeStill = 0;
+        }
     }
 
     /***
@@ -325,6 +342,11 @@ public class SeekerAI extends SquareEntity {
                 }
                 else{
                     App.logger.debug("Last seen position is {}", lastSeenPosition);
+                    if(timeStill >= TIME_STILL){
+                        Point3D lastSeenRoomCentre = findCurrentRoom(lastSeenPosition).getRoomCenter();
+                        lastSeenPosition = new Point2D(lastSeenRoomCentre.getX(),lastSeenRoomCentre.getY());
+                        timeStill = 0;
+                    }
                     movement.moveTo(lastSeenPosition);
                 }
             }
@@ -367,7 +389,7 @@ public class SeekerAI extends SquareEntity {
         double r = Movement.getFacingRotate(
                 target.getPosition().subtract(getPosition())
         );
-        swatterHitbox.setStartAngle(390 - r);
+        swatterHitbox.setStartAngle(30 + r);
     }
 
     public Arc getSwatterHitbox() { return swatterHitbox; }

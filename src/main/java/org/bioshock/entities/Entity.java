@@ -182,4 +182,29 @@ public abstract class Entity {
 
        return current;
    }
+    /**
+     *
+     * Finds the current room that an entity is in
+     *
+     * @param pos the point to find current room of
+     * @return the current room of the point
+     */
+    public static Room findCurrentRoom(Point2D pos) {
+        Room current = SceneManager.getMap().getRoomGraph().getNodes().get(0);
+        Point3D temp;
+        double shortest =
+                WindowManager.getWindowWidth() * WindowManager.getWindowHeight();
+
+        for (Room room : SceneManager.getMap().getRoomGraph().getNodes()) {
+            temp = room.getRoomCenter().subtract(
+                    new Point3D(pos.getX(), pos.getY(), room.getZ())
+            );
+            if (temp.magnitude() < shortest) {
+                shortest = temp.magnitude();
+                current = room;
+            }
+        }
+
+        return current;
+    }
 }
