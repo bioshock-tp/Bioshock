@@ -6,15 +6,14 @@ import java.util.List;
 import java.util.Random;
 
 import org.bioshock.components.NetworkC;
-import org.bioshock.engine.core.WindowManager;
 import org.bioshock.engine.pathfinding.Graph;
 import org.bioshock.entities.Entity;
 import org.bioshock.entities.EntityManager;
+import org.bioshock.components.PathfindingC;
 import org.bioshock.entities.SquareEntity;
 import org.bioshock.entities.map.Room;
 import org.bioshock.entities.map.TexRectEntity;
 import org.bioshock.entities.map.utils.ConnType;
-import org.bioshock.main.App;
 import org.bioshock.physics.Movement;
 import org.bioshock.rendering.renderers.SeekerRenderer;
 import org.bioshock.rendering.renderers.components.SimpleRendererC;
@@ -38,14 +37,16 @@ public class SeekerAI extends SquareEntity {
     private Hider target;
     private final Arc swatterHitbox;
     private final Graph<Room,Pair<Direction,ConnType>> roomGraph = SceneManager.getMap().getRoomGraph();
-    private List<Room> path = new ArrayList<>();
+    private PathfindingC<Room,Pair<Direction, ConnType>> pathfinding = new PathfindingC(roomGraph);
+    private List<Point2D> path = new ArrayList<>();
     private Room currRoom;
+    private Point2D currentTargetLocation;
     private Point2D lastSeenPosition;
     private Point lastSeekerPosition;
 
     private static final double TIME_BETWEEN_SWINGS = 1.0;
     private static final double TIME_SWINGING = 1.0;
-    private static final double TIME_STILL = 0.5;
+    private static final double TIME_STILL = 0.1;
 
     private double timeBetweenSwings = 0;
     private double timeSwinging = 0;
@@ -86,6 +87,7 @@ public class SeekerAI extends SquareEntity {
 
         currRoom = findCurrentRoom(this);
         lastSeekerPosition = getCentre();
+        currentTargetLocation = new Point2D(getCentre().getX(), getCentre().getY());
     }
 
     protected void tick(double timeDelta) {
@@ -234,18 +236,15 @@ public class SeekerAI extends SquareEntity {
         setSearch(false);
         path.clear();
         lastSeenPosition = new Point2D(entity.getX(), entity.getY());
-        App.logger.debug(
+        /*App.logger.debug(
                 "Last seen position coordinates are {}",
                 lastSeenPosition
-        );
+        );*/
 
 
         movement.moveTo(lastSeenPosition);
 
     }
-
-
-    
 
 
     /**
@@ -256,72 +255,11 @@ public class SeekerAI extends SquareEntity {
      */
     private void moveToCentre(Room room) {
         movement.moveTo(
-                room.getRoomCenter().getX() - getWidth()/2,
-                room.getRoomCenter().getY() - getHeight()/2
+                room.getLocation().getX() - getWidth()/2,
+                room.getLocation().getY() - getHeight()/2
         );
     }
 
-
-    /**
-     *
-     * Makes a random path of rooms given a start room
-     * Picks random destination
-     * Will not visit the same room twice
-     *
-     * @param startRoom the room to start from
-     * @return the list of rooms that form the path
-     */
-    private List<Room> createPath(Room startRoom) {
-        List<Room> pathToFollow = new ArrayList<>();
-        List<Room> possibleMoves = new ArrayList<>();
-        List<Room> adjacents;
-        Room destination;
-        Room current;
-        int r;
-        int c = 0;
-
-        current = startRoom;
-        destination = startRoom;
-//        App.logger.debug("Start room is {}", startRoom.getRoomCenter());
-
-        while(destination == startRoom) {
-            r = rand.nextInt(roomGraph.getNodes().size());
-            destination = roomGraph.getNodes().get(r);
-        }
-//        App.logger.debug(
-//                "Destination room is {}",
-//                destination.getRoomCenter()
-//        );
-
-        pathToFollow.add(startRoom);
-//        App.logger.debug("Room {} is {}", c, startRoom.getRoomCenter());
-        c++;
-
-        while (current != destination) {
-            adjacents = roomGraph.getConnectedNodes(current);
-            for(Room room : adjacents){
-                if(!pathToFollow.contains(room)){
-                    possibleMoves.add(room);
-                }
-            }
-
-            if(!possibleMoves.isEmpty()) {
-                r = rand.nextInt(possibleMoves.size());
-                current = possibleMoves.get(r);
-            }
-            else{
-                destination = current;
-            }
-
-            pathToFollow.add(current);
-//            App.logger.debug("Room {} is {}", c, current.getRoomCenter());
-            possibleMoves.clear();
-            c++;
-
-        }
-        
-        return pathToFollow;
-    }
 
     /**
      * Contains the behaviour tree for patrolling the map
@@ -336,36 +274,34 @@ public class SeekerAI extends SquareEntity {
                 double absY = Math.abs(lastSeenPosition.getY() - getY());
                 if(absX < 2 && absY < 2){
                     //make new path
-                    currRoom = findCurrentRoom(this);
-                    path = createPath(currRoom);
+                    path = pathfinding.createRandomPath(this.getCentre());
+                    currentTargetLocation = path.remove(0);
                     lastSeenPosition = null;
                 }
                 else{
-                    App.logger.debug("Last seen position is {}", lastSeenPosition);
                     if(timeStill >= TIME_STILL){
-                        Point3D lastSeenRoomCentre = findCurrentRoom(lastSeenPosition).getRoomCenter();
-                        lastSeenPosition = new Point2D(lastSeenRoomCentre.getX(),lastSeenRoomCentre.getY());
+                        lastSeenPosition = pathfinding.findNearestNode(lastSeenPosition).getLocation();
                         timeStill = 0;
                     }
                     movement.moveTo(lastSeenPosition);
                 }
             }
             else{
-                
-                currRoom = findCurrentRoom(this);
-                path = createPath(currRoom);
+                path = pathfinding.createRandomPath(this.getCentre());
+                currentTargetLocation = path.remove(0);
                 
             }
 
         }
         else{
             //continue searching
-            moveToCentre(currRoom);
+            movement.moveTo(currentTargetLocation.subtract(new Point2D(getWidth()/2, getHeight()/2)));
 
-            double absX = Math.abs(currRoom.getRoomCenter().getX() - getWidth()/2 - getX());
-            double absY = Math.abs(currRoom.getRoomCenter().getY() - getHeight()/2 - getY());
+            double absX = Math.abs(currentTargetLocation.getX() - getWidth()/2 - getX());
+            double absY = Math.abs(currentTargetLocation.getY() - getHeight()/2 - getY());
+
             if(absX < 5 && absY < 5){
-                currRoom = path.remove(0);
+                currentTargetLocation = path.remove(0);
             }
         }
 

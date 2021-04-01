@@ -184,7 +184,7 @@ public abstract class Entity {
    }
     /**
      *
-     * Finds the current room that an entity is in
+     * Finds the current room that a position is in
      *
      * @param pos the point to find current room of
      * @return the current room of the point

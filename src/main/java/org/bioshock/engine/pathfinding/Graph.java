@@ -14,7 +14,7 @@ import javafx.util.Pair;
  * @param <T> The type of the nodes in the graph
  * @param <S> The type of the edges in a graph
  */
-public class Graph<T,S> {
+public class Graph<T extends GraphNode,S> {
 
     /***
      * The map that stores the graph
@@ -95,7 +95,7 @@ public class Graph<T,S> {
      * gets a new Graph which only contains nodes you can 
      * traverse to and from the provided node
      * @param node the node all other nodes will be connected to
-     * @param a deep copy function on the type T that returns a 
+     * @param dc a deep copy function on the type T that returns a
      * new object with all the same values of the given object
      * 
      * if this is null it doesn't do a deep copy
@@ -171,7 +171,7 @@ public class Graph<T,S> {
      * gets a graph that only contains the given nodes and only has 
      * connections to nodes in the trimmed graph
      * @param nodes the list of all nodes to contained in the trimmed graph
-     * @param a deep copy function on the type T that returns a 
+     * @param dc a deep copy function on the type T that returns a
      * new object with all the same values of the given object
      * 
      * if this is null it doesn't do a deep copy
@@ -215,5 +215,13 @@ public class Graph<T,S> {
             
         }
         return trimmedGraph;
-    }    
+    }
+
+    public Graph<T, S> makeCopy() {
+        Graph<T,S> copy = new Graph<>();
+        copy.nodeMap = new HashMap<>(this.nodeMap);
+        return copy;
+    }
+
+
 }

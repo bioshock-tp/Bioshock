@@ -4,9 +4,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import javafx.geometry.Point2D;
 import org.bioshock.components.NetworkC;
+import org.bioshock.engine.pathfinding.GraphNode;
 import org.bioshock.entities.map.utils.ConnType;
-import org.bioshock.utils.DeepCopy;
 import org.bioshock.utils.Direction;
 import org.bioshock.utils.Size;
 
@@ -14,7 +15,7 @@ import javafx.geometry.Point3D;
 import javafx.scene.paint.Color;
 import javafx.util.Pair;
 
-public class Room{
+public class Room extends GraphNode {
     /***
      *  Stores the total size of the room
      *  i.e. the roomSize + corridor width*2 in both dimensions 
@@ -42,7 +43,6 @@ public class Room{
      * @param wallWidth the width of the walls that make up the room
      * @param newRoomSize the size of the central room
      * @param coriSize the corridor size of all exits
-     * @param exits the exits the room has
      * @param c the colour of the room
      */
     public Room(
@@ -51,6 +51,7 @@ public class Room{
         Size newRoomSize,
         Size coriSize,
         Color c) {
+        super();
         this.pos = newPos;
         this.wallWidth = wallWidth;
         this.roomSize = newRoomSize;
@@ -60,6 +61,7 @@ public class Room{
         );
         this.coriSize = coriSize;
         this.c = c;
+        setLocation(new Point2D(getRoomCenter().getX(),getRoomCenter().getY()));
     }
     
     /***
@@ -386,6 +388,6 @@ public class Room{
             this.coriSize, 
             this.c
         );
-}
+    }
 
 }
