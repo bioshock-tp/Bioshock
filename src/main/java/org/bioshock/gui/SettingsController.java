@@ -52,9 +52,9 @@ public class SettingsController extends App {
         sfxLabel.setText(GlobalStrings.SFX_TEXT);
         sfxVolumeLabel.setText(GlobalStrings.VOLUME_TEXT + ":");
         musicOnRadioButton.setText(GlobalStrings.ON_BUTTON_TEXT);
-        musicOnRadioButton.setText(GlobalStrings.OFF_BUTTON_TEXT);
+        musicOffRadioButton.setText(GlobalStrings.OFF_BUTTON_TEXT);
         sfxOnRadioButton.setText(GlobalStrings.ON_BUTTON_TEXT);
-        sfxOnRadioButton.setText(GlobalStrings.OFF_BUTTON_TEXT);
+        sfxOffRadioButton.setText(GlobalStrings.OFF_BUTTON_TEXT);
         initialiseAudioSettings();
     }
 
