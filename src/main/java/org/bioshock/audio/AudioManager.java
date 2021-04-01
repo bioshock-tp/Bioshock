@@ -4,12 +4,15 @@ import org.bioshock.audio.controllers.AudioController;
 import org.bioshock.audio.controllers.MusicController;
 import org.bioshock.audio.settings.MusicSettings;
 import org.bioshock.gui.SettingsController;
-import org.bioshock.main.App;
 
 import java.util.prefs.Preferences;
 
 public class AudioManager {
-    public static void initialiseAudio(App app) {
+
+    /**
+     * Initialises background with user saved volume preference.
+     */
+    public static void initialiseAudio() {
         AudioController.initialise();
         Preferences prefs = Preferences.userNodeForPackage(SettingsController.class);
         double volume = prefs.getDouble("musicVolume", 1.0);
@@ -18,6 +21,9 @@ public class AudioManager {
         }
     }
 
+    /**
+     * Stops background music playing.
+     */
     public static void stopBackgroundMusic() {
 		MusicController musicController = AudioController.loadMusicController(
             "background-music"
@@ -25,6 +31,9 @@ public class AudioManager {
 		musicController.stop();
 	}
 
+    /**
+     * PLays background music.
+     */
     public static void playBackgroundMusic(double vol) {
 		MusicController musicController = AudioController.loadMusicController(
             "background-music"

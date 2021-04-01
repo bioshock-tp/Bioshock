@@ -20,6 +20,7 @@ import org.bioshock.scenes.SceneManager;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Arrays;
+import java.util.Objects;
 
 public class App extends Application {
     public static final String NAME = "BuzzKill";
@@ -43,7 +44,7 @@ public class App extends Application {
         WindowManager.initialise(stage);
         initFXMLScene();
 
-        AudioManager.initialiseAudio(this);
+        AudioManager.initialiseAudio();
 
         stage.setScene(fxmlScene);
         stage.show();
@@ -95,7 +96,7 @@ public class App extends Application {
     }
 
     private static void initFXMLScene() {
-        fxmlScene = new Scene(loadFXML("main"));
+        fxmlScene = new Scene(Objects.requireNonNull(loadFXML("main")));
     }
 
     private static Parent loadFXML(String fxml) {
