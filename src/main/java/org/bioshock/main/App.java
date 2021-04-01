@@ -16,6 +16,7 @@ import org.bioshock.engine.input.InputManager;
 import org.bioshock.gui.MainController;
 import org.bioshock.scenes.GameScene;
 import org.bioshock.scenes.SceneManager;
+import org.bioshock.utils.GlobalStrings;
 
 import java.io.IOException;
 import java.net.URL;
@@ -23,8 +24,7 @@ import java.util.Arrays;
 import java.util.Objects;
 
 public class App extends Application {
-    public static final String NAME = "BuzzKill";
-
+    public static final String NAME = GlobalStrings.BUZZ_TEXT + GlobalStrings.KILL_TEXT;
     public static final Logger logger = LogManager.getLogger(App.class);
     private static int playerCount = 2;
     private static Scene fxmlScene;
