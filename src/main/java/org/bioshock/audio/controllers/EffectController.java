@@ -1,4 +1,4 @@
-package org.bioshock.audio;
+package org.bioshock.audio.controllers;
 
 import javafx.application.Platform;
 import javafx.scene.media.AudioClip;

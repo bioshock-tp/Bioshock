@@ -5,8 +5,9 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.Slider;
-import org.bioshock.audio.AudioController;
-import org.bioshock.audio.EffectController;
+import org.bioshock.audio.AudioManager;
+import org.bioshock.audio.controllers.AudioController;
+import org.bioshock.audio.controllers.EffectController;
 import org.bioshock.audio.settings.EffectSettings;
 import org.bioshock.main.App;
 
@@ -56,7 +57,7 @@ public class SettingsController extends App {
             getPrefs().putDouble("musicVolume", musicVolumeSlider.getValue());
 
             if (getPrefs().getBoolean("musicOn", true)) {
-                playBackgroundMusic(musicVolumeSlider.getValue());
+                AudioManager.playBackgroundMusic(musicVolumeSlider.getValue());
             }
 
         });
@@ -76,13 +77,13 @@ public class SettingsController extends App {
 
     @FXML
     public void toggleMusicOn(ActionEvent actionEvent) {
-        playBackgroundMusic(getPrefs().getDouble("musicVolume", 1.0));
+        AudioManager.playBackgroundMusic(getPrefs().getDouble("musicVolume", 1.0));
         getPrefs().putBoolean("musicOn", true);
     }
 
     @FXML
     public void toggleMusicOff(ActionEvent actionEvent) {
-        stopBackgroundMusic();
+        AudioManager.stopBackgroundMusic();
         getPrefs().putBoolean("musicOn", false);
     }
 
