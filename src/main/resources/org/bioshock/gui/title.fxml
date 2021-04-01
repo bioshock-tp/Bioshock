@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
 <?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
 <?import javafx.scene.text.TextFlow?>
@@ -17,8 +14,8 @@
 
     <Group>
         <TextFlow styleClass="paragraph">
-            <Text styleClass="buzzSpan">Buzz</Text>
-            <Text styleClass="killSpan">Kill</Text>
+            <Text styleClass="buzzSpan" fx:id="buzzLabel"/>
+            <Text styleClass="killSpan" fx:id="killLabel"/>
         </TextFlow>
     </Group>
 </VBox>

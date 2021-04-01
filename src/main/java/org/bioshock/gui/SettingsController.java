@@ -3,6 +3,7 @@ package org.bioshock.gui;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.Slider;
 import org.bioshock.audio.AudioManager;
@@ -10,10 +11,19 @@ import org.bioshock.audio.controllers.AudioController;
 import org.bioshock.audio.controllers.EffectController;
 import org.bioshock.audio.settings.EffectSettings;
 import org.bioshock.main.App;
+import org.bioshock.utils.GlobalStrings;
 
 import java.util.prefs.Preferences;
 
 public class SettingsController extends App {
+    @FXML
+    public Label musicLabel;
+    @FXML
+    public Label musicVolumeLabel;
+    @FXML
+    public Label sfxVolumeLabel;
+    @FXML
+    public Label sfxLabel;
     @FXML
     private Slider musicVolumeSlider;
     @FXML
@@ -36,6 +46,19 @@ public class SettingsController extends App {
 
     @FXML
     public void initialize() {
+        backButton.setText(GlobalStrings.BACK_MAIN_MENU_BUTTON_TEXT);
+        musicLabel.setText(GlobalStrings.MUSIC_TEXT);
+        musicVolumeLabel.setText(GlobalStrings.VOLUME_TEXT + ":");
+        sfxLabel.setText(GlobalStrings.SFX_TEXT);
+        sfxVolumeLabel.setText(GlobalStrings.VOLUME_TEXT + ":");
+        musicOnRadioButton.setText(GlobalStrings.ON_BUTTON_TEXT);
+        musicOnRadioButton.setText(GlobalStrings.OFF_BUTTON_TEXT);
+        sfxOnRadioButton.setText(GlobalStrings.ON_BUTTON_TEXT);
+        sfxOnRadioButton.setText(GlobalStrings.OFF_BUTTON_TEXT);
+        initialiseAudioSettings();
+    }
+
+    private void initialiseAudioSettings() {
         if(getPrefs().getBoolean("musicOn", true)) {
             musicOnRadioButton.setSelected(true);
         }

@@ -16,7 +16,7 @@
     <padding>
         <Insets bottom="40.0" left="60.0" right="60.0" top="40.0"/>
     </padding>
-    <Button fx:id="localGameButton" text="Single Player" onAction="#switchToLocalGameView" styleClass="gui-button"/>
-    <Button fx:id="onlineGameButton" text="Online" onAction="#switchToOnlineGameView" styleClass="gui-button"/>
-    <Button fx:id="backButton" text="Back to Main Menu" onAction="#switchToMainView" styleClass="gui-button"/>
+    <Button fx:id="localGameButton" onAction="#switchToLocalGameView" styleClass="gui-button"/>
+    <Button fx:id="onlineGameButton" onAction="#switchToOnlineGameView" styleClass="gui-button"/>
+    <Button fx:id="backButton" onAction="#switchToMainView" styleClass="gui-button"/>
 </VBox>

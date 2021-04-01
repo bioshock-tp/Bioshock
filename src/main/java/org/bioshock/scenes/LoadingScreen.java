@@ -12,20 +12,21 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.TextFlow;
 import javafx.util.Duration;
+import org.bioshock.utils.GlobalStrings;
 
 public class LoadingScreen extends GameScene {
-	public LoadingScreen (boolean isNetworked) {
+	public LoadingScreen (boolean isNetworked, String loadingText) {
         super();
 
         VBox verticalBox = new VBox();
         verticalBox.setAlignment(Pos.CENTER);
-		Label buzzLabel = new Label("Buzz");
+		Label buzzLabel = new Label(GlobalStrings.BUZZ_TEXT);
         buzzLabel.setTextFill(Color.WHITE);
-        Label killLabel = new Label("Kill");
+        Label killLabel = new Label(GlobalStrings.KILL_TEXT);
         killLabel.setTextFill(Color.web("0xC50909"));
         TextFlow titleFlow = new TextFlow(buzzLabel, killLabel);
         titleFlow.setStyle("-fx-font-family: \"Helvetica\"; -fx-font-size: 72px; -fx-font-weight: bold; -fx-text-alignment: center;");
-        Label infoLabel = new Label("Collect all items before the time runs out, without being caught!");
+        Label infoLabel = new Label(loadingText);
         infoLabel.setStyle("-fx-font-family: \"Helvetica\"; -fx-font-size: 36px; -fx-text-alignment: center;");
         infoLabel.setTextFill(Color.WHITE);
         verticalBox.getChildren().addAll(titleFlow, infoLabel);
