@@ -1,9 +1,14 @@
 package org.bioshock.entities.map;
 
+import static org.bioshock.utils.GlobalConstants.UNIT_HEIGHT;
+import static org.bioshock.utils.GlobalConstants.UNIT_WIDTH;
+
 import java.util.Arrays;
 import java.util.List;
 
 import org.bioshock.components.NetworkC;
+import org.bioshock.main.App;
+import org.bioshock.utils.ArrayUtils;
 import org.bioshock.utils.GlobalConstants;
 import org.bioshock.utils.Size;
 
@@ -33,16 +38,45 @@ public class Sides {
         double coriLen,
         Color c
     ) {
-        boolean[][] traverseable = new boolean
-                [(int) Math.round(coriLen)]
-                [(int) Math.round(roomHeight)];
+        boolean[][] traversable = new boolean
+                [(int) Math.round(roomHeight)]
+                [(int) Math.round(coriLen)];
+        
+        ArrayUtils.copyInArray(
+            traversable, 
+            ArrayUtils.fill2DArray(
+                    new boolean[(int) ((roomHeight - coriWidth) / 2 - wallWidth)][(int) (coriLen - wallWidth)],
+                    true),
+            0, 
+            0
+        );
+        
+        ArrayUtils.copyInArray(
+            traversable, 
+            ArrayUtils.fill2DArray(
+                    new boolean[(int) coriWidth][(int) coriLen], 
+                    true), 
+            (int)((roomHeight - coriWidth) / 2), 
+            0
+        );
+        
+        ArrayUtils.copyInArray(
+            traversable, 
+            ArrayUtils.fill2DArray(
+                    new boolean[(int) ((roomHeight - coriWidth) / 2 - wallWidth)][(int) (coriLen - wallWidth)], 
+                    true), 
+            (int)((roomHeight + coriWidth) / 2 + wallWidth), 
+            0
+        );
+        App.logger.debug("lExit:");
+        ArrayUtils.log2DArray(traversable);
         
         //vertical wall
         TexRectEntity roomWall1 =
             new TexRectEntity(
-                pos.add(coriLen - wallWidth, 0, 0),
+                pos.add((coriLen - wallWidth)*UNIT_WIDTH, 0*UNIT_HEIGHT, 0),
                 new NetworkC(false),
-                new Size(wallWidth, (roomHeight - coriWidth) / 2 - wallWidth),
+                new Size(wallWidth*UNIT_WIDTH, ((roomHeight - coriWidth) / 2 - wallWidth)*UNIT_HEIGHT),
                 c
             ); 
 
@@ -50,11 +84,11 @@ public class Sides {
         TexRectEntity roomWall2 =
             new TexRectEntity(
                 pos.add(
-                    coriLen - wallWidth,
-                    (roomHeight + coriWidth) / 2 + wallWidth, 0
+                    (coriLen - wallWidth)*UNIT_WIDTH,
+                    ((roomHeight + coriWidth) / 2 + wallWidth)*UNIT_HEIGHT, 0
                 ),
                 new NetworkC(false),
-                new Size(wallWidth, (roomHeight - coriWidth) / 2 - wallWidth),
+                new Size(wallWidth*UNIT_WIDTH, ((roomHeight - coriWidth) / 2 - wallWidth)*UNIT_HEIGHT),
                 c
             );
 
@@ -62,21 +96,21 @@ public class Sides {
         TexRectEntity coriWall1 =
             new TexRectEntity(
                 pos.add(
-                    0,
-                    (roomHeight - coriWidth) / 2 - wallWidth,
+                    0*UNIT_WIDTH,
+                    ((roomHeight - coriWidth) / 2 - wallWidth)*UNIT_HEIGHT,
                     0
                 ),
                 new NetworkC(false),
-                new Size(coriLen - wallWidth + padding, wallWidth),
+                new Size((coriLen - wallWidth + padding)*UNIT_WIDTH, wallWidth*UNIT_HEIGHT),
                 c
             );
 
         //bottom wall
         TexRectEntity coriWall2 =
             new TexRectEntity(
-                pos.add(0, (roomHeight + coriWidth) / 2, 0),
+                pos.add(0*UNIT_WIDTH, ((roomHeight + coriWidth) / 2)*UNIT_HEIGHT, 0),
                 new NetworkC(false),
-                new Size(coriLen - wallWidth + padding, wallWidth),
+                new Size((coriLen - wallWidth + padding)*UNIT_WIDTH, wallWidth*UNIT_HEIGHT),
                 c
             );
 
@@ -84,12 +118,12 @@ public class Sides {
         TexRectEntity cor1 =
             new TexRectEntity(
                 pos.add(
-                    coriLen - wallWidth,
-                    (roomHeight - coriWidth) / 2 - wallWidth,
+                    (coriLen - wallWidth)*UNIT_WIDTH,
+                    ((roomHeight - coriWidth) / 2 - wallWidth)*UNIT_HEIGHT,
                     0
                 ),
                 new NetworkC(false),
-                new Size(wallWidth, wallWidth),
+                new Size(wallWidth*UNIT_WIDTH, wallWidth*UNIT_HEIGHT),
                 c
             );
 
@@ -97,19 +131,23 @@ public class Sides {
         TexRectEntity cor2 =
             new TexRectEntity(
                 pos.add(
-                    coriLen - wallWidth,
-                    (roomHeight + coriWidth) / 2,
+                    (coriLen - wallWidth)*UNIT_WIDTH,
+                    ((roomHeight + coriWidth) / 2)*UNIT_HEIGHT,
                     0
                 ),
                 new NetworkC(false),
-                new Size(wallWidth, wallWidth),
+                new Size(wallWidth*UNIT_WIDTH, wallWidth*UNIT_HEIGHT),
                 c
             );
         
         
-        return Arrays.asList(
-            roomWall1, roomWall2, coriWall1, coriWall2, cor1, cor2
-        );
+        
+        return new Pair<>(
+                Arrays.asList(
+                    roomWall1, roomWall2, coriWall1, coriWall2, cor1, cor2
+                ),
+                traversable
+            );
     }
 
     /**
@@ -130,13 +168,46 @@ public class Sides {
         double coriLen,
         Color c
     ) {
+        
+        boolean[][] traversable = new boolean
+                [(int) Math.round(roomHeight)]
+                [(int) Math.round(coriLen)];
+        
+        ArrayUtils.copyInArray(
+            traversable, 
+            ArrayUtils.fill2DArray(
+                    new boolean[(int) ((roomHeight - coriWidth) / 2 - wallWidth)][(int) (coriLen - wallWidth)],
+                    true),
+            0, 
+            (int) wallWidth
+        );
+        
+        ArrayUtils.copyInArray(
+            traversable, 
+            ArrayUtils.fill2DArray(
+                    new boolean[(int) coriWidth][(int) coriLen], 
+                    true), 
+            (int)((roomHeight - coriWidth) / 2), 
+            0
+        );
+        
+        ArrayUtils.copyInArray(
+            traversable, 
+            ArrayUtils.fill2DArray(
+                    new boolean[(int) ((roomHeight - coriWidth) / 2 - wallWidth)][(int) (coriLen - wallWidth)],
+                    true),
+            (int)((roomHeight + coriWidth) / 2 + wallWidth), 
+            (int) wallWidth
+        );
+        App.logger.debug("rExit:");
+        ArrayUtils.log2DArray(traversable);
 
         //vertical wall
         TexRectEntity roomWall1 =
             new TexRectEntity(
                 pos,
                 new NetworkC(false),
-                new Size(wallWidth, (roomHeight - coriWidth) / 2 - wallWidth),
+                new Size(wallWidth*UNIT_WIDTH, ((roomHeight - coriWidth) / 2 - wallWidth)*UNIT_HEIGHT),
                 c
             );
 
@@ -144,12 +215,12 @@ public class Sides {
         TexRectEntity roomWall2 =
             new TexRectEntity(
                 pos.add(
-                    0,
-                    (roomHeight + coriWidth) / 2 + wallWidth,
+                    0*UNIT_WIDTH,
+                    ((roomHeight + coriWidth) / 2 + wallWidth)*UNIT_HEIGHT,
                     0
                 ),
                 new NetworkC(false),
-                new Size(wallWidth, (roomHeight - coriWidth) / 2 - wallWidth),
+                new Size(wallWidth*UNIT_WIDTH, ((roomHeight - coriWidth) / 2 - wallWidth)*UNIT_HEIGHT),
                 c
             );
 
@@ -157,21 +228,21 @@ public class Sides {
         TexRectEntity coriWall1 =
             new TexRectEntity(
                 pos.add(
-                    wallWidth,
-                    (roomHeight - coriWidth) / 2 - wallWidth,
+                    wallWidth*UNIT_WIDTH,
+                    ((roomHeight - coriWidth) / 2 - wallWidth)*UNIT_HEIGHT,
                     0
                 ),
                 new NetworkC(false),
-                new Size(coriLen - wallWidth + padding, wallWidth),
+                new Size((coriLen - wallWidth + padding)*UNIT_WIDTH, wallWidth*UNIT_HEIGHT),
                 c
             );
 
         //bottom wall
         TexRectEntity coriWall2 =
             new TexRectEntity(
-                pos.add(wallWidth, (roomHeight + coriWidth) / 2, 0),
+                pos.add(wallWidth*UNIT_WIDTH, ((roomHeight + coriWidth) / 2)*UNIT_HEIGHT, 0),
                 new NetworkC(false),
-                new Size(coriLen - wallWidth + padding, wallWidth),
+                new Size((coriLen - wallWidth + padding)*UNIT_WIDTH, wallWidth*UNIT_HEIGHT),
                 c
             );
 
@@ -179,26 +250,29 @@ public class Sides {
         TexRectEntity cor1 =
             new TexRectEntity(
                 pos.add(
-                    0,
-                    (roomHeight - coriWidth) / 2 - wallWidth,
+                    0*UNIT_WIDTH,
+                    ((roomHeight - coriWidth) / 2 - wallWidth)*UNIT_HEIGHT,
                     0
             ),
                 new NetworkC(false),
-                new Size(wallWidth, wallWidth),
+                new Size(wallWidth*UNIT_WIDTH, wallWidth*UNIT_HEIGHT),
                 c
             );
 
         //corner connecting bottom and right
         TexRectEntity cor2 =
             new TexRectEntity(
-                pos.add(0, (roomHeight + coriWidth) / 2, 0),
+                pos.add(0*UNIT_WIDTH, ((roomHeight + coriWidth) / 2)*UNIT_HEIGHT, 0),
                 new NetworkC(false),
-                new Size(wallWidth, wallWidth),
+                new Size(wallWidth*UNIT_WIDTH, wallWidth*UNIT_HEIGHT),
                 c
             );
 
-        return Arrays.asList(
-            roomWall1, roomWall2, coriWall1, coriWall2, cor1, cor2
+        return new Pair<>(
+            Arrays.asList(
+                roomWall1, roomWall2, coriWall1, coriWall2, cor1, cor2
+            ),
+            traversable
         );
     }
 
@@ -221,12 +295,45 @@ public class Sides {
         Color c
     ) {
 
+        boolean[][] traversable = new boolean
+                [(int) Math.round(coriLen)]
+                [(int) Math.round(roomWidth)];
+        
+        ArrayUtils.copyInArray(
+            traversable, 
+            ArrayUtils.fill2DArray(
+                    new boolean[(int) (coriLen - wallWidth)][(int) ((roomWidth - coriWidth) / 2 - wallWidth)],
+                    true),
+            0, 
+            0
+        );
+        
+        ArrayUtils.copyInArray(
+            traversable, 
+            ArrayUtils.fill2DArray(
+                    new boolean[(int) coriLen][(int) coriWidth], 
+                    true), 
+            0, 
+            (int)((roomWidth - coriWidth) / 2)
+        );
+            
+        ArrayUtils.copyInArray(
+            traversable, 
+            ArrayUtils.fill2DArray(
+                    new boolean[(int) (coriLen - wallWidth)][(int) ((roomWidth - coriWidth) / 2 - wallWidth)], 
+                    true), 
+            0, 
+            (int)((roomWidth + coriWidth) / 2 + wallWidth)
+        );
+        App.logger.debug("tExit:");
+        ArrayUtils.log2DArray(traversable);
+   
         //top wall
         TexRectEntity roomWall1 =
             new TexRectEntity(
-                pos.add(0, coriLen - wallWidth, 0),
+                pos.add(0*UNIT_WIDTH, (coriLen - wallWidth)*UNIT_HEIGHT, 0),
                 new NetworkC(false),
-                new Size((roomWidth - coriWidth) / 2 - wallWidth, wallWidth),
+                new Size(((roomWidth - coriWidth) / 2 - wallWidth)*UNIT_WIDTH, wallWidth*UNIT_HEIGHT),
                 c
             );
 
@@ -234,12 +341,12 @@ public class Sides {
         TexRectEntity roomWall2 =
             new TexRectEntity(
                 pos.add(
-                    (roomWidth + coriWidth) / 2 + wallWidth,
-                    coriLen - wallWidth,
+                    ((roomWidth + coriWidth) / 2 + wallWidth)*UNIT_WIDTH,
+                    (coriLen - wallWidth)*UNIT_HEIGHT,
                     0
                 ),
                 new NetworkC(false),
-                new Size((roomWidth - coriWidth) / 2 - wallWidth, wallWidth),
+                new Size(((roomWidth - coriWidth) / 2 - wallWidth)*UNIT_WIDTH, wallWidth*UNIT_HEIGHT),
                 c
             );
 
@@ -247,21 +354,21 @@ public class Sides {
         TexRectEntity coriWall1 =
             new TexRectEntity(
                 pos.add(
-                    (roomWidth - coriWidth) / 2 - wallWidth,
-                    0,
+                    ((roomWidth - coriWidth) / 2 - wallWidth)*UNIT_WIDTH,
+                    0*UNIT_HEIGHT,
                     0
                 ),
                 new NetworkC(false),
-                new Size(wallWidth, coriLen - wallWidth + padding),
+                new Size(wallWidth*UNIT_WIDTH, (coriLen - wallWidth + padding)*UNIT_HEIGHT),
                 c
             );
 
         //vertical wall
         TexRectEntity coriWall2 =
             new TexRectEntity(
-                pos.add((roomWidth + coriWidth) / 2, 0, 0),
+                pos.add(((roomWidth + coriWidth) / 2)*UNIT_WIDTH, 0*UNIT_HEIGHT, 0),
                 new NetworkC(false),
-                new Size(wallWidth, coriLen - wallWidth + padding),
+                new Size(wallWidth*UNIT_WIDTH, (coriLen - wallWidth + padding)*UNIT_HEIGHT),
                 c
             );
 
@@ -269,12 +376,12 @@ public class Sides {
         TexRectEntity cor1 =
             new TexRectEntity(
                 pos.add(
-                    (roomWidth - coriWidth) / 2 - wallWidth,
-                    coriLen - wallWidth,
+                    ((roomWidth - coriWidth) / 2 - wallWidth)*UNIT_WIDTH,
+                    (coriLen - wallWidth)*UNIT_HEIGHT,
                     0
                 ),
                 new NetworkC(false),
-                new Size(wallWidth, wallWidth),
+                new Size(wallWidth*UNIT_WIDTH, wallWidth*UNIT_HEIGHT),
                 c
             );
 
@@ -282,17 +389,20 @@ public class Sides {
         TexRectEntity cor2 =
             new TexRectEntity(
                 pos.add(
-                    (roomWidth + coriWidth) / 2,
-                    coriLen - wallWidth,
+                    ((roomWidth + coriWidth) / 2)*UNIT_WIDTH,
+                    (coriLen - wallWidth)*UNIT_HEIGHT,
                     0
                 ),
                 new NetworkC(false),
-                new Size(wallWidth, wallWidth),
+                new Size(wallWidth*UNIT_WIDTH, wallWidth*UNIT_HEIGHT),
                 c
             );
 
-        return Arrays.asList(
-            roomWall1, roomWall2, coriWall1, coriWall2, cor1, cor2
+        return new Pair<>(
+            Arrays.asList(
+                roomWall1, roomWall2, coriWall1, coriWall2, cor1, cor2
+            ),
+            traversable
         );
     }
 
@@ -314,13 +424,45 @@ public class Sides {
         double coriLen,
         Color c
     ) {
+        boolean[][] traversable = new boolean
+                [(int) Math.round(coriLen)]
+                [(int) Math.round(roomWidth)];
+        
+        ArrayUtils.copyInArray(
+            traversable, 
+            ArrayUtils.fill2DArray(
+                    new boolean[(int) (coriLen - wallWidth)][(int) ((roomWidth - coriWidth) / 2 - wallWidth)],
+                    true),
+            (int) wallWidth, 
+            0
+        );
+        
+        ArrayUtils.copyInArray(
+            traversable, 
+            ArrayUtils.fill2DArray(
+                    new boolean[(int) coriLen][(int) coriWidth], 
+                    true), 
+            0, 
+            (int)((roomWidth - coriWidth) / 2)
+        );
+            
+        ArrayUtils.copyInArray(
+            traversable, 
+            ArrayUtils.fill2DArray(
+                    new boolean[(int) (coriLen - wallWidth)][(int) ((roomWidth - coriWidth) / 2 - wallWidth)], 
+                    true), 
+            (int) wallWidth, 
+            (int)((roomWidth + coriWidth) / 2 + wallWidth)
+        );
+        App.logger.debug("bExit:");
+        ArrayUtils.log2DArray(traversable);
 
         //bottom wall
         TexRectEntity roomWall1 =
             new TexRectEntity(
                 pos,
                 new NetworkC(false),
-                new Size((roomWidth - coriWidth) / 2 - wallWidth, wallWidth),
+                new Size(((roomWidth - coriWidth) / 2 - wallWidth)*UNIT_WIDTH, wallWidth*UNIT_HEIGHT),
                 c
             );
 
@@ -328,12 +470,12 @@ public class Sides {
         TexRectEntity roomWall2 =
             new TexRectEntity(
                 pos.add(
-                    (roomWidth + coriWidth) / 2 + wallWidth,
-                    0,
+                    ((roomWidth + coriWidth) / 2 + wallWidth)*UNIT_WIDTH,
+                    0*UNIT_HEIGHT,
                     0
                 ),
                 new NetworkC(false),
-                new Size((roomWidth - coriWidth) / 2 - wallWidth, wallWidth),
+                new Size(((roomWidth - coriWidth) / 2 - wallWidth)*UNIT_WIDTH, wallWidth*UNIT_HEIGHT),
                 c
             );
 
@@ -341,21 +483,21 @@ public class Sides {
         TexRectEntity coriWall1 =
             new TexRectEntity(
                 pos.add(
-                    (roomWidth - coriWidth) / 2 - wallWidth,
-                    wallWidth,
+                    ((roomWidth - coriWidth) / 2 - wallWidth)*UNIT_WIDTH,
+                    wallWidth*UNIT_HEIGHT,
                     0
                 ),
                 new NetworkC(false),
-                new Size(wallWidth, coriLen - wallWidth + padding),
+                new Size(wallWidth*UNIT_WIDTH, (coriLen - wallWidth + padding)*UNIT_HEIGHT),
                 c
             );
 
         //vertical wall
         TexRectEntity coriWall2 =
             new TexRectEntity(
-                pos.add((roomWidth + coriWidth) / 2, wallWidth, 0),
+                pos.add(((roomWidth + coriWidth) / 2)*UNIT_WIDTH, wallWidth*UNIT_HEIGHT, 0),
                 new NetworkC(false),
-                new Size(wallWidth, coriLen - wallWidth + padding),
+                new Size(wallWidth*UNIT_WIDTH, (coriLen - wallWidth + padding)*UNIT_HEIGHT),
                 c
             );
 
@@ -363,26 +505,29 @@ public class Sides {
         TexRectEntity cor1 =
             new TexRectEntity(
                 pos.add(
-                    (roomWidth - coriWidth) / 2 - wallWidth,
-                    0,
+                    ((roomWidth - coriWidth) / 2 - wallWidth)*UNIT_WIDTH,
+                    0*UNIT_HEIGHT,
                     0
                 ),
                 new NetworkC(false),
-                new Size(wallWidth, wallWidth),
+                new Size(wallWidth*UNIT_WIDTH, wallWidth*UNIT_HEIGHT),
                 c
             );
 
         //corner connecting bottom and right
         TexRectEntity cor2 =
             new TexRectEntity(
-                pos.add((roomWidth + coriWidth) / 2, 0, 0),
+                pos.add(((roomWidth + coriWidth) / 2)*UNIT_WIDTH, 0*UNIT_HEIGHT, 0),
                 new NetworkC(false),
-                new Size(wallWidth, wallWidth),
+                new Size(wallWidth*UNIT_WIDTH, wallWidth*UNIT_HEIGHT),
                 c
             );
 
-        return Arrays.asList(
-            roomWall1, roomWall2, coriWall1, coriWall2, cor1, cor2
+        return new Pair<>(
+            Arrays.asList(
+                roomWall1, roomWall2, coriWall1, coriWall2, cor1, cor2
+            ),
+            traversable
         );
     }
 
@@ -404,17 +549,33 @@ public class Sides {
         double coriLen,
         Color c
     ) {
+        
+        boolean[][] traversable = new boolean
+                [(int) Math.round(roomHeight)]
+                [(int) Math.round(coriLen)];
+        
+        ArrayUtils.copyInArray(
+            traversable, 
+            ArrayUtils.fill2DArray(
+                    new boolean[(int) (roomHeight)][(int) (coriLen - wallWidth)],
+                    true),
+            0, 
+            0
+        );
 
         //vertical wall
         TexRectEntity wall =
             new TexRectEntity(
-                pos.add(coriLen - wallWidth, 0, 0),
+                pos.add((coriLen - wallWidth)*UNIT_WIDTH, 0*UNIT_HEIGHT, 0),
                 new NetworkC(false),
-                new Size(wallWidth, roomHeight),
+                new Size(wallWidth*UNIT_WIDTH, roomHeight*UNIT_HEIGHT),
                 c
             );
 
-        return Arrays.asList(wall);
+        return new Pair<>(
+            Arrays.asList(wall),
+            traversable
+        );
     }
 
     /**
@@ -435,17 +596,32 @@ public class Sides {
         double coriLen,
         Color c
     ) {
+        boolean[][] traversable = new boolean
+                [(int) Math.round(roomHeight)]
+                [(int) Math.round(coriLen)];
+        
+        ArrayUtils.copyInArray(
+            traversable, 
+            ArrayUtils.fill2DArray(
+                    new boolean[(int) (roomHeight)][(int) (coriLen - wallWidth)],
+                    true),
+            0, 
+            (int) wallWidth
+        );
 
         //vertical wall
         TexRectEntity wall =
             new TexRectEntity(
                 pos,
                 new NetworkC(false),
-                new Size(wallWidth, roomHeight),
+                new Size(wallWidth*UNIT_WIDTH, roomHeight*UNIT_HEIGHT),
                 c
             );
 
-        return Arrays.asList(wall);
+        return new Pair<>(
+            Arrays.asList(wall),
+            traversable
+        );
     }
 
     /**
@@ -466,17 +642,33 @@ public class Sides {
         double coriLen,
         Color c
     ) {
+        
+        boolean[][] traversable = new boolean
+                [(int) Math.round(coriLen)]
+                [(int) Math.round(roomWidth)];
+        
+        ArrayUtils.copyInArray(
+            traversable, 
+            ArrayUtils.fill2DArray(
+                    new boolean[(int) (coriLen - wallWidth)][(int) (roomWidth)],
+                    true),
+            0, 
+            0
+        );
 
         //top wall
         TexRectEntity wall =
             new TexRectEntity(
-                pos.add(0, coriLen - wallWidth, 0),
+                pos.add(0*UNIT_WIDTH, (coriLen - wallWidth)*UNIT_HEIGHT, 0),
                 new NetworkC(false),
-                new Size(roomWidth, wallWidth),
+                new Size(roomWidth*UNIT_WIDTH, wallWidth*UNIT_HEIGHT),
                 c
             );
 
-        return Arrays.asList(wall);
+        return new Pair<>(
+            Arrays.asList(wall),
+            traversable
+        );
     }
 
     /**
@@ -497,16 +689,32 @@ public class Sides {
         double coriLen,
         Color c
     ) {
+        
+        boolean[][] traversable = new boolean
+                [(int) Math.round(coriLen)]
+                [(int) Math.round(roomWidth)];
+        
+        ArrayUtils.copyInArray(
+            traversable, 
+            ArrayUtils.fill2DArray(
+                    new boolean[(int) (coriLen - wallWidth)][(int) (roomWidth)],
+                    true),
+            (int) wallWidth, 
+            0
+        );
 
         //bottom wall
         TexRectEntity wall =
             new TexRectEntity(
                 pos,
                 new NetworkC(false),
-                new Size(roomWidth, wallWidth),
+                new Size(roomWidth*UNIT_WIDTH, wallWidth*UNIT_HEIGHT),
                 c
             );
 
-        return Arrays.asList(wall);
+        return new Pair<>(
+            Arrays.asList(wall),
+            traversable
+        );
     }
 }

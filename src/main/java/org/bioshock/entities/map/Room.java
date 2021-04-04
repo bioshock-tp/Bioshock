@@ -11,6 +11,8 @@ import javafx.geometry.Point2D;
 import org.bioshock.components.NetworkC;
 import org.bioshock.engine.pathfinding.GraphNode;
 import org.bioshock.entities.map.utils.ConnType;
+import org.bioshock.main.App;
+import org.bioshock.utils.ArrayUtils;
 import org.bioshock.utils.DeepCopy;
 import org.bioshock.utils.Direction;
 import org.bioshock.utils.Size;
@@ -91,49 +93,51 @@ public class Room extends GraphNode {
             connections.replace(edge.getKey(), edge.getValue());
         }
         
-        wallArray = new boolean[(int) totalSize.getWidth()][(int) totalSize.getHeight()];
+        boolean[][] traversable = new boolean[(int) totalSize.getWidth()][(int) totalSize.getHeight()];
+        
+        ArrayUtils.fill2DArray(traversable, true);
         
         //Add the sides relevant for the connection type in each direction
-        copyInArray(
-                wallArray, 
-                topSide(pos.add(coriSize.getHeight()*UNIT_WIDTH, 0*UNIT_HEIGHT, 0),
-                        wallWidth, coriSize, c, connections.get(Direction.NORTH)),
-                (int) coriSize.getHeight(), 
-                (int) 0
-            );
+        ArrayUtils.copyInArray(
+            traversable, 
+            topSide(pos.add(coriSize.getHeight()*UNIT_WIDTH, 0*UNIT_HEIGHT, 0),
+                    wallWidth, coriSize, c, connections.get(Direction.NORTH)),
+            (int) 0, 
+            (int) coriSize.getHeight()
+        );
         
+        ArrayUtils.copyInArray(
+            traversable,
+            botSide(pos.add(
+                    coriSize.getHeight()*UNIT_WIDTH,
+                    (coriSize.getHeight() + roomSize.getHeight())*UNIT_HEIGHT,
+                    0
+                ),
+                wallWidth, coriSize, c, connections.get(Direction.SOUTH)),
+            (int) (coriSize.getHeight() + roomSize.getHeight()),
+            (int) coriSize.getHeight()
+        );
         
-        copyInArray(
-                wallArray,
-                botSide(pos.add(
-                        coriSize.getHeight()*UNIT_WIDTH,
-                        (coriSize.getHeight() + roomSize.getHeight())*UNIT_HEIGHT,
-                        0
-                    ),
-                    wallWidth, coriSize, c, connections.get(Direction.SOUTH)),
-                (int) coriSize.getHeight(),
-                (int) (coriSize.getHeight() + roomSize.getHeight())
-            );
+        ArrayUtils.copyInArray(
+            traversable,
+            rightSide(pos.add(
+                    (coriSize.getHeight() + roomSize.getWidth())*UNIT_WIDTH,
+                    coriSize.getHeight()*UNIT_HEIGHT,
+                    0
+                ),
+                wallWidth, coriSize, c, connections.get(Direction.EAST)),
+            (int) coriSize.getHeight(),
+            (int) (coriSize.getHeight() + roomSize.getWidth())
+        );
         
-        copyInArray(
-                wallArray,
-                rightSide(pos.add(
-                        (coriSize.getHeight() + roomSize.getWidth())*UNIT_WIDTH,
-                        coriSize.getHeight()*UNIT_HEIGHT,
-                        0
-                    ),
-                    wallWidth, coriSize, c, connections.get(Direction.EAST)),
-                (int) (coriSize.getHeight() + roomSize.getWidth()),
-                (int) coriSize.getHeight()
-            );
+        ArrayUtils.copyInArray(
+            traversable,
+            leftSide(pos.add(0*UNIT_WIDTH, coriSize.getHeight()*UNIT_HEIGHT, 0),
+                wallWidth, coriSize, c, connections.get(Direction.WEST)),
+            (int) coriSize.getHeight(),
+            (int) 0
+        );
         
-        copyInArray(
-                wallArray,
-                leftSide(pos.add(0*UNIT_WIDTH, coriSize.getHeight()*UNIT_HEIGHT, 0),
-                    wallWidth, coriSize, c, connections.get(Direction.WEST)),
-                (int) 0,
-                (int) coriSize.getHeight()
-            );
         
         //corner connecting bottom and right
         TexRectEntity corner1 = new TexRectEntity(
@@ -147,8 +151,12 @@ public class Room extends GraphNode {
             c
         );
         walls.add(corner1);
-        wallArray[(int)(coriSize.getHeight() - wallWidth)][(int)(coriSize.getHeight() - wallWidth)] 
-                = true;
+        ArrayUtils.copyInArray(
+            traversable, 
+            new boolean[(int) wallWidth][(int) wallWidth], 
+            (int)(coriSize.getHeight() - wallWidth), 
+            (int)(coriSize.getHeight() - wallWidth)
+        );
 
         //corner connecting bottom and left
         TexRectEntity corner2 = new TexRectEntity(
@@ -162,8 +170,12 @@ public class Room extends GraphNode {
             c
         );
         walls.add(corner2);
-        wallArray[(int)(coriSize.getHeight() + roomSize.getWidth())][(int)(coriSize.getHeight() - wallWidth)] 
-                = true;
+        ArrayUtils.copyInArray(
+            traversable, 
+            new boolean[(int) wallWidth][(int) wallWidth], 
+            (int)(coriSize.getHeight() + roomSize.getWidth()), 
+            (int)(coriSize.getHeight() - wallWidth)
+        );
 
         //corner connecting top and right
         TexRectEntity corner3 = new TexRectEntity(
@@ -177,8 +189,12 @@ public class Room extends GraphNode {
             c
         );
         walls.add(corner3);
-        wallArray[(int)(coriSize.getHeight() - wallWidth)][(int)(coriSize.getHeight() + roomSize.getHeight())] 
-                = true;
+        ArrayUtils.copyInArray(
+            traversable, 
+            new boolean[(int) wallWidth][(int) wallWidth], 
+            (int)(coriSize.getHeight() - wallWidth), 
+            (int)(coriSize.getHeight() + roomSize.getHeight())
+        );
 
         //corner connecting top and left
         TexRectEntity corner4 = new TexRectEntity(
@@ -192,24 +208,18 @@ public class Room extends GraphNode {
             c
         );
         walls.add(corner4);
-        wallArray[(int)(coriSize.getHeight() + roomSize.getWidth())][(int)(coriSize.getHeight() + roomSize.getHeight())] 
-                = true;
+        ArrayUtils.copyInArray(
+            traversable, 
+            new boolean[(int) wallWidth][(int) wallWidth], 
+            (int)(coriSize.getHeight() + roomSize.getWidth()), 
+            (int)(coriSize.getHeight() + roomSize.getHeight())
+        );
+        
+        App.logger.debug("Full Room:");
+        ArrayUtils.log2DArray(traversable);
     }
     
-    /***
-     * copies the source array into the target array at the given position
-     * @param target 
-     * @param source
-     * @param i the row to start copying into
-     * @param y the column to start copying into
-     */
-    private void copyInArray(boolean[][] target, boolean[][] source, int i, int j) {
-        for(int a=0;a<source.length&&a+i<target.length;a++) {
-            for(int b=0;b<source[0].length&&b+j<target[0].length;b++) {
-                target[a+i][b+j] = source[a][b];
-            }
-        }
-    }
+    
     
     /***
      * Adds a top side depending on the connection type
@@ -294,6 +304,7 @@ public class Room extends GraphNode {
         default:
             break;
         }
+        walls.addAll(wallsAndArray.getKey());
         return wallsAndArray.getValue();
     }
     
@@ -336,6 +347,7 @@ public class Room extends GraphNode {
         default:
             break;
         }
+        walls.addAll(wallsAndArray.getKey());
         return wallsAndArray.getValue();
     }
 
@@ -378,6 +390,7 @@ public class Room extends GraphNode {
         default:
             break;          
         }
+        walls.addAll(wallsAndArray.getKey());
         return wallsAndArray.getValue();
     }    
     

@@ -82,7 +82,7 @@ public class GenericMap implements Map{
                 //If the current position should be a room
                 if (roomTypes[i][j] != RoomType.NO_ROOM) {
                     //generate a new room at the current position
-                    rooms[i][j] = new Room(newPos.add(j*tRoomWidth*UNIT_WIDTH, i*tRoomHeight*UNIT_HEIGHT, 0), 
+                    rooms[i][j] = new Room(newPos.add(j*tRoomWidth, i*tRoomHeight, 0), 
                             wallWidth, newRoomSize, coriSize, c);  
                     
                     //add the newly generated room to the room graph

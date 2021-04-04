@@ -23,6 +23,10 @@ public final class GlobalConstants {
         {B,A,B,B,A,B},
         {B,B,A,B,B,A},
         {B,A,B,B,A,B}};
+    
+    public static final RoomType[][] simpleMap = 
+       {{B,B},
+        {B,A}};
 
     private GlobalConstants() {}
 }
