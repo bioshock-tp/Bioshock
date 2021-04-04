@@ -55,7 +55,7 @@ public class RandomMap implements Map{
         
         RoomType[][] roomTypes = 
                 new RoomType[maxMapHeight][maxMapWidth];
-        
+         
         //if a seed is given use a seeded random number generator
         //otherwise use a non seeded one
         Random rand;

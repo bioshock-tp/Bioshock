@@ -6,6 +6,8 @@ import static org.bioshock.utils.Direction.EAST;
 import static org.bioshock.utils.Direction.NORTH;
 import static org.bioshock.utils.Direction.SOUTH;
 import static org.bioshock.utils.Direction.WEST;
+import static org.bioshock.utils.GlobalConstants.UNIT_WIDTH;
+import static org.bioshock.utils.GlobalConstants.UNIT_HEIGHT;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,6 +19,7 @@ import org.bioshock.entities.map.TexRectEntity;
 import org.bioshock.entities.map.utils.ConnType;
 import org.bioshock.entities.map.utils.RoomType;
 import org.bioshock.utils.Direction;
+import org.bioshock.utils.GlobalConstants;
 import org.bioshock.utils.Size;
 
 import javafx.geometry.Point3D;
@@ -43,9 +46,9 @@ public class GenericMap implements Map{
     /***
      * Generate a new generic map
      * @param newPos the top left position of the map (even if there is no room in the top left position)
-     * @param wallWidth the width of the walls that make up the map
-     * @param newRoomSize the size of the internal room
-     * @param coriSize the size of all corridors
+     * @param wallWidth the width of the walls that make up the map (in terms of units)
+     * @param newRoomSize the size of the internal room (in terms of units)
+     * @param coriSize the size of all corridors (in terms of units)
      * @param c the colour of the map
      * @param roomTypes the 2d array which the map is going to be generated from
      */
@@ -69,8 +72,8 @@ public class GenericMap implements Map{
         rooms = new Room[roomTypes.length][roomTypes[0].length];
         
         //Gets the total room width and height to calculate the position of each new room
-        double tRoomWidth = newRoomSize.getWidth() + coriSize.getHeight()*2;
-        double tRoomHeight = newRoomSize.getHeight() + coriSize.getHeight()*2;
+        double tRoomWidth = (newRoomSize.getWidth() + coriSize.getHeight()*2)*UNIT_WIDTH;
+        double tRoomHeight = (newRoomSize.getHeight() + coriSize.getHeight()*2)*UNIT_HEIGHT;
         
         //iterate through the room array in row major order
         for (int i=0;i<roomTypes.length;i++) {
@@ -79,7 +82,7 @@ public class GenericMap implements Map{
                 //If the current position should be a room
                 if (roomTypes[i][j] != RoomType.NO_ROOM) {
                     //generate a new room at the current position
-                    rooms[i][j] = new Room(newPos.add(j*tRoomWidth, i*tRoomHeight, 0), 
+                    rooms[i][j] = new Room(newPos.add(j*tRoomWidth*UNIT_WIDTH, i*tRoomHeight*UNIT_HEIGHT, 0), 
                             wallWidth, newRoomSize, coriSize, c);  
                     
                     //add the newly generated room to the room graph

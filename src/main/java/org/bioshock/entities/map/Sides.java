@@ -4,10 +4,12 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.bioshock.components.NetworkC;
+import org.bioshock.utils.GlobalConstants;
 import org.bioshock.utils.Size;
 
 import javafx.geometry.Point3D;
 import javafx.scene.paint.Color;
+import javafx.util.Pair;
 
 public class Sides {
     private static int padding = 1;
@@ -21,9 +23,9 @@ public class Sides {
      * @param coriWidth the width of the corridor
      * @param coriLen the length of the corridor
      * @param c the colour of the room
-     * @return the walls that make up the side
+     * @return the walls that make up the side and an array representing what sides are solid
      */
-    public static List<TexRectEntity> lExit(
+    public static Pair<List<TexRectEntity>,boolean[][]> lExit(
         Point3D pos,
         double wallWidth,
         double roomHeight,
@@ -31,7 +33,10 @@ public class Sides {
         double coriLen,
         Color c
     ) {
-
+        boolean[][] traverseable = new boolean
+                [(int) Math.round(coriLen)]
+                [(int) Math.round(roomHeight)];
+        
         //vertical wall
         TexRectEntity roomWall1 =
             new TexRectEntity(
@@ -39,7 +44,7 @@ public class Sides {
                 new NetworkC(false),
                 new Size(wallWidth, (roomHeight - coriWidth) / 2 - wallWidth),
                 c
-            );
+            ); 
 
         //vertical wall
         TexRectEntity roomWall2 =
@@ -100,7 +105,8 @@ public class Sides {
                 new Size(wallWidth, wallWidth),
                 c
             );
-
+        
+        
         return Arrays.asList(
             roomWall1, roomWall2, coriWall1, coriWall2, cor1, cor2
         );
@@ -114,9 +120,9 @@ public class Sides {
      * @param coriWidth the width of the corridor
      * @param coriLen the length of the corridor
      * @param c the colour of the room
-     * @return the walls that make up the side
+     * @return the walls that make up the side and an array representing what sides are solid
      */
-    public static List<TexRectEntity> rExit(
+    public static Pair<List<TexRectEntity>,boolean[][]> rExit(
         Point3D pos,
         double wallWidth,
         double roomHeight,
@@ -204,9 +210,9 @@ public class Sides {
      * @param coriWidth the width of the corridor
      * @param coriLen the length of the corridor
      * @param c the colour of the room
-     * @return the walls that make up the side
+     * @return the walls that make up the side and an array representing what sides are solid
      */
-    public static List<TexRectEntity> tExit(
+    public static Pair<List<TexRectEntity>,boolean[][]> tExit(
         Point3D pos,
         double wallWidth,
         double roomWidth,
@@ -298,9 +304,9 @@ public class Sides {
      * @param coriWidth the width of the corridor
      * @param coriLen the length of the corridor
      * @param c the colour of the room
-     * @return the walls that make up the side
+     * @return the walls that make up the side and an array representing what sides are solid
      */
-    public static List<TexRectEntity> bExit(
+    public static Pair<List<TexRectEntity>,boolean[][]> bExit(
         Point3D pos,
         double wallWidth,
         double roomWidth,
@@ -388,9 +394,9 @@ public class Sides {
      * @param coriWidth the width of the corridor
      * @param coriLen the length of the corridor
      * @param c the colour of the room
-     * @return the walls that make up the side
+     * @return the walls that make up the side and an array representing what sides are solid
      */
-    public static List<TexRectEntity> lNoExit(
+    public static Pair<List<TexRectEntity>,boolean[][]> lNoExit(
         Point3D pos,
         double wallWidth,
         double roomHeight,
@@ -419,9 +425,9 @@ public class Sides {
      * @param coriWidth the width of the corridor
      * @param coriLen the length of the corridor
      * @param c the colour of the room
-     * @return the walls that make up the side
+     * @return the walls that make up the side and an array representing what sides are solid
      */
-    public static List<TexRectEntity> rNoExit(
+    public static Pair<List<TexRectEntity>,boolean[][]> rNoExit(
         Point3D pos,
         double wallWidth,
         double roomHeight,
@@ -450,9 +456,9 @@ public class Sides {
      * @param coriWidth the width of the corridor
      * @param coriLen the length of the corridor
      * @param c the colour of the room
-     * @return the walls that make up the side
+     * @return the walls that make up the side and an array representing what sides are solid
      */
-    public static List<TexRectEntity> tNoExit(
+    public static Pair<List<TexRectEntity>,boolean[][]> tNoExit(
         Point3D pos,
         double wallWidth,
         double roomWidth,
@@ -481,9 +487,9 @@ public class Sides {
      * @param coriWidth the width of the corridor
      * @param coriLen the length of the corridor
      * @param c the colour of the room
-     * @return the walls that make up the side
+     * @return the walls that make up the side and an array representing what sides are solid
      */
-    public static List<TexRectEntity> bNoExit(
+    public static Pair<List<TexRectEntity>,boolean[][]> bNoExit(
         Point3D pos,
         double wallWidth,
         double roomWidth,
