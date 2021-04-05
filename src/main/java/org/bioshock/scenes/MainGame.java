@@ -58,7 +58,7 @@ public class MainGame extends GameScene {
         		new Size(7, 7), 
         		new Size(3, 5), 
         		Color.SADDLEBROWN, 
-        		GlobalConstants.simpleMap
+        		GlobalConstants.testMap
     		);
 //        }
 //        else {

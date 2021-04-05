@@ -11,6 +11,7 @@ import javafx.geometry.Point2D;
 import org.bioshock.components.NetworkC;
 import org.bioshock.engine.pathfinding.GraphNode;
 import org.bioshock.entities.map.utils.ConnType;
+import org.bioshock.entities.map.utils.RoomType;
 import org.bioshock.main.App;
 import org.bioshock.utils.ArrayUtils;
 import org.bioshock.utils.DeepCopy;
@@ -44,6 +45,8 @@ public class Room extends GraphNode {
     private double wallWidth;
     private Size coriSize;
     private Color c;
+    
+    private RoomType roomType = RoomType.SINGLE_ROOM;
 
     /***
      * Generates a room with the position being the top left of the room
@@ -459,7 +462,15 @@ public class Room extends GraphNode {
         );
     }
 
-    /***
+    public RoomType getRoomType() {
+		return roomType;
+	}
+
+	public void setRoomType(RoomType roomType) {
+		this.roomType = roomType;
+	}
+
+	/***
      * 
      * @return an uninitialised deep copy of the current room
      * i.e. you need to call init() on the room with edge info
