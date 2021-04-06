@@ -10,7 +10,6 @@ import org.bioshock.entities.EntityManager;
 import org.bioshock.entities.map.Room;
 import org.bioshock.entities.map.maps.GenericMap;
 import org.bioshock.entities.map.maps.Map;
-import org.bioshock.entities.map.maps.RandomMap;
 import org.bioshock.entities.players.Hider;
 import org.bioshock.entities.players.SeekerAI;
 import org.bioshock.main.App;

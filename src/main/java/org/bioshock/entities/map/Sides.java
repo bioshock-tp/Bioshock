@@ -9,7 +9,6 @@ import java.util.List;
 import org.bioshock.components.NetworkC;
 import org.bioshock.main.App;
 import org.bioshock.utils.ArrayUtils;
-import org.bioshock.utils.GlobalConstants;
 import org.bioshock.utils.Size;
 
 import javafx.geometry.Point3D;
@@ -17,7 +16,7 @@ import javafx.scene.paint.Color;
 import javafx.util.Pair;
 
 public class Sides {
-    private static int padding = 1;
+    private static int padding = 5;
     private Sides() {}
 
     /**

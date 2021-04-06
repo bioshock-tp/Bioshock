@@ -1,16 +1,9 @@
 package org.bioshock.entities.map.maps;
 
-import static org.bioshock.entities.map.utils.ConnType.ROOM_TO_ROOM;
-import static org.bioshock.entities.map.utils.RoomType.SINGLE_ROOM;
-import static org.bioshock.utils.Direction.EAST;
-import static org.bioshock.utils.Direction.NORTH;
-import static org.bioshock.utils.Direction.SOUTH;
-import static org.bioshock.utils.Direction.WEST;
-import static org.bioshock.utils.GlobalConstants.UNIT_WIDTH;
 import static org.bioshock.utils.GlobalConstants.UNIT_HEIGHT;
+import static org.bioshock.utils.GlobalConstants.UNIT_WIDTH;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import org.bioshock.engine.pathfinding.Graph;
@@ -20,7 +13,6 @@ import org.bioshock.entities.map.TexRectEntity;
 import org.bioshock.entities.map.utils.ConnType;
 import org.bioshock.entities.map.utils.RoomType;
 import org.bioshock.utils.Direction;
-import org.bioshock.utils.GlobalConstants;
 import org.bioshock.utils.Size;
 
 import javafx.geometry.Point3D;

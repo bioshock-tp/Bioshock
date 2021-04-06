@@ -14,8 +14,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.bioshock.entities.map.Room;
-import org.bioshock.entities.map.utils.ConnType;
 import org.bioshock.utils.DeepCopy;
 import org.bioshock.utils.Direction;
 

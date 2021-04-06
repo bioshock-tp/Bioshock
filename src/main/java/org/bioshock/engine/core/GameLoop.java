@@ -10,9 +10,10 @@ import javafx.animation.AnimationTimer;
 public final class GameLoop extends AnimationTimer {
     private static final double LOGICRATE = 60;
     private static final double START = System.nanoTime();
-
-    private long prev = 0;
-    private long lastLogicTick = 0;
+    private static final double NS_PER_UPDATE = (1/LOGICRATE)*1e9;
+    
+    double previous = System.nanoTime();
+    double lag = 0.0;
 
     public static double currentGameTime;
 
@@ -20,29 +21,27 @@ public final class GameLoop extends AnimationTimer {
     public void handle(long now) {
         currentGameTime = (now - START) / 1e9;
 
-        if (!SceneManager.inGame() || prev == 0) {
-            prev = now;
-            lastLogicTick = now;
-
+        if (!SceneManager.inGame() || previous == 0) {
+        	previous = now;
             return;
         }
-
-        double sDelta = (now - prev) / 1e9;
-
-        double tickDelta = (now - lastLogicTick) / 1e9;
-        if (tickDelta * 1e9 >= 1 / LOGICRATE) {
-            NetworkManager.tick();
-            EntityManager.tick(tickDelta);
-            SceneManager.getScene().logicTick(tickDelta);
-
-            lastLogicTick = now;
+        
+        double current = now;
+        double elapsed = current - previous;
+        previous = current;
+        lag += elapsed;
+        
+        while (lag >= NS_PER_UPDATE)
+        {
+        	NetworkManager.tick();
+            EntityManager.tick(1/LOGICRATE);
+            SceneManager.getScene().logicTick(1/LOGICRATE);
+            lag -= NS_PER_UPDATE;
         }
 
-        SceneManager.getScene().renderTick(sDelta);
+        SceneManager.getScene().renderTick(0);
         RenderManager.tick();
         FrameRate.tick(now);
-
-        prev = now;
     }
 
 	public static double getCurrentGameTime() {

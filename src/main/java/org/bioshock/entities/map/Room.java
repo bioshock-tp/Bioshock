@@ -7,17 +7,16 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import javafx.geometry.Point2D;
 import org.bioshock.components.NetworkC;
 import org.bioshock.engine.pathfinding.GraphNode;
 import org.bioshock.entities.map.utils.ConnType;
 import org.bioshock.entities.map.utils.RoomType;
 import org.bioshock.main.App;
 import org.bioshock.utils.ArrayUtils;
-import org.bioshock.utils.DeepCopy;
 import org.bioshock.utils.Direction;
 import org.bioshock.utils.Size;
 
+import javafx.geometry.Point2D;
 import javafx.geometry.Point3D;
 import javafx.scene.paint.Color;
 import javafx.util.Pair;
