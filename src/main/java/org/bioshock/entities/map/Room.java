@@ -29,6 +29,8 @@ public class Room extends GraphNode {
      * Stores a list of all the walls that make up the room
      */
     private List<TexRectEntity> walls = new ArrayList<>();
+
+    private List<Pair<Point2D, Direction>> corridorPoints = new ArrayList<>();
     /***
      * Stores the position of the top left of the room
      */
@@ -177,6 +179,11 @@ public class Room extends GraphNode {
                 coriSize.getHeight(),
                 c
             ));
+            corridorPoints.add(new Pair<>(
+                    new Point2D(
+                            getLocation().getX(),
+                            getLocation().getY()- roomSize.getHeight()/2),
+                    Direction.NORTH));
             break;
         default:
             break;
@@ -224,6 +231,11 @@ public class Room extends GraphNode {
                 coriSize.getHeight(),
                 c
             ));
+            corridorPoints.add(new Pair<>(
+                    new Point2D(
+                            getLocation().getX(),
+                            getLocation().getY() + roomSize.getHeight()/2),
+                    Direction.SOUTH));
             break;
         default:
             break;
@@ -271,6 +283,11 @@ public class Room extends GraphNode {
                 coriSize.getHeight(),
                 c
             ));
+            corridorPoints.add(new Pair<>(
+                    new Point2D(
+                            getLocation().getX() + roomSize.getWidth()/2,
+                            getLocation().getY()),
+                    Direction.EAST));
             break;
         default:
             break;
@@ -309,6 +326,11 @@ public class Room extends GraphNode {
                 coriSize.getHeight(),
                 c
             ));
+            corridorPoints.add(new Pair<>(
+                    new Point2D(
+                            getLocation().getX() - roomSize.getWidth()/2,
+                            getLocation().getY()),
+                    Direction.WEST));
             break;
         default:
             break;
@@ -373,6 +395,10 @@ public class Room extends GraphNode {
             totalSize.getHeight() / 2,
             0
         );
+    }
+
+    public List<Pair<Point2D, Direction>> getCorridorPoints(){
+        return corridorPoints;
     }
 
     /***
