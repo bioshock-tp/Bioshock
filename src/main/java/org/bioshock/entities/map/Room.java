@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.bioshock.components.NetworkC;
+import org.bioshock.engine.pathfinding.Graph;
 import org.bioshock.engine.pathfinding.GraphNode;
 import org.bioshock.entities.map.utils.ConnType;
 import org.bioshock.entities.map.utils.RoomType;
@@ -44,6 +45,9 @@ public class Room extends GraphNode {
     private double wallWidth;
     private Size coriSize;
     private Color c;
+    
+    private Graph<GraphNode, Pair<Direction,Double>> traversableGraph;
+    private GraphNode centreNode;
     
     private RoomType roomType = RoomType.SINGLE_ROOM;
 
@@ -142,67 +146,66 @@ public class Room extends GraphNode {
         
         
         //corner connecting bottom and right
-        TexRectEntity corner1 = new TexRectEntity(
-            pos.add(
-                (coriSize.getHeight() - wallWidth)*UNIT_WIDTH,
-                (coriSize.getHeight() - wallWidth)*UNIT_HEIGHT,
-                0
-            ),
-            new NetworkC(false),
-            new Size(wallWidth*UNIT_WIDTH, wallWidth*UNIT_HEIGHT),
-            c
-        );
-        walls.add(corner1);
-        ArrayUtils.copyInArray(
-            traversable, 
-            new boolean[(int) wallWidth][(int) wallWidth], 
-            (int)(coriSize.getHeight() - wallWidth), 
-            (int)(coriSize.getHeight() - wallWidth)
-        );
+        corner(
+    		traversable, 
+    		(int)(coriSize.getHeight() - wallWidth), 
+            (int)(coriSize.getHeight() - wallWidth));
 
         //corner connecting bottom and left
-        TexRectEntity corner2 = new TexRectEntity(
-            pos.add(
-                (coriSize.getHeight() + roomSize.getWidth())*UNIT_WIDTH,
-                (coriSize.getHeight() - wallWidth)*UNIT_HEIGHT,
-                0
-            ),
-            new NetworkC(false),
-            new Size(wallWidth*UNIT_WIDTH, wallWidth*UNIT_HEIGHT),
-            c
-        );
-        walls.add(corner2);
-        ArrayUtils.copyInArray(
-            traversable, 
-            new boolean[(int) wallWidth][(int) wallWidth], 
-            (int)(coriSize.getHeight() + roomSize.getWidth()), 
-            (int)(coriSize.getHeight() - wallWidth)
-        );
+        corner(
+    		traversable, 
+    		(int)(coriSize.getHeight() + roomSize.getWidth()), 
+            (int)(coriSize.getHeight() - wallWidth));
 
         //corner connecting top and right
-        TexRectEntity corner3 = new TexRectEntity(
-            pos.add(
-                (coriSize.getHeight() - wallWidth)*UNIT_WIDTH,
-                (coriSize.getHeight() + roomSize.getHeight())*UNIT_HEIGHT,
-                0
-            ),
-            new NetworkC(false),
-            new Size(wallWidth*UNIT_WIDTH, wallWidth*UNIT_HEIGHT),
-            c
-        );
-        walls.add(corner3);
-        ArrayUtils.copyInArray(
-            traversable, 
-            new boolean[(int) wallWidth][(int) wallWidth], 
-            (int)(coriSize.getHeight() - wallWidth), 
-            (int)(coriSize.getHeight() + roomSize.getHeight())
-        );
-
+        corner(
+    		traversable,
+    		(int)(coriSize.getHeight() - wallWidth),
+    		(int)(coriSize.getHeight() + roomSize.getHeight()));
+       
         //corner connecting top and left
-        TexRectEntity corner4 = new TexRectEntity(
+        corner(
+    		traversable, 
+    		(int)(coriSize.getHeight() + roomSize.getWidth()), 
+    		(int)(coriSize.getHeight() + roomSize.getHeight()));
+        
+        App.logger.debug("Full Room:");
+        ArrayUtils.log2DArray(traversable);
+        
+        GraphNode[][] traversableNodes = new GraphNode[traversable.length][traversable[0].length];
+        for (int i=0;i<traversableNodes.length;i++) {
+        	for (int j=0;j<traversableNodes[0].length;j++) {
+        		if(traversable[i][j]) {
+	        		traversableNodes[i][j] = new GraphNode(new Point2D(
+	    				pos.getX() + j*UNIT_WIDTH + UNIT_WIDTH/2, 
+	    				pos.getY() + i*UNIT_HEIGHT + UNIT_HEIGHT/2));
+        		}
+        	}
+        }
+        centreNode = traversableNodes[traversableNodes.length/2][traversableNodes[0].length/2];
+        
+        traversableGraph = (new Graph<>(traversableNodes, new TraversableEdgeGenerator()))
+    		.getConnectedSubgraph(centreNode);
+    }
+    
+    public Graph<GraphNode, Pair<Direction, Double>> getTraversableGraph() {
+		return traversableGraph;
+	}
+
+	/***
+     * add a corner at the given position and put it in traversable
+     * @param traversable
+     * @param relX
+     * @param relY
+     */
+    private void corner(
+		boolean[][] traversable,
+		int relX,
+		int relY) {
+    	TexRectEntity corner4 = new TexRectEntity(
             pos.add(
-                (coriSize.getHeight() + roomSize.getWidth())*UNIT_WIDTH,
-                (coriSize.getHeight() + roomSize.getHeight())*UNIT_HEIGHT,
+                relX*UNIT_WIDTH,
+                relY*UNIT_HEIGHT,
                 0
             ),
             new NetworkC(false),
@@ -213,15 +216,10 @@ public class Room extends GraphNode {
         ArrayUtils.copyInArray(
             traversable, 
             new boolean[(int) wallWidth][(int) wallWidth], 
-            (int)(coriSize.getHeight() + roomSize.getWidth()), 
-            (int)(coriSize.getHeight() + roomSize.getHeight())
+            (int)relX, 
+            (int)relY
         );
-        
-        App.logger.debug("Full Room:");
-        ArrayUtils.log2DArray(traversable);
     }
-    
-    
     
     /***
      * Adds a top side depending on the connection type

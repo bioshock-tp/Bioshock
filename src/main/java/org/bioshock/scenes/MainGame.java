@@ -54,10 +54,10 @@ public class MainGame extends GameScene {
             map = new GenericMap(
         		new Point3D(0, 0, 0),
         		1, 
-        		new Size(7, 7), 
-        		new Size(3, 5), 
+        		new Size(3, 3), 
+        		new Size(1, 2), 
         		Color.SADDLEBROWN, 
-        		GlobalConstants.testMap
+        		GlobalConstants.simpleMap
     		);
 //        }
 //        else {

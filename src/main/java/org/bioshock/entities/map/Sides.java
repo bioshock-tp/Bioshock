@@ -100,7 +100,7 @@ public class Sides {
                     0
                 ),
                 new NetworkC(false),
-                new Size((coriLen - wallWidth + padding)*UNIT_WIDTH, wallWidth*UNIT_HEIGHT),
+                new Size((coriLen - wallWidth)*UNIT_WIDTH + padding, wallWidth*UNIT_HEIGHT),
                 c
             );
 
@@ -109,7 +109,7 @@ public class Sides {
             new TexRectEntity(
                 pos.add(0*UNIT_WIDTH, ((roomHeight + coriWidth) / 2)*UNIT_HEIGHT, 0),
                 new NetworkC(false),
-                new Size((coriLen - wallWidth + padding)*UNIT_WIDTH, wallWidth*UNIT_HEIGHT),
+                new Size((coriLen - wallWidth)*UNIT_WIDTH + padding, wallWidth*UNIT_HEIGHT),
                 c
             );
 
@@ -232,7 +232,7 @@ public class Sides {
                     0
                 ),
                 new NetworkC(false),
-                new Size((coriLen - wallWidth + padding)*UNIT_WIDTH, wallWidth*UNIT_HEIGHT),
+                new Size((coriLen - wallWidth)*UNIT_WIDTH + padding, wallWidth*UNIT_HEIGHT),
                 c
             );
 
@@ -241,7 +241,7 @@ public class Sides {
             new TexRectEntity(
                 pos.add(wallWidth*UNIT_WIDTH, ((roomHeight + coriWidth) / 2)*UNIT_HEIGHT, 0),
                 new NetworkC(false),
-                new Size((coriLen - wallWidth + padding)*UNIT_WIDTH, wallWidth*UNIT_HEIGHT),
+                new Size((coriLen - wallWidth)*UNIT_WIDTH + padding, wallWidth*UNIT_HEIGHT),
                 c
             );
 
@@ -358,7 +358,7 @@ public class Sides {
                     0
                 ),
                 new NetworkC(false),
-                new Size(wallWidth*UNIT_WIDTH, (coriLen - wallWidth + padding)*UNIT_HEIGHT),
+                new Size(wallWidth*UNIT_WIDTH, (coriLen - wallWidth)*UNIT_HEIGHT + padding),
                 c
             );
 
@@ -367,7 +367,7 @@ public class Sides {
             new TexRectEntity(
                 pos.add(((roomWidth + coriWidth) / 2)*UNIT_WIDTH, 0*UNIT_HEIGHT, 0),
                 new NetworkC(false),
-                new Size(wallWidth*UNIT_WIDTH, (coriLen - wallWidth + padding)*UNIT_HEIGHT),
+                new Size(wallWidth*UNIT_WIDTH, (coriLen - wallWidth)*UNIT_HEIGHT + padding),
                 c
             );
 
@@ -487,7 +487,7 @@ public class Sides {
                     0
                 ),
                 new NetworkC(false),
-                new Size(wallWidth*UNIT_WIDTH, (coriLen - wallWidth + padding)*UNIT_HEIGHT),
+                new Size(wallWidth*UNIT_WIDTH, (coriLen - wallWidth)*UNIT_HEIGHT + padding),
                 c
             );
 
@@ -496,7 +496,7 @@ public class Sides {
             new TexRectEntity(
                 pos.add(((roomWidth + coriWidth) / 2)*UNIT_WIDTH, wallWidth*UNIT_HEIGHT, 0),
                 new NetworkC(false),
-                new Size(wallWidth*UNIT_WIDTH, (coriLen - wallWidth + padding)*UNIT_HEIGHT),
+                new Size(wallWidth*UNIT_WIDTH, (coriLen - wallWidth)*UNIT_HEIGHT + padding),
                 c
             );
 

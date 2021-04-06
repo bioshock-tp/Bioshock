@@ -73,25 +73,7 @@ public class GenericMap implements Map{
             }
         }
         
-        roomGraph = new Graph<>(rooms, new RoomEdgeGenerator());
-
-        /***
-         * list of all unchecked rooms in the parentGraph
-         */
-        List<Room> uncheckedRooms = roomGraph.getNodes();
-        Graph<Room,Pair<Direction,ConnType>> currGraph = new Graph<>();
-        
-        //Find the biggest connected subgraph and set the room graph to be the biggest connected subgraph
-        while(!uncheckedRooms.isEmpty()) {
-            Graph<Room,Pair<Direction,ConnType>> newGraph = roomGraph.getConnectedSubgraph(uncheckedRooms.get(0));            
-            uncheckedRooms.removeAll(newGraph.getNodes());
-            
-            if(currGraph.getNodes().size()<newGraph.getNodes().size()) {
-                currGraph = newGraph;
-            }
-        }        
-        
-        roomGraph = currGraph;
+        roomGraph = (new Graph<>(rooms, new RoomEdgeGenerator())).getLargestConnectedSubgraph();       
         initRoomsFromGraph();
     }
     
