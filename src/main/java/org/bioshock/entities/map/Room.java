@@ -6,6 +6,7 @@ import static org.bioshock.utils.GlobalConstants.UNIT_WIDTH;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Random;
 
 import org.bioshock.components.NetworkC;
 import org.bioshock.engine.pathfinding.Graph;
@@ -45,7 +46,7 @@ public class Room extends GraphNode {
     private double wallWidth;
     private Size coriSize;
     private Color c;
-    
+    private double wallProb = 0.25; 
     private Graph<GraphNode, Pair<Direction,Double>> traversableGraph;
     private GraphNode centreNode;
     
@@ -78,11 +79,50 @@ public class Room extends GraphNode {
         setLocation(new Point2D(getRoomCenter().getX(),getRoomCenter().getY()));
     }
     
+    public void init(
+        List<Pair<Direction,ConnType>> edges,
+        Double wallProbObj,
+        Long seed
+    ) {        
+        //if the room Prob is not null use the given value
+        if(wallProbObj != null) {
+            wallProb = wallProbObj;
+        }
+        
+        boolean[][] locationsToSpawn = 
+                new boolean[(int) totalSize.getHeight()][(int) totalSize.getWidth()];
+         
+        //if a seed is given use a seeded random number generator
+        //otherwise use a non seeded one
+        Random rand;
+        if(seed == null) {
+            rand = new Random();
+        }
+        else {
+            rand = new Random(seed);
+        }
+        
+        //generate a random array of RoomTypes 
+        for(int i=0;i<locationsToSpawn.length;i++) {
+            for(int j=0;j<locationsToSpawn[0].length;j++) {
+                if(rand.nextDouble()<wallProb) {
+                    locationsToSpawn[i][j] = true;
+                }
+                else {
+                    locationsToSpawn[i][j] = false;
+                }
+            }
+        }
+        
+        init(edges, locationsToSpawn);
+    }
+    
     /***
      * 
      */
     public void init(
-        List<Pair<Direction,ConnType>> edges
+        List<Pair<Direction,ConnType>> edges,
+        boolean[][] locationsToSpawn
     ) {
         
         /***
@@ -99,7 +139,7 @@ public class Room extends GraphNode {
             connections.replace(edge.getKey(), edge.getValue());
         }
         
-        boolean[][] traversable = new boolean[(int) totalSize.getWidth()][(int) totalSize.getHeight()];
+        boolean[][] traversable = new boolean[(int) totalSize.getHeight()][(int) totalSize.getWidth()];
         
         ArrayUtils.fill2DArray(traversable, true);
         
@@ -169,8 +209,8 @@ public class Room extends GraphNode {
     		(int)(coriSize.getHeight() + roomSize.getWidth()), 
     		(int)(coriSize.getHeight() + roomSize.getHeight()));
         
-        App.logger.debug("Full Room:");
-        ArrayUtils.log2DArray(traversable);
+        //App.logger.debug("Full Room:");
+        //ArrayUtils.log2DArray(traversable);
         
         GraphNode[][] traversableNodes = new GraphNode[traversable.length][traversable[0].length];
         for (int i=0;i<traversableNodes.length;i++) {
@@ -186,6 +226,40 @@ public class Room extends GraphNode {
         
         traversableGraph = (new Graph<>(traversableNodes, new TraversableEdgeGenerator()))
     		.getConnectedSubgraph(centreNode);
+        
+        boolean[][] spawnableLocations = traversable.clone();
+        ArrayUtils.copyInArray(
+            spawnableLocations, 
+            new boolean[1][spawnableLocations[0].length], 
+            spawnableLocations.length/2, 
+            0
+        );
+        
+        ArrayUtils.copyInArray(
+            spawnableLocations, 
+            new boolean[spawnableLocations.length][1], 
+            0, 
+            spawnableLocations[0].length/2
+        );
+        
+        ArrayUtils.log2DArray(spawnableLocations);
+        
+        for (int i=0;i<locationsToSpawn.length&&i<spawnableLocations.length;i++) {
+            for (int j=0;j<locationsToSpawn[0].length&&j<spawnableLocations[0].length;j++) {
+                if(locationsToSpawn[i][j] == true && spawnableLocations[i][j] == true
+                        && traversableGraph.getNodes().contains(traversableNodes[i][j])) {
+                    walls.add(new TexRectEntity(
+                        pos.add(j*UNIT_WIDTH, i*UNIT_HEIGHT,0), 
+                        new NetworkC(false), 
+                        new Size(UNIT_WIDTH, UNIT_HEIGHT), 
+                        c));
+                    traversableNodes[i][j] = null;
+                }
+            }
+        }
+        
+        traversableGraph = (new Graph<>(traversableNodes, new TraversableEdgeGenerator()))
+                .getConnectedSubgraph(centreNode);
     }
     
     public Graph<GraphNode, Pair<Direction, Double>> getTraversableGraph() {
@@ -216,8 +290,8 @@ public class Room extends GraphNode {
         ArrayUtils.copyInArray(
             traversable, 
             new boolean[(int) wallWidth][(int) wallWidth], 
-            (int)relX, 
-            (int)relY
+            (int)relY, 
+            (int)relX
         );
     }
     

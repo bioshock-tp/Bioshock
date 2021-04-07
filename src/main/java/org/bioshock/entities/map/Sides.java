@@ -67,8 +67,8 @@ public class Sides {
             (int)((roomHeight + coriWidth) / 2 + wallWidth), 
             0
         );
-        App.logger.debug("lExit:");
-        ArrayUtils.log2DArray(traversable);
+        //App.logger.debug("lExit:");
+        //ArrayUtils.log2DArray(traversable);
         
         //vertical wall
         TexRectEntity roomWall1 =
@@ -198,8 +198,8 @@ public class Sides {
             (int)((roomHeight + coriWidth) / 2 + wallWidth), 
             (int) wallWidth
         );
-        App.logger.debug("rExit:");
-        ArrayUtils.log2DArray(traversable);
+        //App.logger.debug("rExit:");
+        //ArrayUtils.log2DArray(traversable);
 
         //vertical wall
         TexRectEntity roomWall1 =
@@ -324,8 +324,8 @@ public class Sides {
             0, 
             (int)((roomWidth + coriWidth) / 2 + wallWidth)
         );
-        App.logger.debug("tExit:");
-        ArrayUtils.log2DArray(traversable);
+        //App.logger.debug("tExit:");
+        //ArrayUtils.log2DArray(traversable);
    
         //top wall
         TexRectEntity roomWall1 =
@@ -453,8 +453,8 @@ public class Sides {
             (int) wallWidth, 
             (int)((roomWidth + coriWidth) / 2 + wallWidth)
         );
-        App.logger.debug("bExit:");
-        ArrayUtils.log2DArray(traversable);
+        //App.logger.debug("bExit:");
+        //ArrayUtils.log2DArray(traversable);
 
         //bottom wall
         TexRectEntity roomWall1 =

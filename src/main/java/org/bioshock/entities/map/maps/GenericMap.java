@@ -79,7 +79,7 @@ public class GenericMap implements Map{
     
     private void initRoomsFromGraph() {
         for(Room r: roomGraph.getNodes()) {
-            r.init(roomGraph.getEdgesInfo(r));
+            r.init(roomGraph.getEdgesInfo(r),null,null);
         }
     }
         
