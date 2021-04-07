@@ -319,6 +319,10 @@ public class SeekerAI extends SquareEntity {
             return null;
         }
 
+        if(!room.equals(currRoom)){
+            return room;
+        }
+
         Direction direction = points.get(0).getValue();
         double shortest = WindowManager.getWindowWidth() * WindowManager.getWindowHeight();
         Point2D temp;
