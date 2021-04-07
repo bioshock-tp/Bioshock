@@ -2,6 +2,7 @@ package org.bioshock.gui;
 
 import javafx.scene.control.Label;
 import org.bioshock.main.App;
+import org.bioshock.scenes.DisplayScreen;
 import org.bioshock.scenes.LoadingScreen;
 
 import javafx.event.ActionEvent;
@@ -33,6 +34,6 @@ public class OnlineGameController {
 
     public void launchGame(ActionEvent actionEvent) {
         Stage stage = (Stage) launchButton.getScene().getWindow();
-        App.startGame(stage, new LoadingScreen(true, GlobalStrings.ONLINE_LOADING_TEXT), true);
+        App.startGame(stage, new LoadingScreen(true, GlobalStrings.ONLINE_LOADING_TEXT, DisplayScreen.LOADING), true);
     }
 }

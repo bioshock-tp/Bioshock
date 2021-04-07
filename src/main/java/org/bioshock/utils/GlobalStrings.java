@@ -19,4 +19,9 @@ public class GlobalStrings {
     public static final String MUSIC_TEXT = "Music";
     public static final String SFX_TEXT = "SFX";
     public static final String IN_DEVELOPMENT_TEXT = "In Development...";
+    public static final String WIN_TEXT = "Win";
+    public static final String YOU_TEXT = "You";
+    public static final String LOSE_TEXT = "Lose";
+    public static final String WIN_INFO_TEXT = "Congratulations!";
+    public static final String LOSE_INFO_TEXT = "Commiserations";
 }
