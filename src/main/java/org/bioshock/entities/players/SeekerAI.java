@@ -38,7 +38,7 @@ public class SeekerAI extends SquareEntity {
     private Hider target;
     private final Arc swatterHitbox;
     private final Graph<Room,Pair<Direction,ConnType>> roomGraph = SceneManager.getMap().getRoomGraph();
-    private PathfindingC<Room,Pair<Direction, ConnType>> pathfinding = new PathfindingC(roomGraph);
+    private PathfindingC<Room,Pair<Direction, ConnType>> pathfinding = new PathfindingC<>(roomGraph);
     private List<Point2D> path = new ArrayList<>();
     private Room currRoom;
     private Room prevRoom;
@@ -247,20 +247,6 @@ public class SeekerAI extends SquareEntity {
 
         movement.moveTo(lastSeenPosition);
 
-    }
-
-
-    /**
-     *
-     * Moves seeker a step towards the room centre
-     *
-     * @param room the room that has the centre to move towards
-     */
-    private void moveToCentre(Room room) {
-        movement.moveTo(
-                room.getLocation().getX() - getWidth()/2,
-                room.getLocation().getY() - getHeight()/2
-        );
     }
 
 

@@ -57,6 +57,9 @@ public class Movement {
         //Find current room and add the walls of the room for collision
         Room currRoom = Entity.findCurrentRoom(entity);
         List<Entity> collisionCheck = new ArrayList<>(currRoom.getWalls());
+        for(Room r:SceneManager.getMap().getRoomGraph().getConnectedNodes(currRoom)) {
+            collisionCheck.addAll(r.getWalls());
+        }
         //Add other players for collision
         //note would need to update to allow to collide with other objects
         collisionCheck.add(EntityManager.getSeeker());

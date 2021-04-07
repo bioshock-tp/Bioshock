@@ -54,22 +54,22 @@ public class MainGame extends GameScene {
         if(App.isNetworked()) {
             map = new GenericMap(
         		new Point3D(0, 0, 0),
-        		10, 
-        		new Size(300, 600), 
-        		new Size(90, 90), 
+        		1, 
+        		new Size(5, 7), 
+        		new Size(3, 5), 
         		Color.SADDLEBROWN, 
         		GlobalConstants.testMap
     		);
         }
         else {
             map = new RandomMap(
-                new Point3D(0, 0, 0), 
-                10, 
-                new Size(300, 600), 
-                new Size(90, 90), 
-                Color.SADDLEBROWN, 
-                new Size(5, 10), 
-                null, 
+                new Point3D(0, 0, 0),
+                1,
+                new Size(5, 7),
+                new Size(3, 5),
+                Color.SADDLEBROWN,
+                new Size(5, 10),
+                null,
                 null
             );
         }
@@ -85,9 +85,9 @@ public class MainGame extends GameScene {
 
         /* Players must render in exact order, do not play with z values */
         Hider hider = new Hider(
-            new Point3D(x, y, 0.5),
+            new Point3D(x-GlobalConstants.UNIT_WIDTH/2, y-GlobalConstants.UNIT_HEIGHT/2, 0.5),
             new NetworkC(true),
-            new Size(54, 61),
+            new Size(GlobalConstants.UNIT_WIDTH, GlobalConstants.UNIT_HEIGHT),
             300,
             Color.PINK
         );
@@ -100,9 +100,9 @@ public class MainGame extends GameScene {
             y = rooms.get(roomNumber % rooms.size()).getRoomCenter().getY();
 
             children.add(new Hider(
-                new Point3D(x, y, i),
+                new Point3D(x-GlobalConstants.UNIT_WIDTH/2, y-GlobalConstants.UNIT_HEIGHT/2, i),
                 new NetworkC(true),
-                new Size(40, 40),
+                new Size(GlobalConstants.UNIT_WIDTH, GlobalConstants.UNIT_HEIGHT),
                 300,
                 Color.PINK
             ));
@@ -112,9 +112,9 @@ public class MainGame extends GameScene {
         double centreY = rooms.get(rooms.size() / 2).getRoomCenter().getY();
 
         SeekerAI seeker = new SeekerAI(
-            new Point3D(centreX, centreY, 0.25),
+            new Point3D(centreX-GlobalConstants.UNIT_WIDTH/2, centreY-GlobalConstants.UNIT_HEIGHT/2, 0.25),
             new NetworkC(true),
-            new Size(40, 40),
+            new Size(GlobalConstants.UNIT_WIDTH, GlobalConstants.UNIT_HEIGHT),
             300,
             Color.INDIANRED,
             hider

@@ -10,7 +10,7 @@ import javafx.geometry.Point2D;
  *
  * @author Kian Wells
  */
-public abstract class GraphNode {
+public class GraphNode {
 
     private int hCost;
     private int gCost;
@@ -20,7 +20,7 @@ public abstract class GraphNode {
     private boolean isVisited;
     private boolean isObject;
 
-    protected GraphNode(){
+    public GraphNode(){
         this.location = null;
         this.hCost = Integer.MAX_VALUE;
         this.fCost = Integer.MAX_VALUE;
@@ -28,6 +28,11 @@ public abstract class GraphNode {
         this.parent = null;
         this.isObject = false;
         this.isVisited = false;
+    }
+    
+    public GraphNode(Point2D location) {
+    	this();
+    	this.location = location; 
     }
 
     public Point2D getLocation() {

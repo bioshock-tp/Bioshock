@@ -1,16 +1,24 @@
 package org.bioshock.entities.map;
 
+import static org.bioshock.utils.GlobalConstants.UNIT_HEIGHT;
+import static org.bioshock.utils.GlobalConstants.UNIT_WIDTH;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Random;
 
-import javafx.geometry.Point2D;
 import org.bioshock.components.NetworkC;
+import org.bioshock.engine.pathfinding.Graph;
 import org.bioshock.engine.pathfinding.GraphNode;
 import org.bioshock.entities.map.utils.ConnType;
+import org.bioshock.entities.map.utils.RoomType;
+import org.bioshock.main.App;
+import org.bioshock.utils.ArrayUtils;
 import org.bioshock.utils.Direction;
 import org.bioshock.utils.Size;
 
+import javafx.geometry.Point2D;
 import javafx.geometry.Point3D;
 import javafx.scene.paint.Color;
 import javafx.util.Pair;
@@ -19,10 +27,12 @@ public class Room extends GraphNode {
     /***
      *  Stores the total size of the room
      *  i.e. the roomSize + corridor width*2 in both dimensions 
+     *  (in terms of units)
      */
     private Size totalSize;
     /***
      * Stores the internal room size
+     * (in terms of units)
      */
     private Size roomSize;
     /***
@@ -38,13 +48,18 @@ public class Room extends GraphNode {
     private double wallWidth;
     private Size coriSize;
     private Color c;
+    private double wallProb = 0.25;
+    private Graph<GraphNode, Pair<Direction,Double>> traversableGraph;
+    private GraphNode centreNode;
+
+    private RoomType roomType = RoomType.SINGLE_ROOM;
 
     /***
      * Generates a room with the position being the top left of the room
      * @param newPos the position of the top left of the room
-     * @param wallWidth the width of the walls that make up the room
-     * @param newRoomSize the size of the central room
-     * @param coriSize the corridor size of all exits
+     * @param wallWidth the width of the walls that make up the room (in terms of units)
+     * @param newRoomSize the size of the central room (in terms of units)
+     * @param coriSize the corridor size of all exits (in terms of units)
      * @param c the colour of the room
      */
     public Room(
@@ -66,11 +81,50 @@ public class Room extends GraphNode {
         setLocation(new Point2D(getRoomCenter().getX(),getRoomCenter().getY()));
     }
     
+    public void init(
+        List<Pair<Direction,ConnType>> edges,
+        Double wallProbObj,
+        Long seed
+    ) {
+        //if the room Prob is not null use the given value
+        if(wallProbObj != null) {
+            wallProb = wallProbObj;
+        }
+
+        boolean[][] locationsToSpawn =
+                new boolean[(int) totalSize.getHeight()][(int) totalSize.getWidth()];
+
+        //if a seed is given use a seeded random number generator
+        //otherwise use a non seeded one
+        Random rand;
+        if(seed == null) {
+            rand = new Random();
+        }
+        else {
+            rand = new Random(seed);
+        }
+
+        //generate a random array of RoomTypes
+        for(int i=0;i<locationsToSpawn.length;i++) {
+            for(int j=0;j<locationsToSpawn[0].length;j++) {
+                if(rand.nextDouble()<wallProb) {
+                    locationsToSpawn[i][j] = true;
+                }
+                else {
+                    locationsToSpawn[i][j] = false;
+                }
+            }
+        }
+
+        init(edges, locationsToSpawn);
+    }
+
     /***
      * 
      */
     public void init(
-        List<Pair<Direction,ConnType>> edges
+        List<Pair<Direction,ConnType>> edges,
+        boolean[][] locationsToSpawn
     ) {
         
         /***
@@ -87,63 +141,160 @@ public class Room extends GraphNode {
             connections.replace(edge.getKey(), edge.getValue());
         }
         
+        boolean[][] traversable = new boolean[(int) totalSize.getHeight()][(int) totalSize.getWidth()];
+
+        ArrayUtils.fill2DArray(traversable, true);
+
         //Add the sides relevant for the connection type in each direction
-        topSide(wallWidth, coriSize, c, connections.get(Direction.NORTH));
-        botSide(wallWidth, coriSize, c, connections.get(Direction.SOUTH));
-        rightSide(wallWidth, coriSize, c, connections.get(Direction.EAST));
-        leftSide(wallWidth, coriSize, c, connections.get(Direction.WEST));
+        ArrayUtils.copyInArray(
+            traversable,
+            topSide(pos.add(coriSize.getHeight()*UNIT_WIDTH, 0*UNIT_HEIGHT, 0),
+                    wallWidth, coriSize, c, connections.get(Direction.NORTH)),
+            (int) 0,
+            (int) coriSize.getHeight()
+        );
+
+        ArrayUtils.copyInArray(
+            traversable,
+            botSide(pos.add(
+                    coriSize.getHeight()*UNIT_WIDTH,
+                    (coriSize.getHeight() + roomSize.getHeight())*UNIT_HEIGHT,
+                    0
+                ),
+                wallWidth, coriSize, c, connections.get(Direction.SOUTH)),
+            (int) (coriSize.getHeight() + roomSize.getHeight()),
+            (int) coriSize.getHeight()
+        );
+
+        ArrayUtils.copyInArray(
+            traversable,
+            rightSide(pos.add(
+                    (coriSize.getHeight() + roomSize.getWidth())*UNIT_WIDTH,
+                    coriSize.getHeight()*UNIT_HEIGHT,
+                    0
+                ),
+                wallWidth, coriSize, c, connections.get(Direction.EAST)),
+            (int) coriSize.getHeight(),
+            (int) (coriSize.getHeight() + roomSize.getWidth())
+        );
+
+        ArrayUtils.copyInArray(
+            traversable,
+            leftSide(pos.add(0*UNIT_WIDTH, coriSize.getHeight()*UNIT_HEIGHT, 0),
+                wallWidth, coriSize, c, connections.get(Direction.WEST)),
+            (int) coriSize.getHeight(),
+            (int) 0
+        );
+
         
         //corner connecting bottom and right
-        TexRectEntity corner1 = new TexRectEntity(
-            pos.add(
-                coriSize.getHeight() - wallWidth,
-                coriSize.getHeight() - wallWidth,
-                0
-            ),
-            new NetworkC(false),
-            new Size(wallWidth, wallWidth),
-            c
-        );
-        walls.add(corner1);
+        corner(
+    		traversable,
+    		(int)(coriSize.getHeight() - wallWidth),
+            (int)(coriSize.getHeight() - wallWidth));
 
         //corner connecting bottom and left
-        TexRectEntity corner2 = new TexRectEntity(
-            pos.add(
-                coriSize.getHeight() + roomSize.getWidth(),
-                coriSize.getHeight() - wallWidth,
-                0
-            ),
-            new NetworkC(false),
-            new Size(wallWidth, wallWidth),
-            c
-        );
-        walls.add(corner2);
+        corner(
+    		traversable,
+    		(int)(coriSize.getHeight() + roomSize.getWidth()),
+            (int)(coriSize.getHeight() - wallWidth));
 
         //corner connecting top and right
-        TexRectEntity corner3 = new TexRectEntity(
-            pos.add(
-                coriSize.getHeight() - wallWidth,
-                coriSize.getHeight() + roomSize.getHeight(),
-                0
-            ),
-            new NetworkC(false),
-            new Size(wallWidth, wallWidth),
-            c
-        );
-        walls.add(corner3);
+        corner(
+    		traversable,
+    		(int)(coriSize.getHeight() - wallWidth),
+    		(int)(coriSize.getHeight() + roomSize.getHeight()));
 
         //corner connecting top and left
-        TexRectEntity corner4 = new TexRectEntity(
+        corner(
+    		traversable,
+    		(int)(coriSize.getHeight() + roomSize.getWidth()),
+    		(int)(coriSize.getHeight() + roomSize.getHeight()));
+
+        //App.logger.debug("Full Room:");
+        //ArrayUtils.log2DArray(traversable);
+
+        GraphNode[][] traversableNodes = new GraphNode[traversable.length][traversable[0].length];
+        for (int i=0;i<traversableNodes.length;i++) {
+        	for (int j=0;j<traversableNodes[0].length;j++) {
+        		if(traversable[i][j]) {
+	        		traversableNodes[i][j] = new GraphNode(new Point2D(
+	    				pos.getX() + j*UNIT_WIDTH + UNIT_WIDTH/2,
+	    				pos.getY() + i*UNIT_HEIGHT + UNIT_HEIGHT/2));
+        		}
+        	}
+        }
+        centreNode = traversableNodes[traversableNodes.length/2][traversableNodes[0].length/2];
+
+        traversableGraph = (new Graph<>(traversableNodes, new TraversableEdgeGenerator()))
+    		.getConnectedSubgraph(centreNode);
+
+        boolean[][] spawnableLocations = traversable.clone();
+        ArrayUtils.copyInArray(
+            spawnableLocations,
+            new boolean[1][spawnableLocations[0].length],
+            spawnableLocations.length/2,
+            0
+        );
+
+        ArrayUtils.copyInArray(
+            spawnableLocations,
+            new boolean[spawnableLocations.length][1],
+            0,
+            spawnableLocations[0].length/2
+        );
+
+        ArrayUtils.log2DArray(spawnableLocations);
+
+        for (int i=0;i<locationsToSpawn.length&&i<spawnableLocations.length;i++) {
+            for (int j=0;j<locationsToSpawn[0].length&&j<spawnableLocations[0].length;j++) {
+                if(locationsToSpawn[i][j] == true && spawnableLocations[i][j] == true
+                        && traversableGraph.getNodes().contains(traversableNodes[i][j])) {
+                    walls.add(new TexRectEntity(
+                        pos.add(j*UNIT_WIDTH, i*UNIT_HEIGHT,0),
+                        new NetworkC(false),
+                        new Size(UNIT_WIDTH, UNIT_HEIGHT),
+                        c));
+                    traversableNodes[i][j] = null;
+                }
+            }
+        }
+
+        traversableGraph = (new Graph<>(traversableNodes, new TraversableEdgeGenerator()))
+                .getConnectedSubgraph(centreNode);
+    }
+
+    public Graph<GraphNode, Pair<Direction, Double>> getTraversableGraph() {
+		return traversableGraph;
+	}
+
+	/***
+     * add a corner at the given position and put it in traversable
+     * @param traversable
+     * @param relX
+     * @param relY
+     */
+    private void corner(
+		boolean[][] traversable,
+		int relX,
+		int relY) {
+    	TexRectEntity corner4 = new TexRectEntity(
             pos.add(
-                coriSize.getHeight() + roomSize.getWidth(),
-                coriSize.getHeight() + roomSize.getHeight(),
+                relX*UNIT_WIDTH,
+                relY*UNIT_HEIGHT,
                 0
             ),
             new NetworkC(false),
-            new Size(wallWidth, wallWidth),
+            new Size(wallWidth*UNIT_WIDTH, wallWidth*UNIT_HEIGHT),
             c
         );
         walls.add(corner4);
+        ArrayUtils.copyInArray(
+            traversable,
+            new boolean[(int) wallWidth][(int) wallWidth],
+            (int)relY,
+            (int)relX
+        );
     }
     
     /***
@@ -153,32 +304,34 @@ public class Room extends GraphNode {
      * @param c
      * @param con
      */
-    private void topSide(
+    private boolean[][] topSide(
+        Point3D pos,
         double wallWidth,
         Size coriSize,
         Color c,
         ConnType con) {
+        Pair<List<TexRectEntity>,boolean[][]> wallsAndArray = null;
         //chooses either a top side with or without an exit
         switch(con) {
         case NO_EXIT:
-            walls.addAll(Sides.tNoExit(
-                pos.add(coriSize.getHeight(), 0, 0),
+            wallsAndArray = Sides.tNoExit(
+                pos,
                 wallWidth,
                 roomSize.getWidth(),
                 coriSize.getWidth(),
                 coriSize.getHeight(),
                 c
-            ));
+            );
             break;
         case ROOM_TO_ROOM:
-            walls.addAll(Sides.tExit(
-                pos.add(coriSize.getHeight(), 0, 0),
+            wallsAndArray = Sides.tExit(
+                pos,
                 wallWidth,
                 roomSize.getWidth(),
                 coriSize.getWidth(),
                 coriSize.getHeight(),
                 c
-            ));
+            );
             corridorPoints.add(new Pair<>(
                     new Point2D(
                             getLocation().getX(),
@@ -188,6 +341,9 @@ public class Room extends GraphNode {
         default:
             break;
         }
+
+        walls.addAll(wallsAndArray.getKey());
+        return wallsAndArray.getValue();
     }
     
     /***
@@ -197,40 +353,34 @@ public class Room extends GraphNode {
      * @param c
      * @param con
      */
-    private void botSide(
+    private boolean[][] botSide(
+        Point3D pos,
         double wallWidth,
         Size coriSize,
         Color c,
         ConnType con) {
+        Pair<List<TexRectEntity>,boolean[][]> wallsAndArray = null;
       //chooses either a bottom side with or without an exit
         switch(con) {
         case ROOM_TO_ROOM: 
-            walls.addAll(Sides.bExit(
-                pos.add(
-                    coriSize.getHeight(),
-                    coriSize.getHeight() + roomSize.getHeight(),
-                    0
-                ),
+            wallsAndArray = Sides.bExit(
+                pos,
                 wallWidth,
                 roomSize.getWidth(),
                 coriSize.getWidth(),
                 coriSize.getHeight(),
                 c
-            ));
+            );
             break;
         case NO_EXIT:
-            walls.addAll(Sides.bNoExit(
-                pos.add(
-                    coriSize.getHeight(),
-                    coriSize.getHeight() + roomSize.getHeight(),
-                    0
-                ),
+            wallsAndArray = Sides.bNoExit(
+                pos,
                 wallWidth,
                 roomSize.getWidth(),
                 coriSize.getWidth(),
                 coriSize.getHeight(),
                 c
-            ));
+            );
             corridorPoints.add(new Pair<>(
                     new Point2D(
                             getLocation().getX(),
@@ -240,6 +390,8 @@ public class Room extends GraphNode {
         default:
             break;
         }
+        walls.addAll(wallsAndArray.getKey());
+        return wallsAndArray.getValue();
     }
     
     /***
@@ -249,40 +401,34 @@ public class Room extends GraphNode {
      * @param c
      * @param con
      */
-    private void rightSide(
+    private boolean[][] rightSide(
+        Point3D pos,
         double wallWidth,
         Size coriSize,
         Color c,
         ConnType con) {
+        Pair<List<TexRectEntity>,boolean[][]> wallsAndArray = null;
         //chooses either a right side with or without an exit
         switch(con) {
         case NO_EXIT:
-            walls.addAll(Sides.rNoExit(
-                pos.add(
-                    coriSize.getHeight() + roomSize.getWidth(),
-                    coriSize.getHeight(),
-                    0
-                ),
+            wallsAndArray = Sides.rNoExit(
+                pos,
                 wallWidth,
                 roomSize.getHeight(),
                 coriSize.getWidth(),
                 coriSize.getHeight(),
                 c
-            ));
+            );
             break;
         case ROOM_TO_ROOM:
-            walls.addAll(Sides.rExit(
-                pos.add(
-                    coriSize.getHeight() + roomSize.getWidth(),
-                    coriSize.getHeight(),
-                    0
-                ),
+            wallsAndArray = Sides.rExit(
+                pos,
                 wallWidth,
                 roomSize.getHeight(),
                 coriSize.getWidth(),
                 coriSize.getHeight(),
                 c
-            ));
+            );
             corridorPoints.add(new Pair<>(
                     new Point2D(
                             getLocation().getX() + roomSize.getWidth()/2,
@@ -292,6 +438,8 @@ public class Room extends GraphNode {
         default:
             break;
         }
+        walls.addAll(wallsAndArray.getKey());
+        return wallsAndArray.getValue();
     }
 
     /***
@@ -301,31 +449,34 @@ public class Room extends GraphNode {
      * @param c
      * @param con
      */
-    private void leftSide(
+    private boolean[][] leftSide(
+        Point3D pos,
         double wallWidth,
         Size coriSize,
         Color c,
         ConnType con) {
+        Pair<List<TexRectEntity>,boolean[][]> wallsAndArray = null;
         //chooses either a left side with or without an exit
         switch(con) {
         case NO_EXIT:
-            walls.addAll(Sides.lNoExit(
-                pos.add(0, coriSize.getHeight(), 0),
+            wallsAndArray = Sides.lNoExit(
+                pos,
                 wallWidth,
                 roomSize.getHeight(),
                 coriSize.getWidth(),
                 coriSize.getHeight(),
                 c
-            ));            
+            );
             break;
         case ROOM_TO_ROOM:
-            walls.addAll(Sides.lExit(
-                pos.add(0, coriSize.getHeight(), 0),
-                wallWidth, roomSize.getHeight(),
+            wallsAndArray = Sides.lExit(
+                pos,
+                wallWidth,
+                roomSize.getHeight(),
                 coriSize.getWidth(),
                 coriSize.getHeight(),
                 c
-            ));
+            );
             corridorPoints.add(new Pair<>(
                     new Point2D(
                             getLocation().getX() - roomSize.getWidth()/2,
@@ -334,9 +485,10 @@ public class Room extends GraphNode {
             break;
         default:
             break;
-          
         }
-    }    
+        walls.addAll(wallsAndArray.getKey());
+        return wallsAndArray.getValue();
+    }
     
     @SuppressWarnings("unused")
 	private boolean isSolid(ConnType con) {
@@ -366,7 +518,10 @@ public class Room extends GraphNode {
      * @return total size of the room with all the sides
      */
     public Size getTotalSize() {
-        return totalSize;
+        return new Size(
+            totalSize.getWidth()*UNIT_WIDTH,
+            totalSize.getHeight()*UNIT_HEIGHT
+        );
     }
 
     /***
@@ -374,7 +529,10 @@ public class Room extends GraphNode {
      * @return size of the internal room
      */
     public Size getRoomSize() {
-        return roomSize;
+        return new Size(
+            roomSize.getWidth()*UNIT_WIDTH,
+            roomSize.getHeight()*UNIT_HEIGHT
+        );
     }
 
     /***
@@ -391,18 +549,26 @@ public class Room extends GraphNode {
      */
     public Point3D getRoomCenter() {
 		return pos.add(
-            totalSize.getWidth() / 2,
-            totalSize.getHeight() / 2,
+            (totalSize.getWidth() / 2)*UNIT_WIDTH,
+            (totalSize.getHeight() / 2)*UNIT_HEIGHT,
             0
         );
     }
+
+    public RoomType getRoomType() {
+		return roomType;
+	}
+
+	public void setRoomType(RoomType roomType) {
+		this.roomType = roomType;
+	}
 
     public List<Pair<Point2D, Direction>> getCorridorPoints(){
         return corridorPoints;
     }
 
     /***
-     * 
+     *
      * @return an uninitialised deep copy of the current room
      * i.e. you need to call init() on the room with edge info
      */
@@ -414,6 +580,6 @@ public class Room extends GraphNode {
             this.coriSize, 
             this.c
         );
-    }
+}
 
 }

@@ -165,12 +165,12 @@ public abstract class Entity {
     * @return the current room of the entity
     */
    public static Room findCurrentRoom(Entity entity) {
-       Room current = SceneManager.getMap().getRoomGraph().getNodes().get(0);
+       Room current = SceneManager.getMap().getRooms().get(0);
        Point3D temp;
        double shortest =
                WindowManager.getWindowWidth() * WindowManager.getWindowHeight();
 
-       for (Room room : SceneManager.getMap().getRoomGraph().getNodes()) {
+       for (Room room : SceneManager.getMap().getRooms()) {
            temp = room.getRoomCenter().subtract(
                    new Point3D(entity.getX(), entity.getY(), room.getZ())
            );
