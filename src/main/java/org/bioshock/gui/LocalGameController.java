@@ -8,6 +8,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.stage.Stage;
+import org.bioshock.scenes.DisplayScreen;
 import org.bioshock.utils.GlobalStrings;
 
 public class LocalGameController {
@@ -33,6 +34,6 @@ public class LocalGameController {
 
     public void launchGame(ActionEvent actionEvent) {
         Stage stage = (Stage) launchButton.getScene().getWindow();
-        App.startGame(stage, new LoadingScreen(false, GlobalStrings.SINGLE_PLAYER_LOADING_TEXT), false);
+        App.startGame(stage, new LoadingScreen(false, GlobalStrings.SINGLE_PLAYER_LOADING_TEXT, DisplayScreen.LOADING), false);
     }
 }

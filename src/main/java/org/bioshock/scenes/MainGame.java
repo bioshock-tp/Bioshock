@@ -1,7 +1,13 @@
 package org.bioshock.scenes;
 
-import java.util.List;
-
+import javafx.geometry.Point2D;
+import javafx.geometry.Point3D;
+import javafx.scene.Cursor;
+import javafx.scene.control.Label;
+import javafx.scene.input.KeyCode;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.paint.Color;
 import org.bioshock.components.NetworkC;
 import org.bioshock.engine.core.FrameRate;
 import org.bioshock.engine.core.WindowManager;
@@ -14,16 +20,10 @@ import org.bioshock.entities.players.SeekerAI;
 import org.bioshock.main.App;
 import org.bioshock.networking.NetworkManager;
 import org.bioshock.rendering.RenderManager;
+import org.bioshock.utils.GlobalStrings;
 import org.bioshock.utils.Size;
 
-import javafx.geometry.Point2D;
-import javafx.geometry.Point3D;
-import javafx.scene.Cursor;
-import javafx.scene.control.Label;
-import javafx.scene.input.KeyCode;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.paint.Color;
+import java.util.List;
 
 public class MainGame extends GameScene {
     private static final double ENDTIME = 2 * 60f + 3;
@@ -145,7 +145,7 @@ public class MainGame extends GameScene {
             runningTime += timeDelta;
 
             if (runningTime >= ENDTIME) {
-                SceneManager.setScene(new WinScreen());
+                SceneManager.setScene(new LoadingScreen(false, GlobalStrings.WIN_INFO_TEXT, DisplayScreen.WIN));
                 return;
             }
 
@@ -159,7 +159,7 @@ public class MainGame extends GameScene {
         else {
             timeLosing += timeDelta;
             if (timeLosing >= LOSEDELAY) {
-                SceneManager.setScene(new LoseScreen());
+                SceneManager.setScene(new LoadingScreen(false, GlobalStrings.LOSE_INFO_TEXT, DisplayScreen.LOSE));
             }
         }
     }

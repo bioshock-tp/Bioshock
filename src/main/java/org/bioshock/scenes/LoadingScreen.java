@@ -15,28 +15,49 @@ import javafx.util.Duration;
 import org.bioshock.utils.GlobalStrings;
 
 public class LoadingScreen extends GameScene {
-	public LoadingScreen (boolean isNetworked, String loadingText) {
+    public LoadingScreen (boolean isNetworked, String loadingText, DisplayScreen screen) {
         super();
 
         VBox verticalBox = new VBox();
         verticalBox.setAlignment(Pos.CENTER);
-		Label buzzLabel = new Label(GlobalStrings.BUZZ_TEXT);
+        Label buzzLabel = new Label();
         buzzLabel.setTextFill(Color.WHITE);
-        Label killLabel = new Label(GlobalStrings.KILL_TEXT);
+        Label killLabel = new Label();
         killLabel.setTextFill(Color.web("0xC50909"));
-        TextFlow titleFlow = new TextFlow(buzzLabel, killLabel);
+        TextFlow titleFlow = new TextFlow();
+        Label gap = new Label(" ");
         titleFlow.setStyle("-fx-font-family: \"Helvetica\"; -fx-font-size: 72px; -fx-font-weight: bold; -fx-text-alignment: center;");
-        Label infoLabel = new Label(loadingText);
+        Label infoLabel = new Label();
         infoLabel.setStyle("-fx-font-family: \"Helvetica\"; -fx-font-size: 36px; -fx-text-alignment: center;");
         infoLabel.setTextFill(Color.WHITE);
+        infoLabel.setText(loadingText);
+
+        switch (screen) {
+            case LOADING:
+                buzzLabel.setText(GlobalStrings.BUZZ_TEXT);
+                killLabel.setText(GlobalStrings.KILL_TEXT);
+                titleFlow.getChildren().addAll(buzzLabel, killLabel);
+                break;
+            case WIN:
+                buzzLabel.setText(GlobalStrings.YOU_TEXT);
+                killLabel.setText(GlobalStrings.WIN_TEXT);
+                killLabel.setTextFill(Color.GREEN);
+                titleFlow.getChildren().addAll(buzzLabel, gap, killLabel);
+                break;
+            case LOSE:
+                buzzLabel.setText(GlobalStrings.YOU_TEXT);
+                killLabel.setText(GlobalStrings.LOSE_TEXT);
+                titleFlow.getChildren().addAll(buzzLabel, gap, killLabel);
+                break;
+        }
+
         verticalBox.getChildren().addAll(titleFlow, infoLabel);
-//        titleFlow.setTextAlignment(Pos.CENTER);
 
         getPane().getChildren().add(verticalBox);
 
-		setCursor(Cursor.NONE);
-		setBackground(new Background(new BackgroundFill(
-            Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY
+        setCursor(Cursor.NONE);
+        setBackground(new Background(new BackgroundFill(
+                Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY
         )));
 
         FadeTransition fadeIn = new FadeTransition(Duration.seconds(1.5), verticalBox);
@@ -60,5 +81,5 @@ public class LoadingScreen extends GameScene {
         } else {
             fadeOut.setOnFinished(e -> SceneManager.setScene(new MainGame()));
         }
-	}
+    }
 }
