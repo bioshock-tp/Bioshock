@@ -48,10 +48,10 @@ public class Room extends GraphNode {
     private double wallWidth;
     private Size coriSize;
     private Color c;
-    private double wallProb = 0.25;
+    private double wallProb = 0.25; 
     private Graph<GraphNode, Pair<Direction,Double>> traversableGraph;
     private GraphNode centreNode;
-
+    
     private RoomType roomType = RoomType.SINGLE_ROOM;
 
     /***
@@ -85,15 +85,15 @@ public class Room extends GraphNode {
         List<Pair<Direction,ConnType>> edges,
         Double wallProbObj,
         Long seed
-    ) {
+    ) {        
         //if the room Prob is not null use the given value
         if(wallProbObj != null) {
             wallProb = wallProbObj;
         }
-
-        boolean[][] locationsToSpawn =
+        
+        boolean[][] locationsToSpawn = 
                 new boolean[(int) totalSize.getHeight()][(int) totalSize.getWidth()];
-
+         
         //if a seed is given use a seeded random number generator
         //otherwise use a non seeded one
         Random rand;
@@ -103,8 +103,8 @@ public class Room extends GraphNode {
         else {
             rand = new Random(seed);
         }
-
-        //generate a random array of RoomTypes
+        
+        //generate a random array of RoomTypes 
         for(int i=0;i<locationsToSpawn.length;i++) {
             for(int j=0;j<locationsToSpawn[0].length;j++) {
                 if(rand.nextDouble()<wallProb) {
@@ -115,10 +115,10 @@ public class Room extends GraphNode {
                 }
             }
         }
-
+        
         init(edges, locationsToSpawn);
     }
-
+    
     /***
      * 
      */
@@ -142,18 +142,18 @@ public class Room extends GraphNode {
         }
         
         boolean[][] traversable = new boolean[(int) totalSize.getHeight()][(int) totalSize.getWidth()];
-
+        
         ArrayUtils.fill2DArray(traversable, true);
-
+        
         //Add the sides relevant for the connection type in each direction
         ArrayUtils.copyInArray(
-            traversable,
+            traversable, 
             topSide(pos.add(coriSize.getHeight()*UNIT_WIDTH, 0*UNIT_HEIGHT, 0),
                     wallWidth, coriSize, c, connections.get(Direction.NORTH)),
-            (int) 0,
+            (int) 0, 
             (int) coriSize.getHeight()
         );
-
+        
         ArrayUtils.copyInArray(
             traversable,
             botSide(pos.add(
@@ -165,7 +165,7 @@ public class Room extends GraphNode {
             (int) (coriSize.getHeight() + roomSize.getHeight()),
             (int) coriSize.getHeight()
         );
-
+        
         ArrayUtils.copyInArray(
             traversable,
             rightSide(pos.add(
@@ -177,7 +177,7 @@ public class Room extends GraphNode {
             (int) coriSize.getHeight(),
             (int) (coriSize.getHeight() + roomSize.getWidth())
         );
-
+        
         ArrayUtils.copyInArray(
             traversable,
             leftSide(pos.add(0*UNIT_WIDTH, coriSize.getHeight()*UNIT_HEIGHT, 0),
@@ -185,18 +185,18 @@ public class Room extends GraphNode {
             (int) coriSize.getHeight(),
             (int) 0
         );
-
+        
         
         //corner connecting bottom and right
         corner(
-    		traversable,
-    		(int)(coriSize.getHeight() - wallWidth),
+    		traversable, 
+    		(int)(coriSize.getHeight() - wallWidth), 
             (int)(coriSize.getHeight() - wallWidth));
 
         //corner connecting bottom and left
         corner(
-    		traversable,
-    		(int)(coriSize.getHeight() + roomSize.getWidth()),
+    		traversable, 
+    		(int)(coriSize.getHeight() + roomSize.getWidth()), 
             (int)(coriSize.getHeight() - wallWidth));
 
         //corner connecting top and right
@@ -204,66 +204,66 @@ public class Room extends GraphNode {
     		traversable,
     		(int)(coriSize.getHeight() - wallWidth),
     		(int)(coriSize.getHeight() + roomSize.getHeight()));
-
+       
         //corner connecting top and left
         corner(
-    		traversable,
-    		(int)(coriSize.getHeight() + roomSize.getWidth()),
+    		traversable, 
+    		(int)(coriSize.getHeight() + roomSize.getWidth()), 
     		(int)(coriSize.getHeight() + roomSize.getHeight()));
-
+        
         //App.logger.debug("Full Room:");
         //ArrayUtils.log2DArray(traversable);
-
+        
         GraphNode[][] traversableNodes = new GraphNode[traversable.length][traversable[0].length];
         for (int i=0;i<traversableNodes.length;i++) {
         	for (int j=0;j<traversableNodes[0].length;j++) {
         		if(traversable[i][j]) {
 	        		traversableNodes[i][j] = new GraphNode(new Point2D(
-	    				pos.getX() + j*UNIT_WIDTH + UNIT_WIDTH/2,
+	    				pos.getX() + j*UNIT_WIDTH + UNIT_WIDTH/2, 
 	    				pos.getY() + i*UNIT_HEIGHT + UNIT_HEIGHT/2));
         		}
         	}
         }
         centreNode = traversableNodes[traversableNodes.length/2][traversableNodes[0].length/2];
-
+        
         traversableGraph = (new Graph<>(traversableNodes, new TraversableEdgeGenerator()))
     		.getConnectedSubgraph(centreNode);
-
+        
         boolean[][] spawnableLocations = traversable.clone();
         ArrayUtils.copyInArray(
-            spawnableLocations,
-            new boolean[1][spawnableLocations[0].length],
-            spawnableLocations.length/2,
+            spawnableLocations, 
+            new boolean[1][spawnableLocations[0].length], 
+            spawnableLocations.length/2, 
             0
         );
-
+        
         ArrayUtils.copyInArray(
-            spawnableLocations,
-            new boolean[spawnableLocations.length][1],
-            0,
+            spawnableLocations, 
+            new boolean[spawnableLocations.length][1], 
+            0, 
             spawnableLocations[0].length/2
         );
-
+        
         ArrayUtils.log2DArray(spawnableLocations);
-
+        
         for (int i=0;i<locationsToSpawn.length&&i<spawnableLocations.length;i++) {
             for (int j=0;j<locationsToSpawn[0].length&&j<spawnableLocations[0].length;j++) {
                 if(locationsToSpawn[i][j] == true && spawnableLocations[i][j] == true
                         && traversableGraph.getNodes().contains(traversableNodes[i][j])) {
                     walls.add(new TexRectEntity(
-                        pos.add(j*UNIT_WIDTH, i*UNIT_HEIGHT,0),
-                        new NetworkC(false),
-                        new Size(UNIT_WIDTH, UNIT_HEIGHT),
+                        pos.add(j*UNIT_WIDTH, i*UNIT_HEIGHT,0), 
+                        new NetworkC(false), 
+                        new Size(UNIT_WIDTH, UNIT_HEIGHT), 
                         c));
                     traversableNodes[i][j] = null;
                 }
             }
         }
-
+        
         traversableGraph = (new Graph<>(traversableNodes, new TraversableEdgeGenerator()))
                 .getConnectedSubgraph(centreNode);
     }
-
+    
     public Graph<GraphNode, Pair<Direction, Double>> getTraversableGraph() {
 		return traversableGraph;
 	}
@@ -290,9 +290,9 @@ public class Room extends GraphNode {
         );
         walls.add(corner4);
         ArrayUtils.copyInArray(
-            traversable,
-            new boolean[(int) wallWidth][(int) wallWidth],
-            (int)relY,
+            traversable, 
+            new boolean[(int) wallWidth][(int) wallWidth], 
+            (int)relY, 
             (int)relX
         );
     }
@@ -335,13 +335,13 @@ public class Room extends GraphNode {
             corridorPoints.add(new Pair<>(
                     new Point2D(
                             getLocation().getX(),
-                            getLocation().getY()- roomSize.getHeight()/2),
+                            getLocation().getY()- roomSize.getHeight()/2*UNIT_HEIGHT),
                     Direction.NORTH));
             break;
         default:
             break;
         }
-
+        
         walls.addAll(wallsAndArray.getKey());
         return wallsAndArray.getValue();
     }
@@ -466,12 +466,12 @@ public class Room extends GraphNode {
                 coriSize.getWidth(),
                 coriSize.getHeight(),
                 c
-            );
+            );            
             break;
         case ROOM_TO_ROOM:
             wallsAndArray = Sides.lExit(
                 pos,
-                wallWidth,
+                wallWidth, 
                 roomSize.getHeight(),
                 coriSize.getWidth(),
                 coriSize.getHeight(),
@@ -485,10 +485,11 @@ public class Room extends GraphNode {
             break;
         default:
             break;
+          
         }
         walls.addAll(wallsAndArray.getKey());
         return wallsAndArray.getValue();
-    }
+    }    
     
     @SuppressWarnings("unused")
 	private boolean isSolid(ConnType con) {
@@ -555,6 +556,10 @@ public class Room extends GraphNode {
         );
     }
 
+    public List<Pair<Point2D, Direction>> getCorridorPoints(){
+        return corridorPoints;
+    }
+    
     public RoomType getRoomType() {
 		return roomType;
 	}
@@ -563,12 +568,8 @@ public class Room extends GraphNode {
 		this.roomType = roomType;
 	}
 
-    public List<Pair<Point2D, Direction>> getCorridorPoints(){
-        return corridorPoints;
-    }
-
     /***
-     *
+     * 
      * @return an uninitialised deep copy of the current room
      * i.e. you need to call init() on the room with edge info
      */
@@ -580,6 +581,6 @@ public class Room extends GraphNode {
             this.coriSize, 
             this.c
         );
-}
+    }
 
 }
