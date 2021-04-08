@@ -10,6 +10,7 @@ import org.bioshock.entities.EntityManager;
 import org.bioshock.entities.map.Room;
 import org.bioshock.entities.map.maps.GenericMap;
 import org.bioshock.entities.map.maps.Map;
+import org.bioshock.entities.map.maps.RandomMap;
 import org.bioshock.entities.players.Hider;
 import org.bioshock.entities.players.SeekerAI;
 import org.bioshock.main.App;
@@ -50,7 +51,7 @@ public class MainGame extends GameScene {
             null
         )));
         
-//        if(App.isNetworked()) {
+        if(App.isNetworked()) {
             map = new GenericMap(
         		new Point3D(0, 0, 0),
         		1, 
@@ -59,19 +60,19 @@ public class MainGame extends GameScene {
         		Color.SADDLEBROWN, 
         		GlobalConstants.testMap
     		);
-//        }
-//        else {
-//            map = new RandomMap(
-//                new Point3D(0, 0, 0), 
-//                10, 
-//                new Size(300, 600), 
-//                new Size(90, 90), 
-//                Color.SADDLEBROWN, 
-//                new Size(5, 10), 
-//                null, 
-//                null
-//            );
-//        }
+        }
+        else {
+            map = new RandomMap(
+                new Point3D(0, 0, 0), 
+                1, 
+                new Size(5, 7), 
+                new Size(3, 5), 
+                Color.SADDLEBROWN, 
+                new Size(5, 10), 
+                null, 
+                null
+            );
+        }
         
         
         SceneManager.setMap(map);
