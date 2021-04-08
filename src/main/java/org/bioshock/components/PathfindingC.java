@@ -32,6 +32,8 @@ public class PathfindingC<T extends GraphNode,S> {
     }
 
 
+    public void setGraph(Graph<T,S> newGraph){ this.graph = newGraph;}
+    public Graph<T,S> getGraph(){ return graph; }
 
     /**
      *
@@ -187,6 +189,7 @@ public class PathfindingC<T extends GraphNode,S> {
             }
 
         }
+        //pathToFollow.remove(0);
         App.logger.debug("Path created is {}", pathToFollow);
 
         return pathToFollow;
@@ -289,7 +292,7 @@ public class PathfindingC<T extends GraphNode,S> {
             temp = node.getLocation().subtract(
                     pos
             );
-            if (temp.magnitude() < shortest) {
+            if (temp.magnitude() < shortest && !node.getIsObject()) {
                 shortest = temp.magnitude();
                 current = node;
             }
