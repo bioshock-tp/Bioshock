@@ -53,6 +53,7 @@ public class Room extends GraphNode {
     private GraphNode centreNode;
     
     private RoomType roomType = RoomType.SINGLE_ROOM;
+    private List<Room> openlyConnectedRooms = new ArrayList<>();
 
     /***
      * Generates a room with the position being the top left of the room
@@ -582,5 +583,9 @@ public class Room extends GraphNode {
             this.c
         );
     }
+
+	public List<Room> getOpenlyConnectedRooms() {
+		return openlyConnectedRooms;
+	}
 
 }

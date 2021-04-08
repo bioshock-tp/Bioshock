@@ -2,6 +2,7 @@ package org.bioshock.entities.map.maps;
 
 import static org.bioshock.utils.GlobalConstants.UNIT_HEIGHT;
 import static org.bioshock.utils.GlobalConstants.UNIT_WIDTH;
+import static org.bioshock.utils.ArrayUtils.safeGet;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -69,12 +70,93 @@ public class GenericMap implements Map{
                     rooms[i][j] = new Room(newPos.add(j*tRoomWidth, i*tRoomHeight, 0), 
                             wallWidth, newRoomSize, coriSize, c);
                     rooms[i][j].setRoomType(roomTypes[i][j]);
+                   
                 }
+            }
+        }
+        
+        for (int i=0;i<roomTypes.length;i++) {
+            for (int j=0;j<roomTypes[0].length;j++) {
+                tryToCombineRooms(rooms, i, j);
             }
         }
         
         roomGraph = (new Graph<>(rooms, new RoomEdgeGenerator())).getLargestConnectedSubgraph();       
         initRoomsFromGraph();
+    }
+    
+    private boolean tryToCombineRooms(Room[][] rooms, int i, int j) {
+    	return vert2(rooms,i,j) || hori2(rooms,i,j) || square2(rooms,i,j);
+    }
+    
+    private boolean vert2(Room[][] rooms, int i, int j) {
+    	List<Pair<Integer, Integer>> positions = new ArrayList<>();
+    	positions.add(new Pair<>(i,j));
+    	positions.add(new Pair<>(i+1,j));
+    	
+    	return biggerRoom(rooms, i, j, positions);
+    }
+    
+    private boolean hori2(Room[][] rooms, int i, int j) {
+    	List<Pair<Integer, Integer>> positions = new ArrayList<>();
+    	positions.add(new Pair<>(i,j));
+    	positions.add(new Pair<>(i,j+1));
+    	
+    	return biggerRoom(rooms, i, j, positions);
+    }
+    
+    private boolean square2(Room[][] rooms, int i, int j) {
+    	List<Pair<Integer, Integer>> positions = new ArrayList<>();
+    	positions.add(new Pair<>(i,j));
+    	positions.add(new Pair<>(i,j+1));
+    	positions.add(new Pair<>(i+1,j));
+    	positions.add(new Pair<>(i+1,j+1));
+    	
+    	return biggerRoom(rooms, i, j, positions);
+    }
+    
+    private boolean biggerRoom(Room[][] rooms, int i, int j, List<Pair<Integer, Integer>> positions) {
+    	List<Pair<Room,Pair<Integer,Integer>>> roomAndPoses = new ArrayList<>();
+    	
+    	for(Pair<Integer, Integer> coord: positions) {
+    		//if any position in the potential big room is null the the big room can't be constructed
+    		Room r = safeGet(rooms, coord.getKey(), coord.getValue());
+    		if (r == null) {
+    			return false;
+    		}
+    		//if any room is already a part of a big room a new big room can't be constructed 
+    		if(!r.getOpenlyConnectedRooms().isEmpty()) {
+    			return false;
+    		}
+    		
+    		roomAndPoses.add(new Pair<>(r,coord));
+    	}
+    	
+    	for(Pair<Room,Pair<Integer,Integer>> rp1: roomAndPoses) {
+    		for(Pair<Room,Pair<Integer,Integer>> rp2: roomAndPoses) {
+        		if(adjacent(rp1.getValue(), rp2.getValue())) {
+        			rp1.getKey().getOpenlyConnectedRooms().add(rp2.getKey());
+        		}
+        	}
+    	}
+    	
+    	return true;
+    }
+    
+    /***
+     * returns true if the two points are adjacent false if they are not or the same point
+     * @param coord1
+     * @param coord2
+     * @return
+     */
+    private boolean adjacent(Pair<Integer, Integer> coord1, Pair<Integer, Integer> coord2) {
+    	if(((coord1.getKey() == coord2.getKey() + 1 ||coord1.getKey() == coord2.getKey() - 1 ) 
+    			&& coord1.getValue() == coord2.getValue()) ||
+    			((coord1.getValue() == coord2.getValue() + 1 ||coord1.getValue() == coord2.getValue() - 1 ) 
+				&& coord1.getKey() == coord2.getKey())) {
+    		return true;
+    	}
+    	return false;
     }
     
     private void initRoomsFromGraph() {

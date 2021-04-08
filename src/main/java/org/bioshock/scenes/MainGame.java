@@ -51,28 +51,28 @@ public class MainGame extends GameScene {
             null
         )));
         
-        if(App.isNetworked()) {
+//        if(App.isNetworked()) {
             map = new GenericMap(
         		new Point3D(0, 0, 0),
         		1, 
         		new Size(5, 7), 
         		new Size(3, 5), 
         		Color.SADDLEBROWN, 
-        		GlobalConstants.testMap
+        		GlobalConstants.simpleMap
     		);
-        }
-        else {
-            map = new RandomMap(
-                new Point3D(0, 0, 0),
-                1,
-                new Size(9, 11),
-                new Size(3, 5),
-                Color.SADDLEBROWN,
-                new Size(3, 3),
-                null,
-                null
-            );
-        }
+//        }
+//        else {
+//            map = new RandomMap(
+//                new Point3D(0, 0, 0),
+//                1,
+//                new Size(9, 11),
+//                new Size(3, 5),
+//                Color.SADDLEBROWN,
+//                new Size(3, 3),
+//                null,
+//                null
+//            );
+//        }
         
         
         SceneManager.setMap(map);

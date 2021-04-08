@@ -22,12 +22,12 @@ public class ArrayUtils {
     
     /***
      * Logs a 2d array with a line break between each nested array
-     * @param traversable
+     * @param array
      */
-    public static void log2DArray(boolean[][] traversable) {
+    public static void log2DArray(boolean[][] array) {
         StringBuilder sb = new StringBuilder();
         
-        for(boolean[] os: traversable) {
+        for(boolean[] os: array) {
             sb.append("\n");
             sb.append(Arrays.toString(os));
         }
@@ -50,5 +50,23 @@ public class ArrayUtils {
         }
         
         return array;
+    }
+    
+    /***
+     * attempt to get the value at the position [i][j] in the array
+     * if no object exists or the position is ouut of bounds return null
+     * @param <T> The type of the array
+     * @param array 
+     * @param i 
+     * @param j
+     * @return
+     */
+    public static <T> T safeGet(T[][] array, int i, int j) {
+    	if(array == null ||
+    		i<0 || array.length<=i ||
+    		j<0 || array[0].length<=j) {
+    		return null;
+    	}
+    	return array[i][j];
     }
 }
