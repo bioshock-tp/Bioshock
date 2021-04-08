@@ -8,6 +8,7 @@ import java.util.Random;
 import org.bioshock.components.NetworkC;
 import org.bioshock.engine.core.WindowManager;
 import org.bioshock.engine.pathfinding.Graph;
+import org.bioshock.engine.pathfinding.GraphNode;
 import org.bioshock.entities.Entity;
 import org.bioshock.entities.EntityManager;
 import org.bioshock.components.PathfindingC;
@@ -15,6 +16,7 @@ import org.bioshock.entities.SquareEntity;
 import org.bioshock.entities.map.Room;
 import org.bioshock.entities.map.TexRectEntity;
 import org.bioshock.entities.map.utils.ConnType;
+import org.bioshock.main.App;
 import org.bioshock.physics.Movement;
 import org.bioshock.rendering.renderers.SeekerRenderer;
 import org.bioshock.rendering.renderers.components.SimpleRendererC;
@@ -38,7 +40,8 @@ public class SeekerAI extends SquareEntity {
     private Hider target;
     private final Arc swatterHitbox;
     private final Graph<Room,Pair<Direction,ConnType>> roomGraph = SceneManager.getMap().getRoomGraph();
-    private PathfindingC<Room,Pair<Direction, ConnType>> pathfinding = new PathfindingC<>(roomGraph);
+    private PathfindingC<Room,Pair<Direction, ConnType>> roomPathfinding = new PathfindingC<>(roomGraph);
+    private PathfindingC<GraphNode,Pair<Direction, Double>> nodePathfinding;
     private List<Point2D> path = new ArrayList<>();
     private Room currRoom;
     private Room prevRoom;
@@ -89,6 +92,7 @@ public class SeekerAI extends SquareEntity {
 
         currRoom = findCurrentRoom(this);
         prevRoom = currRoom;
+        nodePathfinding = new PathfindingC<>(currRoom.getTraversableGraph());
         lastSeekerPosition = getCentre();
         currentTargetLocation = new Point2D(getCentre().getX(), getCentre().getY());
     }
@@ -239,14 +243,20 @@ public class SeekerAI extends SquareEntity {
         setSearch(false);
         path.clear();
         lastSeenPosition = new Point2D(entity.getX(), entity.getY());
-        /*App.logger.debug(
-                "Last seen position coordinates are {}",
-                lastSeenPosition
-        );*/
+        Room lastSeenRoom = findCurrentRoom(lastSeenPosition);
 
+        path = nodePathfinding.createBestPath(this.getCentre(), lastSeenPosition);
 
-        movement.moveTo(lastSeenPosition);
+        if(!lastSeenRoom.equals(currRoom)){
+            nodePathfinding.setGraph(lastSeenRoom.getTraversableGraph());
+            path.addAll(nodePathfinding.createBestPath(this.getCentre(), lastSeenPosition));
+            nodePathfinding.setGraph(currRoom.getTraversableGraph());
+        }
 
+        if(!path.isEmpty()){
+            currentTargetLocation = path.remove(0);
+        }
+        search();
     }
 
 
@@ -263,21 +273,21 @@ public class SeekerAI extends SquareEntity {
                 double absY = Math.abs(lastSeenPosition.getY() - getY());
                 if(absX < 2 && absY < 2){
                     //make new path
-                    path = pathfinding.createRandomPath(this.getCentre(), prevRoom, getPreferred());
+                    path = roomPathfinding.createRandomPath(this.getCentre(), prevRoom, getPreferred());
                     path.add(path.get((path.size())-1)); //add last item twice to make sure its visited
                     currentTargetLocation = path.remove(0);
                     lastSeenPosition = null;
                 }
                 else{
                     if(timeStill >= TIME_STILL){
-                        lastSeenPosition = pathfinding.findNearestNode(lastSeenPosition).getLocation();
+                        lastSeenPosition = roomPathfinding.findNearestNode(lastSeenPosition).getLocation();
                         timeStill = 0;
                     }
                     movement.moveTo(lastSeenPosition);
                 }
             }
             else{
-                path = pathfinding.createRandomPath(this.getCentre(), prevRoom, null);
+                path = roomPathfinding.createRandomPath(this.getCentre(), prevRoom, null);
                 currentTargetLocation = path.remove(0);
                 
             }
@@ -290,7 +300,7 @@ public class SeekerAI extends SquareEntity {
             double absX = Math.abs(currentTargetLocation.getX() - getWidth()/2 - getX());
             double absY = Math.abs(currentTargetLocation.getY() - getHeight()/2 - getY());
 
-            if(absX < 5 && absY < 5){
+            if(absX < 1 && absY < 1){
                 currentTargetLocation = path.remove(0);
             }
         }
@@ -329,6 +339,7 @@ public class SeekerAI extends SquareEntity {
         if(!newRoom.equals(currRoom)){
             prevRoom = currRoom;
             currRoom = newRoom;
+            nodePathfinding.setGraph(currRoom.getTraversableGraph());
         }
     }
 
