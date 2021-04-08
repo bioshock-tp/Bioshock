@@ -59,6 +59,7 @@ public class SeekerAI extends SquareEntity {
 
     private boolean isActive = false;
     private boolean isSearching = false;
+    private boolean colorChanged = false;
 
     private Random rand = new Random();
 
@@ -125,6 +126,7 @@ public class SeekerAI extends SquareEntity {
         setSearch(true);
         Hider firstPlayer = EntityManager.getPlayers().get(0);
         boolean masterPlayer = firstPlayer == EntityManager.getCurrentPlayer();
+        colorChanged = false;
         EntityManager.getPlayers().forEach(entity -> {
             if (
                     EntityManager.isManaged(this, entity)
@@ -149,10 +151,15 @@ public class SeekerAI extends SquareEntity {
                     }
                 }
                 rendererC.setColour(Color.ORANGE);
+                colorChanged = true;
                 target = entity;
                 if (masterPlayer) chasePlayer(target);
             }
         });
+        
+        if (!colorChanged) {
+            rendererC.setColour(Color.INDIANRED);
+        }
 
         if (masterPlayer && isSearching) {
         	setActive(false);

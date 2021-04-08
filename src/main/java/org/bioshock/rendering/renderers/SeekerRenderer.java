@@ -42,7 +42,7 @@ public class SeekerRenderer implements Renderer {
             getRenWidth(width),
             getRenHeight(height)
         );
-        gc.setLineWidth(10);
+        gc.setLineWidth(getRenWidth(10));
         gc.setStroke(seeker.getRendererC().getColour());
         
         gc.strokeOval(
@@ -72,7 +72,5 @@ public class SeekerRenderer implements Renderer {
         }
 
         gc.restore();
-
-        seeker.getRendererC().setColour(Color.INDIANRED);
     }
 }
