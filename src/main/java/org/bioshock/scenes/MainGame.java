@@ -65,10 +65,10 @@ public class MainGame extends GameScene {
             map = new RandomMap(
                 new Point3D(0, 0, 0),
                 1,
-                new Size(5, 7),
+                new Size(9, 11),
                 new Size(3, 5),
                 Color.SADDLEBROWN,
-                new Size(5, 10),
+                new Size(3, 3),
                 null,
                 null
             );
