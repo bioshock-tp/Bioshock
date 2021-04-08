@@ -128,16 +128,16 @@ public class SeekerAI extends SquareEntity {
         EntityManager.getPlayers().forEach(entity -> {
             if (
                     EntityManager.isManaged(this, entity)
-                            && intersects(entity, "swatter")
-                            && getIsActive()
-                            && !entity.isDead()
+                    		&& getIsActive()
+                    		&& !entity.isDead()
+                            && intersects(entity, "swatter") 
             ) {
                 entity.setDead(true);
             }
             if (
                     EntityManager.isManaged(this, entity)
-                            && intersects(entity, "fov")
-                            && !entity.isDead()
+                    		&& !entity.isDead()
+                            && intersects(entity, "fov")                           
                             && checkLineOfSight(entity)
             ) {
                 if(timeBetweenSwings >= TIME_BETWEEN_SWINGS){
@@ -154,7 +154,10 @@ public class SeekerAI extends SquareEntity {
             }
         });
 
-        if (masterPlayer && isSearching) search();
+        if (masterPlayer && isSearching) {
+        	setActive(false);
+        	search();
+        }
     }
 
     /**
@@ -255,7 +258,6 @@ public class SeekerAI extends SquareEntity {
      * Contains the behaviour tree for patrolling the map
      */
     public void search() {
-        setActive(false);
         updateRoom(this);
         if(path.isEmpty()){
             path = roomPathfinding.createRandomPath(this.getCentre(), prevRoom, getPreferred());
