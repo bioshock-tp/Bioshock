@@ -75,8 +75,8 @@ public class PathfindingC<T extends GraphNode,S> {
 //                destination.getRoomCenter()
 //        );
 
-        nodePath.add(current);
-        pathToFollow.add(current.getLocation());
+        //nodePath.add(current);
+        //pathToFollow.add(current.getLocation());
 //        App.logger.debug("Room {} is {}", c, startRoom.getRoomCenter());
         c++;
 
@@ -143,7 +143,7 @@ public class PathfindingC<T extends GraphNode,S> {
     public List<Point2D> createBestPath(T startNode, T endNode) {
         List<Point2D> pathToFollow = new ArrayList<>();
         Graph<T, S> copyGraph = graph.makeCopy();
-        List<T> neighbours = new ArrayList<>();
+        List<T> neighbours;
         List<T> openList = new ArrayList<>();
         List<T> closedList = new ArrayList<>();
 

@@ -132,7 +132,7 @@ public class SeekerAI extends SquareEntity {
                             && getIsActive()
                             && !entity.isDead()
             ) {
-                //entity.setDead(true);
+                entity.setDead(true);
             }
             if (
                     EntityManager.isManaged(this, entity)
@@ -243,16 +243,7 @@ public class SeekerAI extends SquareEntity {
         setSearch(false);
         path.clear();
         lastSeenPosition = new Point2D(entity.getX(), entity.getY());
-        Room lastSeenRoom = findCurrentRoom(lastSeenPosition);
-
-        path = nodePathfinding.createBestPath(this.getCentre(), lastSeenPosition);
-
-        if(!lastSeenRoom.equals(currRoom)){
-            nodePathfinding.setGraph(lastSeenRoom.getTraversableGraph());
-            path.addAll(nodePathfinding.createBestPath(this.getCentre(), lastSeenPosition));
-            nodePathfinding.setGraph(currRoom.getTraversableGraph());
-        }
-
+        path = makeBestPath(lastSeenPosition);
         if(!path.isEmpty()){
             currentTargetLocation = path.remove(0);
         }
@@ -267,31 +258,11 @@ public class SeekerAI extends SquareEntity {
         setActive(false);
         updateRoom(this);
         if(path.isEmpty()){
-            //move to last seen position
-            if(lastSeenPosition != null){
-                double absX = Math.abs(lastSeenPosition.getX() - getX());
-                double absY = Math.abs(lastSeenPosition.getY() - getY());
-                if(absX < 2 && absY < 2){
-                    //make new path
-                    path = roomPathfinding.createRandomPath(this.getCentre(), prevRoom, getPreferred());
-                    path.add(path.get((path.size())-1)); //add last item twice to make sure its visited
-                    currentTargetLocation = path.remove(0);
-                    lastSeenPosition = null;
-                }
-                else{
-                    if(timeStill >= TIME_STILL){
-                        lastSeenPosition = roomPathfinding.findNearestNode(lastSeenPosition).getLocation();
-                        timeStill = 0;
-                    }
-                    movement.moveTo(lastSeenPosition);
-                }
-            }
-            else{
-                path = roomPathfinding.createRandomPath(this.getCentre(), prevRoom, null);
-                currentTargetLocation = path.remove(0);
-                
-            }
-
+            path = roomPathfinding.createRandomPath(this.getCentre(), prevRoom, getPreferred());
+            path.add(path.get((path.size())-1));
+            List<Point2D> pathToNextRoom = makeBestPath(path.get(0));
+            path.addAll(0, pathToNextRoom);
+            currentTargetLocation = path.remove(0);
         }
         else{
             //continue searching
@@ -307,7 +278,24 @@ public class SeekerAI extends SquareEntity {
 
     }
 
+    private List<Point2D> makeBestPath(Point2D end){
+        Room endRoom = findCurrentRoom(end);
+        List<Point2D> returnPath;
+
+        returnPath = nodePathfinding.createBestPath(this.getCentre(), end);
+
+        if(!endRoom.equals(currRoom)){
+            nodePathfinding.setGraph(endRoom.getTraversableGraph());
+            returnPath.addAll(nodePathfinding.createBestPath(this.getCentre(), end));
+            nodePathfinding.setGraph(currRoom.getTraversableGraph());
+        }
+        return returnPath;
+    }
+
     private Room getPreferred() {
+        if(lastSeenPosition == null){
+            return null;
+        }
         Room room = findCurrentRoom(lastSeenPosition);
         Room finalRoom;
         List<Pair<Point2D, Direction>> points = room.getCorridorPoints();
