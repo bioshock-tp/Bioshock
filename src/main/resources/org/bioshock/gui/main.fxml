@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Button?>
 <?import javafx.geometry.Insets?>
 
 <?import java.net.URL?>
-<?import javafx.scene.Group?>
+
 <VBox alignment="CENTER" spacing="30.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="org.bioshock.gui.MainController" styleClass="background">
    <fx:include source="title.fxml"/>
@@ -18,7 +17,7 @@
    <padding>
       <Insets bottom="40.0" left="60.0" right="60.0" top="40.0"/>
    </padding>
-   <Button fx:id="newGameButton" text="New Game" onAction="#openNewGameView" styleClass="gui-button"/>
-   <Button fx:id="settingsButton" text="Settings" onAction="#openSettingsView" styleClass="gui-button"/>
-   <Button fx:id="quitButton" text="Quit Game" onAction="#handleQuitButton" styleClass="gui-button"/>
+   <Button fx:id="newGameButton" onAction="#openNewGameView" styleClass="gui-button"/>
+   <Button fx:id="settingsButton" onAction="#openSettingsView" styleClass="gui-button"/>
+   <Button fx:id="quitButton" onAction="#handleQuitButton" styleClass="gui-button"/>
 </VBox>

@@ -6,6 +6,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.stage.Stage;
+import org.bioshock.utils.GlobalStrings;
 
 public class MainController {
     public Button newGameButton;
@@ -27,5 +28,11 @@ public class MainController {
     @FXML
     public void openSettingsView(ActionEvent actionEvent) {
         App.setFXMLRoot("settings");
+    }
+
+    public void initialize() {
+        newGameButton.setText(GlobalStrings.NEW_GAME_BUTTON_TEXT);
+        quitButton.setText(GlobalStrings.QUIT_GAME_BUTTON_TEXT);
+        settingsButton.setText(GlobalStrings.SETTINGS_BUTTON_TEXT);
     }
 }

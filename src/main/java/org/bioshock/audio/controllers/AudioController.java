@@ -1,4 +1,13 @@
-package org.bioshock.audio;
+package org.bioshock.audio.controllers;
+
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
+import javafx.application.Platform;
+import lombok.NonNull;
+import org.bioshock.main.App;
+import org.checkerframework.checker.nullness.qual.Nullable;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
@@ -9,17 +18,6 @@ import java.time.Duration;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
-
-import com.github.benmanes.caffeine.cache.Cache;
-import com.github.benmanes.caffeine.cache.Caffeine;
-
-import org.bioshock.main.App;
-import org.checkerframework.checker.nullness.qual.Nullable;
-import org.json.JSONArray;
-import org.json.JSONObject;
-
-import javafx.application.Platform;
-import lombok.NonNull;
 
 public class AudioController {
 
@@ -70,8 +68,6 @@ public class AudioController {
      * If this AudioController has already been initialized, this resets all
      * internal data and then re-initializes this AudioController.
      *
-     * @param jsonPath
-     *          The path of the JSON data.
      */
     public static void initialise() {
         Path jsonPath = Paths.get(AUDIOJSONPATH);
@@ -121,7 +117,6 @@ public class AudioController {
 
             final String type = typeObject.toLowerCase();
             final String name = nameObject.toLowerCase();
-            final String path = pathObject;
             final String filesystem = filesystemObject.toLowerCase();
 
             if (name.isEmpty()) {
@@ -133,18 +128,18 @@ public class AudioController {
                 case "jar":
                     try {
                         nioPath = Paths.get(
-                            AudioController.class.getResource(path).toURI()
+                            AudioController.class.getResource(pathObject).toURI()
                         );
                     } catch (final URISyntaxException e) {
                         App.logger.error(
                             "There is not file, within the JAR, at '{}'.",
-                            path
+                                pathObject
                         );
                         return;
                     }
                     break;
                 case "local":
-                    nioPath = Paths.get(path);
+                    nioPath = Paths.get(pathObject);
                     break;
 
                 default:

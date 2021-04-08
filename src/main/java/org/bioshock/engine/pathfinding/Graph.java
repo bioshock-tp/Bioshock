@@ -291,6 +291,25 @@ public class Graph<T extends GraphNode,S> {
         return trimmedGraph;
     }
 
+    /**
+     * Will find the first node that is connected to the given node with the given connection
+     * @param edge the type of connection to look for
+     * @param node the node to look at the connections of
+     * @return the first node with that connection
+     */
+    public T getNodeFromEdge(S edge, T node){
+        List<Pair<T,S>> edges = getEdges(node);
+        T returnNode = null;
+        for(Pair<T,S> pair : edges){
+            if(pair.getValue().equals(edge) && returnNode == null){
+                returnNode = pair.getKey();
+            }
+        }
+
+        return returnNode;
+    }
+
+
     public Graph<T, S> makeCopy() {
         Graph<T,S> copy = new Graph<>();
         copy.nodeMap = new HashMap<>(this.nodeMap);

@@ -45,12 +45,12 @@ public class SeekerRenderer implements Renderer {
         gc.setLineWidth(10);
         gc.setStroke(seeker.getRendererC().getColour());
         
-//        gc.strokeOval(
-//            getRenX(x - radius + width / 2),
-//            getRenY(y - radius + height / 2),
-//            getRenWidth(radius * 2),
-//            getRenHeight(radius * 2)
-//        );
+        gc.strokeOval(
+            getRenX(x - radius + width / 2),
+            getRenY(y - radius + height / 2),
+            getRenWidth(radius * 2),
+            getRenHeight(radius * 2)
+        );
 
 
 

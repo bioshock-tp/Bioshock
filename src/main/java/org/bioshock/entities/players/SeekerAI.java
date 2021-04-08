@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Random;
 
 import org.bioshock.components.NetworkC;
+import org.bioshock.engine.core.WindowManager;
 import org.bioshock.engine.pathfinding.Graph;
 import org.bioshock.entities.Entity;
 import org.bioshock.entities.EntityManager;
@@ -40,6 +41,7 @@ public class SeekerAI extends SquareEntity {
     private PathfindingC<Room,Pair<Direction, ConnType>> pathfinding = new PathfindingC<>(roomGraph);
     private List<Point2D> path = new ArrayList<>();
     private Room currRoom;
+    private Room prevRoom;
     private Point2D currentTargetLocation;
     private Point2D lastSeenPosition;
     private Point lastSeekerPosition;
@@ -86,6 +88,7 @@ public class SeekerAI extends SquareEntity {
         swatterHitbox.setType(ArcType.ROUND);
 
         currRoom = findCurrentRoom(this);
+        prevRoom = currRoom;
         lastSeekerPosition = getCentre();
         currentTargetLocation = new Point2D(getCentre().getX(), getCentre().getY());
     }
@@ -125,7 +128,7 @@ public class SeekerAI extends SquareEntity {
                             && getIsActive()
                             && !entity.isDead()
             ) {
-                entity.setDead(true);
+                //entity.setDead(true);
             }
             if (
                     EntityManager.isManaged(this, entity)
@@ -266,7 +269,7 @@ public class SeekerAI extends SquareEntity {
      */
     public void search() {
         setActive(false);
-
+        updateRoom(this);
         if(path.isEmpty()){
             //move to last seen position
             if(lastSeenPosition != null){
@@ -274,7 +277,8 @@ public class SeekerAI extends SquareEntity {
                 double absY = Math.abs(lastSeenPosition.getY() - getY());
                 if(absX < 2 && absY < 2){
                     //make new path
-                    path = pathfinding.createRandomPath(this.getCentre());
+                    path = pathfinding.createRandomPath(this.getCentre(), prevRoom, getPreferred());
+                    path.add(path.get((path.size())-1)); //add last item twice to make sure its visited
                     currentTargetLocation = path.remove(0);
                     lastSeenPosition = null;
                 }
@@ -287,7 +291,7 @@ public class SeekerAI extends SquareEntity {
                 }
             }
             else{
-                path = pathfinding.createRandomPath(this.getCentre());
+                path = pathfinding.createRandomPath(this.getCentre(), prevRoom, null);
                 currentTargetLocation = path.remove(0);
                 
             }
@@ -305,6 +309,41 @@ public class SeekerAI extends SquareEntity {
             }
         }
 
+    }
+
+    private Room getPreferred() {
+        Room room = findCurrentRoom(lastSeenPosition);
+        Room finalRoom;
+        List<Pair<Point2D, Direction>> points = room.getCorridorPoints();
+        if(points == null || points.size() == 0){
+            return null;
+        }
+
+        if(!room.equals(currRoom)){
+            return room;
+        }
+
+        Direction direction = points.get(0).getValue();
+        double shortest = WindowManager.getWindowWidth() * WindowManager.getWindowHeight();
+        Point2D temp;
+
+        for(Pair<Point2D, Direction> point : points){
+            temp = point.getKey().subtract(lastSeenPosition);
+            if(temp.magnitude() < shortest){
+                shortest = temp.magnitude();
+                direction = point.getValue();
+            }
+        }
+        finalRoom = roomGraph.getNodeFromEdge(new Pair<>(direction, ConnType.ROOM_TO_ROOM),room);
+        return finalRoom;
+    }
+
+    private void updateRoom(Entity entity){
+        Room newRoom = findCurrentRoom(entity);
+        if(!newRoom.equals(currRoom)){
+            prevRoom = currRoom;
+            currRoom = newRoom;
+        }
     }
 
     public void setActive(boolean b) { isActive = b; }

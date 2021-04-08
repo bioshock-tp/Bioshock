@@ -4,6 +4,7 @@ import javafx.geometry.Point2D;
 import org.bioshock.engine.core.WindowManager;
 import org.bioshock.engine.pathfinding.Graph;
 import org.bioshock.engine.pathfinding.GraphNode;
+import org.bioshock.entities.map.Room;
 import org.bioshock.main.App;
 
 import java.util.ArrayList;
@@ -39,9 +40,12 @@ public class PathfindingC<T extends GraphNode,S> {
      * Will not visit the same node twice
      *
      * @param startNode the node to start from
+     * @param endNode the node to end on (null for a random endpoint)
+     * @param avoidNode a node to avoid such as the previous room (null does not avoid a room)
+     * @param preferredRoom the room that is the preferred first step
      * @return the list of nodes that form the path
      */
-    public List<Point2D> createRandomPath(T startNode, T endNode) {
+    public List<Point2D> createRandomPath(T startNode, T endNode, T avoidNode, T preferredRoom) {
         List<Point2D> pathToFollow = new ArrayList<>();
         List<T> nodePath = new ArrayList<>();
         List<T> possibleMoves = new ArrayList<>();
@@ -82,9 +86,21 @@ public class PathfindingC<T extends GraphNode,S> {
                 }
             }
 
+            //doesnt go back to the avoid node if it can be helped
+            if(avoidNode != null
+                    && possibleMoves.contains(avoidNode)
+                    && possibleMoves.size() > 1){
+                possibleMoves.remove(avoidNode);
+            }
+
             if(!possibleMoves.isEmpty()) {
-                r = rand.nextInt(possibleMoves.size());
-                current = possibleMoves.get(r);
+                if(possibleMoves.contains(preferredRoom)){
+                    current = preferredRoom;
+                }
+                else {
+                    r = rand.nextInt(possibleMoves.size());
+                    current = possibleMoves.get(r);
+                }
             }
             else{
                 destination = current;
@@ -101,16 +117,16 @@ public class PathfindingC<T extends GraphNode,S> {
         return pathToFollow;
     }
 
-    public List<Point2D> createRandomPath(Point2D pos, Point2D end) {
-        return createRandomPath(findNearestNode(pos), findNearestNode(end));
+    public List<Point2D> createRandomPath(Point2D pos, Point2D end, T avoidRoom, T preferredRoom) {
+        return createRandomPath(findNearestNode(pos), findNearestNode(end), avoidRoom, preferredRoom);
     }
 
-    public List<Point2D> createRandomPath(Point2D pos){
-        return createRandomPath(findNearestNode(pos), null);
+    public List<Point2D> createRandomPath(Point2D pos, T avoidRoom, T preferredRoom){
+        return createRandomPath(findNearestNode(pos), null, avoidRoom, preferredRoom);
     }
 
-    public List<Point2D> createRandomPath(T start){
-        return createRandomPath(start, null);
+    public List<Point2D> createRandomPath(T start, T avoidRoom, T preferredRoom){
+        return createRandomPath(start, null, avoidRoom, preferredRoom);
     }
 
     /**
