@@ -86,7 +86,7 @@ public class GenericMap implements Map{
     }
     
     private boolean tryToCombineRooms(Room[][] rooms, int i, int j) {
-    	return vert2(rooms,i,j) || hori2(rooms,i,j) || square2(rooms,i,j);
+    	return square2(rooms,i,j) || vert2(rooms,i,j) || hori2(rooms,i,j);
     }
     
     private boolean vert2(Room[][] rooms, int i, int j) {

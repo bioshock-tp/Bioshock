@@ -2,5 +2,6 @@ package org.bioshock.entities.map.utils;
 
 public enum ConnType {
     NO_EXIT,
-    ROOM_TO_ROOM
+    ROOM_TO_ROOM,
+    SUB_ROOM
 }

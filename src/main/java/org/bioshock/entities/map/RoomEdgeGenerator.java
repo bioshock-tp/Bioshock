@@ -12,6 +12,9 @@ public class RoomEdgeGenerator implements EdgeGenerator<Room, Pair<Direction,Con
 
 	@Override
 	public Pair<Direction, ConnType> getEdgeInfo(Room source, Room dest, Direction d) {
+	    if(source.getOpenlyConnectedRooms().contains(dest)) {
+	        return new Pair<>(d, ConnType.SUB_ROOM);
+	    }
 		if(d == NORTH || d == EAST || d == SOUTH || d == WEST) {
 			return new Pair<>(d, ConnType.ROOM_TO_ROOM);
 		}

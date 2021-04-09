@@ -328,6 +328,9 @@ public class SeekerAI extends SquareEntity {
             }
         }
         finalRoom = roomGraph.getNodeFromEdge(new Pair<>(direction, ConnType.ROOM_TO_ROOM),room);
+        if(finalRoom == null) {
+            finalRoom = roomGraph.getNodeFromEdge(new Pair<>(direction, ConnType.SUB_ROOM),room);
+        }
         return finalRoom;
     }
 
