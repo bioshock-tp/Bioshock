@@ -155,6 +155,35 @@ public class Room extends GraphNode {
             (int) coriSize.getHeight()
         );
         
+        if(connections.get(Direction.NORTH) == ConnType.SUB_ROOM &&
+                connections.get(Direction.EAST) != ConnType.SUB_ROOM) {
+            Pair<TexRectEntity, boolean[][]> sideAndArray = Sides.side(
+                pos.add((coriSize.getHeight() + roomSize.getWidth())*UNIT_WIDTH, 0*UNIT_HEIGHT, 0), 
+                new Size(wallWidth, coriSize.getHeight()), 
+                c);
+            
+            walls.add(sideAndArray.getKey());
+            ArrayUtils.copyInArray(
+                traversable, 
+                sideAndArray.getValue(),
+                0, 
+                (int) (coriSize.getHeight() + roomSize.getWidth()));
+        }
+        if(connections.get(Direction.NORTH) == ConnType.SUB_ROOM &&
+                connections.get(Direction.WEST) != ConnType.SUB_ROOM) {
+            Pair<TexRectEntity, boolean[][]> sideAndArray = Sides.side(
+                pos.add((coriSize.getHeight()-wallWidth)*UNIT_WIDTH, 0*UNIT_HEIGHT, 0), 
+                new Size(wallWidth, coriSize.getHeight()), 
+                c);
+            
+            walls.add(sideAndArray.getKey());
+            ArrayUtils.copyInArray(
+                traversable, 
+                sideAndArray.getValue(),
+                0, 
+                (int) (coriSize.getHeight()-wallWidth));
+        }
+        
         ArrayUtils.copyInArray(
             traversable,
             botSide(pos.add(
@@ -187,30 +216,43 @@ public class Room extends GraphNode {
             (int) 0
         );
         
-        
-        //corner connecting bottom and right
-        corner(
-    		traversable, 
-    		(int)(coriSize.getHeight() - wallWidth), 
-            (int)(coriSize.getHeight() - wallWidth));
+        if(connections.get(Direction.WEST) != ConnType.SUB_ROOM && 
+                connections.get(Direction.NORTH) != ConnType.SUB_ROOM) {
+            //corner connecting bottom and right
+            corner(
+        		traversable, 
+        		(int)(coriSize.getHeight() - wallWidth), 
+                (int)(coriSize.getHeight() - wallWidth));
+        }
 
-        //corner connecting bottom and left
-        corner(
-    		traversable, 
-    		(int)(coriSize.getHeight() + roomSize.getWidth()), 
-            (int)(coriSize.getHeight() - wallWidth));
+        if(connections.get(Direction.EAST) != ConnType.SUB_ROOM && 
+                connections.get(Direction.NORTH) != ConnType.SUB_ROOM) {
+            //corner connecting bottom and left
+            corner(
+        		traversable, 
+        		(int)(coriSize.getHeight() + roomSize.getWidth()), 
+                (int)(coriSize.getHeight() - wallWidth));
+        }
 
-        //corner connecting top and right
-        corner(
-    		traversable,
-    		(int)(coriSize.getHeight() - wallWidth),
-    		(int)(coriSize.getHeight() + roomSize.getHeight()));
+        if(connections.get(Direction.WEST) != ConnType.SUB_ROOM && 
+                connections.get(Direction.SOUTH) != ConnType.SUB_ROOM) {
+            //corner connecting top and right
+            corner(
+        		traversable,
+        		(int)(coriSize.getHeight() - wallWidth),
+        		(int)(coriSize.getHeight() + roomSize.getHeight()));
+        }
        
-        //corner connecting top and left
-        corner(
-    		traversable, 
-    		(int)(coriSize.getHeight() + roomSize.getWidth()), 
-    		(int)(coriSize.getHeight() + roomSize.getHeight()));
+        if(connections.get(Direction.EAST) != ConnType.SUB_ROOM &&
+                connections.get(Direction.SOUTH) != ConnType.SUB_ROOM) {
+            //corner connecting top and left
+            corner(
+        		traversable, 
+        		(int)(coriSize.getHeight() + roomSize.getWidth()), 
+        		(int)(coriSize.getHeight() + roomSize.getHeight()));
+        }
+        
+        
         
         //App.logger.debug("Full Room:");
         //ArrayUtils.log2DArray(traversable);
@@ -255,7 +297,7 @@ public class Room extends GraphNode {
                         pos.add(j*UNIT_WIDTH, i*UNIT_HEIGHT,0), 
                         new NetworkC(false), 
                         new Size(UNIT_WIDTH, UNIT_HEIGHT), 
-                        c));
+                        c.invert()));
                     traversableNodes[i][j] = null;
                 }
             }
@@ -339,11 +381,17 @@ public class Room extends GraphNode {
                             getLocation().getY()- roomSize.getHeight()/2*UNIT_HEIGHT),
                     Direction.NORTH));
             break;
+        case SUB_ROOM:
+            wallsAndArray = new Pair<>(null, ArrayUtils.fill2DArray(new boolean[1][1],true));
+            break;
         default:
             break;
         }
         
-        walls.addAll(wallsAndArray.getKey());
+        if(wallsAndArray.getKey() != null) {
+            walls.addAll(wallsAndArray.getKey());            
+        }
+        
         return wallsAndArray.getValue();
     }
     
@@ -388,10 +436,17 @@ public class Room extends GraphNode {
                             getLocation().getY() + roomSize.getHeight()/2),
                     Direction.SOUTH));
             break;
+        case SUB_ROOM:
+            wallsAndArray = new Pair<>(null, ArrayUtils.fill2DArray(new boolean[1][1],true));
+            break;
         default:
             break;
         }
-        walls.addAll(wallsAndArray.getKey());
+        
+        if(wallsAndArray.getKey() != null) {
+            walls.addAll(wallsAndArray.getKey());            
+        }
+        
         return wallsAndArray.getValue();
     }
     
@@ -436,10 +491,17 @@ public class Room extends GraphNode {
                             getLocation().getY()),
                     Direction.EAST));
             break;
+        case SUB_ROOM:
+            wallsAndArray = new Pair<>(null, ArrayUtils.fill2DArray(new boolean[1][1],true));
+            break;
         default:
             break;
         }
-        walls.addAll(wallsAndArray.getKey());
+        
+        if(wallsAndArray.getKey() != null) {
+            walls.addAll(wallsAndArray.getKey());            
+        }
+        
         return wallsAndArray.getValue();
     }
 
@@ -484,11 +546,17 @@ public class Room extends GraphNode {
                             getLocation().getY()),
                     Direction.WEST));
             break;
+        case SUB_ROOM:
+            wallsAndArray = new Pair<>(null, ArrayUtils.fill2DArray(new boolean[1][1],true));
+            break;
         default:
             break;
-          
         }
-        walls.addAll(wallsAndArray.getKey());
+        
+        if(wallsAndArray.getKey() != null) {
+            walls.addAll(wallsAndArray.getKey());            
+        }
+        
         return wallsAndArray.getValue();
     }    
     

@@ -19,6 +19,30 @@ public class Sides {
     private static int padding = 5;
     private Sides() {}
 
+    /***
+     * generates a new side at the given position and returns an array representing that side
+     * @param pos
+     * @param size the size of the side (in terms of units)
+     * @param c the colour of the side
+     * @return
+     */
+    public static Pair<TexRectEntity,boolean[][]> side(
+            Point3D pos,
+            Size size,
+            Color c){
+        boolean[][] traversable = new boolean
+            [(int) Math.round(size.getHeight())]
+            [(int) Math.round(size.getWidth())];
+        
+        TexRectEntity side = new TexRectEntity(
+            pos, 
+            new NetworkC(false), 
+            new Size(size.getWidth()*UNIT_WIDTH, size.getHeight()*UNIT_HEIGHT), 
+            c);
+        
+        return new Pair<TexRectEntity, boolean[][]>(side, traversable);
+    }
+    
     /**
      * A left side with an exit
      * @param pos the position of the top left of the side
