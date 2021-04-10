@@ -40,7 +40,7 @@ public class Server extends WebSocketServer {
            // conn.getRemoteSocketAddress(),
            // message
        // ));
-		System.out.print("conn: " + conn + " " + "message: " + message);
+		System.out.println("conn: " + conn + " " + "message: " + message);
         broadcast(message);
 	}
 
