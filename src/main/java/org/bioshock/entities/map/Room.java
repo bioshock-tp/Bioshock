@@ -146,7 +146,7 @@ public class Room extends GraphNode {
         boolean[][] traversable = new boolean[(int) totalSize.getHeight()][(int) totalSize.getWidth()];        
         ArrayUtils.fill2DArray(traversable, true);
         
-        //Add the sides relevant for the connection type in the north direction
+        //Add the sides relevant for the connection type in each direction
         ArrayUtils.copyInArray(
             traversable, 
             topSide(pos.add(coriSize.getHeight()*UNIT_WIDTH, 0*UNIT_HEIGHT, 0),
