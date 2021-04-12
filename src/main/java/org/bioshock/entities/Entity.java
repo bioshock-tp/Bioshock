@@ -1,10 +1,16 @@
 package org.bioshock.entities;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 import java.util.UUID;
 
 import org.bioshock.components.NetworkC;
 import org.bioshock.components.RendererC;
+import org.bioshock.entities.map.Room;
 import org.bioshock.rendering.renderers.Renderer;
+import org.bioshock.scenes.SceneManager;
 import org.bioshock.utils.Point;
 
 import javafx.geometry.Point2D;
@@ -93,15 +99,13 @@ public abstract class Entity {
         this.rendererC = renderC;
     }
 
-    public void setNetwokC(NetworkC component) {
+    public void setNetworkC(NetworkC component) {
         this.networkC = component;
     }
 
     public void setID(String newID) {
         uuid = newID;
     }
-
-    public void setAnimation() {}
 
     public String getID() {
         return uuid;
@@ -119,6 +123,12 @@ public abstract class Entity {
 
     public Point getPosition() {
         return position;
+    }
+
+    private Point2D getCentre() {
+        double x = getX() + hitbox.getWidth();
+        double y = getY() + hitbox.getHeight();
+        return new Point2D(x, y);
     }
 
     public double getX() {
@@ -148,6 +158,42 @@ public abstract class Entity {
     public NetworkC getNetworkC() {
         return networkC;
     }
+
+
+    /**
+     * Finds the nearest room that this {@code Entity} is in
+     * @return the room that this {@code Entity} is in
+     */
+    public Room getCurrentRoom() {
+        List<Room> rooms = SceneManager.getMap().getRooms();
+
+        return Collections.min(rooms, Comparator.comparing(room ->
+            room.getRoomCenter().subtract(getCentre()).magnitude()
+        ));
+    }
+
+    /**
+     * Finds the two nearest rooms to this {@code Entity}, used for collisions
+     * in-between rooms
+     * @return the two nearest rooms to this {@code Entity}
+     */
+    public Room[] getCurrentRooms() {
+        List<Room> rooms = SceneManager.getMap().getRooms();
+
+        Room first = Collections.min(rooms, Comparator.comparing(room ->
+            room.getRoomCenter().subtract(getCentre()).magnitude()
+        ));
+
+        List<Room> otherRooms = new ArrayList<>(rooms);
+        otherRooms.remove(first);
+
+        Room second = Collections.min(otherRooms, Comparator.comparing(room ->
+            room.getRoomCenter().subtract(getCentre()).magnitude()
+        ));
+
+        return new Room[]{first, second};
+    }
+
 
     @Override
     public String toString() {

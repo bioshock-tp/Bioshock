@@ -1,13 +1,17 @@
 package org.bioshock.entities.items;
 
+import java.util.Set;
+
 import org.bioshock.components.NetworkC;
 import org.bioshock.entities.Entity;
+import org.bioshock.entities.EntityManager;
 import org.bioshock.entities.ImageEntity;
+import org.bioshock.physics.Collisions;
 import org.bioshock.utils.Size;
 
 import javafx.geometry.Point3D;
 
-public abstract class Item extends ImageEntity {
+public abstract class Item extends ImageEntity implements Collisions {
 
     /**
      *
@@ -31,5 +35,19 @@ public abstract class Item extends ImageEntity {
         if (!enabled) return;
         apply(entity);
         destroy();
+    }
+
+    @Override
+    public void collisionTick(Set<Entity> collisions) {
+        collisions.forEach(collision -> {
+            if (EntityManager.getPlayers().contains(collision)) {
+                collect(collision);
+            }
+        });
+    }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName();
     }
 }

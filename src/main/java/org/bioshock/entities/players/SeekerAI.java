@@ -5,9 +5,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Random;
+import java.util.Set;
 
 import org.bioshock.components.NetworkC;
-import org.bioshock.engine.core.WindowManager;
 import org.bioshock.entities.Entity;
 import org.bioshock.entities.EntityManager;
 import org.bioshock.entities.SquareEntity;
@@ -15,6 +15,7 @@ import org.bioshock.entities.map.Room;
 import org.bioshock.entities.map.TexRectEntity;
 import org.bioshock.entities.map.ThreeByThreeMap;
 import org.bioshock.main.App;
+import org.bioshock.physics.Collisions;
 import org.bioshock.physics.Movement;
 import org.bioshock.rendering.renderers.SeekerRenderer;
 import org.bioshock.rendering.renderers.components.SimpleRendererC;
@@ -32,7 +33,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
 import javafx.util.Pair;
 
-public class SeekerAI extends SquareEntity {
+public class SeekerAI extends SquareEntity implements Collisions {
     private Hider target;
     private Arc swatterHitbox;
     private ThreeByThreeMap map = SceneManager.getMap();
@@ -62,13 +63,23 @@ public class SeekerAI extends SquareEntity {
 
         swatterHitbox.setType(ArcType.ROUND);
 
-        currRoom = findCurrentRoom(this);
+        currRoom = getCurrentRoom();
     }
 
     protected void tick(double timeDelta) {
         doActions();
         setSwatterPos();
         setSwatterRot();
+    }
+
+    @Override
+    public void collisionTick(Set<Entity> collisions) {
+        /* Walls of current room */
+        List<TexRectEntity> walls = this.getCurrentRoom().getWalls();
+
+        collisions.retainAll(walls);
+
+        if (!collisions.isEmpty()) movement.moveBack(collisions);
     }
 
     private void doActions() {
@@ -137,7 +148,7 @@ public class SeekerAI extends SquareEntity {
 
         List<Room> roomsToCheck = new ArrayList<>();
         roomsToCheck.add(currRoom);
-        roomsToCheck.add(findCurrentRoom(entity));
+        roomsToCheck.add(entity.getCurrentRoom());
 
         for (Room room : roomsToCheck) {
             for(TexRectEntity wall : room.getWalls()) {
@@ -160,37 +171,14 @@ public class SeekerAI extends SquareEntity {
     private void chasePlayer(Entity e) {
         setSearch(false);
         path.clear();
-        lastSeenPosition = findCurrentRoom(e);
-        App.logger.debug(
-            "Last seen position coordinates are {}",
-            lastSeenPosition.getRoomCenter()
-        );
+        lastSeenPosition = e.getCurrentRoom();
 
-        if(Objects.equals(findCurrentRoom(e), findCurrentRoom(this))) {
+        if(Objects.equals(e.getCurrentRoom(), this.getCurrentRoom())) {
             movement.moveTo(e.getPosition());
         }
         else{
             moveToCentre(lastSeenPosition);
         }
-    }
-
-    private Room findCurrentRoom(Entity e) {
-        Room current = map.getRooms().get(0);
-        Point3D temp;
-        double shortest =
-            WindowManager.getWindowWidth() * WindowManager.getWindowHeight();
-
-        for (Room room : map.getRooms()) {
-            temp = room.getRoomCenter().subtract(
-                new Point3D(e.getX(), e.getY(), room.getZ())
-            );
-            if (temp.magnitude() < shortest) {
-                shortest = temp.magnitude();
-                current = room;
-            }
-        }
-
-        return current;
     }
 
     private void moveToCentre(Room room) {
@@ -272,7 +260,7 @@ public class SeekerAI extends SquareEntity {
                     lastSeenPosition = null;
                 }
                 else {
-                    path = createPath(findCurrentRoom(this));
+                    path = createPath(getCurrentRoom());
                 }
                 currRoom = path.remove(0);
             }

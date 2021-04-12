@@ -1,0 +1,107 @@
+package org.bioshock.physics;
+
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
+import org.bioshock.entities.Entity;
+import org.bioshock.entities.map.Room;
+import org.bioshock.main.App;
+
+/**
+ * Implemented by an {@code Entity} that should have collisions detected
+ */
+public interface Collisions {
+    /**
+     * Called every game tick
+     * @param delta
+     */
+    public static void tick(double delta) {
+        updateCollisions();
+        CollisionUtils.collidables.forEach(entity -> {
+            Set<Entity> collisions = CollisionUtils.collisions.get(entity);
+
+            if (collisions.isEmpty()) return;
+            ((Collisions) entity).collisionTick(collisions);
+        });
+    }
+
+
+    /**
+     * Updates {@link CollisionUtils#collisions} with each {@code Entity}'s new
+     * {@code Set} of collisions
+     */
+    private static void updateCollisions() {
+        CollisionUtils.collidables.forEach(entity -> {
+            Set<Entity> newCollisions = new HashSet<>();
+
+            CollisionUtils.collidables.forEach(collision -> {
+                if (collision == entity) return;
+
+                if (entity.intersects(collision)) {
+                    newCollisions.add(collision);
+                }
+            });
+
+            Room[] rooms = entity.getCurrentRooms();
+
+            rooms[0].getWalls().forEach(wall -> {
+                if (entity.intersects(wall)) {
+                    newCollisions.add(wall);
+                }
+            });
+
+            rooms[1].getWalls().forEach(wall -> {
+                if (entity.intersects(wall)) {
+                    newCollisions.add(wall);
+                }
+            });
+
+            CollisionUtils.collisions.replace(entity, newCollisions);
+        });
+    }
+
+
+    /**
+     * To be called by every {@code Entity}'s constructor that should have
+     * collisions detected
+     * @param entity The {@code Entity} that should have collisions detected
+     */
+    public default void initCollision(Collisions entity) {
+        if (!(entity instanceof Entity)) {
+            App.logger.error("Collisions should only by implemented by Entities");
+        }
+        CollisionUtils.collidables.add((Entity) entity);
+        CollisionUtils.collisions.putIfAbsent((Entity) entity, Set.of());
+    }
+
+
+    /**
+     * A method defined by each {@code Entity} that handles collisions
+     * @param collisions A {@code Set} of entities this {@code} Entity collided
+     * with within this game tick
+     */
+    public void collisionTick(Set<Entity> collisions);
+
+
+    /**
+     * A collection of fields to be used in this interface
+     */
+    static class CollisionUtils {
+        private CollisionUtils() {}
+
+
+        /**
+         * Maps each {@code Entity} to a {@code Set} of entities it has
+         * collided with this game tick
+         */
+        private static Map<Entity, Set<Entity>> collisions = new HashMap<>();
+
+
+        /**
+         * A {@code Set} of each {@code Entity} to be checked for collisions
+         */
+        private static Set<Entity> collidables = new HashSet<>();
+    }
+}

@@ -1,11 +1,20 @@
 package org.bioshock.entities.players;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import org.bioshock.animations.PlayerAnimations;
 import org.bioshock.animations.Sprite;
 import org.bioshock.components.NetworkC;
+import org.bioshock.entities.Entity;
+import org.bioshock.entities.EntityManager;
 import org.bioshock.entities.SquareEntity;
+import org.bioshock.entities.map.Room;
 import org.bioshock.main.App;
 import org.bioshock.networking.NetworkManager;
+import org.bioshock.physics.Collisions;
 import org.bioshock.rendering.renderers.PlayerSpriteRenderer;
 import org.bioshock.rendering.renderers.components.PlayerRendererC;
 import org.bioshock.utils.GlobalConstants;
@@ -17,20 +26,53 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Pair;
 
-public class Hider extends SquareEntity {
+public class Hider extends SquareEntity implements Collisions {
     private boolean dead = false;
     private Sprite currentSprite;
     private PlayerAnimations playerAnimations;
-
 
     public Hider(Point3D p, NetworkC com, Size s, int r, Color c) {
         super(p, com, new PlayerRendererC(), s, r, c);
 
         renderer = PlayerSpriteRenderer.class;
+
+        initCollision(this);
     }
 
     protected void tick(double timeDelta) {
-        if (!dead) movement.tick(timeDelta);
+        movement.tick(timeDelta);
+        if (!dead) setAnimation();
+    }
+
+    @Override
+    public void collisionTick(Set<Entity> collisions) {
+        if (dead) return;
+
+        /* Collision Candidates*/
+
+        /* Other players */
+        List<Hider> otherPlayers = new ArrayList<>(EntityManager.getPlayers());
+        otherPlayers.remove(EntityManager.getCurrentPlayer());
+
+        /* Seeker */
+        SeekerAI seeker = EntityManager.getSeeker();
+
+        /* Walls of two nearest rooms */
+        Set<Entity> walls = new HashSet<>();
+        Room[] rooms = getCurrentRooms();
+        walls.addAll(rooms[0].getWalls());
+        walls.addAll(rooms[1].getWalls());
+
+        Set<Entity> collisionCandidates = new HashSet<>();
+        collisionCandidates.addAll(otherPlayers);
+        collisionCandidates.add(seeker);
+        collisionCandidates.addAll(walls);
+
+        collisions.retainAll(collisionCandidates);
+
+        if (!collisions.isEmpty()) {
+            movement.moveBack(collisions);
+        }
     }
 
     public void initAnimations() {
@@ -45,7 +87,7 @@ public class Hider extends SquareEntity {
         if (s != null) {
             currentSprite = s;
         } else {
-            App.logger.debug("Sprite is missing!");
+            App.logger.error("Sprite is missing!");
         }
     }
 
@@ -62,7 +104,6 @@ public class Hider extends SquareEntity {
         setCurrentSprite(playerAnimations.getPlayerDying());
     }
 
-    @Override
     public void setAnimation() {
         Point2D translation = movement.getDirection();
 
@@ -99,4 +140,5 @@ public class Hider extends SquareEntity {
     public Sprite getCurrentSprite() {
         return currentSprite;
     }
+
 }

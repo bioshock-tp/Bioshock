@@ -14,6 +14,7 @@ import org.bioshock.scenes.MainGame;
 import org.bioshock.scenes.SceneManager;
 import org.bioshock.utils.Size;
 
+import javafx.geometry.Point2D;
 import javafx.geometry.Point3D;
 
 public abstract class Food extends Item {
@@ -34,11 +35,13 @@ public abstract class Food extends Item {
             new NetworkC(true),
             path
         );
+
+        initCollision(this);
     }
 
     /**
-     * Gets random location in a random room
-     * @return
+     * Gets random location in a random {@code Room}
+     * @return A random {@code Point3D} in a random {@code Room}
      */
     private static Point3D spawn() {
         List<Room> rooms = SceneManager.getMap().getRooms();
@@ -65,7 +68,7 @@ public abstract class Food extends Item {
         int minYOffset = -maxYOffset;
         int yOffset = random.nextInt(maxYOffset - minYOffset) + minYOffset;
 
-        Point3D centre = room.getRoomCenter();
+        Point2D centre = room.getRoomCenter();
 
         int x = (int) centre.getX() + xOffset;
         int y = (int) centre.getY() + yOffset;
@@ -81,8 +84,5 @@ public abstract class Food extends Item {
     }
 
     @Override
-    protected void tick(double timeDelta) {
-        //TODO: insert collision tick
-    }
-
+    protected void tick(double timeDelta) {}
 }

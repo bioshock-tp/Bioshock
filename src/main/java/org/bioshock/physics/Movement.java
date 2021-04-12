@@ -1,5 +1,7 @@
 package org.bioshock.physics;
 
+import java.util.Set;
+
 import org.bioshock.engine.input.InputManager;
 import org.bioshock.entities.Entity;
 import org.bioshock.entities.EntityManager;
@@ -11,6 +13,8 @@ import javafx.scene.input.KeyCode;
 public class Movement {
     private double speed = 5;
 
+    private Point2D oldPosition;
+
     private double xDirection = 0;
     private double yDirection = 0;
 
@@ -20,8 +24,8 @@ public class Movement {
         this.entity = entity;
     }
 
-    public void tick(double timeDelta) {
-        entity.setAnimation();
+    public void tick(double delta) {
+        oldPosition = new Point2D(entity.getX(), entity.getY());
 
         if (
             entity == EntityManager.getCurrentPlayer()
@@ -43,29 +47,7 @@ public class Movement {
         double dispY = trans.getY();
         if (y != target.getY()) y += dispY / Math.abs(dispY);
 
-        double oldX = entity.getX();
-        double oldY = entity.getY();
         entity.setPosition(x, y);
-
-        final double newX = x;
-        EntityManager.getEntityList().forEach(child -> {
-            if (child == entity) return;
-
-            if (entity.intersects(child)) {
-                /* Check if x value was cause of collision */
-                entity.setX(oldX);
-
-                if (entity.intersects(child)) {
-                    /* In this case x was not cause, so check y */
-                    entity.setPosition(newX, oldY);
-
-                    if (entity.intersects(child)) {
-                        /* In this case both x and y were cause */
-                        entity.setPosition(oldX, oldY);
-                    }
-                }
-            }
-        });
     }
 
     public void moveTo(Point2D target) {
@@ -76,6 +58,29 @@ public class Movement {
 
     public void moveTo(double x, double y) {
         moveTo(new Point(x, y));
+    }
+
+
+    /**
+     * Moves to position of previous tick
+     * @param collisions A {@code Set} of entities, {@link #entity} is
+     * colliding with
+     */
+    public void moveBack(Set<Entity> collisions) {
+        double newX = entity.getX();
+
+        /* Check if x value was cause of collision */
+        entity.setX(oldPosition.getX());
+
+        if (collisions.stream().anyMatch(e -> entity.intersects(e))) {
+            /* In this case x was not cause, so check y */
+            entity.setPosition(newX, oldPosition.getY());
+
+            if (collisions.stream().anyMatch(e -> entity.intersects(e))) {
+                /* In this case both x and y were cause */
+                entity.setPosition(oldPosition.getX(), oldPosition.getY());
+            }
+        }
     }
 
     public void initMovement() {
@@ -104,16 +109,16 @@ public class Movement {
         direction(targ.getX(), targ.getY());
     }
 
+    public void setSpeed(double newSpeed) {
+        speed = newSpeed;
+    }
+
     public Point getDirection() {
         return new Point(xDirection, yDirection);
     }
 
     public static double getFacingRotate(Point2D trans) {
         return Math.atan2(trans.getX(), -trans.getY())*180/Math.PI;
-    }
-
-    public void setSpeed(double newSpeed) {
-        speed = newSpeed;
     }
 
     public double getSpeed() {

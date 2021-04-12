@@ -2,6 +2,7 @@ package org.bioshock.engine.core;
 
 import org.bioshock.entities.EntityManager;
 import org.bioshock.networking.NetworkManager;
+import org.bioshock.physics.Collisions;
 import org.bioshock.rendering.RenderManager;
 import org.bioshock.scenes.SceneManager;
 
@@ -33,6 +34,7 @@ public final class GameLoop extends AnimationTimer {
         if (tickDelta * 1e9 >= 1 / LOGICRATE) {
             NetworkManager.tick();
             EntityManager.tick(tickDelta);
+            Collisions.tick(tickDelta);
             SceneManager.getScene().logicTick(tickDelta);
 
             lastLogicTick = now;
