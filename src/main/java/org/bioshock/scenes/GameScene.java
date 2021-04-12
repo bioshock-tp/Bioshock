@@ -59,7 +59,8 @@ public abstract class GameScene extends Scene {
 
 
     /**
-     * Initialises the {@code StackPane} to use in {@link #GameScene(StackPane)}
+     * Initialises the {@code StackPane} to use in
+     * {@link #GameScene(StackPane)}
      * so that it can be used in the {@code super} call and be assigned to the
      * {@link #pane} field
      */

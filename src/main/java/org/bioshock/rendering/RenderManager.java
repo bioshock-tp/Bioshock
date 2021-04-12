@@ -9,7 +9,6 @@ import java.util.List;
 import org.bioshock.engine.core.FrameRate;
 import org.bioshock.entities.Entity;
 import org.bioshock.entities.EntityManager;
-import org.bioshock.entities.SquareEntity;
 import org.bioshock.entities.players.Hider;
 import org.bioshock.main.App;
 import org.bioshock.scenes.GameScene;
@@ -90,9 +89,7 @@ public final class RenderManager {
             return;
         }
 
-        if (entity instanceof SquareEntity) {
-            SceneManager.getPane().getChildren().add(entity.getHitbox());
-        }
+        SceneManager.getPane().getChildren().add(entity.getHitbox());
 
         if (entities.isEmpty()) {
             entities.add(entity);

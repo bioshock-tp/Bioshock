@@ -43,6 +43,9 @@ public abstract class ImageEntity extends Entity {
                 true,
                 true
             );
+
+            hitbox.setWidth(image.getWidth());
+            hitbox.setHeight(image.getHeight());
         } catch (IllegalArgumentException e) {
             App.logger.error("Error loading image at: {}", path, e);
             destroy();

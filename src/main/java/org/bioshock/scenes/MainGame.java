@@ -250,8 +250,5 @@ public class MainGame extends GameScene {
         );
 
         RenderManager.setCameraPos(new Point2D(0, 0));
-
-        SceneManager.setInGame(false);
     }
-
 }

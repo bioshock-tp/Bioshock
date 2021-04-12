@@ -105,17 +105,15 @@ public final class EntityManager {
 
     public static Hider getCurrentPlayer() {
         Hider meObj = null;
-        if (!App.isNetworked()) {
-            try {
-                meObj = EntityManager.getPlayers().get(0);
-            } catch (Exception e) {
-                App.logger.error("No entities registered");
+        if (SceneManager.inGame() && !players.isEmpty()) {
+            if (!App.isNetworked()) {
+                meObj = players.get(0);
+            }
+            else {
+                meObj = NetworkManager.me();
             }
         }
-        else if(SceneManager.inGame()) {
-            meObj = NetworkManager.me();
-        }
-
+        if (meObj == null) App.logger.error("No players registered");
         return meObj;
     }
 }

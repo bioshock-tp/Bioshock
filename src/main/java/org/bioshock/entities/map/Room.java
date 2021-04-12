@@ -6,6 +6,7 @@ import java.util.List;
 import org.bioshock.components.NetworkC;
 import org.bioshock.utils.Size;
 
+import javafx.geometry.Point2D;
 import javafx.geometry.Point3D;
 import javafx.scene.paint.Color;
 
@@ -244,11 +245,10 @@ public class Room {
      *
      * @return the centre of the room for AI purposes
      */
-    public Point3D getRoomCenter() {
-		return pos.add(
+    public Point2D getRoomCenter() {
+		return new Point2D(pos.getX(), pos.getY()).add(
             totalSize.getWidth() / 2,
-            totalSize.getHeight() / 2,
-            0
+            totalSize.getHeight() / 2
         );
     }
 
