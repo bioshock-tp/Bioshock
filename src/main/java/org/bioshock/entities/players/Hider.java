@@ -17,10 +17,14 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Pair;
 
+import static org.bioshock.audio.AudioManager.playWalkingSfx;
+import static org.bioshock.audio.AudioManager.stopWalkingSfx;
+
 public class Hider extends SquareEntity {
     private boolean dead = false;
     private Sprite currentSprite;
     private PlayerAnimations playerAnimations;
+    boolean playedSfx = false;
 
 
     public Hider(Point3D p, NetworkC com, Size s, int r, Color c) {
@@ -80,6 +84,29 @@ public class Hider extends SquareEntity {
         else if (y < 0) animation = playerAnimations.getMoveUpSprite();
 
         setCurrentSprite(animation);
+    }
+
+    @Override
+    public void setWalkingSfx() {
+        Point2D translation = movement.getDirection();
+
+        int x = (int) translation.getX();
+        int y = (int) translation.getY();
+
+
+        //boolean nowWalking = false;
+
+        if ((x != 0) || (y != 0)) {
+            if (!playedSfx) {
+                playWalkingSfx();
+                playedSfx = true;
+            }
+        }
+        else {
+            stopWalkingSfx();
+            playedSfx = false;
+        }
+
     }
 
     public boolean isDead() {
