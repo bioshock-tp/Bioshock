@@ -8,6 +8,7 @@ import org.bioshock.engine.core.WindowManager;
 import org.bioshock.engine.input.InputManager;
 import org.bioshock.entities.EntityManager;
 import org.bioshock.entities.map.Room;
+import org.bioshock.entities.map.RoomEntity;
 import org.bioshock.entities.map.maps.GenericMap;
 import org.bioshock.entities.map.maps.Map;
 import org.bioshock.entities.map.maps.RandomMap;
@@ -36,6 +37,7 @@ public class MainGame extends GameScene {
     private double runningTime = 0;
     private boolean losing = false;
     private double timeLosing = 0;
+    private int mapSeed = 0;
 
     private Label timer;
 
@@ -51,34 +53,39 @@ public class MainGame extends GameScene {
             null
         )));
         
-//        if(App.isNetworked()) {
+        if(App.isNetworked()) {
             map = new GenericMap(
         		new Point3D(0, 0, 0),
         		1, 
         		new Size(5, 7), 
         		new Size(3, 5), 
         		Color.SADDLEBROWN, 
-        		GlobalConstants.simpleMap
+        		GlobalConstants.simpleMap,
+        		0
     		);
-//        }
-//        else {
-//            map = new RandomMap(
-//                new Point3D(0, 0, 0),
-//                1,
-//                new Size(9, 11),
-//                new Size(3, 5),
-//                Color.SADDLEBROWN,
-//                new Size(3, 3),
-//                null,
-//                null
-//            );
-//        }
-        
-        
+        }
+        else {
+            map = new RandomMap(
+                new Point3D(0, 0, 0),
+                1,
+                new Size(9, 11),
+                new Size(3, 5),
+                Color.SADDLEBROWN,
+                new Size(3, 3),
+                null,
+                0
+            );
+        }
+                
         SceneManager.setMap(map);
         children.addAll(map.getWalls());
 
         List<Room> rooms = map.getRooms();
+        
+        for(Room room : rooms) {
+            RoomEntity roomE = new RoomEntity(room);
+            children.add(roomE);
+        }
 
         double x = rooms.get(0).getRoomCenter().getX();
         double y = rooms.get(0).getRoomCenter().getY();

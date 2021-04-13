@@ -8,11 +8,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bioshock.engine.pathfinding.Graph;
+import org.bioshock.engine.pathfinding.GraphNode;
 import org.bioshock.entities.map.Room;
 import org.bioshock.entities.map.RoomEdgeGenerator;
 import org.bioshock.entities.map.TexRectEntity;
+import org.bioshock.entities.map.TraversableEdgeGenerator;
 import org.bioshock.entities.map.utils.ConnType;
 import org.bioshock.entities.map.utils.RoomType;
+import org.bioshock.main.App;
+import org.bioshock.utils.ArrayUtils;
 import org.bioshock.utils.Direction;
 import org.bioshock.utils.Size;
 
@@ -27,6 +31,14 @@ public class GenericMap implements Map{
      * stores a graph representing the map
      */
     private Graph<Room,Pair<Direction,ConnType>> roomGraph = new Graph<>();
+    private Graph<GraphNode, Pair<Direction,Double>> traversableGraph;
+    GraphNode[][] traversableArray;
+    
+    private Room[][] roomArray;
+    /**
+     * a list of rooms ordered first by height then by width
+     */
+    private List<Room> orderedRoomList = new ArrayList<>();
        
     /***
      * Generate a new generic map
@@ -37,13 +49,14 @@ public class GenericMap implements Map{
      * @param c the colour of the map
      * @param roomTypes the 2d array which the map is going to be generated from
      */
-    public GenericMap(
+     public GenericMap(
         Point3D newPos,
         double wallWidth,
         Size newRoomSize,
         Size coriSize,
         Color c,
-        RoomType[][] roomTypes
+        RoomType[][] roomTypes,
+        long seed
     ) {
       //stores the rooms in a map
         Room[][] rooms;
@@ -56,9 +69,13 @@ public class GenericMap implements Map{
         //Creates a new array to store room objects in the relevant location
         rooms = new Room[roomTypes.length][roomTypes[0].length];
         
+        //Gets the total room width and height in units
+        int tRoomWidthUnits = (int) (newRoomSize.getWidth() + coriSize.getHeight()*2);
+        int tRoomHeightUnits = (int) (newRoomSize.getHeight() + coriSize.getHeight()*2);
+        
         //Gets the total room width and height to calculate the position of each new room
-        double tRoomWidth = (newRoomSize.getWidth() + coriSize.getHeight()*2)*UNIT_WIDTH;
-        double tRoomHeight = (newRoomSize.getHeight() + coriSize.getHeight()*2)*UNIT_HEIGHT;
+        int tRoomWidth = tRoomWidthUnits*UNIT_WIDTH;
+        int tRoomHeight = tRoomHeightUnits*UNIT_HEIGHT;
         
         //iterate through the room array in row major order
         for (int i=0;i<roomTypes.length;i++) {
@@ -75,14 +92,53 @@ public class GenericMap implements Map{
             }
         }
         
+        //for every room try to combine the room
         for (int i=0;i<roomTypes.length;i++) {
             for (int j=0;j<roomTypes[0].length;j++) {
                 tryToCombineRooms(rooms, i, j);
             }
         }
         
-        roomGraph = (new Graph<>(rooms, new RoomEdgeGenerator())).getLargestConnectedSubgraph();       
-        initRoomsFromGraph();
+        //generate the room graph from the room array and then get the largest 
+        //connected subgraph so its the largest possible random map
+        roomGraph = (new Graph<>(rooms, new RoomEdgeGenerator())).getLargestConnectedSubgraph();     
+        
+        //Store all the rooms that are in the room graph in the ordered list and in an array
+        roomArray = new Room[rooms.length][rooms[0].length];
+        for(int i=0;i<rooms.length;i++) {
+            for(int j=0;j<rooms[0].length;j++) {
+                if(rooms[i][j] != null && roomGraph.getNodes().contains(rooms[i][j])) {
+                    orderedRoomList.add(rooms[i][j]);
+                    roomArray[i][j] = rooms[i][j];
+                }
+            }
+        }
+        
+        //initialize every room
+        initRooms(seed);
+        
+        //generate a traversable array to represent all traversable locations in the map
+        traversableArray = new GraphNode[rooms.length*tRoomHeightUnits][rooms[0].length*tRoomWidthUnits];
+        for(int i=0;i<rooms.length;i++) {
+            for(int j=0;j<rooms[0].length;j++) {
+                if(rooms[i][j] != null && roomGraph.getNodes().contains(rooms[i][j])) {
+                    ArrayUtils.copyInArray(traversableArray, rooms[i][j].getTraversableArray(), i*tRoomHeightUnits, j*tRoomWidthUnits);
+                }
+            }
+        }
+        
+        traversableGraph = new Graph<>(traversableArray, new TraversableEdgeGenerator()).getConnectedSubgraph(orderedRoomList.get(0).getCentreNode());
+        
+//        //For logging and debugging purposes
+//        boolean[][] traversableBooleanArray = new boolean[traversableArray.length][traversableArray[0].length];
+//        for(int i=0;i<traversableBooleanArray.length;i++) {
+//            for(int j=0;j<traversableBooleanArray[0].length;j++) {
+//                if(traversableArray[i][j] != null && traversableGraph.getNodes().contains(traversableArray[i][j])) {
+//                    traversableBooleanArray[i][j] = true;
+//                }
+//            }
+//        }
+//        ArrayUtils.log2DArray(traversableBooleanArray);
     }
     
     private boolean tryToCombineRooms(Room[][] rooms, int i, int j) {
@@ -159,9 +215,11 @@ public class GenericMap implements Map{
     	return false;
     }
     
-    private void initRoomsFromGraph() {
-        for(Room r: roomGraph.getNodes()) {
-            r.init(roomGraph.getEdgesInfo(r),null,null);
+    private void initRooms(long seed) {
+        int i=0;
+        for(Room r : orderedRoomList) {
+            r.init(roomGraph.getEdgesInfo(r), null, seed+i);
+            i++;
         }
     }
         
@@ -170,7 +228,7 @@ public class GenericMap implements Map{
     * @return the rooms in a map
     */
    public List<Room> getRooms() {
-       return roomGraph.getNodes();
+       return orderedRoomList;
    }
 
    /***
@@ -191,4 +249,14 @@ public class GenericMap implements Map{
    public Graph<Room,Pair<Direction,ConnType>> getRoomGraph(){
        return roomGraph;
    }
+
+    @Override
+    public Room[][] getRoomArray() {
+        return roomArray;
+    }
+
+    @Override
+    public Graph<GraphNode, Pair<Direction, Double>> getTraversableGraph() {
+        return traversableGraph;
+    }
 }

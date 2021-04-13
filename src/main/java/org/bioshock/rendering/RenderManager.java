@@ -48,9 +48,12 @@ public final class RenderManager {
         // renders each entity
         entities.stream().filter(Entity::isEnabled).forEach(entity -> {
             Pair<Point2D, Point2D> renderArea = entity.getRenderArea();
+            Point2D diff = renderArea.getValue().subtract(renderArea.getKey());
             if (
                 pointInScreen(renderArea.getKey())
                 || pointInScreen(renderArea.getValue())
+                || pointInScreen(renderArea.getKey().add(diff.getX(),0))
+                || pointInScreen(renderArea.getKey().add(0,diff.getY()))
             ) {
                 try {
                     Method rend = entity.getRenderer().getDeclaredMethods()[0];
@@ -101,7 +104,7 @@ public final class RenderManager {
 
             int i;
             final int N = entities.size();
-            for (i = 1; (currEnt.getZ() < entity.getZ()) && i < N; i++) {
+            for (i = 0; (currEnt.getZ() < entity.getZ()) && i < N; i++) {
                 currEnt = entities.get(i);
             }
 

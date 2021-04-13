@@ -1,6 +1,7 @@
 package org.bioshock.engine.core;
 
 import org.bioshock.entities.EntityManager;
+import org.bioshock.main.App;
 import org.bioshock.networking.NetworkManager;
 import org.bioshock.rendering.RenderManager;
 import org.bioshock.scenes.SceneManager;
@@ -11,6 +12,11 @@ public final class GameLoop extends AnimationTimer {
     private static final double LOGICRATE = 60;
     private static final double START = System.nanoTime();
     private static final double NS_PER_UPDATE = (1/LOGICRATE)*1e9;
+    /***
+     * the bigger this is the smaller the minimum fps
+     * if this is set to 1 it will attempt to have a fps of at least 60 
+     */
+    private static final int minFPS = 20;
     
     double previous = System.nanoTime();
     double lag = 0.0;
@@ -31,7 +37,7 @@ public final class GameLoop extends AnimationTimer {
         previous = current;
         lag += elapsed;
         
-        while (lag >= NS_PER_UPDATE)
+        for (int i=0; lag >= NS_PER_UPDATE && i<minFPS;i++)
         {
         	NetworkManager.tick();
             EntityManager.tick(1/LOGICRATE);

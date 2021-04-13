@@ -21,6 +21,21 @@ public class ArrayUtils {
     }
     
     /***
+     * copies the source array into the target array at the given position
+     * @param target 
+     * @param source
+     * @param i the row to start copying into
+     * @param y the column to start copying into
+     */
+    public static void copyInArray(Object[][] target, Object[][] source, int i, int j) {
+        for(int a=0;a<source.length&&a+i<target.length;a++) {
+            for(int b=0;b<source[0].length&&b+j<target[0].length;b++) {
+                target[a+i][b+j] = source[a][b];
+            }
+        }
+    }
+    
+    /***
      * Logs a 2d array with a line break between each nested array
      * @param array
      */

@@ -59,6 +59,11 @@ public class PathfindingC<T extends GraphNode,S> {
 
         current = startNode;
         destination = current;
+        if(graph.getNodes().size() == 1) {
+            App.logger.error("can't make a path when only one node in graph");
+            pathToFollow.add(current.getLocation());
+            return pathToFollow;
+        }
 //        App.logger.debug("Start room is {}", startRoom.getRoomCenter());
         if(endNode == null){
             while(destination == current) {

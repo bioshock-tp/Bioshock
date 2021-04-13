@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Random;
 
 import org.bioshock.engine.pathfinding.Graph;
+import org.bioshock.engine.pathfinding.GraphNode;
 import org.bioshock.entities.map.Room;
 import org.bioshock.entities.map.TexRectEntity;
 import org.bioshock.entities.map.utils.ConnType;
@@ -43,7 +44,7 @@ public class RandomMap implements Map{
         Color c,
         Size maxMapSize,
         Double roomProbObj,
-        Long seed) {
+        long seed) {
         
         int maxMapWidth = (int) maxMapSize.getHeight();
         int maxMapHeight = (int) maxMapSize.getWidth();
@@ -58,13 +59,7 @@ public class RandomMap implements Map{
          
         //if a seed is given use a seeded random number generator
         //otherwise use a non seeded one
-        Random rand;
-        if(seed == null) {
-            rand = new Random();
-        }
-        else {
-            rand = new Random(seed);
-        }
+        Random rand = new Random(seed);
         
         //generate a random array of RoomTypes 
         for(int i=0;i<maxMapHeight;i++) {
@@ -78,25 +73,32 @@ public class RandomMap implements Map{
             }
         }
         
-        map = new GenericMap(newPos, wallWidth, newRoomSize, coriSize, c, roomTypes);
+        map = new GenericMap(newPos, wallWidth, newRoomSize, coriSize, c, roomTypes, seed);
     }
  
     @Override
     public List<TexRectEntity> getWalls() {
-        // TODO Auto-generated method stub
         return map.getWalls();
     }
 
     @Override
     public Graph<Room, Pair<Direction, ConnType>> getRoomGraph() {
-        // TODO Auto-generated method stub
         return map.getRoomGraph();
     }
 
     @Override
     public List<Room> getRooms() {
-        // TODO Auto-generated method stub
         return map.getRooms();
+    }
+
+    @Override
+    public Room[][] getRoomArray() {
+        return map.getRoomArray();
+    }
+
+    @Override
+    public Graph<GraphNode, Pair<Direction, Double>> getTraversableGraph() {
+        return map.getTraversableGraph();
     }
 
 }

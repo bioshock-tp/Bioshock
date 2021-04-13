@@ -7,6 +7,7 @@ import org.bioshock.engine.input.InputManager;
 import org.bioshock.entities.Entity;
 import org.bioshock.entities.EntityManager;
 import org.bioshock.entities.map.Room;
+import org.bioshock.main.App;
 import org.bioshock.scenes.SceneManager;
 import org.bioshock.utils.Point;
 
@@ -54,12 +55,14 @@ public class Movement {
 
         final double newX = x;
         
-        //Find current room and add the walls of the room for collision
-        Room currRoom = Entity.findCurrentRoom(entity);
-        List<Entity> collisionCheck = new ArrayList<>(currRoom.getWalls());
-        for(Room r:SceneManager.getMap().getRoomGraph().getConnectedNodes(currRoom)) {
+        List<Entity> collisionCheck = new ArrayList<>();
+        String rooms = "";
+        for(Room r:entity.find4ClosestRoom()) {
             collisionCheck.addAll(r.getWalls());
+            rooms += r.toString()+ "\n";
         }
+        App.logger.debug(rooms);
+        
         //Add other players for collision
         //note would need to update to allow to collide with other objects
         collisionCheck.add(EntityManager.getSeeker());

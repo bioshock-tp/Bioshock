@@ -91,7 +91,7 @@ public class SeekerAI extends SquareEntity {
 
         swatterHitbox.setType(ArcType.ROUND);
 
-        currRoom = findCurrentRoom(this);
+        currRoom = this.findCurrentRoom();
         prevRoom = currRoom;
         nodePathfinding = new PathfindingC<>(currRoom.getTraversableGraph());
         lastSeekerPosition = getCentre();
@@ -222,7 +222,7 @@ public class SeekerAI extends SquareEntity {
 
         List<Room> roomsToCheck = new ArrayList<>();
         roomsToCheck.add(currRoom);
-        roomsToCheck.add(findCurrentRoom(entity));
+        roomsToCheck.add(entity.findCurrentRoom());
 
         for (Room room : roomsToCheck) {
             for(TexRectEntity wall : room.getWalls()) {
@@ -335,7 +335,7 @@ public class SeekerAI extends SquareEntity {
     }
 
     private void updateRoom(Entity entity){
-        Room newRoom = findCurrentRoom(entity);
+        Room newRoom = entity.findCurrentRoom();
         if(!newRoom.equals(currRoom)){
             prevRoom = currRoom;
             currRoom = newRoom;
