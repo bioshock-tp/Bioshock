@@ -1,11 +1,15 @@
 package org.bioshock.components;
 
 import javafx.geometry.Point2D;
+import javafx.util.Pair;
 import org.bioshock.engine.core.WindowManager;
 import org.bioshock.engine.pathfinding.Graph;
 import org.bioshock.engine.pathfinding.GraphNode;
 import org.bioshock.entities.map.Room;
+import org.bioshock.entities.map.utils.ConnType;
 import org.bioshock.main.App;
+import org.bioshock.scenes.SceneManager;
+import org.bioshock.utils.Direction;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -25,14 +29,21 @@ import java.util.Random;
 public class PathfindingC<T extends GraphNode,S> {
     private Graph<T, S> graph;
     private Random rand = new Random();
+    private double unitWidth, unitHeight;
+    private T[][] nodeArray;
 
 
-    public PathfindingC(Graph<T,S> g){
+    public PathfindingC(Graph<T,S> g, T[][] nodeArray, double unitWidth, double unitHeight){
         graph = g;
+        this.nodeArray = nodeArray;
+        this.unitHeight = unitHeight;
+        this.unitWidth = unitWidth;
     }
 
 
-    public void setGraph(Graph<T,S> newGraph){ this.graph = newGraph;}
+    public void setGraph(Graph<T,S> newGraph){
+        this.graph = newGraph;
+    }
     public Graph<T,S> getGraph(){ return graph; }
 
     /**
@@ -288,22 +299,12 @@ public class PathfindingC<T extends GraphNode,S> {
      * @return the closest node
      */
     public T findNearestNode(Point2D pos) {
-        T current = graph.getNodes().get(0);
-        Point2D temp;
-        double shortest =
-                WindowManager.getWindowWidth() * WindowManager.getWindowHeight();
+        T[][] current = nodeArray;
 
-        for (T node : graph.getNodes()) {
-            temp = node.getLocation().subtract(
-                    pos
-            );
-            if (temp.magnitude() < shortest && !node.getIsObject()) {
-                shortest = temp.magnitude();
-                current = node;
-            }
-        }
+        int i = (int) Math.floor(pos.getY()/unitHeight);
+        int j = (int) Math.floor(pos.getX()/unitWidth);
 
-        return current;
+        return current[i][j];
     }
 
 

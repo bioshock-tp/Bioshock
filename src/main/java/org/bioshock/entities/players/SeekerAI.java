@@ -22,6 +22,7 @@ import org.bioshock.rendering.renderers.SeekerRenderer;
 import org.bioshock.rendering.renderers.components.SimpleRendererC;
 import org.bioshock.scenes.SceneManager;
 import org.bioshock.utils.Direction;
+import org.bioshock.utils.GlobalConstants;
 import org.bioshock.utils.Point;
 import org.bioshock.utils.Size;
 
@@ -40,8 +41,14 @@ public class SeekerAI extends SquareEntity {
     private Hider target;
     private final Arc swatterHitbox;
     private final Graph<Room,Pair<Direction,ConnType>> roomGraph = SceneManager.getMap().getRoomGraph();
-    private PathfindingC<Room,Pair<Direction, ConnType>> roomPathfinding = new PathfindingC<>(roomGraph);
-    private PathfindingC<GraphNode,Pair<Direction, Double>> nodePathfinding;
+    private PathfindingC<Room,Pair<Direction, ConnType>> roomPathfinding = new PathfindingC<>(roomGraph,
+            SceneManager.getMap().getRoomArray(),
+            SceneManager.getMap().getRoomArray()[0][0].getTotalSize().getWidth(),
+            SceneManager.getMap().getRoomArray()[0][0].getTotalSize().getHeight());
+    private PathfindingC<GraphNode,Pair<Direction, Double>> nodePathfinding = new PathfindingC<>(SceneManager.getMap().getTraversableGraph(),
+            SceneManager.getMap().getTraversableArray(),
+            GlobalConstants.UNIT_WIDTH,
+            GlobalConstants.UNIT_HEIGHT);
     private List<Point2D> path = new ArrayList<>();
     private Room currRoom;
     private Room prevRoom;
@@ -93,7 +100,7 @@ public class SeekerAI extends SquareEntity {
 
         currRoom = this.findCurrentRoom();
         prevRoom = currRoom;
-        nodePathfinding = new PathfindingC<>(currRoom.getTraversableGraph());
+        //nodePathfinding = new PathfindingC<>(currRoom.getTraversableGraph());
         lastSeekerPosition = getCentre();
         currentTargetLocation = new Point2D(getCentre().getX(), getCentre().getY());
     }
@@ -253,7 +260,7 @@ public class SeekerAI extends SquareEntity {
         setSearch(false);
         path.clear();
         lastSeenPosition = new Point2D(entity.getX(), entity.getY());
-        path = makeBestPath(lastSeenPosition);
+        path = nodePathfinding.createBestPath(this.getCentre(), lastSeenPosition);
         if(!path.isEmpty()){
             currentTargetLocation = path.remove(0);
         }
@@ -269,7 +276,7 @@ public class SeekerAI extends SquareEntity {
         if(path.isEmpty()){
             path = roomPathfinding.createRandomPath(this.getCentre(), prevRoom, getPreferred());
             path.add(path.get((path.size())-1));
-            List<Point2D> pathToNextRoom = makeBestPath(path.get(0));
+            List<Point2D> pathToNextRoom = nodePathfinding.createBestPath(this.getCentre(), path.get(0));
             path.addAll(0, pathToNextRoom);
             currentTargetLocation = path.remove(0);
         }
@@ -285,20 +292,6 @@ public class SeekerAI extends SquareEntity {
             }
         }
 
-    }
-
-    private List<Point2D> makeBestPath(Point2D end){
-        Room endRoom = findCurrentRoom(end);
-        List<Point2D> returnPath;
-
-        returnPath = nodePathfinding.createBestPath(this.getCentre(), end);
-
-        if(!endRoom.equals(currRoom)){
-            nodePathfinding.setGraph(endRoom.getTraversableGraph());
-            returnPath.addAll(nodePathfinding.createBestPath(this.getCentre(), end));
-            nodePathfinding.setGraph(currRoom.getTraversableGraph());
-        }
-        return returnPath;
     }
 
     private Room getPreferred() {
@@ -339,7 +332,6 @@ public class SeekerAI extends SquareEntity {
         if(!newRoom.equals(currRoom)){
             prevRoom = currRoom;
             currRoom = newRoom;
-            nodePathfinding.setGraph(currRoom.getTraversableGraph());
         }
     }
 
