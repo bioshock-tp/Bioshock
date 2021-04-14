@@ -19,6 +19,8 @@ import org.bioshock.utils.Size;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.Shape;
 import javafx.util.Pair;
 
 public final class RenderManager {
@@ -44,16 +46,13 @@ public final class RenderManager {
 
         // clear the entire canvas
         gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
+		Size screenSize = GameScene.getGameScreen();
+        Rectangle screen = new Rectangle(cameraPos.getX(), cameraPos.getY(), screenSize.getWidth(), screenSize.getHeight());
 
         // renders each entity
         entities.stream().filter(Entity::isEnabled).forEach(entity -> {
-            Pair<Point2D, Point2D> renderArea = entity.getRenderArea();
-            Point2D diff = renderArea.getValue().subtract(renderArea.getKey());
             if (
-                pointInScreen(renderArea.getKey())
-                || pointInScreen(renderArea.getValue())
-                || pointInScreen(renderArea.getKey().add(diff.getX(),0))
-                || pointInScreen(renderArea.getKey().add(0,diff.getY()))
+                intersects(entity.getRenderArea(), screen)
             ) {
                 try {
                     Method rend = entity.getRenderer().getDeclaredMethods()[0];
@@ -73,14 +72,13 @@ public final class RenderManager {
         });
     }
 
-    public static boolean pointInScreen(Point2D p) {
-        Size screen = GameScene.getGameScreen();
-        return !(
-            p.getX() < cameraPos.getX()
-            || p.getY() < cameraPos.getY()
-            || p.getX() > cameraPos.getX() + screen.getWidth()
-            || p.getY() > cameraPos.getY() + screen.getHeight()
-        );
+    private static boolean intersects(Shape s1, Shape s2) {
+        Shape intersects = Shape.intersect(
+                s1,
+                s2
+            );
+
+        return (intersects.getBoundsInLocal().getWidth() != -1);
     }
 
     /**

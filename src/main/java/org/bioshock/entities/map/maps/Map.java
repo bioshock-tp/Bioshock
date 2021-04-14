@@ -41,4 +41,6 @@ public interface Map {
 	 * @return a graph of all traversable positions in the map
 	 */
 	public Graph<GraphNode, Pair<Direction,Double>> getTraversableGraph();
+	
+    public GraphNode[][] getTraversableArray();
 }

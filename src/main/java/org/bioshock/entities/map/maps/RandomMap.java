@@ -101,4 +101,9 @@ public class RandomMap implements Map{
         return map.getTraversableGraph();
     }
 
+    @Override
+    public GraphNode[][] getTraversableArray() {
+        return map.getTraversableArray();
+    }
+
 }

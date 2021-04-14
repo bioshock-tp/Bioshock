@@ -44,16 +44,51 @@ public class Room extends GraphNode {
      * Stores the position of the top left of the room
      */
     private Point3D pos;
+    /**
+     * the wall width (in terms of units)
+     */
     private double wallWidth;
+    /**
+     * the corridor size of all exits (in terms of units)
+     */
     private Size coriSize;
+    /**
+     * the color of the walls in the room
+     */
     private Color color;
+    /**
+     * the probability of a wall being spawned at any given location
+     */
     private double wallProb = 0.25; 
+    /**
+     * a graph representing which positions are traversable in the room
+     */
     private Graph<GraphNode, Pair<Direction,Double>> traversableGraph;
+    /**
+     * the node representing the centre of the room in the traversable graph and array
+     */
     private GraphNode centreNode;
-    GraphNode[][] traversableArray;
-    
+    /**
+     * an array representing which positions are traversable in the room
+     */
+    GraphNode[][] traversableArray;    
     private RoomType roomType = RoomType.SINGLE_ROOM;
+    /**
+     * a list of rooms that it is openly connected to
+     * i.e. all adjacent rooms which are part of the same big room
+     */
     private List<Room> openlyConnectedRooms = new ArrayList<>();
+    /***
+     * Stores the connection type for each direction
+     */
+    HashMap<Direction,ConnType> connections = new HashMap<>();
+    {
+        //initialise with every connection being NO_EXIT
+        connections.put(Direction.NORTH, ConnType.NO_EXIT);
+        connections.put(Direction.SOUTH, ConnType.NO_EXIT);
+        connections.put(Direction.EAST, ConnType.NO_EXIT);
+        connections.put(Direction.WEST, ConnType.NO_EXIT);
+    }
 
     /***
      * Generates a room with the position being the top left of the room
@@ -126,17 +161,7 @@ public class Room extends GraphNode {
     public void init(
         List<Pair<Direction,ConnType>> edges,
         boolean[][] locationsToSpawn
-    ) {
-        
-        /***
-         * Stores the connection type for each direction
-         */
-        HashMap<Direction,ConnType> connections = new HashMap<>();
-        connections.put(Direction.NORTH, ConnType.NO_EXIT);
-        connections.put(Direction.SOUTH, ConnType.NO_EXIT);
-        connections.put(Direction.EAST, ConnType.NO_EXIT);
-        connections.put(Direction.WEST, ConnType.NO_EXIT);
-        
+    ) {        
         //Add the connection type for each direction
         for (Pair<Direction,ConnType> edge : edges) {
             connections.replace(edge.getKey(), edge.getValue());
@@ -797,4 +822,30 @@ public class Room extends GraphNode {
     public String toString() {
         return "Room at X: " + pos.getX() + " Y: " + pos.getY();
     }
+
+    public HashMap<Direction, ConnType> getConnections() {
+        return connections;
+    }
+
+    /**
+     * 
+     * @return the wall width (in terms of units)
+     * this is given in units at this can be used vertically or horizontally
+     * so when used in calculations you need to scale with either UNIT_WIDTH or UNIT_HEIGHT
+     * depending on if its a height or a width
+     */
+    public double getWallWidth() {
+        return wallWidth;
+    }
+
+    /**
+     * 
+     * @return the coridor size (in terms of units)
+     * this is given in units at this can be used vertically or horizontally
+     * so when used in calculations you need to scale with either UNIT_WIDTH or UNIT_HEIGHT
+     * depending on if its a height or a width
+     */
+    public Size getCoriSize() {
+        return coriSize;
+    }    
 }

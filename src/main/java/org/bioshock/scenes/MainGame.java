@@ -60,7 +60,7 @@ public class MainGame extends GameScene {
         		new Size(5, 7), 
         		new Size(3, 5), 
         		Color.SADDLEBROWN, 
-        		GlobalConstants.simpleMap,
+        		GlobalConstants.singletonMap,
         		0
     		);
         }

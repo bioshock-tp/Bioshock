@@ -34,6 +34,8 @@ public class GenericMap implements Map{
     private Graph<GraphNode, Pair<Direction,Double>> traversableGraph;
     GraphNode[][] traversableArray;
     
+
+
     private Room[][] roomArray;
     /**
      * a list of rooms ordered first by height then by width
@@ -129,7 +131,7 @@ public class GenericMap implements Map{
         
         traversableGraph = new Graph<>(traversableArray, new TraversableEdgeGenerator()).getConnectedSubgraph(orderedRoomList.get(0).getCentreNode());
         
-//        //For logging and debugging purposes
+        //For logging and debugging purposes
 //        boolean[][] traversableBooleanArray = new boolean[traversableArray.length][traversableArray[0].length];
 //        for(int i=0;i<traversableBooleanArray.length;i++) {
 //            for(int j=0;j<traversableBooleanArray[0].length;j++) {
@@ -258,5 +260,9 @@ public class GenericMap implements Map{
     @Override
     public Graph<GraphNode, Pair<Direction, Double>> getTraversableGraph() {
         return traversableGraph;
+    }
+    
+    public GraphNode[][] getTraversableArray() {
+        return traversableArray;
     }
 }

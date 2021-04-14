@@ -27,13 +27,12 @@ public class RoomEntity extends Entity{
     protected void tick(double timeDelta) {}
 
     @Override
-    public Pair<Point2D, Point2D> getRenderArea() {
-        return new Pair<>(
-            new Point2D(room.getPos().getX(),room.getPos().getY()),
-            new Point2D(
-                room.getPos().getX() + room.getTotalSize().getWidth(),
-                room.getPos().getY() + room.getTotalSize().getHeight()
-            )
+    public Rectangle getRenderArea() {
+        return new Rectangle(
+            room.getPos().getX(),
+            room.getPos().getY(), 
+            room.getTotalSize().getWidth(), 
+            room.getTotalSize().getHeight()
         );
     }
 }

@@ -371,12 +371,9 @@ public class SeekerAI extends SquareEntity {
     public boolean getIsActive() { return isActive; }
 
     @Override
-    public Pair<Point2D, Point2D> getRenderArea() {
+    public Rectangle getRenderArea() {
         Point2D centre = getCentre();
         double radius = getRadius();
-        return new Pair<>(
-                centre.subtract(radius, radius),
-                centre.add(radius, radius)
-        );
+        return new Rectangle(centre.getX()-radius, centre.getY()-radius, radius*2, radius*2);
     }
 }

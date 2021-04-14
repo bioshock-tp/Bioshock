@@ -113,14 +113,12 @@ public abstract class Entity {
         return uuid;
     }
 
-    public Pair<Point2D, Point2D> getRenderArea() {
-        return new Pair<>(
-            new Point2D(hitbox.getX(), hitbox.getY()),
-            new Point2D(
-                hitbox.getX() + hitbox.getWidth(),
-                hitbox.getY() + hitbox.getHeight()
-            )
-        );
+    public Rectangle getRenderArea() {
+        return new Rectangle(
+                position.getX(), 
+                position.getY(), 
+                hitbox.getWidth(), 
+                hitbox.getHeight());
     }
 
     public Point getPosition() {
@@ -183,8 +181,8 @@ public abstract class Entity {
         double tRoomWidth = temp.getTotalSize().getWidth();
         double tRoomHeight = temp.getTotalSize().getHeight();
 
-        int i = (int) (pos.getY()/tRoomHeight);
-        int j = (int) (pos.getX()/tRoomWidth);
+        int i = (int) Math.floor(pos.getY()/tRoomHeight);
+        int j = (int) Math.floor(pos.getX()/tRoomWidth);
 
         return current[i][j];
     }
