@@ -1,15 +1,21 @@
 package org.bioshock.physics;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.bioshock.engine.input.InputManager;
 import org.bioshock.entities.Entity;
 import org.bioshock.entities.EntityManager;
+import org.bioshock.entities.map.Room;
+import org.bioshock.main.App;
+import org.bioshock.scenes.SceneManager;
 import org.bioshock.utils.Point;
 
 import javafx.geometry.Point2D;
 import javafx.scene.input.KeyCode;
 
 public class Movement {
-    private double speed = 5;
+    private double speed = 8;
 
     private double xDirection = 0;
     private double yDirection = 0;
@@ -49,7 +55,21 @@ public class Movement {
         entity.setPosition(x, y);
 
         final double newX = x;
-        EntityManager.getEntityList().forEach(child -> {
+        
+        List<Entity> collisionCheck = new ArrayList<>();
+//        String rooms = "";
+        for(Room r:entity.find4ClosestRoom()) {
+            collisionCheck.addAll(r.getWalls());
+//            rooms += r.toString()+ "\n";
+        }
+//        App.logger.debug(rooms);
+        
+        //Add other players for collision
+        //note would need to update to allow to collide with other objects
+        collisionCheck.add(EntityManager.getSeeker());
+        collisionCheck.addAll(EntityManager.getPlayers());
+        
+        collisionCheck.forEach(child -> {
             if (child == entity) return;
 
             if (entity.intersects(child)) {
@@ -110,7 +130,17 @@ public class Movement {
     }
 
     public static double getFacingRotate(Point2D trans) {
-        return Math.atan2(trans.getX(), -trans.getY())*180/Math.PI;
+        double angle = Math.atan2(trans.getX(), -trans.getY())*180/Math.PI;
+
+        if(angle < 0){
+            angle = Math.abs(angle);
+        }
+
+        else{
+            angle = 360 - angle;
+        }
+
+        return angle;
     }
 
     public void setSpeed(double newSpeed) {

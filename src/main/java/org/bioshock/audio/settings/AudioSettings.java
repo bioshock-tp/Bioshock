@@ -75,6 +75,10 @@ public abstract class AudioSettings {
             this.rate = rate;
         }
     }
+ 
+    public double getVolume() {
+        return volume;
+    }
 
     /**
      * Sets the volume to a value of the range [0, 1].

@@ -1,5 +1,26 @@
 package org.bioshock.scenes;
 
+import java.util.List;
+
+import org.bioshock.components.NetworkC;
+import org.bioshock.engine.core.FrameRate;
+import org.bioshock.engine.core.WindowManager;
+import org.bioshock.engine.input.InputManager;
+import org.bioshock.entities.EntityManager;
+import org.bioshock.entities.LabelEntity;
+import org.bioshock.entities.map.Room;
+import org.bioshock.entities.map.RoomEntity;
+import org.bioshock.entities.map.maps.GenericMap;
+import org.bioshock.entities.map.maps.Map;
+import org.bioshock.entities.map.maps.RandomMap;
+import org.bioshock.entities.players.Hider;
+import org.bioshock.entities.players.SeekerAI;
+import org.bioshock.main.App;
+import org.bioshock.networking.NetworkManager;
+import org.bioshock.rendering.RenderManager;
+import org.bioshock.utils.GlobalConstants;
+import org.bioshock.utils.Size;
+
 import javafx.geometry.Point2D;
 import javafx.geometry.Point3D;
 import javafx.scene.Cursor;
@@ -8,22 +29,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.paint.Color;
-import org.bioshock.components.NetworkC;
-import org.bioshock.engine.core.FrameRate;
-import org.bioshock.engine.core.WindowManager;
-import org.bioshock.engine.input.InputManager;
-import org.bioshock.entities.EntityManager;
-import org.bioshock.entities.map.Room;
-import org.bioshock.entities.map.ThreeByThreeMap;
-import org.bioshock.entities.players.Hider;
-import org.bioshock.entities.players.SeekerAI;
-import org.bioshock.main.App;
-import org.bioshock.networking.NetworkManager;
-import org.bioshock.rendering.RenderManager;
-import org.bioshock.utils.GlobalStrings;
-import org.bioshock.utils.Size;
-
-import java.util.List;
+import javafx.scene.text.Font;
 
 public class MainGame extends GameScene {
     private static final double ENDTIME = 2 * 60f + 3;
@@ -33,12 +39,13 @@ public class MainGame extends GameScene {
     private double runningTime = 0;
     private boolean losing = false;
     private double timeLosing = 0;
+    private int mapSeed = 0;
 
-    private Label timer;
+    private LabelEntity timer;
 
-    private ThreeByThreeMap map;
+    private Map map;
 
-    public MainGame() {
+    public MainGame(long seed) {
         super();
 
         setCursor(Cursor.HAND);
@@ -47,27 +54,49 @@ public class MainGame extends GameScene {
             null,
             null
         )));
-
-        map = new ThreeByThreeMap(
-            new Point3D(100, 100, 0),
-            10,
-            new Size(300, 600),
-            new Size(90, 90),
-            Color.SADDLEBROWN
-        );
+        
+        if(App.isNetworked()) {
+            map = new GenericMap(
+        		new Point3D(0, 0, 0),
+        		1, 
+        		new Size(5, 7), 
+        		new Size(3, 5), 
+        		Color.SADDLEBROWN, 
+        		GlobalConstants.singletonMap,
+        		seed
+    		);
+        }
+        else {
+            map = new RandomMap(
+                new Point3D(0, 0, 0),
+                1,
+                new Size(9, 11),
+                new Size(3, 5),
+                Color.SADDLEBROWN,
+                new Size(3, 3),
+                null,
+                seed
+            );
+        }
+                
         SceneManager.setMap(map);
         children.addAll(map.getWalls());
 
         List<Room> rooms = map.getRooms();
+        
+        for(Room room : rooms) {
+            RoomEntity roomE = new RoomEntity(room);
+            children.add(roomE);
+        }
 
         double x = rooms.get(0).getRoomCenter().getX();
         double y = rooms.get(0).getRoomCenter().getY();
 
         /* Players must render in exact order, do not play with z values */
         Hider hider = new Hider(
-            new Point3D(x, y, 0.5),
+            new Point3D(x-GlobalConstants.UNIT_WIDTH/2, y-GlobalConstants.UNIT_HEIGHT/2, 0.5),
             new NetworkC(true),
-            new Size(54, 61),
+            new Size(GlobalConstants.UNIT_WIDTH, GlobalConstants.UNIT_HEIGHT),
             300,
             Color.PINK
         );
@@ -80,9 +109,9 @@ public class MainGame extends GameScene {
             y = rooms.get(roomNumber % rooms.size()).getRoomCenter().getY();
 
             children.add(new Hider(
-                new Point3D(x, y, i),
+                new Point3D(x-GlobalConstants.UNIT_WIDTH/2, y-GlobalConstants.UNIT_HEIGHT/2, i),
                 new NetworkC(true),
-                new Size(40, 40),
+                new Size(GlobalConstants.UNIT_WIDTH, GlobalConstants.UNIT_HEIGHT),
                 300,
                 Color.PINK
             ));
@@ -92,9 +121,9 @@ public class MainGame extends GameScene {
         double centreY = rooms.get(rooms.size() / 2).getRoomCenter().getY();
 
         SeekerAI seeker = new SeekerAI(
-            new Point3D(centreX, centreY, 0.25),
+            new Point3D(centreX-GlobalConstants.UNIT_WIDTH/2, centreY-GlobalConstants.UNIT_HEIGHT/2, 0.25),
             new NetworkC(true),
-            new Size(40, 40),
+            new Size(GlobalConstants.UNIT_WIDTH, GlobalConstants.UNIT_HEIGHT),
             300,
             Color.INDIANRED,
             hider
@@ -103,17 +132,47 @@ public class MainGame extends GameScene {
         children.add(seeker);
 
         Size timerSize = new Size(100, 100);
-        timer = new Label("mm:ss.ms");
-        timer.setStyle("-fx-font: 20 arial; -fx-text-fill: black;");
-        timer.setPrefSize(timerSize.getWidth(), timerSize.getHeight());
-        timer.setTranslateX(-timerSize.getWidth()/2);
-        timer.setTranslateY(
-            -WindowManager.getWindowHeight() / 2 + timerSize.getHeight() / 2
-        );
-        getPane().getChildren().add(timer);
+        timer = new LabelEntity(
+            new Point3D(GameScene.getGameScreen().getWidth()/2, 50, 100), 
+            "mm:ss.ms", 
+            new Font("arial", 20), 
+            50, 
+            Color.BLACK);
+        
+        children.add(timer);
+        
+//        timer = new Label("mm:ss.ms");
+//        timer.setStyle("-fx-font: 20 arial; -fx-text-fill: black;");
+//        timer.setPrefSize(timerSize.getWidth(), timerSize.getHeight());
+//        timer.setTranslateX();
+//        timer.setTranslateY(
+//            -WindowManager.getWindowHeight() / 2 + timerSize.getHeight() / 2
+//        );
+//        getPane().getChildren().add(timer);
 
         InputManager.onRelease(KeyCode.Y, () ->	cameraLock = !cameraLock);
+        InputManager.onRelease(KeyCode.C, () -> RenderManager.setClip(!RenderManager.isClip()));
+        InputManager.onPress(KeyCode.LEFT, 
+                () -> RenderManager.setCameraPos(RenderManager.getCameraPos().add(-10,0)));
+        InputManager.onPress(KeyCode.RIGHT, 
+                () -> RenderManager.setCameraPos(RenderManager.getCameraPos().add(10,0)));
+        InputManager.onPress(KeyCode.UP, 
+                () -> RenderManager.setCameraPos(RenderManager.getCameraPos().add(0,-10)));
+        InputManager.onPress(KeyCode.DOWN, 
+                () -> RenderManager.setCameraPos(RenderManager.getCameraPos().add(0,10)));
+        
+        LabelEntity testLabel = new LabelEntity(
+            new Point3D(10, 70, 100), 
+            "This is a test string that is longer than 30 characters long", 
+            new Font(20), 
+            30,
+            Color.BLACK);
+        
+        children.add(testLabel);
 
+        FrameRate.initialise();
+        children.add(FrameRate.getLabel());
+        
         registerEntities();
     }
 
@@ -145,7 +204,7 @@ public class MainGame extends GameScene {
             runningTime += timeDelta;
 
             if (runningTime >= ENDTIME) {
-                SceneManager.setScene(new LoadingScreen(false, GlobalStrings.WIN_INFO_TEXT, DisplayScreen.WIN));
+                SceneManager.setScene(new WinScreen());
                 return;
             }
 
@@ -159,7 +218,7 @@ public class MainGame extends GameScene {
         else {
             timeLosing += timeDelta;
             if (timeLosing >= LOSEDELAY) {
-                SceneManager.setScene(new LoadingScreen(false, GlobalStrings.LOSE_INFO_TEXT, DisplayScreen.LOSE));
+                SceneManager.setScene(new LoseScreen());
             }
         }
     }
@@ -178,7 +237,8 @@ public class MainGame extends GameScene {
 
         double timeLeft = ENDTIME - runningTime;
         int numMins = (int) timeLeft / 60;
-        timer.setText(String.format(
+        timer.getStringBuilder().setLength(0);
+        timer.getStringBuilder().append(String.format(
             "%d:%.2f",
             numMins,
             timeLeft - numMins * 60

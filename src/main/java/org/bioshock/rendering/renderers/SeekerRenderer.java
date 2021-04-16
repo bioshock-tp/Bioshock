@@ -11,6 +11,7 @@ import org.bioshock.rendering.RenderManager;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Arc;
+import javafx.scene.text.Font;
 import javafx.scene.transform.Rotate;
 
 public class SeekerRenderer implements Renderer {
@@ -28,8 +29,9 @@ public class SeekerRenderer implements Renderer {
         boolean isActive = seeker.getIsActive();
 
         gc.save();
-
         RenderManager.clipToFOV(gc);
+        
+       
         Rotate r = seeker.getRotate();
         gc.setTransform(
             r.getMxx(), r.getMyx(), r.getMxy(),
@@ -42,15 +44,18 @@ public class SeekerRenderer implements Renderer {
             getRenWidth(width),
             getRenHeight(height)
         );
-        gc.setLineWidth(10);
+        gc.setLineWidth(getRenWidth(10));
         gc.setStroke(seeker.getRendererC().getColour());
         
         gc.strokeOval(
             getRenX(x - radius + width / 2),
             getRenY(y - radius + height / 2),
-            getRenWidth(radius * 2), 
+            getRenWidth(radius * 2),
             getRenHeight(radius * 2)
         );
+
+        
+
 
         gc.setLineWidth(10);
         gc.setStroke(seeker.getRendererC().getColour());
@@ -68,9 +73,11 @@ public class SeekerRenderer implements Renderer {
             );
 
         }
+        
+        gc.setFill(Color.BLACK);
+        gc.setFont(new Font(getRenHeight(25)));
+        gc.fillText("Seeker(AI)", getRenX(x-width), getRenY(y-5), getRenWidth(width*3));
 
         gc.restore();
-
-        seeker.getRendererC().setColour(Color.INDIANRED);
     }
 }

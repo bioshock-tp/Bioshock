@@ -3,23 +3,27 @@ package org.bioshock.entities.players;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Random;
 
 import org.bioshock.components.NetworkC;
 import org.bioshock.engine.core.WindowManager;
 import org.bioshock.engine.pathfinding.Graph;
+import org.bioshock.engine.pathfinding.GraphNode;
 import org.bioshock.entities.Entity;
 import org.bioshock.entities.EntityManager;
+import org.bioshock.components.PathfindingC;
 import org.bioshock.entities.SquareEntity;
 import org.bioshock.entities.map.Room;
 import org.bioshock.entities.map.TexRectEntity;
-import org.bioshock.entities.map.ThreeByThreeMap;
+import org.bioshock.entities.map.utils.ConnType;
 import org.bioshock.main.App;
 import org.bioshock.physics.Movement;
 import org.bioshock.rendering.renderers.SeekerRenderer;
 import org.bioshock.rendering.renderers.components.SimpleRendererC;
 import org.bioshock.scenes.SceneManager;
+import org.bioshock.utils.Direction;
+import org.bioshock.utils.GlobalConstants;
+import org.bioshock.utils.Point;
 import org.bioshock.utils.Size;
 
 import javafx.geometry.Point2D;
@@ -36,18 +40,33 @@ import javafx.util.Pair;
 public class SeekerAI extends SquareEntity {
     private Hider target;
     private final Arc swatterHitbox;
-    private final Graph<Room> roomGraph = SceneManager.getMap().getRoomGraph();
-    private List<Room> path = new ArrayList<>();
+    private final Graph<Room,Pair<Direction,ConnType>> roomGraph = SceneManager.getMap().getRoomGraph();
+    private PathfindingC<Room,Pair<Direction, ConnType>> roomPathfinding = new PathfindingC<>(roomGraph,
+            SceneManager.getMap().getRoomArray(),
+            SceneManager.getMap().getRoomArray()[0][0].getTotalSize().getWidth(),
+            SceneManager.getMap().getRoomArray()[0][0].getTotalSize().getHeight());
+    private PathfindingC<GraphNode,Pair<Direction, Double>> nodePathfinding = new PathfindingC<>(SceneManager.getMap().getTraversableGraph(),
+            SceneManager.getMap().getTraversableArray(),
+            GlobalConstants.UNIT_WIDTH,
+            GlobalConstants.UNIT_HEIGHT);
+    private List<Point2D> path = new ArrayList<>();
     private Room currRoom;
+    private Room prevRoom;
+    private Point2D currentTargetLocation;
     private Point2D lastSeenPosition;
+    private Point lastSeekerPosition;
 
     private static final double TIME_BETWEEN_SWINGS = 1.0;
     private static final double TIME_SWINGING = 1.0;
+    private static final double TIME_STILL = 0.1;
+
     private double timeBetweenSwings = 0;
     private double timeSwinging = 0;
+    private double timeStill = 0;
 
     private boolean isActive = false;
     private boolean isSearching = false;
+    private boolean colorChanged = false;
 
     private Random rand = new Random();
 
@@ -79,7 +98,11 @@ public class SeekerAI extends SquareEntity {
 
         swatterHitbox.setType(ArcType.ROUND);
 
-        currRoom = findCurrentRoom(this);
+        currRoom = this.findCurrentRoom();
+        prevRoom = currRoom;
+        //nodePathfinding = new PathfindingC<>(currRoom.getTraversableGraph());
+        lastSeekerPosition = getCentre();
+        currentTargetLocation = new Point2D(getCentre().getX(), getCentre().getY());
     }
 
     protected void tick(double timeDelta) {
@@ -88,30 +111,42 @@ public class SeekerAI extends SquareEntity {
             timeSwinging += timeDelta;
         }
         doActions();
+        checkStill(timeDelta, getCentre());
+        lastSeekerPosition = getCentre();
         setSwatterPos();
         setSwatterRot();
     }
 
-    /**
+    private void checkStill(double timeDelta, Point centre) {
+        if (centre.equals(lastSeekerPosition)){
+            timeStill+=timeDelta;
+        }
+        else{
+            timeStill = 0;
+        }
+    }
+
+    /***
      * The main behaviour tree for the seeker
      */
     private void doActions() {
         setSearch(true);
         Hider firstPlayer = EntityManager.getPlayers().get(0);
         boolean masterPlayer = firstPlayer == EntityManager.getCurrentPlayer();
+        colorChanged = false;
         EntityManager.getPlayers().forEach(entity -> {
             if (
                     EntityManager.isManaged(this, entity)
-                            && intersects(entity, "swatter")
-                            && getIsActive()
-                            && !entity.isDead()
+                    		&& getIsActive()
+                    		&& !entity.isDead()
+                            && intersects(entity, "swatter") 
             ) {
                 entity.setDead(true);
             }
             if (
                     EntityManager.isManaged(this, entity)
-                            && intersects(entity, "fov")
-                            && !entity.isDead()
+                    		&& !entity.isDead()
+                            && intersects(entity, "fov")                           
                             && checkLineOfSight(entity)
             ) {
                 if(timeBetweenSwings >= TIME_BETWEEN_SWINGS){
@@ -123,12 +158,20 @@ public class SeekerAI extends SquareEntity {
                     }
                 }
                 rendererC.setColour(Color.ORANGE);
+                colorChanged = true;
                 target = entity;
                 if (masterPlayer) chasePlayer(target);
             }
         });
+        
+        if (!colorChanged) {
+            rendererC.setColour(Color.INDIANRED);
+        }
 
-        if (masterPlayer && isSearching) search();
+        if (masterPlayer && isSearching) {
+        	setActive(false);
+        	search();
+        }
     }
 
     /**
@@ -186,7 +229,7 @@ public class SeekerAI extends SquareEntity {
 
         List<Room> roomsToCheck = new ArrayList<>();
         roomsToCheck.add(currRoom);
-        roomsToCheck.add(findCurrentRoom(entity));
+        roomsToCheck.add(entity.findCurrentRoom());
 
         for (Room room : roomsToCheck) {
             for(TexRectEntity wall : room.getWalls()) {
@@ -217,158 +260,79 @@ public class SeekerAI extends SquareEntity {
         setSearch(false);
         path.clear();
         lastSeenPosition = new Point2D(entity.getX(), entity.getY());
-        App.logger.debug(
-                "Last seen position coordinates are {}",
-                lastSeenPosition
-        );
-
-
-        movement.moveTo(lastSeenPosition);
-
-    }
-
-
-    /**
-     *
-     * Finds the current room that an entity is in
-     *
-     * @param entity the entity to find current room of
-     * @return the current room of the entity
-     */
-    private Room findCurrentRoom(Entity entity) {
-        Room current = roomGraph.getNodes().get(0);
-        Point3D temp;
-        double shortest =
-                WindowManager.getWindowWidth() * WindowManager.getWindowHeight();
-
-        for (Room room : roomGraph.getNodes()) {
-            temp = room.getRoomCenter().subtract(
-                    new Point3D(entity.getX(), entity.getY(), room.getZ())
-            );
-            if (temp.magnitude() < shortest) {
-                shortest = temp.magnitude();
-                current = room;
-            }
+        path = nodePathfinding.createBestPath(this.getCentre(), lastSeenPosition);
+        if(!path.isEmpty()){
+            currentTargetLocation = path.remove(0);
         }
-
-        return current;
+        search();
     }
 
-
-    /**
-     *
-     * Moves seeker a step towards the room centre
-     *
-     * @param room the room that has the centre to move towards
-     */
-    private void moveToCentre(Room room) {
-        movement.moveTo(
-                room.getRoomCenter().getX() - getWidth()/2,
-                room.getRoomCenter().getY() - getHeight()/2
-        );
-    }
-
-
-    /**
-     *
-     * Makes a random path of rooms given a start room
-     * Picks random destination
-     * Will not visit the same room twice
-     *
-     * @param startRoom the room to start from
-     * @return the list of rooms that form the path
-     */
-    private List<Room> createPath(Room startRoom) {
-        List<Room> pathToFollow = new ArrayList<>();
-        List<Room> possibleMoves = new ArrayList<>();
-        List<Room> adjacents;
-        Room destination;
-        Room current;
-        int r;
-        int c = 0;
-
-        current = startRoom;
-        destination = startRoom;
-        App.logger.debug("Start room is {}", startRoom.getRoomCenter());
-
-        while(destination == startRoom) {
-            r = rand.nextInt(roomGraph.getNodes().size());
-            destination = roomGraph.getNodes().get(r);
-        }
-        App.logger.debug(
-                "Destination room is {}",
-                destination.getRoomCenter()
-        );
-
-        pathToFollow.add(startRoom);
-        App.logger.debug("Room {} is {}", c, startRoom.getRoomCenter());
-        c++;
-
-        while (current != destination) {
-            adjacents = roomGraph.getConnections(current);
-            for(Room room : adjacents){
-                if(!pathToFollow.contains(room)){
-                    possibleMoves.add(room);
-                }
-            }
-
-            if(!possibleMoves.isEmpty()) {
-                r = rand.nextInt(possibleMoves.size());
-                current = possibleMoves.get(r);
-            }
-            else{
-                destination = current;
-            }
-
-            pathToFollow.add(current);
-            App.logger.debug("Room {} is {}", c, current.getRoomCenter());
-            possibleMoves.clear();
-            c++;
-
-        }
-
-        return pathToFollow;
-    }
 
     /**
      * Contains the behaviour tree for patrolling the map
      */
     public void search() {
-        setActive(false);
-
+        updateRoom(this);
         if(path.isEmpty()){
-            //move to last seen position
-            if(lastSeenPosition != null){
-                double absX = Math.abs(lastSeenPosition.getX() - getX());
-                double absY = Math.abs(lastSeenPosition.getY() - getY());
-                if(absX < 2 && absY < 2){
-                    //make new path
-                    currRoom = findCurrentRoom(this);
-                    path = createPath(currRoom);
-                    lastSeenPosition = null;
-                }
-                else{
-                    App.logger.debug("Last seen position is {}", lastSeenPosition);
-                    movement.moveTo(lastSeenPosition);
-                }
-            }
-            else{
-                currRoom = findCurrentRoom(this);
-                path = createPath(currRoom);
-            }
-
+            path = roomPathfinding.createRandomPath(this.getCentre(), prevRoom, getPreferred());
+            path.add(path.get((path.size())-1));
+            List<Point2D> pathToNextRoom = nodePathfinding.createBestPath(this.getCentre(), path.get(0));
+            path.addAll(0, pathToNextRoom);
+            currentTargetLocation = path.remove(0);
         }
         else{
             //continue searching
-            moveToCentre(currRoom);
+            movement.moveTo(currentTargetLocation.subtract(new Point2D(getWidth()/2, getHeight()/2)));
 
-            double absX = Math.abs(currRoom.getRoomCenter().getX() - getWidth()/2 - getX());
-            double absY = Math.abs(currRoom.getRoomCenter().getY() - getHeight()/2 - getY());
-            if(absX < 5 && absY < 5){
-                currRoom = path.remove(0);
+            double absX = Math.abs(currentTargetLocation.getX() - getWidth()/2 - getX());
+            double absY = Math.abs(currentTargetLocation.getY() - getHeight()/2 - getY());
+
+            if(absX < 1 && absY < 1){
+                currentTargetLocation = path.remove(0);
             }
         }
 
+    }
+
+    private Room getPreferred() {
+        if(lastSeenPosition == null){
+            return null;
+        }
+        Room room = findCurrentRoom(lastSeenPosition);
+        Room finalRoom;
+        List<Pair<Point2D, Direction>> points = room.getCorridorPoints();
+        if(points == null || points.size() == 0){
+            return null;
+        }
+
+        if(!room.equals(currRoom)){
+            return room;
+        }
+
+        Direction direction = points.get(0).getValue();
+        double shortest = WindowManager.getWindowWidth() * WindowManager.getWindowHeight();
+        Point2D temp;
+
+        for(Pair<Point2D, Direction> point : points){
+            temp = point.getKey().subtract(lastSeenPosition);
+            if(temp.magnitude() < shortest){
+                shortest = temp.magnitude();
+                direction = point.getValue();
+            }
+        }
+        finalRoom = roomGraph.getNodeFromEdge(new Pair<>(direction, ConnType.ROOM_TO_ROOM),room);
+        if(finalRoom == null) {
+            finalRoom = roomGraph.getNodeFromEdge(new Pair<>(direction, ConnType.SUB_ROOM),room);
+        }
+        return finalRoom;
+    }
+
+    private void updateRoom(Entity entity){
+        Room newRoom = entity.findCurrentRoom();
+        if(!newRoom.equals(currRoom)){
+            prevRoom = currRoom;
+            currRoom = newRoom;
+        }
     }
 
     public void setActive(boolean b) { isActive = b; }
@@ -389,7 +353,7 @@ public class SeekerAI extends SquareEntity {
         double r = Movement.getFacingRotate(
                 target.getPosition().subtract(getPosition())
         );
-        swatterHitbox.setStartAngle(390 - r);
+        swatterHitbox.setStartAngle(30 + r);
     }
 
     public Arc getSwatterHitbox() { return swatterHitbox; }
@@ -399,12 +363,9 @@ public class SeekerAI extends SquareEntity {
     public boolean getIsActive() { return isActive; }
 
     @Override
-    public Pair<Point2D, Point2D> getRenderArea() {
+    public Rectangle getRenderArea() {
         Point2D centre = getCentre();
         double radius = getRadius();
-        return new Pair<>(
-                centre.subtract(radius, radius),
-                centre.add(radius, radius)
-        );
+        return new Rectangle(centre.getX()-radius, centre.getY()-radius, radius*2, radius*2);
     }
 }

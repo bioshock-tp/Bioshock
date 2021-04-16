@@ -30,6 +30,11 @@ public class NetworkManager {
     private static Hider me;
     private static Hider masterHider;
     private static SeekerAI seeker;
+    private static long seed = 0;
+
+    public static long getSeed() {
+        return seed;
+    }
 
     private static List<Hider> playerList = new ArrayList<>(App.playerCount());
     private static Map<String, Hider> loadedPlayers = new HashMap<>(
