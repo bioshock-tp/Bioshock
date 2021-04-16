@@ -58,7 +58,7 @@ public class LoadingScreen extends GameScene {
         if (isNetworked) {
             fadeOut.setOnFinished(e -> SceneManager.setScene(new Lobby()));
         } else {
-            fadeOut.setOnFinished(e -> SceneManager.setScene(new MainGame()));
+            fadeOut.setOnFinished(e -> SceneManager.setScene(new MainGame(0)));
         }
 	}
 }

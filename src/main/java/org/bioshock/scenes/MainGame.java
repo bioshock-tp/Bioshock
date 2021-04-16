@@ -43,7 +43,7 @@ public class MainGame extends GameScene {
 
     private Map map;
 
-    public MainGame() {
+    public MainGame(long seed) {
         super();
 
         setCursor(Cursor.HAND);
@@ -61,7 +61,7 @@ public class MainGame extends GameScene {
         		new Size(3, 5), 
         		Color.SADDLEBROWN, 
         		GlobalConstants.singletonMap,
-        		0
+        		seed
     		);
         }
         else {
@@ -73,7 +73,7 @@ public class MainGame extends GameScene {
                 Color.SADDLEBROWN,
                 new Size(3, 3),
                 null,
-                0
+                seed
             );
         }
                 
