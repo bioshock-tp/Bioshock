@@ -10,6 +10,7 @@ import org.bioshock.entities.EntityManager;
 import org.bioshock.entities.LabelEntity;
 import org.bioshock.entities.map.Room;
 import org.bioshock.entities.map.RoomEntity;
+import org.bioshock.entities.map.TexRectEntity;
 import org.bioshock.entities.map.maps.GenericMap;
 import org.bioshock.entities.map.maps.Map;
 import org.bioshock.entities.map.maps.RandomMap;
@@ -45,7 +46,7 @@ public class MainGame extends GameScene {
 
     private Map map;
 
-    public MainGame(long seed) {
+    public MainGame() {
         super();
 
         setCursor(Cursor.HAND);
@@ -55,46 +56,21 @@ public class MainGame extends GameScene {
             null
         )));
         
-        if(App.isNetworked()) {
-            map = new GenericMap(
-        		new Point3D(0, 0, 0),
-        		1, 
-        		new Size(5, 7), 
-        		new Size(3, 5), 
-        		Color.SADDLEBROWN, 
-        		GlobalConstants.singletonMap,
-        		seed
-    		);
-        }
-        else {
-            map = new RandomMap(
+        map = new GenericMap(
                 new Point3D(0, 0, 0),
-                1,
-                new Size(9, 11),
-                new Size(3, 5),
-                Color.SADDLEBROWN,
-                new Size(3, 3),
-                null,
-                seed
+                1, 
+                new Size(5, 7), 
+                new Size(3, 5), 
+                Color.SADDLEBROWN, 
+                GlobalConstants.singletonMap,
+                0
             );
-        }
-                
-        SceneManager.setMap(map);
-        children.addAll(map.getWalls());
-
-        List<Room> rooms = map.getRooms();
         
-        for(Room room : rooms) {
-            RoomEntity roomE = new RoomEntity(room);
-            children.add(roomE);
-        }
-
-        double x = rooms.get(0).getRoomCenter().getX();
-        double y = rooms.get(0).getRoomCenter().getY();
-
+        
+        
         /* Players must render in exact order, do not play with z values */
         Hider hider = new Hider(
-            new Point3D(x-GlobalConstants.UNIT_WIDTH/2, y-GlobalConstants.UNIT_HEIGHT/2, 0.5),
+            new Point3D(0, 0, 0.5),
             new NetworkC(true),
             new Size(GlobalConstants.UNIT_WIDTH, GlobalConstants.UNIT_HEIGHT),
             300,
@@ -103,33 +79,14 @@ public class MainGame extends GameScene {
         children.add(hider);
 
         for (int i = 1; i < App.playerCount(); i++) {
-            int roomNumber = i % rooms.size();
-            if (roomNumber >= rooms.size() / 2) roomNumber++;
-            x = rooms.get(roomNumber % rooms.size()).getRoomCenter().getX();
-            y = rooms.get(roomNumber % rooms.size()).getRoomCenter().getY();
-
             children.add(new Hider(
-                new Point3D(x-GlobalConstants.UNIT_WIDTH/2, y-GlobalConstants.UNIT_HEIGHT/2, i),
+                new Point3D(GameScene.getGameScreen().getWidth()*i, 0, i),
                 new NetworkC(true),
                 new Size(GlobalConstants.UNIT_WIDTH, GlobalConstants.UNIT_HEIGHT),
                 300,
                 Color.PINK
             ));
         }
-
-        double centreX = rooms.get(rooms.size() / 2).getRoomCenter().getX();
-        double centreY = rooms.get(rooms.size() / 2).getRoomCenter().getY();
-
-        SeekerAI seeker = new SeekerAI(
-            new Point3D(centreX-GlobalConstants.UNIT_WIDTH/2, centreY-GlobalConstants.UNIT_HEIGHT/2, 0.25),
-            new NetworkC(true),
-            new Size(GlobalConstants.UNIT_WIDTH, GlobalConstants.UNIT_HEIGHT),
-            300,
-            Color.INDIANRED,
-            hider
-        );
-
-        children.add(seeker);
 
         Size timerSize = new Size(100, 100);
         timer = new LabelEntity(
@@ -178,7 +135,74 @@ public class MainGame extends GameScene {
     }
 
     @Override
-    public void initScene() {
+    public void initScene(long seed) {
+        
+        
+        if(App.isNetworked()) {
+            map = new GenericMap(
+                new Point3D(0, 0, 0),
+                1, 
+                new Size(5, 7), 
+                new Size(3, 5), 
+                Color.SADDLEBROWN, 
+                GlobalConstants.singletonMap,
+                seed
+            );
+        }
+        else {
+            map = new RandomMap(
+                new Point3D(0, 0, 0),
+                1,
+                new Size(9, 11),
+                new Size(3, 5),
+                Color.SADDLEBROWN,
+                new Size(3, 3),
+                null,
+                seed
+            );
+        }
+        
+        SceneManager.setMap(map);
+        EntityManager.registerAll(map.getWalls().toArray(new TexRectEntity[0]));
+        children.addAll(map.getWalls());
+
+        List<Room> rooms = map.getRooms();
+        
+        for(Room room : rooms) {
+            RoomEntity roomE = new RoomEntity(room);
+            EntityManager.register(roomE);
+            children.add(roomE);
+        }    
+        
+        List<Hider> hiders = EntityManager.getPlayers();
+
+        SeekerAI seeker = new SeekerAI(
+            new Point3D(
+                    rooms.get(rooms.size() / 2).getRoomCenter().getX()-GlobalConstants.UNIT_WIDTH/2, 
+                    rooms.get(rooms.size() / 2).getRoomCenter().getY()-GlobalConstants.UNIT_HEIGHT/2, 
+                    0.25),
+            new NetworkC(true),
+            new Size(GlobalConstants.UNIT_WIDTH, GlobalConstants.UNIT_HEIGHT),
+            300,
+            Color.INDIANRED,
+            hiders.get(0)
+        );
+
+        EntityManager.register(seeker);
+        children.add(seeker);        
+        
+        hiders.get(0).setPosition(
+                rooms.get(0).getRoomCenter().getX()-GlobalConstants.UNIT_WIDTH/2, 
+                rooms.get(0).getRoomCenter().getY()-GlobalConstants.UNIT_HEIGHT/2);
+        
+        for (int i = 1; i < App.playerCount(); i++) {
+            int roomNumber = i % rooms.size();
+            if (roomNumber >= rooms.size() / 2) roomNumber++;
+            double x = rooms.get(roomNumber % rooms.size()).getRoomCenter().getX();
+            double y = rooms.get(roomNumber % rooms.size()).getRoomCenter().getY();
+            hiders.get(i).setPosition(x, y);
+        }
+            
         renderEntities();
 
         FrameRate.initialise();
