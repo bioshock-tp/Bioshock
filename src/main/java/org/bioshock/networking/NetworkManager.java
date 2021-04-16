@@ -32,6 +32,10 @@ public class NetworkManager {
     private static SeekerAI seeker;
     private static long seed = 0;
 
+    public static void setSeed(long currSeed) {
+        seed = currSeed;
+    }
+
     public static long getSeed() {
         return seed;
     }
@@ -64,6 +68,7 @@ public class NetworkManager {
                     App.logger.error(e);
                     Thread.currentThread().interrupt();
                 }
+                client.send(Integer.toString(App.playerCount()));
 
                 /* Wait until players join then add them to loadedPlayers */
                 while (loadedPlayers.size() < App.playerCount()) {
