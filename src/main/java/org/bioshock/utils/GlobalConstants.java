@@ -18,7 +18,7 @@ public final class GlobalConstants {
     public static final int  UNIT_HEIGHT = 80;
     
     public static final RoomType[][] testMap = 
-       {{B,A,B,B,A,B},
+       {{B,B,B,B,A,B},
         {B,A,A,B,B,B},
         {B,A,B,B,A,B},
         {B,B,A,B,B,A},
