@@ -15,6 +15,7 @@
    <fx:define>
       <ToggleGroup fx:id="musicToggleGroup"/>
       <ToggleGroup fx:id="sfxToggleGroup"/>
+      <ToggleGroup fx:id="languageToggleGroup"/>
    </fx:define>
    <fx:include source="title.fxml"/>
 
@@ -49,6 +50,15 @@
          <HBox spacing="20" alignment="CENTER">
             <RadioButton fx:id="sfxOnRadioButton" toggleGroup="$sfxToggleGroup" onAction="#toggleSfxOn" styleClass="gui-radio-button"/>
             <RadioButton fx:id="sfxOffRadioButton" toggleGroup="$sfxToggleGroup" onAction="#toggleSfxOff" styleClass="gui-radio-button"/>
+         </HBox>
+      </VBox>
+
+      <VBox spacing="10" alignment="CENTER">
+         <Label fx:id="languageLabel" styleClass="p" style="-fx-font-weight: 700"/>
+
+         <HBox spacing="20" alignment="CENTER">
+            <RadioButton fx:id="enRadioButton" toggleGroup="$languageToggleGroup" onAction="#setLanguageEn" styleClass="gui-radio-button"/>
+            <RadioButton fx:id="roRadioButton" toggleGroup="$languageToggleGroup" onAction="#setLanguageRo" styleClass="gui-radio-button"/>
          </HBox>
       </VBox>
    </VBox>
