@@ -21,7 +21,9 @@ import org.bioshock.utils.GlobalStrings;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Arrays;
+import java.util.Locale;
 import java.util.Objects;
+import java.util.ResourceBundle;
 
 public class App extends Application {
     public static final String NAME = GlobalStrings.BUZZ_TEXT + GlobalStrings.KILL_TEXT;
@@ -29,6 +31,8 @@ public class App extends Application {
     private static int playerCount = 2;
     private static Scene fxmlScene;
     private static boolean networked;
+    protected static ResourceBundle bundle;
+    protected static Locale locale;
 
     @Override
     public void start(Stage stage) {
@@ -121,6 +125,11 @@ public class App extends Application {
 
     public static boolean isNetworked() {
         return networked;
+    }
+
+    protected static void loadLang(String lang) {
+        locale = new Locale(lang);
+        bundle = ResourceBundle.getBundle("org.bioshock.utils.lang", locale);
     }
 
     public static void exit(int code) {

@@ -12,8 +12,6 @@ import org.bioshock.audio.controllers.EffectController;
 import org.bioshock.audio.settings.EffectSettings;
 import org.bioshock.main.App;
 
-import java.util.Locale;
-import java.util.ResourceBundle;
 import java.util.prefs.Preferences;
 
 public class SettingsController extends App {
@@ -46,8 +44,7 @@ public class SettingsController extends App {
     @FXML
     private RadioButton sfxOnRadioButton;
 
-    private ResourceBundle bundle;
-    private Locale locale;
+
 
     @FXML
     private void switchToMainView() {
@@ -58,6 +55,7 @@ public class SettingsController extends App {
     public void initialize() {
         initialiseLanguageSettings();
         initialiseAudioSettings();
+        initialiseLabels();
     }
 
     private void initialiseLanguageSettings() {
@@ -150,18 +148,14 @@ public class SettingsController extends App {
 
     public void setLanguageEn(ActionEvent actionEvent) {
         loadLang("en");
+        initialiseLabels();
         getPrefs().put("language", "en");
     }
 
     public void setLanguageRo(ActionEvent actionEvent) {
         loadLang("ro");
-        getPrefs().put("language", "ro");
-    }
-
-    private void loadLang(String lang) {
-        locale = new Locale(lang);
-        bundle = ResourceBundle.getBundle("org.bioshock.utils.lang", locale);
         initialiseLabels();
+        getPrefs().put("language", "ro");
     }
 
     private void initialiseLabels() {
