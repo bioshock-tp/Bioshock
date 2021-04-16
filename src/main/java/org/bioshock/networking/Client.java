@@ -52,7 +52,6 @@ public class Client extends WebSocketClient {
 
     @Override
     public void onMessage(String string) {
-        System.out.println(string);
         /* Case of player number */
         try {
             if(initMessage) {
