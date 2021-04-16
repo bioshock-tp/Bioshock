@@ -16,6 +16,7 @@ public class Server extends WebSocketServer {
 	HashMap<String,Set<WebSocket>> games=new HashMap<String,Set<WebSocket>>();
 	HashMap<WebSocket,String> players = new HashMap<WebSocket,String>();
 	HashMap<Integer,Set<WebSocket>> lobbies = new HashMap<Integer,Set<WebSocket>>();
+	HashMap<Integer, Long> lobbiesSeed = new HashMap<Integer, Long>();
 	public Semaphore mutex = new Semaphore(1);
 	//Set<String> s = new HashSet<String>();
 
@@ -23,26 +24,7 @@ public class Server extends WebSocketServer {
 		super(address);
 	}
 
-	@Override
-	public void onOpen(WebSocket conn, ClientHandshake handshake) {
-		try {
-			mutex.acquire();
-			clients.put(conn, new Client(conn));
-			players.put(conn, "");
-		} catch(InterruptedException ie) {
-			System.out.println(ie);
-		} finally {
-			mutex.release();
-		}
-    	//conn.send(Integer.toString(getConnections().size()));
-		//System.out.println(String.format(
-            //"New connection to %s",
-            //conn.getRemoteSocketAddress()
-       //));
-	}
-
-	@Override
-	public void onClose(WebSocket conn, int code, String reas, boolean remote) {
+	private void removeClient(WebSocket conn){
 		try {
 			mutex.acquire();
 			Client currClient = clients.get(conn);
@@ -68,6 +50,33 @@ public class Server extends WebSocketServer {
 		} finally {
 			mutex.release();
 		}
+	}
+
+	@Override
+	public void onOpen(WebSocket conn, ClientHandshake handshake) {
+		try {
+			System.out.println("Someone Joint");
+			mutex.acquire();
+			clients.put(conn, new Client(conn));
+			players.put(conn, "");
+		} catch(InterruptedException ie) {
+			System.out.println(ie);
+			Thread.currentThread().interrupt();
+		} finally {
+			mutex.release();
+		}
+    	//conn.send(Integer.toString(getConnections().size()));
+		//System.out.println(String.format(
+            //"New connection to %s",
+            //conn.getRemoteSocketAddress()
+       //));
+	}
+
+	@Override
+	public void onClose(WebSocket conn, int code, String reas, boolean remote) {
+
+		removeClient(conn);
+		System.out.println("Somone closed");
         //System.out.println(String.format(
         //    "Closed %s with exit code %d additional info: %s",
         //    conn.getRemoteSocketAddress(),
@@ -108,14 +117,25 @@ public class Server extends WebSocketServer {
 						currClient.setClientType(0);
 						broadcast(Integer.toString(currLobby.size()), currLobby);
 					}
+					return;
+				}
+				if(nr == 10000){
+					Set<WebSocket> auxSet = new HashSet<WebSocket>();
+					auxSet.add(conn);
+					broadcast(Long.toString(currClient.getGameSeed()), auxSet);
+					return;
 				}
 				else {
 					if(currClient.getType() == 0){
 						currClient.setGameSize(nr);
+						currClient.setGameSeed(lobbiesSeed.get(nr));
 						Set<WebSocket> currLobby = lobbies.get(nr);
 						Set<WebSocket> currGame = new HashSet<WebSocket>();
 						currLobby.add(conn);
+						Set<WebSocket> auxSet = new HashSet<WebSocket>();
+						auxSet.add(conn);
 						if(currLobby.size() == nr){
+							System.out.println("Game Start");
 							String uuid = UUID.randomUUID().toString();
 							for(WebSocket currWeb: currLobby){
 								currClient = clients.get(currWeb);
@@ -124,19 +144,23 @@ public class Server extends WebSocketServer {
 							}
 							currGame.addAll(currLobby);
 							games.put(uuid, currGame);
-							broadcast(Integer.toString(currLobby.size()), currLobby);
+							broadcast(Integer.toString(currLobby.size()), auxSet);
+							//broadcast(Integer.toString(currLobby.size()), currLobby);
 							currLobby.clear();
 							lobbies.replace(nr, currLobby);
+							lobbiesSeed.replace(nr, new Random().nextLong());
 							return;
 						}
 						lobbies.replace(nr, currLobby);
-						broadcast(Integer.toString(currLobby.size()), currLobby);
+						//conn.send(Integer.toString(currLobby.size()));
+						broadcast(Integer.toString(currLobby.size()), auxSet);
 					}
 				}
 				return;
 			} catch (NumberFormatException ignored) {
 				/* Was not playerNumber message */
 			}
+
 			if(currClient.getType() == 1){
 				broadcast(message, lobbies.get(currClient.getGameSize()));
 			}
@@ -171,7 +195,9 @@ public class Server extends WebSocketServer {
 
 	@Override
 	public void onError(WebSocket conn, Exception ex) {
-		System.out.println(String.format(
+
+    	removeClient(conn);
+    	System.out.println(String.format(
             "An error occurred: %s",
             ex
         ));
@@ -183,6 +209,7 @@ public class Server extends WebSocketServer {
     	for(int i = 1; i <= 15; i++){
 
 			lobbies.put(i, new HashSet<WebSocket>());
+			lobbiesSeed.put(i, new Random().nextLong());
 		}
     	games.put("", new HashSet<WebSocket>());
     	System.out.println("Server started successfully");
