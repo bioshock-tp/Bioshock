@@ -56,12 +56,12 @@ public class Movement {
         final double newX = x;
         
         List<Entity> collisionCheck = new ArrayList<>();
-        String rooms = "";
+//        String rooms = "";
         for(Room r:entity.find4ClosestRoom()) {
             collisionCheck.addAll(r.getWalls());
-            rooms += r.toString()+ "\n";
+//            rooms += r.toString()+ "\n";
         }
-        App.logger.debug(rooms);
+//        App.logger.debug(rooms);
         
         //Add other players for collision
         //note would need to update to allow to collide with other objects

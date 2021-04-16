@@ -52,6 +52,7 @@ public final class RenderManager {
         // renders each entity
         entities.stream().filter(Entity::isEnabled).forEach(entity -> {
             if (
+                entity.isAlwaysRender() ||
                 intersects(entity.getRenderArea(), screen)
             ) {
                 try {

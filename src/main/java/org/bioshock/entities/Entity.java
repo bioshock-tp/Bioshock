@@ -28,6 +28,11 @@ public abstract class Entity {
     protected double z;
     protected NetworkC networkC;
     protected RendererC rendererC;
+    protected boolean alwaysRender = false;
+
+    public boolean isAlwaysRender() {
+        return alwaysRender;
+    }
 
     protected boolean enabled = true;
 
