@@ -11,6 +11,7 @@ import org.bioshock.audio.controllers.AudioController;
 import org.bioshock.audio.controllers.EffectController;
 import org.bioshock.audio.settings.EffectSettings;
 import org.bioshock.main.App;
+import org.bioshock.utils.LanguageManager;
 
 import java.util.prefs.Preferences;
 
@@ -62,14 +63,11 @@ public class SettingsController extends App {
         switch (getPrefs().get("language", "en")) {
             case "en":
                 enRadioButton.setSelected(true);
-                loadLang("en");
                 break;
             case "ro":
                 roRadioButton.setSelected(true);
-                loadLang("ro");
                 break;
         }
-
     }
 
     private void initialiseAudioSettings() {
@@ -147,13 +145,13 @@ public class SettingsController extends App {
     }
 
     public void setLanguageEn(ActionEvent actionEvent) {
-        loadLang("en");
+        LanguageManager.loadLang("en");
         initialiseLabels();
         getPrefs().put("language", "en");
     }
 
     public void setLanguageRo(ActionEvent actionEvent) {
-        loadLang("ro");
+        LanguageManager.loadLang("ro");
         initialiseLabels();
         getPrefs().put("language", "ro");
     }

@@ -12,7 +12,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.TextFlow;
 import javafx.util.Duration;
-import org.bioshock.utils.GlobalStrings;
+import org.bioshock.main.App;
 
 public class LoadingScreen extends GameScene {
 	public LoadingScreen (boolean isNetworked, String loadingText) {
@@ -20,9 +20,9 @@ public class LoadingScreen extends GameScene {
 
         VBox verticalBox = new VBox();
         verticalBox.setAlignment(Pos.CENTER);
-		Label buzzLabel = new Label(GlobalStrings.BUZZ_TEXT);
+		Label buzzLabel = new Label(App.getBundle().getString("BUZZ_TEXT"));
         buzzLabel.setTextFill(Color.WHITE);
-        Label killLabel = new Label(GlobalStrings.KILL_TEXT);
+        Label killLabel = new Label(App.getBundle().getString("KILL_TEXT"));
         killLabel.setTextFill(Color.web("0xC50909"));
         TextFlow titleFlow = new TextFlow(buzzLabel, killLabel);
         titleFlow.setStyle("-fx-font-family: \"Helvetica\"; -fx-font-size: 72px; -fx-font-weight: bold; -fx-text-alignment: center;");

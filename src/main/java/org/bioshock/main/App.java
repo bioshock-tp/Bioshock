@@ -16,7 +16,7 @@ import org.bioshock.engine.input.InputManager;
 import org.bioshock.gui.MainController;
 import org.bioshock.scenes.GameScene;
 import org.bioshock.scenes.SceneManager;
-import org.bioshock.utils.GlobalStrings;
+import org.bioshock.utils.LanguageManager;
 
 import java.io.IOException;
 import java.net.URL;
@@ -26,7 +26,8 @@ import java.util.Objects;
 import java.util.ResourceBundle;
 
 public class App extends Application {
-    public static final String NAME = GlobalStrings.BUZZ_TEXT + GlobalStrings.KILL_TEXT;
+
+    private static String NAME = null;
     public static final Logger logger = LogManager.getLogger(App.class);
     private static int playerCount = 2;
     private static Scene fxmlScene;
@@ -45,10 +46,11 @@ public class App extends Application {
         );
         assert(playerCount > 0);
 
+        AudioManager.initialiseBackgroundAudio();
+        LanguageManager.initialiseLanguageSettings();
+
         WindowManager.initialise(stage);
         initFXMLScene();
-
-        AudioManager.initialiseBackgroundAudio();
 
         stage.setScene(fxmlScene);
         stage.show();
@@ -127,9 +129,24 @@ public class App extends Application {
         return networked;
     }
 
-    protected static void loadLang(String lang) {
-        locale = new Locale(lang);
-        bundle = ResourceBundle.getBundle("org.bioshock.utils.lang", locale);
+    public static void setBundle(ResourceBundle bundle) {
+        App.bundle = bundle;
+    }
+
+    public static void setLocale(Locale locale) {
+        App.locale = locale;
+    }
+
+    public static ResourceBundle getBundle() {
+        return bundle;
+    }
+
+    public static String getNAME() {
+        return NAME;
+    }
+
+    public static void setNAME(String NAME) {
+        App.NAME = NAME;
     }
 
     public static void exit(int code) {
