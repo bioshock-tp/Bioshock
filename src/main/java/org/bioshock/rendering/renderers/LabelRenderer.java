@@ -22,24 +22,32 @@ public class LabelRenderer implements Renderer {
             gc.setFill(label.getColor());
             
             String textToDisplay = label.getStringBuilder().toString();
-            App.logger.debug(textToDisplay);
+            String lines[] = textToDisplay.split("\\r?\\n");
+//            App.logger.debug(textToDisplay);
             int charsPerLine = label.getCharsPerLine();
             
-            for(int i=0;i*charsPerLine<textToDisplay.length();i++) {
-                int endIndex = (i+1)*charsPerLine;
-                
-                if(endIndex > textToDisplay.length()) {
-                    endIndex = textToDisplay.length();
+            int j=0;
+            for(String line: lines) {
+                if(line.charAt(0) == ' ') {
+                    line = line.substring(1);
                 }
-                
-                gc.fillText(
-                    textToDisplay.substring(
-                        i*charsPerLine, 
-                        endIndex), 
-                    getRenWidth(label.getX()), 
-                    getRenHeight(label.getY() + i*(label.getFont().getSize() + label.getLineSpacing())));
+                for(int i=0;i*charsPerLine<line.length();i++) {
+                    int endIndex = (i+1)*charsPerLine;
+                    
+                    if(endIndex > line.length()) {
+                        endIndex = line.length();
+                    }
+                    
+                                        
+                    gc.fillText(
+                            line.substring(
+                            i*charsPerLine, 
+                            endIndex), 
+                        getRenWidth(label.getX()), 
+                        getRenHeight(label.getY() + j*(label.getFont().getSize() + label.getLineSpacing())));
+                    j++;
+                }
             }
-            
             
             gc.restore();
         }

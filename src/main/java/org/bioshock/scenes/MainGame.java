@@ -163,7 +163,8 @@ public class MainGame extends GameScene {
         
         LabelEntity testLabel = new LabelEntity(
             new Point3D(10, 70, 100), 
-            "This is a test string that is longer than 30 characters long", 
+            "This is a test string that is longer than 30 characters long"
+            + "\n with\n newline\n charachters\n in", 
             new Font(20), 
             30,
             Color.BLACK);
