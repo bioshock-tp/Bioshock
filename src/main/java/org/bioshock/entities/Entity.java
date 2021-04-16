@@ -2,16 +2,10 @@ package org.bioshock.entities;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
-
-import org.bioshock.components.NetworkC;
-import org.bioshock.components.RendererC;
 import org.bioshock.engine.core.WindowManager;
 import org.bioshock.entities.map.Room;
-import org.bioshock.rendering.renderers.Renderer;
 import org.bioshock.scenes.SceneManager;
 import org.bioshock.utils.ArrayUtils;
-import org.bioshock.utils.Point;
 
 import javafx.geometry.Point2D;
 import javafx.geometry.Point3D;
@@ -19,6 +13,12 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
 import javafx.util.Pair;
+import org.bioshock.components.NetworkC;
+import org.bioshock.components.RendererC;
+import org.bioshock.rendering.renderers.Renderer;
+import org.bioshock.utils.Point;
+
+import java.util.UUID;
 
 public abstract class Entity {
     protected Point position;
@@ -113,6 +113,8 @@ public abstract class Entity {
     }
 
     public void setAnimation() {}
+
+    public void setWalkingSfx() {}
 
     public String getID() {
         return uuid;

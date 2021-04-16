@@ -44,7 +44,7 @@ public class App extends Application {
         WindowManager.initialise(stage);
         initFXMLScene();
 
-        AudioManager.initialiseAudio();
+        AudioManager.initialiseBackgroundAudio();
 
         stage.setScene(fxmlScene);
         stage.show();

@@ -64,6 +64,7 @@ public class MusicController {
         if (settings != null) {
             settings = settings.deepCopy();
             player.setVolume(settings.getVolume());
+            player.setCycleCount(settings.getCycleCount());
         }
 
         Platform.runLater(() -> {
