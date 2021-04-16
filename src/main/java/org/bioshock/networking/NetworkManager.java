@@ -83,16 +83,23 @@ public class NetworkManager {
                         }
                     }
 
+                    System.out.println("Network Loby");
+
                     Message message = client.getInitialMessages().remove();
-
+                    System.out.println("I am here 1");
+                    System.out.println(playerList);
                     Hider hider = playerList.get(message.playerNumber - 1);
+                    System.out.println("I am here 2");
                     hider.setID(message.uuid);
+                    System.out.println("I am here 3");
                     loadedPlayers.putIfAbsent(message.uuid, hider);
-
+                    System.out.println("I am here 4");
                     Platform.runLater(() ->
                         SceneManager.getLobby().updatePlayerCount()
                     );
+                    System.out.println("I am here 5");
                 }
+
 
                 masterHider = playerList.get(0);
 

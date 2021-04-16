@@ -68,7 +68,6 @@ public class Client extends WebSocketClient {
             }
             return;
         } catch (NumberFormatException ignored) {
-            App.logger.error(ignored);
             /* Was not playerNumber message */
         }
 
