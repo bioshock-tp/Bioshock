@@ -32,6 +32,10 @@ public class NetworkManager {
     private static SeekerAI seeker;
     private static long seed = 0;
 
+    public static void setSeed(long currSeed) {
+        seed = currSeed;
+    }
+
     public static long getSeed() {
         return seed;
     }
@@ -64,6 +68,7 @@ public class NetworkManager {
                     App.logger.error(e);
                     Thread.currentThread().interrupt();
                 }
+                client.send(Integer.toString(App.playerCount()));
 
                 /* Wait until players join then add them to loadedPlayers */
                 while (loadedPlayers.size() < App.playerCount()) {
@@ -78,16 +83,23 @@ public class NetworkManager {
                         }
                     }
 
+                    System.out.println("Network Loby");
+
                     Message message = client.getInitialMessages().remove();
-
+                    System.out.println("I am here 1");
+                    System.out.println(playerList);
                     Hider hider = playerList.get(message.playerNumber - 1);
+                    System.out.println("I am here 2");
                     hider.setID(message.uuid);
+                    System.out.println("I am here 3");
                     loadedPlayers.putIfAbsent(message.uuid, hider);
-
+                    System.out.println("I am here 4");
                     Platform.runLater(() ->
                         SceneManager.getLobby().updatePlayerCount()
                     );
+                    System.out.println("I am here 5");
                 }
+
 
                 masterHider = playerList.get(0);
 

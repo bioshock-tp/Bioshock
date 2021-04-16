@@ -5,6 +5,7 @@ import static org.bioshock.rendering.RenderManager.getRenWidth;
 import static org.bioshock.rendering.RenderManager.getRenX;
 import static org.bioshock.rendering.RenderManager.getRenY;
 
+import javafx.scene.text.Font;
 import org.bioshock.animations.AnimationPlayer;
 import org.bioshock.entities.EntityManager;
 import org.bioshock.entities.SquareEntity;
@@ -81,6 +82,10 @@ public class PlayerSpriteRenderer implements Renderer {
                 getRenY(y)
             )
         );
+
+        gc.setFill(Color.BLACK);
+        gc.setFont(new Font(getRenHeight(20)));
+        gc.fillText("Player(Human)", getRenX(x-width), getRenY(y-5), getRenWidth(width*3));
 
         gc.restore();
     }

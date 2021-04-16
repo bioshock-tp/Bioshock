@@ -12,7 +12,8 @@ import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
 
 public class Client extends WebSocketClient {
-    private static final String DEFURI = "ws://51.15.109.210:8029/";
+    //private static final String DEFURI = "ws://51.15.109.210:8029/";
+    private static final String DEFURI = "ws://localhost:8029/";
 
     private int playerNumber;
 
@@ -20,6 +21,7 @@ public class Client extends WebSocketClient {
     private Queue<Message> initialMessages = new ArrayDeque<>();
     private Queue<Message> messageQueue = new ArrayDeque<>();
     private boolean connected = false;
+    private boolean initMessage = true;
 
     private Client(URI serverURI) {
         super(serverURI);
@@ -50,10 +52,20 @@ public class Client extends WebSocketClient {
 
     @Override
     public void onMessage(String string) {
+        System.out.println(string);
         /* Case of player number */
         try {
-            playerNumber = Integer.parseInt(string);
-            send("New Player");
+            if(initMessage) {
+                playerNumber = Integer.parseInt(string);
+                send(Integer.toString(10000));
+                initMessage = (!initMessage);
+            }
+            else {
+                long seed = Long.parseLong(string);
+                NetworkManager.setSeed(seed);
+                send("New Player");
+                initMessage = (!initMessage);
+            }
             return;
         } catch (NumberFormatException ignored) {
             /* Was not playerNumber message */
@@ -118,6 +130,8 @@ public class Client extends WebSocketClient {
         );
         App.exit(-1);
     }
+
+    public boolean haveInitMessage() {return initMessage;}
 
     public Queue<Message> getInitialMessages() {
         return initialMessages;
