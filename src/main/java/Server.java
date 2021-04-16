@@ -28,7 +28,7 @@ public class Server extends WebSocketServer {
 		try {
 			mutex.acquire();
 			Client currClient = clients.get(conn);
-			if (currClient.getType() == 2) {
+			if (currClient != null && currClient.getType() == 2) {
 				String currGame = players.get(conn);
 				Set<WebSocket> currSet = games.get(currGame);
 				currSet.remove(conn);
@@ -36,7 +36,7 @@ public class Server extends WebSocketServer {
 					games.remove(currGame);
 				else
 					games.replace(currGame, currSet);
-			} else if (currClient.getType() == 1) {
+			} else if (currClient != null && currClient.getType() == 1) {
 				Integer exNr = currClient.getGameSize();
 				Set<WebSocket> currLobby = lobbies.get(exNr);
 				currLobby.remove(conn);
@@ -128,6 +128,7 @@ public class Server extends WebSocketServer {
 				else {
 					if(currClient.getType() == 0){
 						currClient.setGameSize(nr);
+						currClient.setClientType(1);
 						currClient.setGameSeed(lobbiesSeed.get(nr));
 						Set<WebSocket> currLobby = lobbies.get(nr);
 						Set<WebSocket> currGame = new HashSet<WebSocket>();
@@ -159,6 +160,10 @@ public class Server extends WebSocketServer {
 				return;
 			} catch (NumberFormatException ignored) {
 				/* Was not playerNumber message */
+			}
+
+			if(message.equals("New Player")){
+				System.out.println(currClient.getGameSize());
 			}
 
 			if(currClient.getType() == 1){
