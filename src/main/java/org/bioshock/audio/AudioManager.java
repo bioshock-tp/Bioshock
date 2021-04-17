@@ -11,11 +11,28 @@ import java.util.prefs.Preferences;
 
 public class AudioManager {
 
+    private static MusicController bgMusicController;
+    private static MusicSettings bgMusicSettings;
+    private static EffectController walkingEffectController;
+    private static EffectSettings walkingEffectSettings;
+
+    public static void initialiseAudioControllers() {
+        bgMusicController = AudioController.loadMusicController(
+            "background-music"
+        );
+        bgMusicSettings = new MusicSettings();
+        walkingEffectController = AudioController.loadEffectController(
+            "walking"
+        );
+        walkingEffectSettings = new EffectSettings();
+    }
+
     /**
      * Initialises background with user saved volume preference.
      */
     public static void initialiseBackgroundAudio() {
         AudioController.initialise();
+        initialiseAudioControllers();
         Preferences prefs = Preferences.userNodeForPackage(SettingsController.class);
         double volume = prefs.getDouble("musicVolume", 1.0);
         if (prefs.getBoolean("musicOn", true)) {
@@ -27,23 +44,16 @@ public class AudioManager {
      * Stops background music playing.
      */
     public static void stopBackgroundMusic() {
-        MusicController musicController = AudioController.loadMusicController(
-            "background-music"
-        );
-        musicController.stop();
+        bgMusicController.stop();
     }
 
     /**
      * PLays background music.
      */
     public static void playBackgroundMusic(double vol) {
-        MusicController musicController = AudioController.loadMusicController(
-            "background-music"
-        );
-        final MusicSettings settings = new MusicSettings();
-        settings.setVolume(vol);
-        settings.setCycleCount(-1);
-        musicController.play(settings);
+        bgMusicSettings.setVolume(vol);
+        bgMusicSettings.setCycleCount(-1);
+        bgMusicController.play(bgMusicSettings);
     }
 
 //    /**
@@ -62,17 +72,13 @@ public class AudioManager {
      * PLays walking sound.
      */
     public static void playWalkingSfx() {
-        EffectController effectController = AudioController.loadEffectController(
-            "walking"
-        );
         Preferences prefs = Preferences.userNodeForPackage(SettingsController.class);
 
         if (prefs.getBoolean("sfxOn", true)) {
             double volume = prefs.getDouble("sfxVolume", 1.0);
-            final EffectSettings settings = new EffectSettings();
-            settings.setVolume(volume);
-            settings.setCycleCount(100);
-            effectController.play(settings);
+            walkingEffectSettings.setVolume(volume);
+            walkingEffectSettings.setCycleCount(-1);
+            walkingEffectController.play(walkingEffectSettings);
         }
     }
 
@@ -80,11 +86,6 @@ public class AudioManager {
      * Stops walking sound.
      */
     public static void stopWalkingSfx() {
-        EffectController effectController = AudioController.loadEffectController(
-            "walking"
-        );
-
-        effectController.stop();
-
+        walkingEffectController.stop();
     }
 }
