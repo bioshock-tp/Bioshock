@@ -6,6 +6,8 @@
 <?import javafx.geometry.Insets?>
 
 <?import java.net.URL?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.control.TextField?>
 <VBox alignment="CENTER" spacing="30.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="org.bioshock.gui.OnlineGameController" styleClass="background">
     <fx:include source="title.fxml"/>
@@ -19,6 +21,10 @@
     </padding>
     
     <Label fx:id="developmentLabel"  styleClass="p"/>
+    <HBox spacing="10" alignment="CENTER">
+        <Label fx:id="nameLabel"  styleClass="p"/>
+        <TextField fx:id="nameField"/>
+    </HBox>
     <Button fx:id="launchButton" onAction="#launchGame" styleClass="gui-button"/>
     <Button fx:id="backButton" onAction="#switchToNewGameView" styleClass="gui-button"/>
 </VBox>
