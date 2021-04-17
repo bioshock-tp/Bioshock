@@ -6,7 +6,7 @@ import org.bioshock.utils.Size;
 
 import javafx.geometry.Point2D;
 
-public class PlayerAnimations {
+public class HiderAnimations implements PlayerAnimation {
 
     Sprite moveRight;
     Sprite moveLeft;
@@ -15,7 +15,7 @@ public class PlayerAnimations {
     Sprite idle;
     Sprite die;
 
-    public PlayerAnimations(Entity entity, int scale) {
+    public HiderAnimations(Entity entity, int scale) {
         moveDown = new Sprite(
             entity,
             new Point2D(0, 0),

@@ -1,13 +1,9 @@
 package org.bioshock.networking;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.EnumMap;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-
+import javafx.application.Platform;
+import javafx.concurrent.Task;
+import javafx.geometry.Point2D;
+import javafx.scene.input.KeyCode;
 import org.bioshock.entities.Entity;
 import org.bioshock.entities.SquareEntity;
 import org.bioshock.entities.players.Hider;
@@ -16,10 +12,7 @@ import org.bioshock.main.App;
 import org.bioshock.networking.Message.ClientInput;
 import org.bioshock.scenes.SceneManager;
 
-import javafx.application.Platform;
-import javafx.concurrent.Task;
-import javafx.geometry.Point2D;
-import javafx.scene.input.KeyCode;
+import java.util.*;
 
 public class NetworkManager {
     private static Map<KeyCode, Boolean> keyPressed = new EnumMap<>(
@@ -95,6 +88,7 @@ public class NetworkManager {
 
                 me.getMovement().initMovement();
                 playerList.forEach(Hider::initAnimations);
+                seeker.initAnimations();
 
                 App.logger.info("Networking initialised");
 

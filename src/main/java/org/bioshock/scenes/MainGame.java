@@ -1,10 +1,15 @@
 package org.bioshock.scenes;
 
-import java.util.List;
-
+import javafx.geometry.Point2D;
+import javafx.geometry.Point3D;
+import javafx.scene.Cursor;
+import javafx.scene.input.KeyCode;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import org.bioshock.components.NetworkC;
 import org.bioshock.engine.core.FrameRate;
-import org.bioshock.engine.core.WindowManager;
 import org.bioshock.engine.input.InputManager;
 import org.bioshock.entities.EntityManager;
 import org.bioshock.entities.LabelEntity;
@@ -21,15 +26,7 @@ import org.bioshock.rendering.RenderManager;
 import org.bioshock.utils.GlobalConstants;
 import org.bioshock.utils.Size;
 
-import javafx.geometry.Point2D;
-import javafx.geometry.Point3D;
-import javafx.scene.Cursor;
-import javafx.scene.control.Label;
-import javafx.scene.input.KeyCode;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
+import java.util.List;
 
 public class MainGame extends GameScene {
     private static final double ENDTIME = 2 * 60f + 3;
@@ -129,6 +126,8 @@ public class MainGame extends GameScene {
             hider
         );
 
+        seeker.initAnimations();
+
         children.add(seeker);
 
         Size timerSize = new Size(100, 100);
@@ -196,6 +195,7 @@ public class MainGame extends GameScene {
             EntityManager.getPlayers().get(0).getMovement().initMovement();
             EntityManager.getPlayers().get(0).initAnimations();
         }
+
     }
 
     @Override

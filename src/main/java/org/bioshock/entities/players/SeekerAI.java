@@ -1,17 +1,20 @@
 package org.bioshock.entities.players;
 
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-
+import javafx.geometry.Point2D;
+import javafx.geometry.Point3D;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.*;
+import javafx.util.Pair;
+import org.bioshock.animations.SeekerAnimations;
+import org.bioshock.animations.Sprite;
 import org.bioshock.components.NetworkC;
+import org.bioshock.components.PathfindingC;
 import org.bioshock.engine.core.WindowManager;
 import org.bioshock.engine.pathfinding.Graph;
 import org.bioshock.engine.pathfinding.GraphNode;
 import org.bioshock.entities.Entity;
 import org.bioshock.entities.EntityManager;
-import org.bioshock.components.PathfindingC;
 import org.bioshock.entities.SquareEntity;
 import org.bioshock.entities.map.Room;
 import org.bioshock.entities.map.TexRectEntity;
@@ -26,16 +29,9 @@ import org.bioshock.utils.GlobalConstants;
 import org.bioshock.utils.Point;
 import org.bioshock.utils.Size;
 
-import javafx.geometry.Point2D;
-import javafx.geometry.Point3D;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Arc;
-import javafx.scene.shape.ArcType;
-import javafx.scene.shape.Circle;
-import javafx.scene.shape.Line;
-import javafx.scene.shape.Rectangle;
-import javafx.scene.shape.Shape;
-import javafx.util.Pair;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 public class SeekerAI extends SquareEntity {
     private Hider target;
@@ -55,6 +51,8 @@ public class SeekerAI extends SquareEntity {
     private Point2D currentTargetLocation;
     private Point2D lastSeenPosition;
     private Point lastSeekerPosition;
+    private Sprite currentSprite;
+    private SeekerAnimations seekerAnimations;
 
     private static final double TIME_BETWEEN_SWINGS = 1.0;
     private static final double TIME_SWINGING = 1.0;
@@ -105,6 +103,45 @@ public class SeekerAI extends SquareEntity {
         currentTargetLocation = new Point2D(getCentre().getX(), getCentre().getY());
     }
 
+    public void initAnimations() {
+        seekerAnimations = new SeekerAnimations(
+            this,
+            GlobalConstants.PLAYER_SCALE
+        );
+        currentSprite = seekerAnimations.getPlayerIdleSprite();
+    }
+
+    private void setCurrentSprite(Sprite s) {
+        if (s != null) {
+            currentSprite = s;
+        } else {
+            App.logger.debug("Sprite is missing!");
+        }
+    }
+
+    @Override
+    public void setAnimation() {
+        Point2D translation = movement.getDirection();
+
+        int x = (int) translation.getX();
+        int y = (int) translation.getY();
+        Sprite animation = seekerAnimations.getPlayerIdleSprite();
+
+        if (x > 0) animation = seekerAnimations.getMoveRightSprite();
+
+        else if (x < 0) animation = seekerAnimations.getMoveLeftSprite();
+
+        else if (y > 0) animation = seekerAnimations.getMoveDownSprite();
+
+        else if (y < 0) animation = seekerAnimations.getMoveUpSprite();
+
+        setCurrentSprite(animation);
+    }
+
+    public Sprite getCurrentSprite() {
+        return currentSprite;
+    }
+
     protected void tick(double timeDelta) {
         timeBetweenSwings += timeDelta;
         if(getIsActive()){
@@ -115,6 +152,7 @@ public class SeekerAI extends SquareEntity {
         lastSeekerPosition = getCentre();
         setSwatterPos();
         setSwatterRot();
+        movement.tick(timeDelta);
     }
 
     private void checkStill(double timeDelta, Point centre) {
