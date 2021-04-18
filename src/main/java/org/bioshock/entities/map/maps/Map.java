@@ -5,7 +5,7 @@ import java.util.List;
 import org.bioshock.engine.pathfinding.Graph;
 import org.bioshock.engine.pathfinding.GraphNode;
 import org.bioshock.entities.map.Room;
-import org.bioshock.entities.map.TexRectEntity;
+import org.bioshock.entities.map.Wall;
 import org.bioshock.entities.map.utils.ConnType;
 import org.bioshock.utils.Direction;
 
@@ -16,7 +16,7 @@ public interface Map {
     *
     * @return all the walls that make up a map
     */
-	public List<TexRectEntity> getWalls();
+	public List<Wall> getWalls();
 	
 	 /***
 	    * @return the room graph representing the map

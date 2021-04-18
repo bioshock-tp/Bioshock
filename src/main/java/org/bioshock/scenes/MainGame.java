@@ -10,7 +10,7 @@ import org.bioshock.entities.EntityManager;
 import org.bioshock.entities.LabelEntity;
 import org.bioshock.entities.map.Room;
 import org.bioshock.entities.map.RoomEntity;
-import org.bioshock.entities.map.TexRectEntity;
+import org.bioshock.entities.map.Wall;
 import org.bioshock.entities.map.maps.GenericMap;
 import org.bioshock.entities.map.maps.Map;
 import org.bioshock.entities.map.maps.RandomMap;
@@ -163,7 +163,7 @@ public class MainGame extends GameScene {
         }
         
         SceneManager.setMap(map);
-        EntityManager.registerAll(map.getWalls().toArray(new TexRectEntity[0]));
+        EntityManager.registerAll(map.getWalls().toArray(new Wall[0]));
         children.addAll(map.getWalls());
 
         List<Room> rooms = map.getRooms();

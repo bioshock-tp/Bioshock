@@ -26,7 +26,7 @@ public class Sides {
      * @param c the colour of the side
      * @return
      */
-    public static Pair<TexRectEntity,boolean[][]> side(
+    public static Pair<Wall,boolean[][]> side(
             Point3D pos,
             Size size,
             Color c){
@@ -34,13 +34,13 @@ public class Sides {
             [(int) Math.round(size.getHeight())]
             [(int) Math.round(size.getWidth())];
         
-        TexRectEntity side = new TexRectEntity(
+        Wall side = new Wall(
             pos, 
             new NetworkC(false), 
             new Size(size.getWidth()*UNIT_WIDTH, size.getHeight()*UNIT_HEIGHT), 
             c);
         
-        return new Pair<TexRectEntity, boolean[][]>(side, traversable);
+        return new Pair<Wall, boolean[][]>(side, traversable);
     }
     
     /**
@@ -53,7 +53,7 @@ public class Sides {
      * @param c the colour of the room
      * @return the walls that make up the side and an array representing what sides are solid
      */
-    public static Pair<List<TexRectEntity>,boolean[][]> lExit(
+    public static Pair<List<Wall>,boolean[][]> lExit(
         Point3D pos,
         double wallWidth,
         double roomHeight,
@@ -95,8 +95,8 @@ public class Sides {
         //ArrayUtils.log2DArray(traversable);
         
         //vertical wall
-        TexRectEntity roomWall1 =
-            new TexRectEntity(
+        Wall roomWall1 =
+            new Wall(
                 pos.add((coriLen - wallWidth)*UNIT_WIDTH, 0*UNIT_HEIGHT, 0),
                 new NetworkC(false),
                 new Size(wallWidth*UNIT_WIDTH, ((roomHeight - coriWidth) / 2 - wallWidth)*UNIT_HEIGHT),
@@ -104,8 +104,8 @@ public class Sides {
             ); 
 
         //vertical wall
-        TexRectEntity roomWall2 =
-            new TexRectEntity(
+        Wall roomWall2 =
+            new Wall(
                 pos.add(
                     (coriLen - wallWidth)*UNIT_WIDTH,
                     ((roomHeight + coriWidth) / 2 + wallWidth)*UNIT_HEIGHT, 0
@@ -116,8 +116,8 @@ public class Sides {
             );
 
         //top wall
-        TexRectEntity coriWall1 =
-            new TexRectEntity(
+        Wall coriWall1 =
+            new Wall(
                 pos.add(
                     0*UNIT_WIDTH,
                     ((roomHeight - coriWidth) / 2 - wallWidth)*UNIT_HEIGHT,
@@ -129,8 +129,8 @@ public class Sides {
             );
 
         //bottom wall
-        TexRectEntity coriWall2 =
-            new TexRectEntity(
+        Wall coriWall2 =
+            new Wall(
                 pos.add(0*UNIT_WIDTH, ((roomHeight + coriWidth) / 2)*UNIT_HEIGHT, 0),
                 new NetworkC(false),
                 new Size((coriLen - wallWidth)*UNIT_WIDTH + padding, wallWidth*UNIT_HEIGHT),
@@ -138,8 +138,8 @@ public class Sides {
             );
 
         //corner connecting top and left
-        TexRectEntity cor1 =
-            new TexRectEntity(
+        Wall cor1 =
+            new Wall(
                 pos.add(
                     (coriLen - wallWidth)*UNIT_WIDTH,
                     ((roomHeight - coriWidth) / 2 - wallWidth)*UNIT_HEIGHT,
@@ -151,8 +151,8 @@ public class Sides {
             );
 
         //corner connecting bottom and left
-        TexRectEntity cor2 =
-            new TexRectEntity(
+        Wall cor2 =
+            new Wall(
                 pos.add(
                     (coriLen - wallWidth)*UNIT_WIDTH,
                     ((roomHeight + coriWidth) / 2)*UNIT_HEIGHT,
@@ -183,7 +183,7 @@ public class Sides {
      * @param c the colour of the room
      * @return the walls that make up the side and an array representing what sides are solid
      */
-    public static Pair<List<TexRectEntity>,boolean[][]> rExit(
+    public static Pair<List<Wall>,boolean[][]> rExit(
         Point3D pos,
         double wallWidth,
         double roomHeight,
@@ -226,8 +226,8 @@ public class Sides {
         //ArrayUtils.log2DArray(traversable);
 
         //vertical wall
-        TexRectEntity roomWall1 =
-            new TexRectEntity(
+        Wall roomWall1 =
+            new Wall(
                 pos,
                 new NetworkC(false),
                 new Size(wallWidth*UNIT_WIDTH, ((roomHeight - coriWidth) / 2 - wallWidth)*UNIT_HEIGHT),
@@ -235,8 +235,8 @@ public class Sides {
             );
 
         //vertical wall
-        TexRectEntity roomWall2 =
-            new TexRectEntity(
+        Wall roomWall2 =
+            new Wall(
                 pos.add(
                     0*UNIT_WIDTH,
                     ((roomHeight + coriWidth) / 2 + wallWidth)*UNIT_HEIGHT,
@@ -248,8 +248,8 @@ public class Sides {
             );
 
         //top wall
-        TexRectEntity coriWall1 =
-            new TexRectEntity(
+        Wall coriWall1 =
+            new Wall(
                 pos.add(
                     wallWidth*UNIT_WIDTH,
                     ((roomHeight - coriWidth) / 2 - wallWidth)*UNIT_HEIGHT,
@@ -261,8 +261,8 @@ public class Sides {
             );
 
         //bottom wall
-        TexRectEntity coriWall2 =
-            new TexRectEntity(
+        Wall coriWall2 =
+            new Wall(
                 pos.add(wallWidth*UNIT_WIDTH, ((roomHeight + coriWidth) / 2)*UNIT_HEIGHT, 0),
                 new NetworkC(false),
                 new Size((coriLen - wallWidth)*UNIT_WIDTH + padding, wallWidth*UNIT_HEIGHT),
@@ -270,8 +270,8 @@ public class Sides {
             );
 
         //corner connecting top and right
-        TexRectEntity cor1 =
-            new TexRectEntity(
+        Wall cor1 =
+            new Wall(
                 pos.add(
                     0*UNIT_WIDTH,
                     ((roomHeight - coriWidth) / 2 - wallWidth)*UNIT_HEIGHT,
@@ -283,8 +283,8 @@ public class Sides {
             );
 
         //corner connecting bottom and right
-        TexRectEntity cor2 =
-            new TexRectEntity(
+        Wall cor2 =
+            new Wall(
                 pos.add(0*UNIT_WIDTH, ((roomHeight + coriWidth) / 2)*UNIT_HEIGHT, 0),
                 new NetworkC(false),
                 new Size(wallWidth*UNIT_WIDTH, wallWidth*UNIT_HEIGHT),
@@ -309,7 +309,7 @@ public class Sides {
      * @param c the colour of the room
      * @return the walls that make up the side and an array representing what sides are solid
      */
-    public static Pair<List<TexRectEntity>,boolean[][]> tExit(
+    public static Pair<List<Wall>,boolean[][]> tExit(
         Point3D pos,
         double wallWidth,
         double roomWidth,
@@ -352,8 +352,8 @@ public class Sides {
         //ArrayUtils.log2DArray(traversable);
    
         //top wall
-        TexRectEntity roomWall1 =
-            new TexRectEntity(
+        Wall roomWall1 =
+            new Wall(
                 pos.add(0*UNIT_WIDTH, (coriLen - wallWidth)*UNIT_HEIGHT, 0),
                 new NetworkC(false),
                 new Size(((roomWidth - coriWidth) / 2 - wallWidth)*UNIT_WIDTH, wallWidth*UNIT_HEIGHT),
@@ -361,8 +361,8 @@ public class Sides {
             );
 
         //top wall
-        TexRectEntity roomWall2 =
-            new TexRectEntity(
+        Wall roomWall2 =
+            new Wall(
                 pos.add(
                     ((roomWidth + coriWidth) / 2 + wallWidth)*UNIT_WIDTH,
                     (coriLen - wallWidth)*UNIT_HEIGHT,
@@ -374,8 +374,8 @@ public class Sides {
             );
 
         //vertical wall
-        TexRectEntity coriWall1 =
-            new TexRectEntity(
+        Wall coriWall1 =
+            new Wall(
                 pos.add(
                     ((roomWidth - coriWidth) / 2 - wallWidth)*UNIT_WIDTH,
                     0*UNIT_HEIGHT,
@@ -387,8 +387,8 @@ public class Sides {
             );
 
         //vertical wall
-        TexRectEntity coriWall2 =
-            new TexRectEntity(
+        Wall coriWall2 =
+            new Wall(
                 pos.add(((roomWidth + coriWidth) / 2)*UNIT_WIDTH, 0*UNIT_HEIGHT, 0),
                 new NetworkC(false),
                 new Size(wallWidth*UNIT_WIDTH, (coriLen - wallWidth)*UNIT_HEIGHT + padding),
@@ -396,8 +396,8 @@ public class Sides {
             );
 
         //corner connecting top and left
-        TexRectEntity cor1 =
-            new TexRectEntity(
+        Wall cor1 =
+            new Wall(
                 pos.add(
                     ((roomWidth - coriWidth) / 2 - wallWidth)*UNIT_WIDTH,
                     (coriLen - wallWidth)*UNIT_HEIGHT,
@@ -409,8 +409,8 @@ public class Sides {
             );
 
         //corner connecting top and right
-        TexRectEntity cor2 =
-            new TexRectEntity(
+        Wall cor2 =
+            new Wall(
                 pos.add(
                     ((roomWidth + coriWidth) / 2)*UNIT_WIDTH,
                     (coriLen - wallWidth)*UNIT_HEIGHT,
@@ -439,7 +439,7 @@ public class Sides {
      * @param c the colour of the room
      * @return the walls that make up the side and an array representing what sides are solid
      */
-    public static Pair<List<TexRectEntity>,boolean[][]> bExit(
+    public static Pair<List<Wall>,boolean[][]> bExit(
         Point3D pos,
         double wallWidth,
         double roomWidth,
@@ -481,8 +481,8 @@ public class Sides {
         //ArrayUtils.log2DArray(traversable);
 
         //bottom wall
-        TexRectEntity roomWall1 =
-            new TexRectEntity(
+        Wall roomWall1 =
+            new Wall(
                 pos,
                 new NetworkC(false),
                 new Size(((roomWidth - coriWidth) / 2 - wallWidth)*UNIT_WIDTH, wallWidth*UNIT_HEIGHT),
@@ -490,8 +490,8 @@ public class Sides {
             );
 
         //bottom wall
-        TexRectEntity roomWall2 =
-            new TexRectEntity(
+        Wall roomWall2 =
+            new Wall(
                 pos.add(
                     ((roomWidth + coriWidth) / 2 + wallWidth)*UNIT_WIDTH,
                     0*UNIT_HEIGHT,
@@ -503,8 +503,8 @@ public class Sides {
             );
 
         //vertical wall
-        TexRectEntity coriWall1 =
-            new TexRectEntity(
+        Wall coriWall1 =
+            new Wall(
                 pos.add(
                     ((roomWidth - coriWidth) / 2 - wallWidth)*UNIT_WIDTH,
                     wallWidth*UNIT_HEIGHT,
@@ -516,8 +516,8 @@ public class Sides {
             );
 
         //vertical wall
-        TexRectEntity coriWall2 =
-            new TexRectEntity(
+        Wall coriWall2 =
+            new Wall(
                 pos.add(((roomWidth + coriWidth) / 2)*UNIT_WIDTH, wallWidth*UNIT_HEIGHT, 0),
                 new NetworkC(false),
                 new Size(wallWidth*UNIT_WIDTH, (coriLen - wallWidth)*UNIT_HEIGHT + padding),
@@ -525,8 +525,8 @@ public class Sides {
             );
 
         //corner connecting bottom and left
-        TexRectEntity cor1 =
-            new TexRectEntity(
+        Wall cor1 =
+            new Wall(
                 pos.add(
                     ((roomWidth - coriWidth) / 2 - wallWidth)*UNIT_WIDTH,
                     0*UNIT_HEIGHT,
@@ -538,8 +538,8 @@ public class Sides {
             );
 
         //corner connecting bottom and right
-        TexRectEntity cor2 =
-            new TexRectEntity(
+        Wall cor2 =
+            new Wall(
                 pos.add(((roomWidth + coriWidth) / 2)*UNIT_WIDTH, 0*UNIT_HEIGHT, 0),
                 new NetworkC(false),
                 new Size(wallWidth*UNIT_WIDTH, wallWidth*UNIT_HEIGHT),
@@ -564,7 +564,7 @@ public class Sides {
      * @param c the colour of the room
      * @return the walls that make up the side and an array representing what sides are solid
      */
-    public static Pair<List<TexRectEntity>,boolean[][]> lNoExit(
+    public static Pair<List<Wall>,boolean[][]> lNoExit(
         Point3D pos,
         double wallWidth,
         double roomHeight,
@@ -587,8 +587,8 @@ public class Sides {
         );
 
         //vertical wall
-        TexRectEntity wall =
-            new TexRectEntity(
+        Wall wall =
+            new Wall(
                 pos.add((coriLen - wallWidth)*UNIT_WIDTH, 0*UNIT_HEIGHT, 0),
                 new NetworkC(false),
                 new Size(wallWidth*UNIT_WIDTH, roomHeight*UNIT_HEIGHT),
@@ -611,7 +611,7 @@ public class Sides {
      * @param c the colour of the room
      * @return the walls that make up the side and an array representing what sides are solid
      */
-    public static Pair<List<TexRectEntity>,boolean[][]> rNoExit(
+    public static Pair<List<Wall>,boolean[][]> rNoExit(
         Point3D pos,
         double wallWidth,
         double roomHeight,
@@ -633,8 +633,8 @@ public class Sides {
         );
 
         //vertical wall
-        TexRectEntity wall =
-            new TexRectEntity(
+        Wall wall =
+            new Wall(
                 pos,
                 new NetworkC(false),
                 new Size(wallWidth*UNIT_WIDTH, roomHeight*UNIT_HEIGHT),
@@ -657,7 +657,7 @@ public class Sides {
      * @param c the colour of the room
      * @return the walls that make up the side and an array representing what sides are solid
      */
-    public static Pair<List<TexRectEntity>,boolean[][]> tNoExit(
+    public static Pair<List<Wall>,boolean[][]> tNoExit(
         Point3D pos,
         double wallWidth,
         double roomWidth,
@@ -680,8 +680,8 @@ public class Sides {
         );
 
         //top wall
-        TexRectEntity wall =
-            new TexRectEntity(
+        Wall wall =
+            new Wall(
                 pos.add(0*UNIT_WIDTH, (coriLen - wallWidth)*UNIT_HEIGHT, 0),
                 new NetworkC(false),
                 new Size(roomWidth*UNIT_WIDTH, wallWidth*UNIT_HEIGHT),
@@ -704,7 +704,7 @@ public class Sides {
      * @param c the colour of the room
      * @return the walls that make up the side and an array representing what sides are solid
      */
-    public static Pair<List<TexRectEntity>,boolean[][]> bNoExit(
+    public static Pair<List<Wall>,boolean[][]> bNoExit(
         Point3D pos,
         double wallWidth,
         double roomWidth,
@@ -727,8 +727,8 @@ public class Sides {
         );
 
         //bottom wall
-        TexRectEntity wall =
-            new TexRectEntity(
+        Wall wall =
+            new Wall(
                 pos,
                 new NetworkC(false),
                 new Size(roomWidth*UNIT_WIDTH, wallWidth*UNIT_HEIGHT),

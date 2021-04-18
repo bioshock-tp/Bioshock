@@ -37,7 +37,7 @@ public class Room extends GraphNode {
     /***
      * Stores a list of all the walls that make up the room
      */
-    private List<TexRectEntity> walls = new ArrayList<>();
+    private List<Wall> walls = new ArrayList<>();
 
     private List<Pair<Point2D, Direction>> corridorPoints = new ArrayList<>();
     /***
@@ -89,6 +89,11 @@ public class Room extends GraphNode {
         connections.put(Direction.EAST, ConnType.NO_EXIT);
         connections.put(Direction.WEST, ConnType.NO_EXIT);
     }
+    /**
+     * an array representing where there is floor space
+     * and where floor should be rendered
+     */
+    boolean[][] floorSpace;
 
     /***
      * Generates a room with the position being the top left of the room
@@ -184,7 +189,7 @@ public class Room extends GraphNode {
         //to the other subroom that makes up the bigger room
         if(connections.get(Direction.NORTH) == ConnType.SUB_ROOM &&
                 connections.get(Direction.EAST) != ConnType.SUB_ROOM) {
-            Pair<TexRectEntity, boolean[][]> sideAndArray = Sides.side(
+            Pair<Wall, boolean[][]> sideAndArray = Sides.side(
                 pos.add((coriSize.getHeight() + roomSize.getWidth())*UNIT_WIDTH, 0*UNIT_HEIGHT, 0), 
                 new Size(wallWidth, coriSize.getHeight()), 
                 color);
@@ -198,7 +203,7 @@ public class Room extends GraphNode {
         }
         if(connections.get(Direction.NORTH) == ConnType.SUB_ROOM &&
                 connections.get(Direction.WEST) != ConnType.SUB_ROOM) {
-            Pair<TexRectEntity, boolean[][]> sideAndArray = Sides.side(
+            Pair<Wall, boolean[][]> sideAndArray = Sides.side(
                 pos.add((coriSize.getHeight()-wallWidth)*UNIT_WIDTH, 0*UNIT_HEIGHT, 0), 
                 new Size(wallWidth, coriSize.getHeight()), 
                 color);
@@ -228,7 +233,7 @@ public class Room extends GraphNode {
         //to the other subroom that makes up the bigger room
         if(connections.get(Direction.SOUTH) == ConnType.SUB_ROOM &&
                 connections.get(Direction.EAST) != ConnType.SUB_ROOM) {
-            Pair<TexRectEntity, boolean[][]> sideAndArray = Sides.side(
+            Pair<Wall, boolean[][]> sideAndArray = Sides.side(
                 pos.add((coriSize.getHeight() + roomSize.getWidth())*UNIT_WIDTH, (coriSize.getHeight() + roomSize.getHeight())*UNIT_HEIGHT, 0), 
                 new Size(wallWidth, coriSize.getHeight()), 
                 color);
@@ -242,7 +247,7 @@ public class Room extends GraphNode {
         }
         if(connections.get(Direction.SOUTH) == ConnType.SUB_ROOM &&
                 connections.get(Direction.WEST) != ConnType.SUB_ROOM) {
-            Pair<TexRectEntity, boolean[][]> sideAndArray = Sides.side(
+            Pair<Wall, boolean[][]> sideAndArray = Sides.side(
                 pos.add((coriSize.getHeight()-wallWidth)*UNIT_WIDTH, (coriSize.getHeight() + roomSize.getHeight())*UNIT_HEIGHT, 0), 
                 new Size(wallWidth, coriSize.getHeight()), 
                 color);
@@ -272,7 +277,7 @@ public class Room extends GraphNode {
         //to the other subroom that makes up the bigger room
         if(connections.get(Direction.EAST) == ConnType.SUB_ROOM &&
                 connections.get(Direction.NORTH) != ConnType.SUB_ROOM) {
-            Pair<TexRectEntity, boolean[][]> sideAndArray = Sides.side(
+            Pair<Wall, boolean[][]> sideAndArray = Sides.side(
                 pos.add((coriSize.getHeight() + roomSize.getWidth())*UNIT_WIDTH, (coriSize.getHeight() - wallWidth)*UNIT_HEIGHT, 0), 
                 new Size(coriSize.getHeight(), wallWidth), 
                 color);
@@ -286,7 +291,7 @@ public class Room extends GraphNode {
         }
         if(connections.get(Direction.EAST) == ConnType.SUB_ROOM &&
                 connections.get(Direction.SOUTH) != ConnType.SUB_ROOM) {
-            Pair<TexRectEntity, boolean[][]> sideAndArray = Sides.side(
+            Pair<Wall, boolean[][]> sideAndArray = Sides.side(
                 pos.add((coriSize.getHeight() + roomSize.getWidth())*UNIT_WIDTH, (coriSize.getHeight() + roomSize.getHeight())*UNIT_HEIGHT, 0), 
                 new Size(coriSize.getHeight(), wallWidth), 
                 color);
@@ -312,7 +317,7 @@ public class Room extends GraphNode {
         //to the other subroom that makes up the bigger room
         if(connections.get(Direction.WEST) == ConnType.SUB_ROOM &&
                 connections.get(Direction.NORTH) != ConnType.SUB_ROOM) {
-            Pair<TexRectEntity, boolean[][]> sideAndArray = Sides.side(
+            Pair<Wall, boolean[][]> sideAndArray = Sides.side(
                 pos.add(0*UNIT_WIDTH, (coriSize.getHeight()-wallWidth)*UNIT_HEIGHT, 0), 
                 new Size(coriSize.getHeight(), wallWidth), 
                 color);
@@ -326,7 +331,7 @@ public class Room extends GraphNode {
         }
         if(connections.get(Direction.WEST) == ConnType.SUB_ROOM &&
                 connections.get(Direction.SOUTH) != ConnType.SUB_ROOM) {
-            Pair<TexRectEntity, boolean[][]> sideAndArray = Sides.side(
+            Pair<Wall, boolean[][]> sideAndArray = Sides.side(
                 pos.add((0)*UNIT_WIDTH, (coriSize.getHeight() + roomSize.getHeight())*UNIT_HEIGHT, 0), 
                 new Size(coriSize.getHeight(), wallWidth), 
                 color);
@@ -414,19 +419,30 @@ public class Room extends GraphNode {
         );        
 //        ArrayUtils.log2DArray(spawnableLocations);
         
+        floorSpace = new boolean[traversable.length][traversable[0].length];
+        
         //iterate through locations to spawn and then spawn walls in in the location if:
         //it want's to be spawned there, 
         //it can be spawned there,
         //the position it would spawn in is reachable from the centre position
         for (int i=0;i<locationsToSpawn.length&&i<spawnableLocations.length;i++) {
             for (int j=0;j<locationsToSpawn[0].length&&j<spawnableLocations[0].length;j++) {
+                if(traversableGraph.getNodes().contains(traversableNodes[i][j])) {
+                    floorSpace[i][j] = true;
+                }
+                
                 if(locationsToSpawn[i][j] == true && spawnableLocations[i][j] == true
                         && traversableGraph.getNodes().contains(traversableNodes[i][j])) {
-                    walls.add(new TexRectEntity(
+                    walls.add(new Wall(
                         pos.add(j*UNIT_WIDTH, i*UNIT_HEIGHT,0), 
                         new NetworkC(false), 
                         new Size(UNIT_WIDTH, UNIT_HEIGHT), 
                         color.invert()));
+                    traversableNodes[i][j] = null;
+                    floorSpace[i][j] = false;
+                }
+                
+                if(!traversableGraph.getNodes().contains(traversableNodes[i][j])) {
                     traversableNodes[i][j] = null;
                 }
             }
@@ -461,7 +477,7 @@ public class Room extends GraphNode {
 		int relX,
 		int relY) {
         //add the entity representing the corner
-    	TexRectEntity corner4 = new TexRectEntity(
+    	Wall corner4 = new Wall(
             pos.add(
                 relX*UNIT_WIDTH,
                 relY*UNIT_HEIGHT,
@@ -494,7 +510,7 @@ public class Room extends GraphNode {
         Size coriSize,
         Color c,
         ConnType con) {
-        Pair<List<TexRectEntity>,boolean[][]> wallsAndArray = null;
+        Pair<List<Wall>,boolean[][]> wallsAndArray = null;
         //chooses either a top side with or without an exit
         switch(con) {
         case NO_EXIT:
@@ -551,7 +567,7 @@ public class Room extends GraphNode {
         Size coriSize,
         Color c,
         ConnType con) {
-        Pair<List<TexRectEntity>,boolean[][]> wallsAndArray = null;
+        Pair<List<Wall>,boolean[][]> wallsAndArray = null;
       //chooses either a bottom side with or without an exit
         switch(con) {
         case ROOM_TO_ROOM: 
@@ -608,7 +624,7 @@ public class Room extends GraphNode {
         Size coriSize,
         Color c,
         ConnType con) {
-        Pair<List<TexRectEntity>,boolean[][]> wallsAndArray = null;
+        Pair<List<Wall>,boolean[][]> wallsAndArray = null;
         //chooses either a right side with or without an exit
         switch(con) {
         case NO_EXIT:
@@ -665,7 +681,7 @@ public class Room extends GraphNode {
         Size coriSize,
         Color c,
         ConnType con) {
-        Pair<List<TexRectEntity>,boolean[][]> wallsAndArray = null;
+        Pair<List<Wall>,boolean[][]> wallsAndArray = null;
         //chooses either a left side with or without an exit
         switch(con) {
         case NO_EXIT:
@@ -719,7 +735,7 @@ public class Room extends GraphNode {
      * @param newZ
      */
     public void setZ(double newZ) {
-        for (TexRectEntity e : walls) {
+        for (Wall e : walls) {
             e.getRendererC().setZ(newZ);
         }
     }
@@ -728,7 +744,7 @@ public class Room extends GraphNode {
      *
      * @return The walls that make up the room
      */
-    public List<TexRectEntity> getWalls() {
+    public List<Wall> getWalls() {
         return walls;
     }
 
@@ -847,5 +863,9 @@ public class Room extends GraphNode {
      */
     public Size getCoriSize() {
         return coriSize;
+    }
+
+    public boolean[][] getFloorSpace() {
+        return floorSpace;
     }    
 }

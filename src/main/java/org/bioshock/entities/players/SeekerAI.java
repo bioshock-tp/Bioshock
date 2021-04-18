@@ -14,7 +14,7 @@ import org.bioshock.entities.EntityManager;
 import org.bioshock.components.PathfindingC;
 import org.bioshock.entities.SquareEntity;
 import org.bioshock.entities.map.Room;
-import org.bioshock.entities.map.TexRectEntity;
+import org.bioshock.entities.map.Wall;
 import org.bioshock.entities.map.utils.ConnType;
 import org.bioshock.main.App;
 import org.bioshock.physics.Movement;
@@ -232,7 +232,7 @@ public class SeekerAI extends SquareEntity {
         roomsToCheck.add(entity.findCurrentRoom());
 
         for (Room room : roomsToCheck) {
-            for(TexRectEntity wall : room.getWalls()) {
+            for(Wall wall : room.getWalls()) {
                 wallHitbox = new Rectangle(
                         wall.getX(),
                         wall.getY(),

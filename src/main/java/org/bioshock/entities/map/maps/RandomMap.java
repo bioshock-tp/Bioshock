@@ -6,7 +6,7 @@ import java.util.Random;
 import org.bioshock.engine.pathfinding.Graph;
 import org.bioshock.engine.pathfinding.GraphNode;
 import org.bioshock.entities.map.Room;
-import org.bioshock.entities.map.TexRectEntity;
+import org.bioshock.entities.map.Wall;
 import org.bioshock.entities.map.utils.ConnType;
 import org.bioshock.entities.map.utils.RoomType;
 import org.bioshock.utils.Direction;
@@ -77,7 +77,7 @@ public class RandomMap implements Map{
     }
  
     @Override
-    public List<TexRectEntity> getWalls() {
+    public List<Wall> getWalls() {
         return map.getWalls();
     }
 
