@@ -4,7 +4,6 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import org.bioshock.main.App;
-import org.bioshock.utils.GlobalStrings;
 
 public class NewGameController {
     public Button backButton;
@@ -27,8 +26,8 @@ public class NewGameController {
     }
 
     public void initialize() {
-        localGameButton.setText(GlobalStrings.SINGLE_PLAYER_BUTTON_TEXT);
-        onlineGameButton.setText(GlobalStrings.ONLINE_BUTTON_TEXT);
-        backButton.setText(GlobalStrings.BACK_MAIN_MENU_BUTTON_TEXT);
+        localGameButton.setText(App.getBundle().getString("SINGLE_PLAYER_BUTTON_TEXT"));
+        onlineGameButton.setText(App.getBundle().getString("ONLINE_BUTTON_TEXT"));
+        backButton.setText(App.getBundle().getString("BACK_MAIN_MENU_BUTTON_TEXT"));
     }
 }

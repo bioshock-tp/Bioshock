@@ -28,6 +28,7 @@ public class Movement {
 
     public void tick(double timeDelta) {
         entity.setAnimation();
+        entity.setWalkingSfx();
 
         if (
             entity == EntityManager.getCurrentPlayer()

@@ -20,6 +20,7 @@ public class EffectSettings extends AudioSettings {
     public EffectSettings deepCopy()  {
         final EffectSettings settings = new EffectSettings();
         settings.setVolume(super.volume);
+        settings.setCycleCount(super.cycleCount);
         return settings;
     }
 
@@ -43,4 +44,7 @@ public class EffectSettings extends AudioSettings {
     public double getVolume() {
         return super.volume;
     }
+
+//    @Override
+//    public int getCycleCount() { return  super.cycleCount; }
 }

@@ -11,7 +11,7 @@ import org.bioshock.audio.controllers.AudioController;
 import org.bioshock.audio.controllers.EffectController;
 import org.bioshock.audio.settings.EffectSettings;
 import org.bioshock.main.App;
-import org.bioshock.utils.GlobalStrings;
+import org.bioshock.utils.LanguageManager;
 
 import java.util.prefs.Preferences;
 
@@ -24,6 +24,12 @@ public class SettingsController extends App {
     public Label sfxVolumeLabel;
     @FXML
     public Label sfxLabel;
+    @FXML
+    public Label languageLabel;
+    @FXML
+    public RadioButton enRadioButton;
+    @FXML
+    public RadioButton roRadioButton;
     @FXML
     private Slider musicVolumeSlider;
     @FXML
@@ -39,6 +45,8 @@ public class SettingsController extends App {
     @FXML
     private RadioButton sfxOnRadioButton;
 
+
+
     @FXML
     private void switchToMainView() {
         App.setFXMLRoot("main");
@@ -46,16 +54,20 @@ public class SettingsController extends App {
 
     @FXML
     public void initialize() {
-        backButton.setText(GlobalStrings.BACK_MAIN_MENU_BUTTON_TEXT);
-        musicLabel.setText(GlobalStrings.MUSIC_TEXT);
-        musicVolumeLabel.setText(GlobalStrings.VOLUME_TEXT + ":");
-        sfxLabel.setText(GlobalStrings.SFX_TEXT);
-        sfxVolumeLabel.setText(GlobalStrings.VOLUME_TEXT + ":");
-        musicOnRadioButton.setText(GlobalStrings.ON_BUTTON_TEXT);
-        musicOffRadioButton.setText(GlobalStrings.OFF_BUTTON_TEXT);
-        sfxOnRadioButton.setText(GlobalStrings.ON_BUTTON_TEXT);
-        sfxOffRadioButton.setText(GlobalStrings.OFF_BUTTON_TEXT);
+        initialiseLanguageSettings();
         initialiseAudioSettings();
+        initialiseLabels();
+    }
+
+    private void initialiseLanguageSettings() {
+        switch (getPrefs().get("language", "en")) {
+            case "en":
+                enRadioButton.setSelected(true);
+                break;
+            case "ro":
+                roRadioButton.setSelected(true);
+                break;
+        }
     }
 
     private void initialiseAudioSettings() {
@@ -130,5 +142,32 @@ public class SettingsController extends App {
 
     private EffectController getSfxController() {
         return AudioController.loadEffectController("enabled");
+    }
+
+    public void setLanguageEn(ActionEvent actionEvent) {
+        LanguageManager.loadLang("en");
+        initialiseLabels();
+        getPrefs().put("language", "en");
+    }
+
+    public void setLanguageRo(ActionEvent actionEvent) {
+        LanguageManager.loadLang("ro");
+        initialiseLabels();
+        getPrefs().put("language", "ro");
+    }
+
+    private void initialiseLabels() {
+        backButton.setText(bundle.getString("BACK_MAIN_MENU_BUTTON_TEXT"));
+        musicLabel.setText(bundle.getString("MUSIC_TEXT"));
+        musicVolumeLabel.setText((bundle.getString("VOLUME_TEXT") + ":"));
+        sfxLabel.setText(bundle.getString("SFX_TEXT"));
+        sfxVolumeLabel.setText((bundle.getString("VOLUME_TEXT") + ":"));
+        musicOnRadioButton.setText(bundle.getString("ON_BUTTON_TEXT"));
+        musicOffRadioButton.setText(bundle.getString("OFF_BUTTON_TEXT"));
+        sfxOnRadioButton.setText(bundle.getString("ON_BUTTON_TEXT"));
+        sfxOffRadioButton.setText(bundle.getString("OFF_BUTTON_TEXT"));
+        languageLabel.setText(bundle.getString("LANGUAGE_TEXT"));
+        enRadioButton.setText(bundle.getString("ENGLISH_BUTTON_TEXT"));
+        roRadioButton.setText(bundle.getString("ROMANIAN_BUTTON_TEXT"));
     }
 }

@@ -34,6 +34,7 @@ public class EffectController {
         if (settings != null) {
             settings = settings.deepCopy();
             clip.setVolume(settings.getVolume());
+            clip.setCycleCount(settings.getCycleCount());
         }
 
         Platform.runLater(() -> {

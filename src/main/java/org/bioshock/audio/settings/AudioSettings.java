@@ -4,6 +4,8 @@ import lombok.Getter;
 
 public abstract class AudioSettings {
 
+
+
     /**
      * The number of times the clip will be played.
      *
@@ -11,7 +13,7 @@ public abstract class AudioSettings {
      * more, but setting this to -1 will cause the clip to continue looping.
      *
      */
-    @Getter protected int cycleCount = 1;
+    protected int cycleCount = 1;
 
     /**
      * The relative rate at which the clip is played.
@@ -51,6 +53,12 @@ public abstract class AudioSettings {
     public void setCycleCount(final int cycleCount) {
         this.cycleCount = Math.max(-1, cycleCount);
     }
+
+    public int getCycleCount() {
+        return cycleCount;
+    }
+
+
 
     /**
      * Sets the rate to a value of the range [0.125, 8].
