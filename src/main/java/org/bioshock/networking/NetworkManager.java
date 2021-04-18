@@ -27,6 +27,7 @@ public class NetworkManager {
     );
 
     private static String myID = UUID.randomUUID().toString();
+    private static String myName;
     private static Hider me;
     private static Hider masterHider;
     private static SeekerAI seeker;
@@ -44,6 +45,8 @@ public class NetworkManager {
     private static Map<String, Hider> loadedPlayers = new HashMap<>(
         App.playerCount()
     );
+
+    private static Map<String, String> playerNames = new HashMap<>();
 
     private static Client client = new Client();
     private static Object awaitingPlayerLock = new Object();
@@ -68,6 +71,8 @@ public class NetworkManager {
                     App.logger.error(e);
                     Thread.currentThread().interrupt();
                 }
+
+                myName = client.getPlayerName();
                 client.send(Integer.toString(App.playerCount()));
 
                 /* Wait until players join then add them to loadedPlayers */
@@ -84,9 +89,12 @@ public class NetworkManager {
                     }
 
                     Message message = client.getInitialMessages().remove();
+
                     Hider hider = playerList.get(message.playerNumber - 1);
                     hider.setID(message.uuid);
+                    hider.setName(message.name);
                     loadedPlayers.putIfAbsent(message.uuid, hider);
+                    playerNames.putIfAbsent(message.uuid, message.name);
                     Platform.runLater(() ->
                         SceneManager.getLobby().updatePlayerCount()
                     );
@@ -117,9 +125,11 @@ public class NetworkManager {
         int aiX = (int) aiPos.getX();
         int aiY = (int) aiPos.getY();
 
-        Message.ClientInput input = new Message.ClientInput(x, y, aiX, aiY);
+        String message = "";
 
-        return new Message(-1, myID, input, me.isDead());
+        Message.ClientInput input = new Message.ClientInput(x, y, aiX, aiY, message);
+
+        return new Message(-1, myID, myName, input, me.isDead());
     }
 
     public static void tick() {
@@ -204,7 +214,7 @@ public class NetworkManager {
     public static void kill(Hider hider) {
         App.logger.debug("killing");
         client.send(Message.serialise(
-            new Message(-1, hider.getID(), null, true)
+            new Message(-1, hider.getID(), "", null, true)
         ));
     }
 
@@ -230,5 +240,9 @@ public class NetworkManager {
 
     public static Map<String, Hider> getLoadedPlayers() {
         return loadedPlayers;
+    }
+
+    public static Map<String, String> getPlayerNames() {
+        return playerNames;
     }
 }

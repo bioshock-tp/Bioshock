@@ -6,7 +6,9 @@ import java.nio.ByteBuffer;
 import java.util.ArrayDeque;
 import java.util.Queue;
 import java.util.concurrent.Semaphore;
+import java.util.prefs.Preferences;
 
+import org.bioshock.gui.SettingsController;
 import org.bioshock.main.App;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
@@ -22,6 +24,7 @@ public class Client extends WebSocketClient {
     private Queue<Message> messageQueue = new ArrayDeque<>();
     private boolean connected = false;
     private boolean initMessage = true;
+    private String playerName;
 
     private Client(URI serverURI) {
         super(serverURI);
@@ -47,12 +50,16 @@ public class Client extends WebSocketClient {
 
     @Override
     public void onOpen(ServerHandshake handshakedata) {
+
         setTcpNoDelay(true);
+        Preferences prefs = Preferences.userNodeForPackage(SettingsController.class);
+        playerName = prefs.get("playerName", App.getBundle().getString("DEFAULT_PLAYER_NAME_TEXT"));
     }
 
     @Override
     public void onMessage(String string) {
         /* Case of player number */
+        //System.out.println(string);
         try {
             if(initMessage) {
                 playerNumber = Integer.parseInt(string);
@@ -73,9 +80,9 @@ public class Client extends WebSocketClient {
         /* Case of new player joining */
         if (string.equals("New Player")) {
             Message queueMessage = Message.inLobby(
-                playerNumber,
-                NetworkManager.getMyID()
-            );
+                    playerNumber,
+                    NetworkManager.getMyID(),
+                    playerName);
 
             send(Message.serialise(queueMessage));
             return;
@@ -131,6 +138,8 @@ public class Client extends WebSocketClient {
     }
 
     public boolean haveInitMessage() {return initMessage;}
+
+    public String getPlayerName() {return playerName;}
 
     public Queue<Message> getInitialMessages() {
         return initialMessages;

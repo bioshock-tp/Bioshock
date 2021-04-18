@@ -15,6 +15,7 @@ public class Message implements Serializable {
 
     int playerNumber;
     String uuid;
+    String name;
     ClientInput input;
     boolean dead;
 
@@ -28,8 +29,9 @@ public class Message implements Serializable {
      * @param input A ClientInput object containing states of player and AI
      * @param dead True if sending player is dead
      */
-    Message(int playerNumber, String uuid, ClientInput input, boolean dead) {
+    Message(int playerNumber, String uuid, String name, ClientInput input, boolean dead) {
         this.playerNumber = playerNumber;
+        this.name = name;
         this.uuid = uuid;
         this.input = input;
         this.dead = dead;
@@ -44,6 +46,8 @@ public class Message implements Serializable {
         final int aiX;
         final int aiY;
 
+        final String message;
+
         /**
          * Information to send in message containing player POS/DIR
          * @param x Coordinate X of player
@@ -51,12 +55,14 @@ public class Message implements Serializable {
          * @param aiX Coordinate X of AI
          * @param aiY Coordinate Y of AI
          */
-        ClientInput(int x, int y, int aiX, int aiY) {
+        ClientInput(int x, int y, int aiX, int aiY, String message) {
             this.x = x;
             this.y = y;
 
             this.aiX = aiX;
             this.aiY = aiY;
+
+            this.message = message;
         }
 
         @Override
@@ -99,12 +105,12 @@ public class Message implements Serializable {
         }
     }
 
-    static Message inLobby(int playerNumber, String uuid) {
-        return new Message(playerNumber, uuid, null, false);
+    static Message inLobby(int playerNumber, String uuid, String name) {
+        return new Message(playerNumber, uuid, name, null, false);
     }
 
-    static Message sendInputState(String uuid, ClientInput input, boolean dead) {
-        return new Message(-1, uuid, input, dead);
+    static Message sendInputState(String uuid, String name, ClientInput input, boolean dead) {
+        return new Message(-1, uuid, name, input, dead);
     }
 
     public static String serialise(Message message) {

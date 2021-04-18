@@ -25,6 +25,7 @@ public class Hider extends SquareEntity {
     private Sprite currentSprite;
     private PlayerAnimations playerAnimations;
     boolean playedSfx = false;
+    private String name = "";
 
 
     public Hider(Point3D p, NetworkC com, Size s, int r, Color c) {
@@ -43,6 +44,10 @@ public class Hider extends SquareEntity {
             GlobalConstants.PLAYER_SCALE
         );
         currentSprite = playerAnimations.getPlayerIdleSprite();
+    }
+
+    public void setName(String hiderName){
+        name = hiderName;
     }
 
     private void setCurrentSprite(Sprite s) {
@@ -118,6 +123,10 @@ public class Hider extends SquareEntity {
         Point2D centre = getCentre();
         double radius = getRadius();
         return new Rectangle(centre.getX()-radius, centre.getY()-radius, radius*2, radius*2);
+    }
+
+    public String getName() {
+        return name;
     }
 
     public Sprite getCurrentSprite() {
