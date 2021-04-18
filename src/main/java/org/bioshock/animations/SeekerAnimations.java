@@ -14,15 +14,15 @@ public class SeekerAnimations implements PlayerAnimation {
     Sprite idle;
     Sprite die;
 
-    public SeekerAnimations(Entity entity, int scale) {
+    public SeekerAnimations(Entity entity, double scale) {
         moveDown = new Sprite(
             entity,
-            new Point2D(210, 0),
+            new Point2D(420, 0),
             new Size(
                 GlobalConstants.PLAYER_WIDTH,
                 GlobalConstants.PLAYER_HEIGHT
             ),
-            30,
+            60,
             3,
             scale,
             false,
@@ -31,12 +31,12 @@ public class SeekerAnimations implements PlayerAnimation {
 
         moveLeft = new Sprite(
             entity,
-            new Point2D(240, 0),
+            new Point2D(480, 0),
             new Size(
                 GlobalConstants.PLAYER_WIDTH,
                 GlobalConstants.PLAYER_HEIGHT
             ),
-            30,
+            60,
             3,
             scale,
             false,
@@ -45,12 +45,12 @@ public class SeekerAnimations implements PlayerAnimation {
 
         moveUp = new Sprite(
             entity,
-            new Point2D(270, 0),
+            new Point2D(540, 0),
             new Size(
                 GlobalConstants.PLAYER_WIDTH - 1.5,
                 GlobalConstants.PLAYER_HEIGHT
             ),
-            30,
+            60,
             3,
             scale,
             false,
@@ -59,12 +59,12 @@ public class SeekerAnimations implements PlayerAnimation {
 
         moveRight = new Sprite(
             entity,
-            new Point2D(300, 0),
+            new Point2D(600, 0),
             new Size(
                 GlobalConstants.PLAYER_WIDTH,
                 GlobalConstants.PLAYER_HEIGHT
             ),
-            30,
+            60,
             3,
             scale,
             false,
@@ -73,12 +73,12 @@ public class SeekerAnimations implements PlayerAnimation {
 
         idle = new Sprite(
             entity,
-            new Point2D(328, 0),
+            new Point2D(656, 0),
             new Size(
                 GlobalConstants.PLAYER_WIDTH + 2,
                 GlobalConstants.PLAYER_HEIGHT
             ),
-            30,
+            60,
             1,
             scale,
             false,
@@ -87,12 +87,12 @@ public class SeekerAnimations implements PlayerAnimation {
 
         die = new Sprite(
             entity,
-            new Point2D(258, 0),
+            new Point2D(516, 0),
             new Size(
                 GlobalConstants.PLAYER_WIDTH + 4,
                 GlobalConstants.PLAYER_HEIGHT + 2
             ),
-            30,
+            60,
             1,
             scale,
             false,

@@ -15,7 +15,7 @@ public class HiderAnimations implements PlayerAnimation {
     Sprite idle;
     Sprite die;
 
-    public HiderAnimations(Entity entity, int scale) {
+    public HiderAnimations(Entity entity, double scale) {
         moveDown = new Sprite(
             entity,
             new Point2D(0, 0),
@@ -23,7 +23,7 @@ public class HiderAnimations implements PlayerAnimation {
                 GlobalConstants.PLAYER_WIDTH,
                 GlobalConstants.PLAYER_HEIGHT
             ),
-            30,
+            60,
             3,
             scale,
             false,
@@ -32,12 +32,12 @@ public class HiderAnimations implements PlayerAnimation {
 
         moveLeft = new Sprite(
             entity,
-            new Point2D(30, 0),
+            new Point2D(60, 0),
             new Size(
                 GlobalConstants.PLAYER_WIDTH,
                 GlobalConstants.PLAYER_HEIGHT
             ),
-            30,
+            60,
             3,
             scale,
             false,
@@ -46,12 +46,12 @@ public class HiderAnimations implements PlayerAnimation {
 
         moveUp = new Sprite(
             entity,
-            new Point2D(60, 0),
+            new Point2D(120, 0),
             new Size(
                 GlobalConstants.PLAYER_WIDTH - 1.5,
                 GlobalConstants.PLAYER_HEIGHT
             ),
-            30,
+            60,
             3,
             scale,
             false,
@@ -60,12 +60,12 @@ public class HiderAnimations implements PlayerAnimation {
 
         moveRight = new Sprite(
             entity,
-            new Point2D(90, 0),
+            new Point2D(180, 0),
             new Size(
                 GlobalConstants.PLAYER_WIDTH,
                 GlobalConstants.PLAYER_HEIGHT
             ),
-            30,
+            60,
             3,
             scale,
             false,
@@ -74,12 +74,12 @@ public class HiderAnimations implements PlayerAnimation {
 
         idle = new Sprite(
             entity,
-            new Point2D(118, 0),
+            new Point2D(238, 0),
             new Size(
                 GlobalConstants.PLAYER_WIDTH + 2,
                 GlobalConstants.PLAYER_HEIGHT
             ),
-            30,
+            60,
             1,
             scale,
             false,
@@ -88,15 +88,15 @@ public class HiderAnimations implements PlayerAnimation {
 
         die = new Sprite(
             entity,
-            new Point2D(148, 0),
+            new Point2D(296, 0),
             new Size(
-                GlobalConstants.PLAYER_WIDTH + 4,
+                GlobalConstants.PLAYER_WIDTH + 6,
                 GlobalConstants.PLAYER_HEIGHT + 2
             ),
-            30,
-            1,
+            60,
+            2,
             scale,
-            false,
+            true,
             GlobalConstants.PLAYER_ANIMATION_SPEED
         );
     }

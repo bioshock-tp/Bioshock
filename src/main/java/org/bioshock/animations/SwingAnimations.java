@@ -14,15 +14,57 @@ public class SwingAnimations {
 //    Sprite idle;
 //    Sprite die;
 
-    public SwingAnimations(Entity entity, int scale) {
+    public SwingAnimations(Entity entity, double scale) {
         topRight = new Sprite(
             entity,
-            new Point2D(211, 94),
+            new Point2D(422, 188),
             new Size(
-                42,
-                42
+                84,
+                84
             ),
-            48,
+            96,
+            5,
+            scale,
+            true,
+            GlobalConstants.PLAYER_ANIMATION_SPEED / 1.5
+        );
+
+        topLeft = new Sprite(
+            entity,
+            new Point2D(422, 284),
+            new Size(
+                84,
+                84
+            ),
+            96,
+            5,
+            scale,
+            true,
+            GlobalConstants.PLAYER_ANIMATION_SPEED / 1.5
+        );
+
+        bottomRight = new Sprite(
+            entity,
+            new Point2D(422, 380),
+            new Size(
+                84,
+                84
+            ),
+            96,
+            5,
+            scale,
+            true,
+            GlobalConstants.PLAYER_ANIMATION_SPEED / 1.5
+        );
+
+        bottomLeft = new Sprite(
+            entity,
+            new Point2D(422, 476),
+            new Size(
+                84,
+                84
+            ),
+            96,
             5,
             scale,
             true,
@@ -97,6 +139,18 @@ public class SwingAnimations {
 
     public Sprite getTopRightSwing() {
         return topRight;
+    }
+
+    public Sprite getTopLeftSwing() {
+        return topLeft;
+    }
+
+    public Sprite getBottomRightSwing() {
+        return bottomRight;
+    }
+
+    public Sprite getBottomLeftSwing() {
+        return bottomLeft;
     }
 //
 //    public Sprite getMoveLeftSprite() {

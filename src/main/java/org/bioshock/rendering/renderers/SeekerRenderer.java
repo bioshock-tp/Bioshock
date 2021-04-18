@@ -81,13 +81,13 @@ public class SeekerRenderer implements Renderer {
                 getRenY(y)
             )
         );
-//        AnimationPlayer.playAnimation(
-//            ent.getCurrentSwingAnimation(),
-//            new Point2D(
-//                getRenX(100),
-//                getRenY(100)
-//            )
-//        );
+        AnimationPlayer.playAnimation(
+            ent.getCurrentSwingAnimation(),
+            new Point2D(
+                getRenX(x),
+                getRenY(y)
+            )
+        );
         
         gc.setFill(Color.BLACK);
         gc.setFont(new Font(getRenHeight(25)));

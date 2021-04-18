@@ -53,6 +53,7 @@ public class SeekerAI extends SquareEntity {
     private Point2D lastSeenPosition;
     private Point lastSeekerPosition;
     private Sprite currentSprite;
+
     private Sprite currentSwingAnimation;
     private SeekerAnimations seekerAnimations;
     private SwingAnimations swingAnimations;
@@ -127,6 +128,14 @@ public class SeekerAI extends SquareEntity {
         }
     }
 
+    public void setCurrentSwingAnimation(Sprite s) {
+        if (s != null) {
+            currentSwingAnimation = s;
+        } else {
+            App.logger.debug("Sprite is missing!");
+        }
+    }
+
     @Override
     public void setAnimation() {
         Point2D translation = currentTargetLocation.subtract(getCentre());
@@ -151,9 +160,21 @@ public class SeekerAI extends SquareEntity {
     }
 
     public void setSwingAnimation() {
+        Point2D translation = currentTargetLocation.subtract(getCentre());
 
+        int x = (int) translation.getX();
+        int y = (int) translation.getY();
         Sprite animation = swingAnimations.getTopRightSwing();
-        setCurrentSprite(animation);
+
+        if (x > 0) animation = swingAnimations.getTopRightSwing();
+
+        else if (x < 0) animation = swingAnimations.getTopLeftSwing();
+
+        else if (y > 0) animation = swingAnimations.getBottomRightSwing();
+
+        else if (y < 0) animation = swingAnimations.getBottomLeftSwing();
+
+        setCurrentSwingAnimation(animation);
     }
 
     public Sprite getCurrentSwingAnimation() {
