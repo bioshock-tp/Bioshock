@@ -8,7 +8,7 @@ import org.bioshock.engine.core.GameLoop;
 import org.bioshock.rendering.RenderManager;
 import org.bioshock.scenes.SceneManager;
 import org.bioshock.utils.ImageUtils;
-import org.bioshock.utils.Size;
+import org.bioshock.utils.SizeD;
 
 public class AnimationPlayer {
     private static final String IMAGE_PATH =
@@ -86,7 +86,7 @@ public class AnimationPlayer {
         Point2D startingPoint,
         int numberOfFrames,
         Point2D position,
-        Size size,
+        SizeD size,
         double scale,
         boolean reversePlay,
         double playSpeed

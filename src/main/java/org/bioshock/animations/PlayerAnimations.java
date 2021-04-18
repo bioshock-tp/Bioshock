@@ -2,7 +2,7 @@ package org.bioshock.animations;
 
 import org.bioshock.entities.Entity;
 import org.bioshock.utils.GlobalConstants;
-import org.bioshock.utils.Size;
+import org.bioshock.utils.SizeD;
 
 import javafx.geometry.Point2D;
 
@@ -19,7 +19,7 @@ public class PlayerAnimations {
         moveDown = new Sprite(
             entity,
             new Point2D(0, 0),
-            new Size(
+            new SizeD(
                 GlobalConstants.PLAYER_WIDTH,
                 GlobalConstants.PLAYER_HEIGHT
             ),
@@ -32,7 +32,7 @@ public class PlayerAnimations {
         moveLeft = new Sprite(
             entity,
             new Point2D(30, 0),
-            new Size(
+            new SizeD(
                 GlobalConstants.PLAYER_WIDTH,
                 GlobalConstants.PLAYER_HEIGHT
             ),
@@ -45,7 +45,7 @@ public class PlayerAnimations {
         moveUp = new Sprite(
             entity,
             new Point2D(60, 0),
-            new Size(
+            new SizeD(
                 GlobalConstants.PLAYER_WIDTH - 1.5,
                 GlobalConstants.PLAYER_HEIGHT
             ),
@@ -58,7 +58,7 @@ public class PlayerAnimations {
         moveRight = new Sprite(
             entity,
             new Point2D(90, 0),
-            new Size(
+            new SizeD(
                 GlobalConstants.PLAYER_WIDTH,
                 GlobalConstants.PLAYER_HEIGHT
             ),
@@ -71,7 +71,7 @@ public class PlayerAnimations {
         idle = new Sprite(
             entity,
             new Point2D(118, 0),
-            new Size(
+            new SizeD(
                 GlobalConstants.PLAYER_WIDTH + 2,
                 GlobalConstants.PLAYER_HEIGHT
             ),
@@ -84,7 +84,7 @@ public class PlayerAnimations {
         die = new Sprite(
             entity,
             new Point2D(148, 0),
-            new Size(
+            new SizeD(
                 GlobalConstants.PLAYER_WIDTH + 4,
                 GlobalConstants.PLAYER_HEIGHT + 2
             ),

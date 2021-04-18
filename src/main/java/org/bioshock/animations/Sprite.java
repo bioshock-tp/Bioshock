@@ -5,7 +5,7 @@ import java.util.List;
 import org.bioshock.entities.Entity;
 import org.bioshock.utils.GlobalConstants;
 import org.bioshock.utils.ImageUtils;
-import org.bioshock.utils.Size;
+import org.bioshock.utils.SizeD;
 
 import javafx.geometry.Point2D;
 import javafx.scene.image.Image;
@@ -15,7 +15,7 @@ public class Sprite {
     private double playSpeed = GlobalConstants.PLAYER_ANIMATION_SPEED;
 
     private Point2D spriteLocationOnSheet;
-    private Size size;
+    private SizeD size;
 
     private double scale;
     private int actualSize;
@@ -33,7 +33,7 @@ public class Sprite {
     public Sprite(
         Entity entity,
         Point2D spriteLocationOnSheet,
-        Size size,
+        SizeD size,
         int actualSize,
         int numberOfFrames,
         double scale,
@@ -52,7 +52,7 @@ public class Sprite {
 
     public Sprite(
         Entity entity,
-        Size size,
+        SizeD size,
         int actualSize,
         double scale,
         Image spriteSheet,
@@ -83,7 +83,7 @@ public class Sprite {
         }
     }
 
-    public void setSize(Size size) {
+    public void setSize(SizeD size) {
         this.size = size;
     }
 
@@ -147,7 +147,7 @@ public class Sprite {
         return spriteLocationOnSheet;
     }
 
-    public Size getSize() {
+    public SizeD getSize() {
         return size;
     }
 

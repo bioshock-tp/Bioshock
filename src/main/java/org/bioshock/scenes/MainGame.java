@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.bioshock.components.NetworkC;
 import org.bioshock.engine.core.FrameRate;
-import org.bioshock.engine.core.WindowManager;
 import org.bioshock.engine.input.InputManager;
 import org.bioshock.entities.EntityManager;
 import org.bioshock.entities.LabelEntity;
@@ -20,12 +19,12 @@ import org.bioshock.main.App;
 import org.bioshock.networking.NetworkManager;
 import org.bioshock.rendering.RenderManager;
 import org.bioshock.utils.GlobalConstants;
-import org.bioshock.utils.Size;
+import org.bioshock.utils.SizeD;
+import org.bioshock.utils.SizeI;
 
 import javafx.geometry.Point2D;
 import javafx.geometry.Point3D;
 import javafx.scene.Cursor;
-import javafx.scene.control.Label;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
@@ -59,8 +58,8 @@ public class MainGame extends GameScene {
         map = new GenericMap(
                 new Point3D(0, 0, 0),
                 1, 
-                new Size(5, 7), 
-                new Size(3, 5), 
+                new SizeI(5, 7), 
+                new SizeI(3, 5), 
                 Color.SADDLEBROWN, 
                 GlobalConstants.singletonMap,
                 0
@@ -72,7 +71,7 @@ public class MainGame extends GameScene {
         Hider hider = new Hider(
             new Point3D(0, 0, 0.5),
             new NetworkC(true),
-            new Size(GlobalConstants.UNIT_WIDTH, GlobalConstants.UNIT_HEIGHT),
+            new SizeD(GlobalConstants.UNIT_WIDTH, GlobalConstants.UNIT_HEIGHT),
             300,
             Color.PINK
         );
@@ -82,13 +81,13 @@ public class MainGame extends GameScene {
             children.add(new Hider(
                 new Point3D(GameScene.getGameScreen().getWidth()*i, 0, i),
                 new NetworkC(true),
-                new Size(GlobalConstants.UNIT_WIDTH, GlobalConstants.UNIT_HEIGHT),
+                new SizeD(GlobalConstants.UNIT_WIDTH, GlobalConstants.UNIT_HEIGHT),
                 300,
                 Color.PINK
             ));
         }
 
-        Size timerSize = new Size(100, 100);
+        SizeD timerSize = new SizeD(100, 100);
         timer = new LabelEntity(
             new Point3D(GameScene.getGameScreen().getWidth()/2, 50, 100), 
             "mm:ss.ms", 
@@ -142,8 +141,8 @@ public class MainGame extends GameScene {
             map = new GenericMap(
                 new Point3D(0, 0, 0),
                 1, 
-                new Size(5, 7), 
-                new Size(3, 5), 
+                new SizeI(5, 7), 
+                new SizeI(3, 5), 
                 Color.SADDLEBROWN, 
                 GlobalConstants.testMap,
                 seed
@@ -153,10 +152,10 @@ public class MainGame extends GameScene {
             map = new RandomMap(
                 new Point3D(0, 0, 0),
                 1,
-                new Size(9, 11),
-                new Size(3, 5),
+                new SizeI(9, 11),
+                new SizeI(3, 5),
                 Color.SADDLEBROWN,
-                new Size(3, 3),
+                new SizeD(3, 3),
                 null,
                 seed
             );
@@ -182,7 +181,7 @@ public class MainGame extends GameScene {
                     rooms.get(rooms.size() / 2).getRoomCenter().getY()-GlobalConstants.UNIT_HEIGHT/2, 
                     0.25),
             new NetworkC(true),
-            new Size(GlobalConstants.UNIT_WIDTH, GlobalConstants.UNIT_HEIGHT),
+            new SizeD(GlobalConstants.UNIT_WIDTH, GlobalConstants.UNIT_HEIGHT),
             300,
             Color.INDIANRED,
             hiders.get(0)

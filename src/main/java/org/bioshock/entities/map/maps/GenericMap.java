@@ -1,8 +1,8 @@
 package org.bioshock.entities.map.maps;
 
+import static org.bioshock.utils.ArrayUtils.safeGet;
 import static org.bioshock.utils.GlobalConstants.UNIT_HEIGHT;
 import static org.bioshock.utils.GlobalConstants.UNIT_WIDTH;
-import static org.bioshock.utils.ArrayUtils.safeGet;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,14 +11,13 @@ import org.bioshock.engine.pathfinding.Graph;
 import org.bioshock.engine.pathfinding.GraphNode;
 import org.bioshock.entities.map.Room;
 import org.bioshock.entities.map.RoomEdgeGenerator;
-import org.bioshock.entities.map.Wall;
 import org.bioshock.entities.map.TraversableEdgeGenerator;
+import org.bioshock.entities.map.Wall;
 import org.bioshock.entities.map.utils.ConnType;
 import org.bioshock.entities.map.utils.RoomType;
-import org.bioshock.main.App;
 import org.bioshock.utils.ArrayUtils;
 import org.bioshock.utils.Direction;
-import org.bioshock.utils.Size;
+import org.bioshock.utils.SizeI;
 
 import javafx.geometry.Point3D;
 import javafx.scene.paint.Color;
@@ -53,9 +52,9 @@ public class GenericMap implements Map{
      */
      public GenericMap(
         Point3D newPos,
-        double wallWidth,
-        Size newRoomSize,
-        Size coriSize,
+        int wallWidth,
+        SizeI newRoomSize,
+        SizeI coriSize,
         Color c,
         RoomType[][] roomTypes,
         long seed

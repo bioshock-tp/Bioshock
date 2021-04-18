@@ -10,7 +10,8 @@ import org.bioshock.entities.map.Wall;
 import org.bioshock.entities.map.utils.ConnType;
 import org.bioshock.entities.map.utils.RoomType;
 import org.bioshock.utils.Direction;
-import org.bioshock.utils.Size;
+import org.bioshock.utils.SizeD;
+import org.bioshock.utils.SizeI;
 
 import javafx.geometry.Point3D;
 import javafx.scene.paint.Color;
@@ -38,11 +39,11 @@ public class RandomMap implements Map{
      */
     public RandomMap(
         Point3D newPos,
-        double wallWidth,
-        Size newRoomSize,
-        Size coriSize,
+        int wallWidth,
+        SizeI newRoomSize,
+        SizeI coriSize,
         Color c,
-        Size maxMapSize,
+        SizeD maxMapSize,
         Double roomProbObj,
         long seed) {
         

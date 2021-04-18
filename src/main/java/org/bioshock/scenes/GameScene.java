@@ -7,7 +7,7 @@ import org.bioshock.engine.core.WindowManager;
 import org.bioshock.entities.Entity;
 import org.bioshock.entities.EntityManager;
 import org.bioshock.rendering.RenderManager;
-import org.bioshock.utils.Size;
+import org.bioshock.utils.SizeD;
 
 import javafx.geometry.Point2D;
 import javafx.scene.Scene;
@@ -34,7 +34,7 @@ public abstract class GameScene extends Scene {
         WindowManager.getWindowHeight()
     );
 
-    private static Size gameScreen = new Size(1920, 1080); //1080p 16:9
+    private static SizeD gameScreen = new SizeD(1920, 1080); //1080p 16:9
 
 
     /**
@@ -162,7 +162,7 @@ public abstract class GameScene extends Scene {
 
 
 
-     public static Size getGameScreen() {
+     public static SizeD getGameScreen() {
         return gameScreen;
     }
 

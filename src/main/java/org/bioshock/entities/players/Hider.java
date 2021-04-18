@@ -9,7 +9,7 @@ import org.bioshock.networking.NetworkManager;
 import org.bioshock.rendering.renderers.PlayerSpriteRenderer;
 import org.bioshock.rendering.renderers.components.PlayerRendererC;
 import org.bioshock.utils.GlobalConstants;
-import org.bioshock.utils.Size;
+import org.bioshock.utils.SizeD;
 
 import javafx.geometry.Point2D;
 import javafx.geometry.Point3D;
@@ -27,7 +27,7 @@ public class Hider extends SquareEntity {
     boolean playedSfx = false;
 
 
-    public Hider(Point3D p, NetworkC com, Size s, int r, Color c) {
+    public Hider(Point3D p, NetworkC com, SizeD s, int r, Color c) {
         super(p, com, new PlayerRendererC(), s, r, c);
 
         renderer = PlayerSpriteRenderer.class;

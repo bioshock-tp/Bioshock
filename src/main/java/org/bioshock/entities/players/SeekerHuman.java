@@ -4,7 +4,7 @@ import org.bioshock.components.NetworkC;
 import org.bioshock.components.RendererC;
 import org.bioshock.entities.SquareEntity;
 import org.bioshock.rendering.renderers.PlayerSpriteRenderer;
-import org.bioshock.utils.Size;
+import org.bioshock.utils.SizeD;
 
 import javafx.geometry.Point3D;
 import javafx.scene.paint.Color;
@@ -16,7 +16,7 @@ public class SeekerHuman extends SquareEntity {
         Point3D p,
         NetworkC nCom,
         RendererC rCom,
-        Size s,
+        SizeD s,
         int r,
         Color c
     ) {
