@@ -26,7 +26,8 @@ public class HiderAnimations implements PlayerAnimation {
             30,
             3,
             scale,
-            false
+            false,
+            GlobalConstants.PLAYER_ANIMATION_SPEED
         );
 
         moveLeft = new Sprite(
@@ -39,7 +40,8 @@ public class HiderAnimations implements PlayerAnimation {
             30,
             3,
             scale,
-            false
+            false,
+            GlobalConstants.PLAYER_ANIMATION_SPEED
         );
 
         moveUp = new Sprite(
@@ -52,7 +54,8 @@ public class HiderAnimations implements PlayerAnimation {
             30,
             3,
             scale,
-            false
+            false,
+            GlobalConstants.PLAYER_ANIMATION_SPEED
         );
 
         moveRight = new Sprite(
@@ -65,7 +68,8 @@ public class HiderAnimations implements PlayerAnimation {
             30,
             3,
             scale,
-            false
+            false,
+            GlobalConstants.PLAYER_ANIMATION_SPEED
         );
 
         idle = new Sprite(
@@ -78,7 +82,8 @@ public class HiderAnimations implements PlayerAnimation {
             30,
             1,
             scale,
-            false
+            false,
+            GlobalConstants.PLAYER_ANIMATION_SPEED
         );
 
         die = new Sprite(
@@ -91,7 +96,8 @@ public class HiderAnimations implements PlayerAnimation {
             30,
             1,
             scale,
-            false
+            false,
+            GlobalConstants.PLAYER_ANIMATION_SPEED
         );
     }
 

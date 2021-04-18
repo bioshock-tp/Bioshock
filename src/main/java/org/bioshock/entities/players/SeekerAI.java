@@ -8,6 +8,7 @@ import javafx.scene.shape.*;
 import javafx.util.Pair;
 import org.bioshock.animations.SeekerAnimations;
 import org.bioshock.animations.Sprite;
+import org.bioshock.animations.SwingAnimations;
 import org.bioshock.components.NetworkC;
 import org.bioshock.components.PathfindingC;
 import org.bioshock.engine.core.WindowManager;
@@ -52,7 +53,9 @@ public class SeekerAI extends SquareEntity {
     private Point2D lastSeenPosition;
     private Point lastSeekerPosition;
     private Sprite currentSprite;
+    private Sprite currentSwingAnimation;
     private SeekerAnimations seekerAnimations;
+    private SwingAnimations swingAnimations;
 
     private static final double TIME_BETWEEN_SWINGS = 1.0;
     private static final double TIME_SWINGING = 1.0;
@@ -109,6 +112,11 @@ public class SeekerAI extends SquareEntity {
             GlobalConstants.PLAYER_SCALE
         );
         currentSprite = seekerAnimations.getPlayerIdleSprite();
+        swingAnimations = new SwingAnimations(
+            this,
+            ((GlobalConstants.PLAYER_SCALE * 3) / 4)
+        );
+        currentSwingAnimation = swingAnimations.getTopRightSwing();
     }
 
     private void setCurrentSprite(Sprite s) {
@@ -140,6 +148,16 @@ public class SeekerAI extends SquareEntity {
 
     public Sprite getCurrentSprite() {
         return currentSprite;
+    }
+
+    public void setSwingAnimation() {
+
+        Sprite animation = swingAnimations.getTopRightSwing();
+        setCurrentSprite(animation);
+    }
+
+    public Sprite getCurrentSwingAnimation() {
+        return currentSwingAnimation;
     }
 
     protected void tick(double timeDelta) {
