@@ -64,8 +64,20 @@ public class MainGame extends GameScene {
                 0
             );
         
+                
+        SceneManager.setMap(map);
+        children.addAll(map.getWalls());
+
+        List<Room> rooms = map.getRooms();
         
-        
+        for(Room room : rooms) {
+            RoomEntity roomE = new RoomEntity(room);
+            children.add(roomE);
+        }
+
+        double x = rooms.get(0).getRoomCenter().getX();
+        double y = rooms.get(0).getRoomCenter().getY();
+
         /* Players must render in exact order, do not play with z values */
         Hider hider = new Hider(
             new Point3D(0, 0, 0.5),
@@ -77,6 +89,11 @@ public class MainGame extends GameScene {
         children.add(hider);
 
         for (int i = 1; i < App.playerCount(); i++) {
+            int roomNumber = i % rooms.size();
+            if (roomNumber >= rooms.size() / 2) roomNumber++;
+            x = rooms.get(roomNumber % rooms.size()).getRoomCenter().getX();
+            y = rooms.get(roomNumber % rooms.size()).getRoomCenter().getY();
+
             children.add(new Hider(
                 new Point3D(GameScene.getGameScreen().getWidth()*i, 0, i),
                 new NetworkC(true),
@@ -85,6 +102,20 @@ public class MainGame extends GameScene {
                 Color.PINK
             ));
         }
+
+        double centreX = rooms.get(rooms.size() / 2).getRoomCenter().getX();
+        double centreY = rooms.get(rooms.size() / 2).getRoomCenter().getY();
+
+        SeekerAI seeker = new SeekerAI(
+            new Point3D(centreX-GlobalConstants.UNIT_WIDTH/2, centreY-GlobalConstants.UNIT_HEIGHT/2, 0.25),
+            new NetworkC(true),
+            new SizeD(GlobalConstants.UNIT_WIDTH, GlobalConstants.UNIT_HEIGHT),
+            300,
+            Color.INDIANRED,
+            hider
+        );
+
+        children.add(seeker);
 
         timer = new LabelEntity(
             new Point3D(GameScene.getGameScreen().getWidth()/2, 50, 100), 

@@ -1,15 +1,15 @@
 package org.bioshock.networking;
 
+import org.bioshock.main.App;
+import org.java_websocket.client.WebSocketClient;
+import org.java_websocket.handshake.ServerHandshake;
+
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.ByteBuffer;
 import java.util.ArrayDeque;
 import java.util.Queue;
 import java.util.concurrent.Semaphore;
-
-import org.bioshock.main.App;
-import org.java_websocket.client.WebSocketClient;
-import org.java_websocket.handshake.ServerHandshake;
 
 public class Client extends WebSocketClient {
     private static final String DEFURI = "ws://51.15.109.210:8029/";

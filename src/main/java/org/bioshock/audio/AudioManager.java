@@ -11,11 +11,34 @@ import java.util.prefs.Preferences;
 
 public class AudioManager {
 
+    private static MusicController bgMusicController;
+    private static MusicSettings bgMusicSettings;
+    private static EffectController walkingEffectController;
+    private static EffectSettings walkingEffectSettings;
+    private static EffectController wooshEffectController;
+    private static EffectSettings wooshEffectSettings;
+
+    public static void initialiseAudioControllers() {
+        bgMusicController = AudioController.loadMusicController(
+            "background-music"
+        );
+        bgMusicSettings = new MusicSettings();
+        walkingEffectController = AudioController.loadEffectController(
+            "walking"
+        );
+        walkingEffectSettings = new EffectSettings();
+        wooshEffectController = AudioController.loadEffectController(
+            "woosh"
+        );
+        wooshEffectSettings = new EffectSettings();
+    }
+
     /**
      * Initialises background with user saved volume preference.
      */
     public static void initialiseBackgroundAudio() {
         AudioController.initialise();
+        initialiseAudioControllers();
         Preferences prefs = Preferences.userNodeForPackage(SettingsController.class);
         double volume = prefs.getDouble("musicVolume", 1.0);
         if (prefs.getBoolean("musicOn", true)) {
@@ -27,52 +50,29 @@ public class AudioManager {
      * Stops background music playing.
      */
     public static void stopBackgroundMusic() {
-        MusicController musicController = AudioController.loadMusicController(
-            "background-music"
-        );
-        musicController.stop();
+        bgMusicController.stop();
     }
 
     /**
      * PLays background music.
      */
     public static void playBackgroundMusic(double vol) {
-        MusicController musicController = AudioController.loadMusicController(
-            "background-music"
-        );
-        final MusicSettings settings = new MusicSettings();
-        settings.setVolume(vol);
-        settings.setCycleCount(-1);
-        musicController.play(settings);
+        bgMusicSettings.setVolume(vol);
+        bgMusicSettings.setCycleCount(-1);
+        bgMusicController.play(bgMusicSettings);
     }
-
-//    /**
-//     * Initialises background with user saved volume preference.
-//     */
-//    public static void initialiseSfxAudio() {
-//        AudioController.initialise();
-//        Preferences prefs = Preferences.userNodeForPackage(SettingsController.class);
-//        double volume = prefs.getDouble("musicVolume", 1.0);
-//        if(prefs.getBoolean("musicOn", true)) {
-//            playBackgroundMusic(volume);
-//        }
-//    }
 
     /**
      * PLays walking sound.
      */
     public static void playWalkingSfx() {
-        EffectController effectController = AudioController.loadEffectController(
-            "walking"
-        );
         Preferences prefs = Preferences.userNodeForPackage(SettingsController.class);
 
         if (prefs.getBoolean("sfxOn", true)) {
             double volume = prefs.getDouble("sfxVolume", 1.0);
-            final EffectSettings settings = new EffectSettings();
-            settings.setVolume(volume);
-            settings.setCycleCount(100);
-            effectController.play(settings);
+            walkingEffectSettings.setVolume(volume);
+            walkingEffectSettings.setCycleCount(-1);
+            walkingEffectController.play(walkingEffectSettings);
         }
     }
 
@@ -80,11 +80,27 @@ public class AudioManager {
      * Stops walking sound.
      */
     public static void stopWalkingSfx() {
-        EffectController effectController = AudioController.loadEffectController(
-            "walking"
-        );
+        walkingEffectController.stop();
+    }
 
-        effectController.stop();
+    /**
+     * PLays woosh sound.
+     */
+    public static void playWooshSfx() {
+        Preferences prefs = Preferences.userNodeForPackage(SettingsController.class);
 
+        if (prefs.getBoolean("sfxOn", true)) {
+            double volume = prefs.getDouble("sfxVolume", 1.0);
+            wooshEffectSettings.setVolume(volume);
+            wooshEffectSettings.setCycleCount(1);
+            wooshEffectController.play(wooshEffectSettings);
+        }
+    }
+
+    /**
+     * Stops woosh sound.
+     */
+    public static void stopWooshSfx() {
+        wooshEffectController.stop();
     }
 }
