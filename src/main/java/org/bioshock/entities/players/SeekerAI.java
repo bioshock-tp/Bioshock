@@ -129,7 +129,6 @@ public class SeekerAI extends SquareEntity {
         Hider firstPlayer = EntityManager.getPlayers().get(0);
         boolean masterPlayer = firstPlayer == EntityManager.getCurrentPlayer();
         colorChanged = false;
-        wooshSoundPlayed = false;
         EntityManager.getPlayers().forEach(entity -> {
             if (
                     EntityManager.isManaged(this, entity)
@@ -147,17 +146,20 @@ public class SeekerAI extends SquareEntity {
             ) {
                 if(timeBetweenSwings >= TIME_BETWEEN_SWINGS){
                     setActive(true);
-
+                    if(!wooshSoundPlayed){
+                        AudioManager.playWooshSfx();
+                        wooshSoundPlayed = true;
+                    }
                     if(timeSwinging >= TIME_SWINGING){
                         setActive(false);
+                        wooshSoundPlayed = false;
                         timeSwinging = 0;
                         timeBetweenSwings = 0;
                     }
                 }
-                AudioManager.playWooshSfx();
+                //AudioManager.playWooshSfx();
                 rendererC.setColour(Color.ORANGE);
                 colorChanged = true;
-                wooshSoundPlayed = true;
                 target = entity;
                 if (masterPlayer) chasePlayer(target);
             }
