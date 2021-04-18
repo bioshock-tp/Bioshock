@@ -1,18 +1,16 @@
 package org.bioshock.animations;
 
-import java.util.List;
-
-import org.bioshock.entities.Entity;
-import org.bioshock.utils.GlobalConstants;
-import org.bioshock.utils.ImageUtils;
-import org.bioshock.utils.Size;
-
 import javafx.geometry.Point2D;
 import javafx.scene.image.Image;
 import javafx.scene.shape.Rectangle;
+import org.bioshock.entities.Entity;
+import org.bioshock.utils.ImageUtils;
+import org.bioshock.utils.Size;
+
+import java.util.List;
 
 public class Sprite {
-    private double playSpeed = GlobalConstants.PLAYER_ANIMATION_SPEED;
+    private double playSpeed;
 
     private Point2D spriteLocationOnSheet;
     private Size size;
@@ -37,7 +35,8 @@ public class Sprite {
         int actualSize,
         int numberOfFrames,
         double scale,
-        boolean leftToRight
+        boolean leftToRight,
+        double playSpeed
     ) {
         super();
 
@@ -48,6 +47,7 @@ public class Sprite {
         this.scale = scale;
         this.reversePlay = leftToRight;
         this.entityReference = entity;
+        this.playSpeed = playSpeed;
     }
 
     public Sprite(
@@ -57,7 +57,8 @@ public class Sprite {
         double scale,
         Image spriteSheet,
         List<Rectangle> specifications,
-        boolean leftToRight
+        boolean leftToRight,
+        double playSpeed
     ) {
         super();
 
@@ -68,6 +69,7 @@ public class Sprite {
         this.reversePlay = leftToRight;
         this.entityReference = entity;
         this.hasValidSpriteImages = true;
+        this.playSpeed = playSpeed;
 
         spriteImages = new Image[specifications.size()];
 
