@@ -188,6 +188,8 @@ public class MainGame extends GameScene {
             Color.INDIANRED,
             hiders.get(0)
         );
+        
+        seeker.initAnimations();
 
         EntityManager.register(seeker);
         children.add(seeker);        

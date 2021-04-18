@@ -113,6 +113,8 @@ public abstract class Entity {
 
     public void setAnimation() {}
 
+    public void setSwingAnimation() {}
+
     public void setWalkingSfx() {}
 
     public String getID() {

@@ -3,7 +3,7 @@ package org.bioshock.entities.players;
 import static org.bioshock.audio.AudioManager.playWalkingSfx;
 import static org.bioshock.audio.AudioManager.stopWalkingSfx;
 
-import org.bioshock.animations.PlayerAnimations;
+import org.bioshock.animations.HiderAnimations;
 import org.bioshock.animations.Sprite;
 import org.bioshock.components.NetworkC;
 import org.bioshock.entities.SquareEntity;
@@ -22,7 +22,7 @@ import javafx.scene.shape.Rectangle;
 public class Hider extends SquareEntity {
     private boolean dead = false;
     private Sprite currentSprite;
-    private PlayerAnimations playerAnimations;
+    private HiderAnimations hiderAnimations;
     boolean playedSfx = false;
 
 
@@ -37,11 +37,11 @@ public class Hider extends SquareEntity {
     }
 
     public void initAnimations() {
-        playerAnimations = new PlayerAnimations(
+        hiderAnimations = new HiderAnimations(
             this,
-            GlobalConstants.PLAYER_SCALE
+            (int) GlobalConstants.PLAYER_SCALE
         );
-        currentSprite = playerAnimations.getPlayerIdleSprite();
+        currentSprite = hiderAnimations.getPlayerIdleSprite();
     }
 
     private void setCurrentSprite(Sprite s) {
@@ -62,7 +62,7 @@ public class Hider extends SquareEntity {
 
         dead = d;
 
-        setCurrentSprite(playerAnimations.getPlayerDying());
+        setCurrentSprite(hiderAnimations.getPlayerDying());
     }
 
     @Override
@@ -72,15 +72,15 @@ public class Hider extends SquareEntity {
         int x = (int) translation.getX();
         int y = (int) translation.getY();
 
-        Sprite animation = playerAnimations.getPlayerIdleSprite();
+        Sprite animation = hiderAnimations.getPlayerIdleSprite();
 
-        if (x > 0) animation = playerAnimations.getMoveRightSprite();
+        if (x > 0) animation = hiderAnimations.getMoveRightSprite();
 
-        else if (x < 0) animation = playerAnimations.getMoveLeftSprite();
+        else if (x < 0) animation = hiderAnimations.getMoveLeftSprite();
 
-        else if (y > 0) animation = playerAnimations.getMoveDownSprite();
+        else if (y > 0) animation = hiderAnimations.getMoveDownSprite();
 
-        else if (y < 0) animation = playerAnimations.getMoveUpSprite();
+        else if (y < 0) animation = hiderAnimations.getMoveUpSprite();
 
         setCurrentSprite(animation);
     }
@@ -92,8 +92,6 @@ public class Hider extends SquareEntity {
         int x = (int) translation.getX();
         int y = (int) translation.getY();
 
-
-        //boolean nowWalking = false;
 
         if ((x != 0) || (y != 0)) {
             if (!playedSfx) {

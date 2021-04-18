@@ -1,16 +1,15 @@
 package org.bioshock.physics;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import javafx.geometry.Point2D;
+import javafx.scene.input.KeyCode;
 import org.bioshock.engine.input.InputManager;
 import org.bioshock.entities.Entity;
 import org.bioshock.entities.EntityManager;
 import org.bioshock.entities.map.Room;
 import org.bioshock.utils.Point;
 
-import javafx.geometry.Point2D;
-import javafx.scene.input.KeyCode;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Movement {
     private double speed = 8;
@@ -26,6 +25,7 @@ public class Movement {
 
     public void tick(double timeDelta) {
         entity.setAnimation();
+        entity.setSwingAnimation();
         entity.setWalkingSfx();
 
         if (
