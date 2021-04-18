@@ -1,13 +1,18 @@
 package org.bioshock.scenes;
 
-import java.security.Key;
-import java.util.List;
-
+import javafx.geometry.Point2D;
+import javafx.geometry.Point3D;
+import javafx.scene.Cursor;
+import javafx.scene.input.KeyCode;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import org.bioshock.components.NetworkC;
 import org.bioshock.engine.core.FrameRate;
-import org.bioshock.engine.core.WindowManager;
 import org.bioshock.engine.input.InputManager;
 import org.bioshock.entities.EntityManager;
+import org.bioshock.entities.LabelEntity;
 import org.bioshock.entities.map.Room;
 import org.bioshock.entities.map.RoomEntity;
 import org.bioshock.entities.map.maps.GenericMap;
@@ -21,14 +26,7 @@ import org.bioshock.rendering.RenderManager;
 import org.bioshock.utils.GlobalConstants;
 import org.bioshock.utils.Size;
 
-import javafx.geometry.Point2D;
-import javafx.geometry.Point3D;
-import javafx.scene.Cursor;
-import javafx.scene.control.Label;
-import javafx.scene.input.KeyCode;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.paint.Color;
+import java.util.List;
 
 public class MainGame extends GameScene {
     private static final double ENDTIME = 2 * 60f + 3;
@@ -40,11 +38,11 @@ public class MainGame extends GameScene {
     private double timeLosing = 0;
     private int mapSeed = 0;
 
-    private Label timer;
+    private LabelEntity timer;
 
     private Map map;
 
-    public MainGame() {
+    public MainGame(long seed) {
         super();
 
         setCursor(Cursor.HAND);
@@ -62,7 +60,7 @@ public class MainGame extends GameScene {
         		new Size(3, 5), 
         		Color.SADDLEBROWN, 
         		GlobalConstants.singletonMap,
-        		0
+        		seed
     		);
         }
         else {
@@ -74,7 +72,7 @@ public class MainGame extends GameScene {
                 Color.SADDLEBROWN,
                 new Size(3, 3),
                 null,
-                0
+                seed
             );
         }
                 
@@ -128,17 +126,28 @@ public class MainGame extends GameScene {
             hider
         );
 
+        seeker.initAnimations();
+
         children.add(seeker);
 
         Size timerSize = new Size(100, 100);
-        timer = new Label("mm:ss.ms");
-        timer.setStyle("-fx-font: 20 arial; -fx-text-fill: black;");
-        timer.setPrefSize(timerSize.getWidth(), timerSize.getHeight());
-        timer.setTranslateX(-timerSize.getWidth()/2);
-        timer.setTranslateY(
-            -WindowManager.getWindowHeight() / 2 + timerSize.getHeight() / 2
-        );
-        getPane().getChildren().add(timer);
+        timer = new LabelEntity(
+            new Point3D(GameScene.getGameScreen().getWidth()/2, 50, 100),
+            "mm:ss.ms",
+            new Font("arial", 20),
+            50,
+            Color.BLACK);
+
+        children.add(timer);
+
+//        timer = new Label("mm:ss.ms");
+//        timer.setStyle("-fx-font: 20 arial; -fx-text-fill: black;");
+//        timer.setPrefSize(timerSize.getWidth(), timerSize.getHeight());
+//        timer.setTranslateX();
+//        timer.setTranslateY(
+//            -WindowManager.getWindowHeight() / 2 + timerSize.getHeight() / 2
+//        );
+//        getPane().getChildren().add(timer);
 
         InputManager.onRelease(KeyCode.Y, () ->	cameraLock = !cameraLock);
         InputManager.onRelease(KeyCode.C, () -> RenderManager.setClip(!RenderManager.isClip()));
@@ -156,7 +165,19 @@ public class MainGame extends GameScene {
                 () -> hider.getPowerUpManager().getInvisiblePower().start());
         InputManager.onPress(KeyCode.F,
                 () -> hider.getPowerUpManager().getFreezePower().start());
-        
+
+        LabelEntity testLabel = new LabelEntity(
+            new Point3D(10, 70, 100),
+            "This is a test string that is longer than 30 characters long",
+            new Font(20),
+            30,
+            Color.BLACK);
+
+        children.add(testLabel);
+
+        FrameRate.initialise();
+        children.add(FrameRate.getLabel());
+
         registerEntities();
     }
 
@@ -180,6 +201,7 @@ public class MainGame extends GameScene {
             EntityManager.getPlayers().get(0).getMovement().initMovement();
             EntityManager.getPlayers().get(0).initAnimations();
         }
+
     }
 
     @Override
@@ -187,10 +209,10 @@ public class MainGame extends GameScene {
         if(!losing) {
             runningTime += timeDelta;
 
-//            if (runningTime >= ENDTIME) {
-//                SceneManager.setScene(new WinScreen());
-//                return;
-//            }
+            if (runningTime >= ENDTIME) {
+                SceneManager.setScene(new WinScreen());
+                return;
+            }
 
             if (
                 !EntityManager.getPlayers().isEmpty()
@@ -202,7 +224,7 @@ public class MainGame extends GameScene {
         else {
             timeLosing += timeDelta;
             if (timeLosing >= LOSEDELAY) {
-//                SceneManager.setScene(new LoseScreen());
+                SceneManager.setScene(new LoseScreen());
             }
         }
     }
@@ -221,7 +243,8 @@ public class MainGame extends GameScene {
 
         double timeLeft = ENDTIME - runningTime;
         int numMins = (int) timeLeft / 60;
-        timer.setText(String.format(
+        timer.getStringBuilder().setLength(0);
+        timer.getStringBuilder().append(String.format(
             "%d:%.2f",
             numMins,
             timeLeft - numMins * 60

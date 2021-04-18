@@ -10,5 +10,17 @@
     "name": "enabled",
     "path": "src/main/resources/org/bioshock/audio/enabledSound.wav",
     "filesystem": "local"
+  },
+  {
+    "type": "effect",
+    "name": "walking",
+    "path": "src/main/resources/org/bioshock/audio/walkingHardSurface.wav",
+    "filesystem": "local"
+  },
+  {
+    "type": "effect",
+    "name": "woosh",
+    "path": "src/main/resources/org/bioshock/audio/woosh.wav",
+    "filesystem": "local"
   }
 ]

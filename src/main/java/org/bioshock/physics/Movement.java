@@ -1,18 +1,15 @@
 package org.bioshock.physics;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import javafx.geometry.Point2D;
+import javafx.scene.input.KeyCode;
 import org.bioshock.engine.input.InputManager;
 import org.bioshock.entities.Entity;
 import org.bioshock.entities.EntityManager;
 import org.bioshock.entities.map.Room;
-import org.bioshock.main.App;
-import org.bioshock.scenes.SceneManager;
 import org.bioshock.utils.Point;
 
-import javafx.geometry.Point2D;
-import javafx.scene.input.KeyCode;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Movement {
     private double speed = 8;
@@ -28,6 +25,8 @@ public class Movement {
 
     public void tick(double timeDelta) {
         entity.setAnimation();
+        entity.setSwingAnimation();
+        entity.setWalkingSfx();
 
         if (
             entity == EntityManager.getCurrentPlayer()
@@ -56,12 +55,12 @@ public class Movement {
         final double newX = x;
         
         List<Entity> collisionCheck = new ArrayList<>();
-        String rooms = "";
+//        String rooms = "";
         for(Room r:entity.find4ClosestRoom()) {
             collisionCheck.addAll(r.getWalls());
-            rooms += r.toString()+ "\n";
+//            rooms += r.toString()+ "\n";
         }
-        App.logger.debug(rooms);
+//        App.logger.debug(rooms);
         
         //Add other players for collision
         //note would need to update to allow to collide with other objects

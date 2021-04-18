@@ -1,17 +1,16 @@
 package org.bioshock.rendering.renderers;
 
-import static org.bioshock.rendering.RenderManager.getRenHeight;
-import static org.bioshock.rendering.RenderManager.getRenWidth;
-import static org.bioshock.rendering.RenderManager.getRenX;
-import static org.bioshock.rendering.RenderManager.getRenY;
-
-import org.bioshock.entities.players.SeekerAI;
-import org.bioshock.rendering.RenderManager;
-
+import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Arc;
+import javafx.scene.text.Font;
 import javafx.scene.transform.Rotate;
+import org.bioshock.animations.AnimationPlayer;
+import org.bioshock.entities.players.SeekerAI;
+import org.bioshock.rendering.RenderManager;
+
+import static org.bioshock.rendering.RenderManager.*;
 
 public class SeekerRenderer implements Renderer {
     private SeekerRenderer() {}
@@ -28,8 +27,9 @@ public class SeekerRenderer implements Renderer {
         boolean isActive = seeker.getIsActive();
 
         gc.save();
-
         RenderManager.clipToFOV(gc);
+        
+       
         Rotate r = seeker.getRotate();
         gc.setTransform(
             r.getMxx(), r.getMyx(), r.getMxy(),
@@ -52,6 +52,7 @@ public class SeekerRenderer implements Renderer {
             getRenHeight(radius * 2)
         );
 
+        
 
 
         gc.setLineWidth(10);
@@ -69,7 +70,28 @@ public class SeekerRenderer implements Renderer {
                 swatter.getType()
             );
 
+
+
         }
+        // Handles animations
+        AnimationPlayer.playAnimation(
+            ent.getCurrentSprite(),
+            new Point2D(
+                getRenX(x),
+                getRenY(y)
+            )
+        );
+        AnimationPlayer.playAnimation(
+            ent.getCurrentSwingAnimation(),
+            new Point2D(
+                getRenX(x),
+                getRenY(y)
+            )
+        );
+        
+        gc.setFill(Color.BLACK);
+        gc.setFont(new Font(getRenHeight(25)));
+        gc.fillText("Seeker(AI)", getRenX(x-width), getRenY(y-5), getRenWidth(width*3));
 
         gc.restore();
     }

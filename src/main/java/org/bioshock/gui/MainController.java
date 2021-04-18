@@ -1,12 +1,10 @@
 package org.bioshock.gui;
 
-import org.bioshock.main.App;
-
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.stage.Stage;
-import org.bioshock.utils.GlobalStrings;
+import org.bioshock.main.App;
 
 public class MainController {
     public Button newGameButton;
@@ -31,8 +29,8 @@ public class MainController {
     }
 
     public void initialize() {
-        newGameButton.setText(GlobalStrings.NEW_GAME_BUTTON_TEXT);
-        quitButton.setText(GlobalStrings.QUIT_GAME_BUTTON_TEXT);
-        settingsButton.setText(GlobalStrings.SETTINGS_BUTTON_TEXT);
+        newGameButton.setText(App.getBundle().getString("NEW_GAME_BUTTON_TEXT"));
+        quitButton.setText(App.getBundle().getString("QUIT_GAME_BUTTON_TEXT"));
+        settingsButton.setText(App.getBundle().getString("SETTINGS_BUTTON_TEXT"));
     }
 }

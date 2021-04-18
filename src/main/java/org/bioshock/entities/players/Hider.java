@@ -1,6 +1,10 @@
 package org.bioshock.entities.players;
 
-import org.bioshock.animations.PlayerAnimations;
+import javafx.geometry.Point2D;
+import javafx.geometry.Point3D;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
+import org.bioshock.animations.HiderAnimations;
 import org.bioshock.animations.Sprite;
 import org.bioshock.components.NetworkC;
 import org.bioshock.entities.SquareEntity;
@@ -11,16 +15,14 @@ import org.bioshock.rendering.renderers.PlayerSpriteRenderer;
 import org.bioshock.rendering.renderers.components.PlayerRendererC;
 import org.bioshock.utils.GlobalConstants;
 import org.bioshock.utils.Size;
-
-import javafx.geometry.Point2D;
-import javafx.geometry.Point3D;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
+import static org.bioshock.audio.AudioManager.playWalkingSfx;
+import static org.bioshock.audio.AudioManager.stopWalkingSfx;
 
 public class Hider extends SquareEntity {
     private boolean dead = false;
     private Sprite currentSprite;
-    private PlayerAnimations playerAnimations;
+    private HiderAnimations hiderAnimations;
+    boolean playedSfx = false;
 
     protected final PowerUpManager powerUpManager = new PowerUpManager(this);
 
@@ -40,11 +42,11 @@ public class Hider extends SquareEntity {
     }
 
     public void initAnimations() {
-        playerAnimations = new PlayerAnimations(
+        hiderAnimations = new HiderAnimations(
             this,
             GlobalConstants.PLAYER_SCALE
         );
-        currentSprite = playerAnimations.getPlayerIdleSprite();
+        currentSprite = hiderAnimations.getPlayerIdleSprite();
     }
 
     private void setCurrentSprite(Sprite s) {
@@ -65,7 +67,7 @@ public class Hider extends SquareEntity {
 
         dead = d;
 
-        setCurrentSprite(playerAnimations.getPlayerDying());
+        setCurrentSprite(hiderAnimations.getPlayerDying());
     }
 
     @Override
@@ -75,17 +77,38 @@ public class Hider extends SquareEntity {
         int x = (int) translation.getX();
         int y = (int) translation.getY();
 
-        Sprite animation = playerAnimations.getPlayerIdleSprite();
+        Sprite animation = hiderAnimations.getPlayerIdleSprite();
 
-        if (x > 0) animation = playerAnimations.getMoveRightSprite();
+        if (x > 0) animation = hiderAnimations.getMoveRightSprite();
 
-        else if (x < 0) animation = playerAnimations.getMoveLeftSprite();
+        else if (x < 0) animation = hiderAnimations.getMoveLeftSprite();
 
-        else if (y > 0) animation = playerAnimations.getMoveDownSprite();
+        else if (y > 0) animation = hiderAnimations.getMoveDownSprite();
 
-        else if (y < 0) animation = playerAnimations.getMoveUpSprite();
+        else if (y < 0) animation = hiderAnimations.getMoveUpSprite();
 
         setCurrentSprite(animation);
+    }
+
+    @Override
+    public void setWalkingSfx() {
+        Point2D translation = movement.getDirection();
+
+        int x = (int) translation.getX();
+        int y = (int) translation.getY();
+
+
+        if ((x != 0) || (y != 0)) {
+            if (!playedSfx) {
+                playWalkingSfx();
+                playedSfx = true;
+            }
+        }
+        else {
+            stopWalkingSfx();
+            playedSfx = false;
+        }
+
     }
 
     public boolean isDead() {
