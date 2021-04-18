@@ -129,7 +129,7 @@ public class SeekerAI extends SquareEntity {
 
     @Override
     public void setAnimation() {
-        Point2D translation = movement.getDirection();
+        Point2D translation = currentTargetLocation.subtract(getCentre());
 
         int x = (int) translation.getX();
         int y = (int) translation.getY();
