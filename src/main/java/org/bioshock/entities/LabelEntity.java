@@ -10,16 +10,46 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 
 public class LabelEntity extends Entity{
-    
+
     private StringBuilder sb = new StringBuilder();
     private Font font;
     private boolean display = true;
     private int charsPerLine = 50;
     private int lineSpacing = 5;
-    private Color color;
 
-    public Color getColor() {
-        return color;
+    public LabelEntity(
+        Point3D point,
+        String initText,
+        Font font,
+        int charsPerLine,
+        Color colour
+    ) {
+        super(
+            point,
+            new Rectangle(),
+            new NetworkC(false),
+            new SimpleRendererC()
+        );
+
+        this.font = font;
+        this.charsPerLine = charsPerLine;
+
+        sb.append(initText);
+
+        renderer = LabelRenderer.class;
+
+        alwaysRender = true;
+
+        rendererC.setColour(colour);
+    }
+
+    @Override
+    protected void tick(double timeDelta) {
+        /* Entity does not change */
+    }
+
+    public Color getColour() {
+        return rendererC.getColour();
     }
 
     public int getLineSpacing() {
@@ -30,7 +60,7 @@ public class LabelEntity extends Entity{
         return charsPerLine;
     }
 
-    public boolean isDisplay() {
+    public boolean isDisplayed() {
         return display;
     }
 
@@ -42,20 +72,8 @@ public class LabelEntity extends Entity{
         return sb;
     }
 
-    public LabelEntity(Point3D p, String initText, Font font, int charsPerLine, Color color) {
-        super(p, new Rectangle(0,0), new NetworkC(false), new SimpleRendererC());
-        this.font = font;
-        this.charsPerLine = charsPerLine;
-        sb.append(initText);
-        renderer = LabelRenderer.class;
-        alwaysRender = true;
-        this.color = color;
-    }
-
     @Override
-    protected void tick(double timeDelta) {
-        // TODO Auto-generated method stub
-        
+    public String toString() {
+        return String.format("LabelEntity [%s]", sb.toString());
     }
-
 }

@@ -17,23 +17,19 @@ public class SimpleRendererC implements RendererC {
      */
     private Color colour;
 
-    @Override
-    public double getZ() {
-        return this.z;
-    }
-
-    @Override
     public void setZ(double newZ) {
         this.z = newZ;
     }
 
-    @Override
-    public Color getColour() {
-        return this.colour;
+    public double getZ() {
+        return z;
     }
 
-    @Override
-    public void setColour(Color newColor) {
-        this.colour = newColor;
+    public void setColour(Color newColour) {
+        colour = newColour;
+    }
+
+    public Color getColour() {
+        return colour;
     }
 }
