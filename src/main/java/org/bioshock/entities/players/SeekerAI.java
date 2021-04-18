@@ -9,6 +9,7 @@ import javafx.util.Pair;
 import org.bioshock.animations.SeekerAnimations;
 import org.bioshock.animations.Sprite;
 import org.bioshock.animations.SwingAnimations;
+import org.bioshock.audio.AudioManager;
 import org.bioshock.components.NetworkC;
 import org.bioshock.components.PathfindingC;
 import org.bioshock.engine.core.WindowManager;
@@ -69,6 +70,7 @@ public class SeekerAI extends SquareEntity {
     private boolean isActive = false;
     private boolean isSearching = false;
     private boolean colorChanged = false;
+    private boolean wooshSoundPlayed = false;
 
     private Random rand = new Random();
 
@@ -228,8 +230,13 @@ public class SeekerAI extends SquareEntity {
             ) {
                 if(timeBetweenSwings >= TIME_BETWEEN_SWINGS){
                     setActive(true);
+                    if(!wooshSoundPlayed){
+                        AudioManager.playWooshSfx();
+                        wooshSoundPlayed = true;
+                    }
                     if(timeSwinging >= TIME_SWINGING){
                         setActive(false);
+                        wooshSoundPlayed = false;
                         timeSwinging = 0;
                         timeBetweenSwings = 0;
                     }
