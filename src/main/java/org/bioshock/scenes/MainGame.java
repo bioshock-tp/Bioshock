@@ -1,5 +1,6 @@
 package org.bioshock.scenes;
 
+import java.security.Key;
 import java.util.List;
 
 import org.bioshock.components.NetworkC;
@@ -149,6 +150,12 @@ public class MainGame extends GameScene {
                 () -> RenderManager.setCameraPos(RenderManager.getCameraPos().add(0,-10)));
         InputManager.onPress(KeyCode.DOWN, 
                 () -> RenderManager.setCameraPos(RenderManager.getCameraPos().add(0,10)));
+        InputManager.onPress(KeyCode.P,
+                () -> hider.getPowerUpManager().getSpeedPower().start());
+        InputManager.onPress(KeyCode.I,
+                () -> hider.getPowerUpManager().getInvisiblePower().start());
+        InputManager.onPress(KeyCode.F,
+                () -> hider.getPowerUpManager().getFreezePower().start());
         
         registerEntities();
     }

@@ -6,6 +6,7 @@ import org.bioshock.components.NetworkC;
 import org.bioshock.entities.SquareEntity;
 import org.bioshock.main.App;
 import org.bioshock.networking.NetworkManager;
+import org.bioshock.powerup.PowerUpManager;
 import org.bioshock.rendering.renderers.PlayerSpriteRenderer;
 import org.bioshock.rendering.renderers.components.PlayerRendererC;
 import org.bioshock.utils.GlobalConstants;
@@ -15,12 +16,13 @@ import javafx.geometry.Point2D;
 import javafx.geometry.Point3D;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-import javafx.util.Pair;
 
 public class Hider extends SquareEntity {
     private boolean dead = false;
     private Sprite currentSprite;
     private PlayerAnimations playerAnimations;
+
+    protected final PowerUpManager powerUpManager = new PowerUpManager(this);
 
 
     public Hider(Point3D p, NetworkC com, Size s, int r, Color c) {
@@ -30,7 +32,11 @@ public class Hider extends SquareEntity {
     }
 
     protected void tick(double timeDelta) {
-        if (!dead) movement.tick(timeDelta);
+        if (!dead){
+            movement.tick(timeDelta);
+            powerUpManager.tick(timeDelta);
+        }
+
     }
 
     public void initAnimations() {
@@ -96,4 +102,6 @@ public class Hider extends SquareEntity {
     public Sprite getCurrentSprite() {
         return currentSprite;
     }
+
+    public PowerUpManager getPowerUpManager() { return powerUpManager; }
 }

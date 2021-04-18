@@ -146,6 +146,7 @@ public class SeekerAI extends SquareEntity {
             if (
                     EntityManager.isManaged(this, entity)
                     		&& !entity.isDead()
+                            && !entity.isInvisible()
                             && intersects(entity, "fov")                           
                             && checkLineOfSight(entity)
             ) {

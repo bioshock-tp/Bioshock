@@ -3,6 +3,7 @@ package org.bioshock.entities;
 import org.bioshock.components.NetworkC;
 import org.bioshock.components.RendererC;
 import org.bioshock.physics.Movement;
+import org.bioshock.powerup.PowerUpManager;
 import org.bioshock.utils.Point;
 import org.bioshock.utils.Size;
 
@@ -19,6 +20,8 @@ public abstract class SquareEntity extends Entity {
 
     protected Size size;
     protected Circle fov;
+
+    protected boolean invisible = false;
 
     protected SquareEntity(
         Point3D p,
@@ -60,6 +63,8 @@ public abstract class SquareEntity extends Entity {
         this.size = size;
     }
 
+    public void setInvisible(boolean invisible) { this.invisible = invisible; }
+
     public Point getCentre() {
         return new Point(getX() + getWidth() / 2, getY() + getHeight() / 2);
     }
@@ -87,4 +92,6 @@ public abstract class SquareEntity extends Entity {
     public Movement getMovement() {
         return movement;
     }
+
+    public boolean isInvisible() { return invisible; }
 }
