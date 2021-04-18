@@ -137,7 +137,7 @@ public class NetworkManager {
                 if (message.dead) messageFrom.setDead(true);
             } else {
                 updateDirection(input, messageFrom);
-                
+
                 if (messageFrom == masterHider) {
                     seeker.getMovement().moveTo(
                         input.aiX,

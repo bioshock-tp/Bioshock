@@ -11,6 +11,7 @@ import org.bioshock.components.RendererC;
 import org.bioshock.entities.map.Room;
 import org.bioshock.rendering.renderers.Renderer;
 import org.bioshock.scenes.SceneManager;
+import org.bioshock.utils.ArrayUtils;
 import org.bioshock.utils.Point;
 
 import javafx.geometry.Point2D;
@@ -48,6 +49,30 @@ public abstract class Entity {
     }
 
     protected abstract void tick(double timeDelta);
+
+    /**
+     *
+     * Finds the closest room to the given {@code Point2D}, using the given
+     * list of rooms
+     * @param point the coordinates to find the closest room to
+     * @param rooms the list of in-game rooms
+     * @return The room that is closest to the given point
+     */
+    private static Room roomOf(Point2D point, List<Room> rooms) {
+        return Collections.min(rooms, Comparator.comparing(room ->
+            room.getRoomCenter().subtract(point).magnitude()
+        ));
+    }
+
+    /**
+     *
+     * Finds the closest room to the given {@code Point2D}
+     * @param point the coordinates to find the closest room to
+     * @return The room that is closest to the given point
+     */
+    protected static Room roomOf(Point2D point) {
+        return roomOf(point, SceneManager.getMap().getRooms());
+    }
 
     public final void safeTick(double timeDelta) {
         if (enabled) {
@@ -111,14 +136,12 @@ public abstract class Entity {
         return uuid;
     }
 
-    public Pair<Point2D, Point2D> getRenderArea() {
-        return new Pair<>(
-            new Point2D(hitbox.getX(), hitbox.getY()),
-            new Point2D(
-                hitbox.getX() + hitbox.getWidth(),
-                hitbox.getY() + hitbox.getHeight()
-            )
-        );
+    public Rectangle getRenderArea() {
+        return new Rectangle(
+                position.getX(),
+                position.getY(),
+                hitbox.getWidth(),
+                hitbox.getHeight());
     }
 
     public Point getPosition() {
@@ -165,12 +188,9 @@ public abstract class Entity {
      * @return the room that this {@code Entity} is in
      */
     public Room getCurrentRoom() {
-        List<Room> rooms = SceneManager.getMap().getRooms();
-
-        return Collections.min(rooms, Comparator.comparing(room ->
-            room.getRoomCenter().subtract(getCentre()).magnitude()
-        ));
+        return roomOf(getCentre());
     }
+
 
     /**
      * Finds the two nearest rooms to this {@code Entity}, used for collisions
@@ -178,18 +198,12 @@ public abstract class Entity {
      * @return the two nearest rooms to this {@code Entity}
      */
     public Room[] getCurrentRooms() {
-        List<Room> rooms = SceneManager.getMap().getRooms();
+        Room first = roomOf(getCentre());
 
-        Room first = Collections.min(rooms, Comparator.comparing(room ->
-            room.getRoomCenter().subtract(getCentre()).magnitude()
-        ));
-
-        List<Room> otherRooms = new ArrayList<>(rooms);
+        List<Room> otherRooms = new ArrayList<>(SceneManager.getMap().getRooms());
         otherRooms.remove(first);
 
-        Room second = Collections.min(otherRooms, Comparator.comparing(room ->
-            room.getRoomCenter().subtract(getCentre()).magnitude()
-        ));
+        Room second = roomOf(getCentre(), otherRooms);
 
         return new Room[]{first, second};
     }
@@ -198,5 +212,105 @@ public abstract class Entity {
     @Override
     public String toString() {
         return getClass().getSimpleName();
+    }
+
+    /**
+    *
+    * Finds the current room that an entity is in
+    *
+    * @param entity the entity to find current room of
+    * @return the current room of the entity
+    */
+   public Room findCurrentRoom() {
+       return findCurrentRoom(this.getPosition());
+   }
+    /**
+     *
+     * Finds the current room that a position is in
+     *
+     * @param pos the point to find current room of
+     * @return the current room of the point
+     */
+    public static Room findCurrentRoom(Point2D pos) {
+        Room[][] current = SceneManager.getMap().getRoomArray();
+        Room temp = SceneManager.getMap().getRooms().get(0);
+        double tRoomWidth = temp.getTotalSize().getWidth();
+        double tRoomHeight = temp.getTotalSize().getHeight();
+
+        int i = (int) Math.floor(pos.getY() / tRoomHeight);
+        int j = (int) Math.floor(pos.getX() / tRoomWidth);
+
+        return current[i][j];
+    }
+
+    /**
+     * @return the current room and the 2 rooms that you are closest too and then the room those 2 are connected too
+     *
+     * OXXO
+     * OXYO
+     * OOOO
+     *
+     * so if you were in the top left of room Y it would return all rooms X and Y
+     *
+     * OOOO
+     * OOYX
+     * OOXX
+     *
+     * if you were in the bottom right of room Y
+     *
+     * OXYO
+     * OOOO
+     * OOOO
+     * if you were in the top left of room y
+     * (in this case only two rooms would be in the list)
+     */
+    public List<Room> find4ClosestRoom() {
+        return find4ClosestRoom(this.getPosition());
+    }
+
+    /**
+     *
+     * @param pos the position you want the 4 rooms to be close too
+     * @return the current room and the 2 rooms that you are closest too and then the room those 2 are connected too
+     *
+     * OXXO
+     * OXYO
+     * OOOO
+     *
+     * so if you were in the top left of room Y it would return all rooms X and Y
+     *
+     * OOOO
+     * OOYX
+     * OOXX
+     *
+     * if you were in the bottom right of room Y
+     *
+     * OXYO
+     * OOOO
+     * OOOO
+     * if you were in the top left of room y
+     * (in this case only two rooms would be in the list)
+     */
+    public static List<Room> find4ClosestRoom(Point2D pos){
+        Room[][] current = SceneManager.getMap().getRoomArray();
+        Room temp = SceneManager.getMap().getRooms().get(0);
+        double tRoomWidth = temp.getTotalSize().getWidth();
+        double tRoomHeight = temp.getTotalSize().getHeight();
+
+        int i = (int) Math.round(pos.getY() / tRoomHeight);
+        int j = (int) Math.round(pos.getX() / tRoomWidth);
+        List<Pair<Integer, Integer>> coords = new ArrayList<>();
+        coords.add(new Pair<>(i, j));
+        coords.add(new Pair<>(i - 1, j));
+        coords.add(new Pair<>(i, j - 1));
+        coords.add(new Pair<>(i - 1, j - 1));
+
+        List<Room> rooms = new ArrayList<>();
+        for(Pair<Integer, Integer> coord : coords) {
+            if(ArrayUtils.safeGet(current, coord.getKey(), coord.getValue()) != null) {
+                rooms.add(ArrayUtils.safeGet(current, coord.getKey(), coord.getValue()));
+            }
+        }
+        return rooms;
     }
 }

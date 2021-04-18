@@ -19,13 +19,7 @@ public class AnimationPlayer {
         AnimationPlayer.img = ImageUtils.loadImage(IMAGE_PATH);
     }
 
-    // private static long time = 0;
-
     private AnimationPlayer() {}
-
-    // public static void tick(long timeDelta) {
-    //     time += timeDelta;
-    // }
 
     public static void playAnimation(Sprite sprite, Point2D position) {
         double time = GameLoop.getCurrentGameTime();

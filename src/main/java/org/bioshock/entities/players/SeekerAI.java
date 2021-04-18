@@ -3,23 +3,26 @@ package org.bioshock.entities.players;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import java.util.Random;
 import java.util.Set;
 
 import org.bioshock.components.NetworkC;
+import org.bioshock.components.PathfindingC;
+import org.bioshock.engine.core.WindowManager;
+import org.bioshock.engine.pathfinding.Graph;
+import org.bioshock.engine.pathfinding.GraphNode;
 import org.bioshock.entities.Entity;
 import org.bioshock.entities.EntityManager;
 import org.bioshock.entities.SquareEntity;
 import org.bioshock.entities.map.Room;
 import org.bioshock.entities.map.TexRectEntity;
-import org.bioshock.entities.map.ThreeByThreeMap;
-import org.bioshock.main.App;
+import org.bioshock.entities.map.utils.ConnType;
 import org.bioshock.physics.Collisions;
 import org.bioshock.physics.Movement;
 import org.bioshock.rendering.renderers.SeekerRenderer;
 import org.bioshock.rendering.renderers.components.SimpleRendererC;
 import org.bioshock.scenes.SceneManager;
+import org.bioshock.utils.Direction;
+import org.bioshock.utils.GlobalConstants;
 import org.bioshock.utils.Size;
 
 import javafx.geometry.Point2D;
@@ -35,17 +38,47 @@ import javafx.util.Pair;
 
 public class SeekerAI extends SquareEntity implements Collisions {
     private Hider target;
-    private Arc swatterHitbox;
-    private ThreeByThreeMap map = SceneManager.getMap();
-    private List<Room> path = new ArrayList<>();
+    private final Arc swatterHitbox;
+    private final Graph<Room, Pair<Direction, ConnType>> roomGraph = SceneManager.getMap().getRoomGraph();
+    private PathfindingC<Room, Pair<Direction, ConnType>> roomPathfinding = new PathfindingC<>(
+        roomGraph,
+        SceneManager.getMap().getRoomArray(),
+        SceneManager.getMap().getRoomArray()[0][0].getTotalSize().getWidth(),
+        SceneManager.getMap().getRoomArray()[0][0].getTotalSize().getHeight()
+    );
+    private PathfindingC<GraphNode, Pair<Direction, Double>> nodePathfinding = new PathfindingC<>(
+        SceneManager.getMap().getTraversableGraph(),
+        SceneManager.getMap().getTraversableArray(),
+        GlobalConstants.UNIT_WIDTH,
+        GlobalConstants.UNIT_HEIGHT
+    );
+    private List<Point2D> path = new ArrayList<>();
     private Room currRoom;
-    private Room lastSeenPosition;
+    private Room prevRoom;
+    private Point2D currentTargetLocation;
+    private Point2D lastSeenPosition;
+
+    private static final double TIME_BETWEEN_SWINGS = 1.0;
+    private static final double TIME_SWINGING = 1.0;
+
+    private double timeBetweenSwings = 0;
+    private double timeSwinging = 0;
 
     private boolean isActive = false;
     private boolean isSearching = false;
 
-    private Random rand = new Random();
 
+    /**
+     *
+     * Constructor
+     *
+     * @param p The location to spawn at
+     * @param com The network component
+     * @param s The width and height of the seeker
+     * @param r Radius of fov
+     * @param c Colour of seeker
+     * @param e The initial player to follow
+     */
     public SeekerAI(Point3D p, NetworkC com, Size s, int r, Color c, Hider e) {
         super(p, com, new SimpleRendererC(), s, r, c);
 
@@ -63,14 +96,24 @@ public class SeekerAI extends SquareEntity implements Collisions {
 
         swatterHitbox.setType(ArcType.ROUND);
 
-        currRoom = getCurrentRoom();
+        currRoom = this.findCurrentRoom();
+        prevRoom = currRoom;
+
+        currentTargetLocation = new Point2D(getCentre().getX(), getCentre().getY());
     }
 
+
+    @Override
     protected void tick(double timeDelta) {
+        timeBetweenSwings += timeDelta;
+        if (getIsActive()) {
+            timeSwinging += timeDelta;
+        }
         doActions();
         setSwatterPos();
         setSwatterRot();
     }
+
 
     @Override
     public void collisionTick(Set<Entity> collisions) {
@@ -82,41 +125,77 @@ public class SeekerAI extends SquareEntity implements Collisions {
         if (!collisions.isEmpty()) movement.moveBack(collisions);
     }
 
+
+    /***
+     * The main behaviour tree for the seeker
+     */
     private void doActions() {
         setSearch(true);
         Hider firstPlayer = EntityManager.getPlayers().get(0);
         boolean masterPlayer = firstPlayer == EntityManager.getCurrentPlayer();
+
         EntityManager.getPlayers().forEach(entity -> {
             if (
                 EntityManager.isManaged(this, entity)
-                && intersects(entity, "swatter")
+                && getIsActive()
                 && !entity.isDead()
+                && intersects(entity, "swatter")
             ) {
-                setActive(true);
                 entity.setDead(true);
             }
             if (
                 EntityManager.isManaged(this, entity)
-                && intersects(entity, "fov")
                 && !entity.isDead()
+                && intersects(entity, "fov")
                 && checkLineOfSight(entity)
             ) {
-                rendererC.setColour(Color.ORANGE);
+                if (timeBetweenSwings >= TIME_BETWEEN_SWINGS) {
+                    setActive(true);
+                    if (timeSwinging >= TIME_SWINGING) {
+                        setActive(false);
+                        timeSwinging = 0;
+                        timeBetweenSwings = 0;
+                    }
+                }
+
                 target = entity;
                 if (masterPlayer) chasePlayer(target);
             }
         });
 
-        if (masterPlayer && isSearching) search();
+        if (EntityManager.getPlayers().stream().anyMatch(entity ->
+            EntityManager.isManaged(this, entity)
+            && !entity.isDead()
+            && intersects(entity, "fov")
+            && checkLineOfSight(entity)
+        )) {
+            rendererC.setColour(Color.INDIANRED);
+        }
+
+        if (masterPlayer && isSearching) {
+            setActive(false);
+            search();
+        }
     }
 
+    /**
+     *
+     * Can check intersections between an entity and the type given
+     *
+     * @param entity The entity to check collisions with
+     * @param type The type of collision to check (fov etc)
+     * @return true if it intersects, false otherwise
+     */
     private boolean intersects(SquareEntity entity, String type) {
         Shape intersect;
         Rectangle entityHitbox = new Rectangle(
-            entity.getX(), entity.getY(), entity.getWidth(), entity.getHeight()
+            entity.getX(),
+            entity.getY(),
+            entity.getWidth(),
+            entity.getHeight()
         );
 
-        switch(type) {
+        switch (type) {
             case "fov":
                 Circle fovC = new Circle(
                     getCentre().getX(),
@@ -136,6 +215,15 @@ public class SeekerAI extends SquareEntity implements Collisions {
         return intersect.getBoundsInLocal().getWidth() != -1;
     }
 
+
+    /**
+     *
+     * Checks line of sight from the seeker to the entity given
+     * Draws a line and if line hits a wall then it is not in line of sight
+     *
+     * @param entity The entity to check line of sight with
+     * @return true if in line of sight, false otherwise
+     */
     private boolean checkLineOfSight(SquareEntity entity) {
         Rectangle wallHitbox;
 
@@ -148,10 +236,10 @@ public class SeekerAI extends SquareEntity implements Collisions {
 
         List<Room> roomsToCheck = new ArrayList<>();
         roomsToCheck.add(currRoom);
-        roomsToCheck.add(entity.getCurrentRoom());
+        roomsToCheck.add(entity.findCurrentRoom());
 
         for (Room room : roomsToCheck) {
-            for(TexRectEntity wall : room.getWalls()) {
+            for (TexRectEntity wall : room.getWalls()) {
                 wallHitbox = new Rectangle(
                     wall.getX(),
                     wall.getY(),
@@ -168,119 +256,122 @@ public class SeekerAI extends SquareEntity implements Collisions {
         return true;
     }
 
-    private void chasePlayer(Entity e) {
+
+    /**
+     *
+     * Contains behaviour tree for chasing the entity
+     *
+     * @param entity the entity to chase
+     */
+    private void chasePlayer(Entity entity) {
         setSearch(false);
         path.clear();
-        lastSeenPosition = e.getCurrentRoom();
-
-        if(Objects.equals(e.getCurrentRoom(), this.getCurrentRoom())) {
-            movement.moveTo(e.getPosition());
-        }
-        else{
-            moveToCentre(lastSeenPosition);
-        }
-    }
-
-    private void moveToCentre(Room room) {
-        movement.moveTo(
-            room.getRoomCenter().getX(),
-            room.getRoomCenter().getY()
-        );
-    }
-
-    private List<Room> createPath(Room startRoom) {
-        List<Room> pathToFollow = new ArrayList<>();
-        List<Room> possibleMoves = new ArrayList<>();
-        Room[] adjacents;
-        Room destination;
-        Room current;
-        int r;
-        int c = 0;
-
-        current = startRoom;
-        destination = startRoom;
-        App.logger.debug("Start room is {}", startRoom.getRoomCenter());
-
-        while(destination == startRoom) {
-            r = rand.nextInt(map.getRooms().size());
-            destination = map.getRooms().get(r);
-        }
-        App.logger.debug(
-            "Destination room is {}",
-            destination.getRoomCenter()
+        lastSeenPosition = new Point2D(entity.getX(), entity.getY());
+        path = nodePathfinding.createBestPath(
+            this.getCentre(),
+            lastSeenPosition
         );
 
-        pathToFollow.add(startRoom);
-        App.logger.debug("Room {} is {}", c, startRoom.getRoomCenter());
-        c++;
-
-        while (current != destination) {
-            adjacents = current.getAdjacentRooms();
-            for (int i = 0; i < 4; i++) {
-                if (
-                    adjacents[i] != null
-                    && !pathToFollow.contains(adjacents[i])
-                ) {
-                    possibleMoves.add(adjacents[i]);
-                }
-            }
-
-            if(!possibleMoves.isEmpty()) {
-                r = rand.nextInt(possibleMoves.size());
-                current = possibleMoves.get(r);
-            }
-            else{
-                destination = current;
-            }
-
-            pathToFollow.add(current);
-            App.logger.debug("Room {} is {}", c, current.getRoomCenter());
-            possibleMoves.clear();
-            c++;
-
+        if (!path.isEmpty()) {
+            currentTargetLocation = path.remove(0);
         }
-
-        return pathToFollow;
+        search();
     }
 
+
+    /**
+     * Contains the behaviour tree for patrolling the map
+     */
     public void search() {
-        if (path.isEmpty()) {
-            if (lastSeenPosition != null) {
-                currRoom = lastSeenPosition;
-            }
+        updateRoom(this);
 
-            double absX = Math.abs(currRoom.getRoomCenter().getX() - getX());
-            double absY = Math.abs(currRoom.getRoomCenter().getY() - getY());
-            if (
-                absX < 5
-                && absY < 5
-            ) {
-                if (lastSeenPosition != null) {
-                    path = createPath(lastSeenPosition);
-                    lastSeenPosition = null;
-                }
-                else {
-                    path = createPath(getCurrentRoom());
-                }
-                currRoom = path.remove(0);
-            }
-            else{
-                moveToCentre(currRoom);
-            }
+        if (path.isEmpty()) {
+            path = roomPathfinding.createRandomPath(
+                this.getCentre(),
+                prevRoom,
+                getPreferred()
+            );
+
+            path.add(path.get((path.size()) - 1));
+
+            List<Point2D> pathToNextRoom = nodePathfinding.createBestPath(this.getCentre(), path.get(0));
+
+            path.addAll(0, pathToNextRoom);
+
+            currentTargetLocation = path.remove(0);
         }
         else {
-            moveToCentre(currRoom);
-            double absX = Math.abs(currRoom.getRoomCenter().getX() - getX());
-            double absY = Math.abs(currRoom.getRoomCenter().getY() - getY());
-            if (absX < 5 && absY < 5) {
-                currRoom = path.remove(0);
+            // continue searching
+            movement.moveTo(currentTargetLocation.subtract(new Point2D(getWidth() / 2, getHeight() / 2)));
+
+            double absX = Math.abs(currentTargetLocation.getX() - getWidth() / 2 - getX());
+            double absY = Math.abs(currentTargetLocation.getY() - getHeight() / 2 - getY());
+
+            if (absX < 1 && absY < 1) {
+                currentTargetLocation = path.remove(0);
             }
+        }
+
+    }
+
+    private Room getPreferred() {
+        if (lastSeenPosition == null) {
+            return null;
+        }
+
+        Room room = findCurrentRoom(lastSeenPosition);
+        List<Pair<Point2D, Direction>> points = room.getCorridorPoints();
+        if (points == null || points.isEmpty()) {
+            return null;
+        }
+
+        if (!room.equals(currRoom)) {
+            return room;
+        }
+
+        Direction direction = points.get(0).getValue();
+        double shortest =
+            WindowManager.getWindowWidth() * WindowManager.getWindowHeight();
+
+        Point2D temp;
+        for (Pair<Point2D, Direction> point : points) {
+            temp = point.getKey().subtract(lastSeenPosition);
+            if (temp.magnitude() < shortest) {
+                shortest = temp.magnitude();
+                direction = point.getValue();
+            }
+        }
+        Room finalRoom = roomGraph.getNodeFromEdge(
+            new Pair<>(direction, ConnType.ROOM_TO_ROOM),
+            room
+        );
+
+        if (finalRoom == null) {
+            finalRoom = roomGraph.getNodeFromEdge(
+                new Pair<>(direction, ConnType.SUB_ROOM),
+                room
+            );
+        }
+        return finalRoom;
+    }
+
+    private void updateRoom(Entity entity) {
+        Room newRoom = entity.getCurrentRoom();
+        if (!newRoom.equals(currRoom)) {
+            prevRoom = currRoom;
+            currRoom = newRoom;
+            nodePathfinding.setGraph(currRoom.getTraversableGraph());
         }
     }
 
     public void setActive(boolean b) { isActive = b; }
 
     public void setSearch(boolean b) {isSearching = b;}
+
+    public void setSwatterRange(double range) {
+        swatterHitbox.setRadiusX(range);
+        swatterHitbox.setRadiusY(range);
+    }
 
     public void setSwatterPos() {
         swatterHitbox.setCenterX(getCentre().getX());
@@ -289,9 +380,9 @@ public class SeekerAI extends SquareEntity implements Collisions {
 
     public void setSwatterRot() {
         double r = Movement.getFacingRotate(
-            target.getPosition().subtract(getPosition())
+                target.getPosition().subtract(getPosition())
         );
-        swatterHitbox.setStartAngle(390 - r);
+        swatterHitbox.setStartAngle(30 + r);
     }
 
     public Arc getSwatterHitbox() { return swatterHitbox; }
@@ -301,12 +392,12 @@ public class SeekerAI extends SquareEntity implements Collisions {
     public boolean getIsActive() { return isActive; }
 
     @Override
-    public Pair<Point2D, Point2D> getRenderArea() {
-        Point2D centre = getCentre();
-        double radius = getRadius();
-        return new Pair<>(
-            centre.subtract(radius, radius),
-            centre.add(radius, radius)
+    public Rectangle getRenderArea() {
+        return new Rectangle(
+            getCentre().getX() - getRadius(),
+            getCentre().getY() - getRadius(),
+            getRadius() * 2,
+            getRadius() * 2
         );
     }
 }

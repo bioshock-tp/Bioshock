@@ -29,7 +29,7 @@ public class ImageUtils {
         return new Image(imagePath);
     }
 
-    public static Image crop(Image img,int x,int y,int w,int h) {
+    public static Image crop(Image img, int x, int y, int w, int h) {
         PixelReader reader = img.getPixelReader();
         return new WritableImage(reader, x, y, w, h);
     }

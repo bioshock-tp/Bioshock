@@ -24,7 +24,6 @@ import javafx.geometry.Point2D;
 import javafx.geometry.Point3D;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-import javafx.util.Pair;
 
 public class Hider extends SquareEntity implements Collisions {
     private boolean dead = false;
@@ -128,17 +127,13 @@ public class Hider extends SquareEntity implements Collisions {
     }
 
     @Override
-    public Pair<Point2D, Point2D> getRenderArea() {
+    public Rectangle getRenderArea() {
         Point2D centre = getCentre();
         double radius = getRadius();
-        return new Pair<>(
-            centre.subtract(radius, radius),
-            centre.add(radius, radius)
-        );
+        return new Rectangle(centre.getX() - radius, centre.getY() - radius, radius * 2, radius * 2);
     }
 
     public Sprite getCurrentSprite() {
         return currentSprite;
     }
-
 }

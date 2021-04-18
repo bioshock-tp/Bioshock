@@ -18,13 +18,14 @@ import org.bioshock.utils.Size;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.util.Pair;
+import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.Shape;
 
 public final class RenderManager {
-    private static final boolean CLIP = true;
+    private static boolean clip = true;
 
     private static List<Entity> entities = new ArrayList<>();
-    private static Point2D cameraPos = new Point2D(0,0);
+    private static Point2D cameraPos = new Point2D(0, 0);
     private static Point2D scale = new Point2D(1.0, 1.0);
     private static double padding = 1;
 
@@ -41,15 +42,15 @@ public final class RenderManager {
         Canvas canvas = SceneManager.getCanvas();
         GraphicsContext gc = canvas.getGraphicsContext2D();
 
-        // Set Background to LightGrey
+        // clear the entire canvas
         gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
+		Size screenSize = GameScene.getGameScreen();
+        Rectangle screen = new Rectangle(cameraPos.getX(), cameraPos.getY(), screenSize.getWidth(), screenSize.getHeight());
 
         // renders each entity
         entities.stream().filter(Entity::isEnabled).forEach(entity -> {
-            Pair<Point2D, Point2D> renderArea = entity.getRenderArea();
             if (
-                pointInScreen(renderArea.getKey())
-                || pointInScreen(renderArea.getValue())
+                intersects(entity.getRenderArea(), screen)
             ) {
                 try {
                     Method rend = entity.getRenderer().getDeclaredMethods()[0];
@@ -69,19 +70,14 @@ public final class RenderManager {
         });
     }
 
-    public static boolean pointInScreen(Point2D p) {
-        Size screen = GameScene.getGameScreen();
-        return !(
-            p.getX() < cameraPos.getX()
-            || p.getY() < cameraPos.getY()
-            || p.getX() > cameraPos.getX() + screen.getWidth()
-            || p.getY() > cameraPos.getY() + screen.getHeight()
-        );
+    private static boolean intersects(Shape s1, Shape s2) {
+        return Shape.intersect(s1, s2).getBoundsInLocal().getWidth() != -1;
     }
 
+
     /**
-     * Registers an entity to the RenderManager and Stores it in ascending
-     * order with regards to it's Y value given in it's render component
+     * Registers an entity to the RenderManager and stores it in ascending
+     * order with regards to it's Z value given in it's render component
      * @param entity
      */
     public static void register(Entity entity) {
@@ -94,12 +90,12 @@ public final class RenderManager {
         if (entities.isEmpty()) {
             entities.add(entity);
         } else {
-            Entity currEnt = entities.get(0);
+            Entity currentEntity = entities.get(0);
 
             int i;
             final int N = entities.size();
-            for (i = 1; (currEnt.getZ() < entity.getZ()) && i < N; i++) {
-                currEnt = entities.get(i);
+            for (i = 0; currentEntity.getZ() < entity.getZ() && i < N; i++) {
+                currentEntity = entities.get(i);
             }
 
             entities.add(i, entity);
@@ -131,7 +127,7 @@ public final class RenderManager {
      */
     public static void clipToFOV(GraphicsContext gc) {
         Hider player = EntityManager.getCurrentPlayer();
-        if (CLIP && player != null) {
+        if (clip && player != null) {
             double x = player.getX();
             double y = player.getY();
             double radius = player.getRadius();
@@ -194,5 +190,13 @@ public final class RenderManager {
 
     public static Point2D getScale() {
         return scale;
+    }
+
+    public static boolean isClip() {
+        return clip;
+    }
+
+    public static void setClip(boolean clip) {
+        RenderManager.clip = clip;
     }
 }

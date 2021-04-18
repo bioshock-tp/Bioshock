@@ -13,12 +13,16 @@ import org.bioshock.entities.items.food.Donut;
 import org.bioshock.entities.items.food.HotDog;
 import org.bioshock.entities.items.food.Pizza;
 import org.bioshock.entities.map.Room;
-import org.bioshock.entities.map.ThreeByThreeMap;
+import org.bioshock.entities.map.RoomEntity;
+import org.bioshock.entities.map.maps.GenericMap;
+import org.bioshock.entities.map.maps.Map;
+import org.bioshock.entities.map.maps.RandomMap;
 import org.bioshock.entities.players.Hider;
 import org.bioshock.entities.players.SeekerAI;
 import org.bioshock.main.App;
 import org.bioshock.networking.NetworkManager;
 import org.bioshock.rendering.RenderManager;
+import org.bioshock.utils.GlobalConstants;
 import org.bioshock.utils.Size;
 
 import javafx.geometry.Point2D;
@@ -48,7 +52,6 @@ public class MainGame extends GameScene {
 
     private Label timer;
 
-    private ThreeByThreeMap map;
     private Hider hider;
 
     public MainGame() {
@@ -61,35 +64,102 @@ public class MainGame extends GameScene {
             null
         )));
 
-        initEntites();
+        initEntities();
 
         InputManager.onRelease(KeyCode.Y, () ->	cameraLock = !cameraLock);
+
+        InputManager.onRelease(KeyCode.C, () ->
+            RenderManager.setClip(!RenderManager.isClip())
+        );
+
+        InputManager.onPress(KeyCode.LEFT, () ->
+            RenderManager.setCameraPos(
+                RenderManager.getCameraPos().add(-10, 0)
+            )
+        );
+        InputManager.onPress(KeyCode.RIGHT, () ->
+            RenderManager.setCameraPos(
+                RenderManager.getCameraPos().add(10, 0)
+            )
+        );
+        InputManager.onPress(KeyCode.UP, () ->
+            RenderManager.setCameraPos(
+                RenderManager.getCameraPos().add(0, -10)
+            )
+        );
+        InputManager.onPress(KeyCode.DOWN, () ->
+            RenderManager.setCameraPos(
+                RenderManager.getCameraPos().add(0, 10)
+            )
+        );
 
         registerEntities();
     }
 
+    private void initEntities() {
+        initMap();
+
+        initHiders();
+
+        initSeeker();
+
+        initItems();
+
+        initTimer();
+    }
+
+
+
     private void initMap() {
-        map = new ThreeByThreeMap(
-            new Point3D(100, 100, 0),
-            10,
-            new Size(300, 600),
-            new Size(90, 90),
-            Color.SADDLEBROWN
-        );
+        Map map;
+
+        if (App.isNetworked()) {
+            map = new GenericMap(
+                new Point3D(0, 0, 0),
+                1,
+                new Size(5, 7),
+                new Size(3, 5),
+                Color.SADDLEBROWN,
+                GlobalConstants.SINGLETON_MAP,
+                0
+            );
+        }
+        else {
+            map = new RandomMap(
+                new Point3D(0, 0, 0),
+                1,
+                new Size(9, 11),
+                new Size(3, 5),
+                Color.SADDLEBROWN,
+                new Size(3, 3),
+                null,
+                0
+            );
+        }
+
         SceneManager.setMap(map);
         children.addAll(map.getWalls());
     }
 
     private void initHiders() {
-        List<Room> rooms = map.getRooms();
+        List<Room> rooms = SceneManager.getMap().getRooms();
+
+        rooms.forEach(room -> {
+            RoomEntity roomEntity = new RoomEntity(room);
+            children.add(roomEntity);
+        });
 
         double x = rooms.get(0).getRoomCenter().getX();
         double y = rooms.get(0).getRoomCenter().getY();
 
         hider = new Hider(
-            new Point3D(x, y, 0.5),
+            new Point3D(
+                x - GlobalConstants.UNIT_WIDTH / 2f,
+                y - GlobalConstants.UNIT_HEIGHT / 2f,
+                0.5
+            ),
             new NetworkC(true),
-            new Size(54, 61),
+            new Size(GlobalConstants.UNIT_WIDTH, GlobalConstants.UNIT_HEIGHT),
             300,
             Color.PINK
         );
@@ -102,9 +172,16 @@ public class MainGame extends GameScene {
             y = rooms.get(roomNumber % rooms.size()).getRoomCenter().getY();
 
             children.add(new Hider(
-                new Point3D(x, y, i),
+                new Point3D(
+                    x - GlobalConstants.UNIT_WIDTH / 2f,
+                    y - GlobalConstants.UNIT_HEIGHT / 2f,
+                    i
+                ),
                 new NetworkC(true),
-                new Size(40, 40),
+                new Size(
+                    GlobalConstants.UNIT_WIDTH,
+                    GlobalConstants.UNIT_HEIGHT
+                ),
                 300,
                 Color.PINK
             ));
@@ -112,33 +189,25 @@ public class MainGame extends GameScene {
     }
 
     private void initSeeker() {
-        List<Room> rooms = map.getRooms();
+        List<Room> rooms = SceneManager.getMap().getRooms();
 
         double centreX = rooms.get(rooms.size() / 2).getRoomCenter().getX();
         double centreY = rooms.get(rooms.size() / 2).getRoomCenter().getY();
 
         SeekerAI seeker = new SeekerAI(
-            new Point3D(centreX, centreY, 0.25),
+            new Point3D(
+                centreX - GlobalConstants.UNIT_WIDTH / 2f,
+                centreY - GlobalConstants.UNIT_HEIGHT / 2f,
+                0.25
+            ),
             new NetworkC(true),
-            new Size(40, 40),
+            new Size(GlobalConstants.UNIT_WIDTH, GlobalConstants.UNIT_HEIGHT),
             300,
             Color.INDIANRED,
             hider
         );
 
         children.add(seeker);
-    }
-
-    private void initTimer() {
-        Size timerSize = new Size(100, 100);
-        timer = new Label("mm:ss.ms");
-        timer.setStyle("-fx-font: 20 arial; -fx-text-fill: black;");
-        timer.setPrefSize(timerSize.getWidth(), timerSize.getHeight());
-        timer.setTranslateX(-timerSize.getWidth()/2);
-        timer.setTranslateY(
-            -WindowManager.getWindowHeight() / 2 + timerSize.getHeight() / 2
-        );
-        getPane().getChildren().add(timer);
     }
 
     private void initItems() {
@@ -149,17 +218,18 @@ public class MainGame extends GameScene {
         children.add(new Pizza());
     }
 
-    private void initEntites() {
-        initMap();
-
-        initHiders();
-
-        initSeeker();
-
-        initItems();
-
-        initTimer();
+    private void initTimer() {
+        Size timerSize = new Size(100, 100);
+        timer = new Label("mm:ss.ms");
+        timer.setStyle("-fx-font: 20 arial; -fx-text-fill: black;");
+        timer.setPrefSize(timerSize.getWidth(), timerSize.getHeight());
+        timer.setTranslateX(-timerSize.getWidth() / 2);
+        timer.setTranslateY(
+            -WindowManager.getWindowHeight() / 2 + timerSize.getHeight() / 2
+        );
+        getPane().getChildren().add(timer);
     }
+
 
     @Override
     public void initScene() {
@@ -185,13 +255,8 @@ public class MainGame extends GameScene {
 
     @Override
     public void logicTick(double timeDelta) {
-        if(!losing) {
+        if (!losing) {
             runningTime += timeDelta;
-
-            if (runningTime >= ENDTIME) {
-                SceneManager.setScene(new WinScreen());
-                return;
-            }
 
             if (
                 !EntityManager.getPlayers().isEmpty()
@@ -203,7 +268,7 @@ public class MainGame extends GameScene {
         else {
             timeLosing += timeDelta;
             if (timeLosing >= LOSEDELAY) {
-                SceneManager.setScene(new LoseScreen());
+               SceneManager.setScene(new LoseScreen());
             }
         }
     }
@@ -211,7 +276,7 @@ public class MainGame extends GameScene {
     @Override
     public void renderTick(double timeDelta) {
         hider = EntityManager.getCurrentPlayer();
-        if(cameraLock && hider != null) {
+        if (cameraLock && hider != null) {
             RenderManager.setCameraPos(
                 hider.getCentre().subtract(
                     getGameScreen().getWidth() / 2,

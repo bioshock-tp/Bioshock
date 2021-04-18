@@ -11,7 +11,7 @@ import javafx.geometry.Point2D;
 import javafx.scene.input.KeyCode;
 
 public class Movement {
-    private double speed = 5;
+    private double speed = 8;
 
     private Point2D oldPosition;
 
@@ -57,7 +57,7 @@ public class Movement {
     }
 
     public void moveTo(double x, double y) {
-        moveTo(new Point(x, y));
+        moveTo(new Point2D(x, y));
     }
 
 
@@ -118,7 +118,17 @@ public class Movement {
     }
 
     public static double getFacingRotate(Point2D trans) {
-        return Math.atan2(trans.getX(), -trans.getY())*180/Math.PI;
+        double angle = Math.atan2(trans.getX(), -trans.getY()) * 180 / Math.PI;
+
+        if (angle < 0) {
+            angle = Math.abs(angle);
+        }
+
+        else {
+            angle = 360 - angle;
+        }
+
+        return angle;
     }
 
     public double getSpeed() {

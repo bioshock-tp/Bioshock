@@ -3,15 +3,6 @@ package org.bioshock.audio.settings;
 import lombok.Getter;
 
 public abstract class AudioSettings {
-    /**
-     * The relative left and right volume levels of the clip.
-     *
-     * Valid range is -1.0 to 1.0 where -1.0 gives full volume to the left channel while muting the right
-     * channel, 0.0 gives full volume to both channels and 1.0 gives full volume to right channel and mutes
-     * the left channel.
-     *
-     */
-    @Getter protected double balance = 0.0;
 
     /**
      * The number of times the clip will be played.
@@ -25,7 +16,7 @@ public abstract class AudioSettings {
     /**
      * The relative rate at which the clip is played.
      *
-     * Valid range is 0.125 (1/8 speed) to 8.0 (8x speed). Normal playback for a clip is 1.0; any other rate
+     * Valid range is 0.125 (1 / 8 speed) to 8.0 (8x speed). Normal playback for a clip is 1.0; any other rate
      * will affect pitch and duration accordingly.
      *
      */
@@ -48,22 +39,6 @@ public abstract class AudioSettings {
      *          A deep copy of this object.
      */
     public abstract AudioSettings deepCopy();
-
-    /**
-     * Sets the balance to a value of the range [-1, 1].
-     *
-     * @param balance
-     *          The new balance.
-     */
-    public void setBalance(final double balance) {
-        if (balance < -1) {
-            this.balance = -1;
-        } else if (balance > 1) {
-            this.balance = 1;
-        } else {
-            this.balance = balance;
-        }
-    }
 
     /**
      * Sets the cycle count to a value of the range [-1, Integer.MAX_VALUE].
@@ -93,6 +68,10 @@ public abstract class AudioSettings {
         }
     }
 
+    public double getVolume() {
+        return volume;
+    }
+
     /**
      * Sets the volume to a value of the range [0, 1].
      *
@@ -109,7 +88,4 @@ public abstract class AudioSettings {
         }
     }
 
-    public abstract double getVolume();
-
-    ;
 }
