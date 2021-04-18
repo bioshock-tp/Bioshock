@@ -1,12 +1,9 @@
 package org.bioshock.rendering.renderers;
 
-import static org.bioshock.rendering.RenderManager.getRenHeight;
-import static org.bioshock.rendering.RenderManager.getRenWidth;
-import static org.bioshock.rendering.RenderManager.getRenX;
-import static org.bioshock.rendering.RenderManager.getRenY;
+import static org.bioshock.rendering.RenderManager.getRenHeightUnzoomed;
+import static org.bioshock.rendering.RenderManager.getRenWidthUnzoomed;
 
 import org.bioshock.entities.LabelEntity;
-import org.bioshock.main.App;
 
 import javafx.scene.canvas.GraphicsContext;
 
@@ -37,14 +34,14 @@ public class LabelRenderer implements Renderer {
                     if(endIndex > line.length()) {
                         endIndex = line.length();
                     }
-                    
+                    gc.setFont(label.getFont());
                                         
                     gc.fillText(
-                            line.substring(
-                            i*charsPerLine, 
-                            endIndex), 
-                        getRenWidth(label.getX()), 
-                        getRenHeight(label.getY() + j*(label.getFont().getSize() + label.getLineSpacing())));
+                        line.substring(
+	                        i*charsPerLine, 
+	                        endIndex), 
+                        getRenWidthUnzoomed(label.getX()), 
+                        getRenHeightUnzoomed(label.getY() + j*(label.getFont().getSize() + label.getLineSpacing())));
                     j++;
                 }
             }

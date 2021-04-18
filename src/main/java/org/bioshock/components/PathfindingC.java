@@ -1,20 +1,15 @@
 package org.bioshock.components;
 
-import javafx.geometry.Point2D;
-import javafx.util.Pair;
-import org.bioshock.engine.core.WindowManager;
-import org.bioshock.engine.pathfinding.Graph;
-import org.bioshock.engine.pathfinding.GraphNode;
-import org.bioshock.entities.map.Room;
-import org.bioshock.entities.map.utils.ConnType;
-import org.bioshock.main.App;
-import org.bioshock.scenes.SceneManager;
-import org.bioshock.utils.Direction;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
+
+import org.bioshock.engine.pathfinding.Graph;
+import org.bioshock.engine.pathfinding.GraphNode;
+import org.bioshock.main.App;
+
+import javafx.geometry.Point2D;
 
 /***
  *

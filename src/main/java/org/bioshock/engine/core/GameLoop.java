@@ -1,7 +1,6 @@
 package org.bioshock.engine.core;
 
 import org.bioshock.entities.EntityManager;
-import org.bioshock.main.App;
 import org.bioshock.networking.NetworkManager;
 import org.bioshock.rendering.RenderManager;
 import org.bioshock.scenes.SceneManager;

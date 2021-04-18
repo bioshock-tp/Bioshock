@@ -1,12 +1,9 @@
 package org.bioshock.engine.core;
 
 import org.bioshock.entities.LabelEntity;
-import org.bioshock.main.App;
 import org.bioshock.scenes.GameScene;
-import org.bioshock.scenes.SceneManager;
 
 import javafx.geometry.Point3D;
-import javafx.scene.control.Label;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 

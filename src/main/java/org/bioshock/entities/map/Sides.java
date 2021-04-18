@@ -7,7 +7,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.bioshock.components.NetworkC;
-import org.bioshock.main.App;
 import org.bioshock.utils.ArrayUtils;
 import org.bioshock.utils.SizeD;
 import org.bioshock.utils.SizeI;

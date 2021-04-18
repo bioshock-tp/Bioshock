@@ -2,7 +2,6 @@ package org.bioshock.entities.map;
 
 import org.bioshock.components.NetworkC;
 import org.bioshock.entities.SquareEntity;
-import org.bioshock.rendering.renderers.SquareRenderer;
 import org.bioshock.rendering.renderers.WallRenderer;
 import org.bioshock.rendering.renderers.components.SimpleRendererC;
 import org.bioshock.utils.SizeD;

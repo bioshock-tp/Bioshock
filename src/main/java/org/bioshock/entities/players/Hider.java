@@ -1,5 +1,8 @@
 package org.bioshock.entities.players;
 
+import static org.bioshock.audio.AudioManager.playWalkingSfx;
+import static org.bioshock.audio.AudioManager.stopWalkingSfx;
+
 import org.bioshock.animations.PlayerAnimations;
 import org.bioshock.animations.Sprite;
 import org.bioshock.components.NetworkC;
@@ -15,10 +18,6 @@ import javafx.geometry.Point2D;
 import javafx.geometry.Point3D;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-import javafx.util.Pair;
-
-import static org.bioshock.audio.AudioManager.playWalkingSfx;
-import static org.bioshock.audio.AudioManager.stopWalkingSfx;
 
 public class Hider extends SquareEntity {
     private boolean dead = false;

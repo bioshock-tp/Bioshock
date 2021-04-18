@@ -39,7 +39,6 @@ public class MainGame extends GameScene {
     private double runningTime = 0;
     private boolean losing = false;
     private double timeLosing = 0;
-    private int mapSeed = 0;
 
     private LabelEntity timer;
 
@@ -87,7 +86,6 @@ public class MainGame extends GameScene {
             ));
         }
 
-        SizeD timerSize = new SizeD(100, 100);
         timer = new LabelEntity(
             new Point3D(GameScene.getGameScreen().getWidth()/2, 50, 100), 
             "mm:ss.ms", 
@@ -116,6 +114,10 @@ public class MainGame extends GameScene {
                 () -> RenderManager.setCameraPos(RenderManager.getCameraPos().add(0,-10)));
         InputManager.onPress(KeyCode.DOWN, 
                 () -> RenderManager.setCameraPos(RenderManager.getCameraPos().add(0,10)));
+        InputManager.onPress(KeyCode.EQUALS, 
+        		() -> RenderManager.setZoom(RenderManager.getZoom()*1/0.9));
+        InputManager.onPress(KeyCode.MINUS, 
+        		() -> RenderManager.setZoom(RenderManager.getZoom()*0.9));
         
         LabelEntity testLabel = new LabelEntity(
             new Point3D(10, 70, 100), 

@@ -5,9 +5,7 @@ import org.bioshock.entities.Entity;
 import org.bioshock.rendering.renderers.RoomRenderer;
 import org.bioshock.rendering.renderers.components.SimpleRendererC;
 
-import javafx.geometry.Point2D;
 import javafx.scene.shape.Rectangle;
-import javafx.util.Pair;
 
 public class RoomEntity extends Entity{
     Room room;

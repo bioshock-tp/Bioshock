@@ -4,21 +4,13 @@ import static org.bioshock.rendering.RenderManager.getRenHeight;
 import static org.bioshock.rendering.RenderManager.getRenWidth;
 import static org.bioshock.rendering.RenderManager.getRenX;
 import static org.bioshock.rendering.RenderManager.getRenY;
-import static org.bioshock.utils.Direction.*;
-import static org.bioshock.entities.map.utils.ConnType.*;
-import static org.bioshock.utils.GlobalConstants.*;
+import static org.bioshock.utils.GlobalConstants.UNIT_HEIGHT;
+import static org.bioshock.utils.GlobalConstants.UNIT_WIDTH;
 
-import java.util.HashMap;
-
-import org.bioshock.engine.pathfinding.GraphNode;
 import org.bioshock.entities.map.Room;
 import org.bioshock.entities.map.RoomEntity;
-import org.bioshock.entities.map.utils.ConnType;
-import org.bioshock.utils.Direction;
 
-import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.paint.Color;
 
 public class RoomRenderer implements Renderer {
     public static <E extends RoomEntity> void render(
@@ -26,12 +18,12 @@ public class RoomRenderer implements Renderer {
             E roomEntity
     ) {
         Room room = roomEntity.getRoom();
-        HashMap<Direction,ConnType> connections = room.getConnections();
-        double coriLen = room.getCoriSize().getHeight(); //in terms of units
-        double coriWidth = room.getCoriSize().getWidth(); //in terms of units
-        double roomWidth = room.getRoomSize().getWidth();
-        double roomHeight = room.getRoomSize().getHeight();
-        double wallWidth = room.getWallWidth();  
+//        HashMap<Direction,ConnType> connections = room.getConnections();
+//        double coriLen = room.getCoriSize().getHeight(); //in terms of units
+//        double coriWidth = room.getCoriSize().getWidth(); //in terms of units
+//        double roomWidth = room.getRoomSize().getWidth();
+//        double roomHeight = room.getRoomSize().getHeight();
+//        double wallWidth = room.getWallWidth();  
         boolean[][] floorSpace = room.getFloorSpace();
         
         
