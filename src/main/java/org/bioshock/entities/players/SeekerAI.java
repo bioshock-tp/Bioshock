@@ -157,7 +157,6 @@ public class SeekerAI extends SquareEntity {
                         timeBetweenSwings = 0;
                     }
                 }
-                //AudioManager.playWooshSfx();
                 rendererC.setColour(Color.ORANGE);
                 colorChanged = true;
                 target = entity;
