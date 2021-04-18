@@ -20,8 +20,7 @@ public interface RendererC {
 
 
     /**
-     * The order in which this {@code Entity} should be rendered
-     * @return {@code Z}
+     * @return the order in which this {@code Entity} should be rendered
      */
 	public double getZ();
 
