@@ -1,5 +1,9 @@
 package org.bioshock.entities.players;
 
+import javafx.geometry.Point2D;
+import javafx.geometry.Point3D;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 import org.bioshock.animations.PlayerAnimations;
 import org.bioshock.animations.Sprite;
 import org.bioshock.components.NetworkC;
@@ -10,12 +14,6 @@ import org.bioshock.rendering.renderers.PlayerSpriteRenderer;
 import org.bioshock.rendering.renderers.components.PlayerRendererC;
 import org.bioshock.utils.GlobalConstants;
 import org.bioshock.utils.Size;
-
-import javafx.geometry.Point2D;
-import javafx.geometry.Point3D;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
-import javafx.util.Pair;
 
 import static org.bioshock.audio.AudioManager.playWalkingSfx;
 import static org.bioshock.audio.AudioManager.stopWalkingSfx;
@@ -93,8 +91,6 @@ public class Hider extends SquareEntity {
         int x = (int) translation.getX();
         int y = (int) translation.getY();
 
-
-        //boolean nowWalking = false;
 
         if ((x != 0) || (y != 0)) {
             if (!playedSfx) {
