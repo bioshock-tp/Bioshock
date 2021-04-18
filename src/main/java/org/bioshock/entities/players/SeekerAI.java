@@ -119,7 +119,7 @@ public class SeekerAI extends SquareEntity {
             this,
             ((GlobalConstants.PLAYER_SCALE * 3) / 4)
         );
-        currentSwingAnimation = swingAnimations.getTopRightSwing();
+        currentSwingAnimation = swingAnimations.getTopRightIdle();
     }
 
     private void setCurrentSprite(Sprite s) {
@@ -166,15 +166,15 @@ public class SeekerAI extends SquareEntity {
 
         int x = (int) translation.getX();
         int y = (int) translation.getY();
-        Sprite animation = swingAnimations.getTopRightSwing();
+        Sprite animation = swingAnimations.getTopRightIdle();
 
-        if (x > 0) animation = swingAnimations.getTopRightSwing();
+        if (x > 0) animation = swingAnimations.getTopRightIdle();
 
-        else if (x < 0) animation = swingAnimations.getTopLeftSwing();
+        else if (x < 0) animation = swingAnimations.getTopLeftIdle();
 
-        else if (y > 0) animation = swingAnimations.getBottomRightSwing();
+        else if (y > 0) animation = swingAnimations.getBottomRightIdle();
 
-        else if (y < 0) animation = swingAnimations.getBottomLeftSwing();
+        else if (y < 0) animation = swingAnimations.getBottomLeftIdle();
 
         setCurrentSwingAnimation(animation);
     }
@@ -233,6 +233,7 @@ public class SeekerAI extends SquareEntity {
                     if(!wooshSoundPlayed){
                         AudioManager.playWooshSfx();
                         wooshSoundPlayed = true;
+                        playSwingAnimation();
                     }
                     if(timeSwinging >= TIME_SWINGING){
                         setActive(false);
@@ -256,6 +257,12 @@ public class SeekerAI extends SquareEntity {
         	setActive(false);
         	search();
         }
+    }
+
+    private void playSwingAnimation() {
+        Sprite animation = swingAnimations.getTopRightSwing();
+
+        setCurrentSwingAnimation(animation);
     }
 
     /**

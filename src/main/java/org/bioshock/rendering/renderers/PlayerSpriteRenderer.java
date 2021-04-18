@@ -78,13 +78,6 @@ public class PlayerSpriteRenderer implements Renderer {
             )
         );
 
-        AnimationPlayer.playAnimation(
-            EntityManager.getSeeker().getCurrentSwingAnimation(),
-            new Point2D(
-                getRenX(x),
-                getRenY(y)
-            )
-        );
         gc.restore();
     }
 }
