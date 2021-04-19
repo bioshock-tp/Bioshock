@@ -1,9 +1,9 @@
-package org.bioshock.powerup;
+package org.bioshock.entities.powerup;
 
 import org.bioshock.entities.SquareEntity;
-import org.bioshock.powerup.powerups.FreezePower;
-import org.bioshock.powerup.powerups.InvisiblePower;
-import org.bioshock.powerup.powerups.SpeedPower;
+import org.bioshock.entities.powerup.powerups.FreezePower;
+import org.bioshock.entities.powerup.powerups.InvisiblePower;
+import org.bioshock.entities.powerup.powerups.SpeedPower;
 
 public class PowerUpManager {
 

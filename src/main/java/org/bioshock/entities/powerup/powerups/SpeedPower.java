@@ -1,11 +1,11 @@
-package org.bioshock.powerup.powerups;
+package org.bioshock.entities.powerup.powerups;
 
 import org.bioshock.entities.SquareEntity;
-import org.bioshock.powerup.PowerUp;
+import org.bioshock.entities.powerup.PowerUp;
 
 public class SpeedPower extends PowerUp {
 
-    double speedIncrease = 4;
+    double newspeed = 15;
     double oldSpeed;
 
     public SpeedPower(SquareEntity entity, double duration){
@@ -15,7 +15,7 @@ public class SpeedPower extends PowerUp {
 
     @Override
     protected void action() {
-        entity.getMovement().setSpeed(oldSpeed + speedIncrease);
+        entity.getMovement().setSpeed(newspeed);
     }
 
     @Override

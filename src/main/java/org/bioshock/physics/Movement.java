@@ -6,6 +6,7 @@ import org.bioshock.engine.input.InputManager;
 import org.bioshock.entities.Entity;
 import org.bioshock.entities.EntityManager;
 import org.bioshock.entities.map.Room;
+import org.bioshock.main.App;
 import org.bioshock.utils.Point;
 
 import java.util.ArrayList;
@@ -142,6 +143,20 @@ public class Movement {
     }
 
     public void setSpeed(double newSpeed) {
+        if(xDirection > 0){
+            xDirection = newSpeed;
+        }
+        else if(xDirection < 0){
+            xDirection = -newSpeed;
+        }
+
+        if(yDirection > 0){
+            yDirection = newSpeed;
+        }
+        else if(yDirection < 0){
+            yDirection = -newSpeed;
+        }
+
         speed = newSpeed;
     }
 

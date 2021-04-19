@@ -1,7 +1,7 @@
-package org.bioshock.powerup.powerups;
+package org.bioshock.entities.powerup.powerups;
 
 import org.bioshock.entities.SquareEntity;
-import org.bioshock.powerup.PowerUp;
+import org.bioshock.entities.powerup.PowerUp;
 
 public class InvisiblePower extends PowerUp {
 

@@ -1,12 +1,11 @@
-package org.bioshock.powerup.powerups;
+package org.bioshock.entities.powerup.powerups;
 
 import org.bioshock.engine.core.WindowManager;
 import org.bioshock.entities.Entity;
 import org.bioshock.entities.EntityManager;
 import org.bioshock.entities.SquareEntity;
 import org.bioshock.entities.players.SeekerAI;
-import org.bioshock.powerup.PowerUp;
-import org.bioshock.scenes.MainGame;
+import org.bioshock.entities.powerup.PowerUp;
 
 public class FreezePower extends PowerUp {
 

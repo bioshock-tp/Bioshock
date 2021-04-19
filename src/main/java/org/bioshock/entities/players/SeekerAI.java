@@ -52,7 +52,6 @@ public class SeekerAI extends SquareEntity {
     private Room prevRoom;
     private Point2D currentTargetLocation;
     private Point2D lastSeenPosition;
-    private Point lastSeekerPosition;
     private Sprite currentSprite;
 
     private Sprite currentSwingAnimation;
@@ -61,11 +60,9 @@ public class SeekerAI extends SquareEntity {
 
     private static final double TIME_BETWEEN_SWINGS = 1.0;
     private static final double TIME_SWINGING = 1.0;
-    private static final double TIME_STILL = 0.1;
 
     private double timeBetweenSwings = 0;
     private double timeSwinging = 0;
-    private double timeStill = 0;
 
     private boolean isActive = false;
     private boolean isSearching = false;
@@ -105,7 +102,6 @@ public class SeekerAI extends SquareEntity {
         currRoom = this.findCurrentRoom();
         prevRoom = currRoom;
         //nodePathfinding = new PathfindingC<>(currRoom.getTraversableGraph());
-        lastSeekerPosition = getCentre();
         currentTargetLocation = new Point2D(getCentre().getX(), getCentre().getY());
     }
 
@@ -189,20 +185,9 @@ public class SeekerAI extends SquareEntity {
             timeSwinging += timeDelta;
         }
         doActions();
-        checkStill(timeDelta, getCentre());
-        lastSeekerPosition = getCentre();
         setSwatterPos();
         setSwatterRot();
         movement.tick(timeDelta);
-    }
-
-    private void checkStill(double timeDelta, Point centre) {
-        if (centre.equals(lastSeekerPosition)){
-            timeStill+=timeDelta;
-        }
-        else{
-            timeStill = 0;
-        }
     }
 
     /***

@@ -10,7 +10,7 @@ import org.bioshock.components.NetworkC;
 import org.bioshock.entities.SquareEntity;
 import org.bioshock.main.App;
 import org.bioshock.networking.NetworkManager;
-import org.bioshock.powerup.PowerUpManager;
+import org.bioshock.entities.powerup.PowerUpManager;
 import org.bioshock.rendering.renderers.PlayerSpriteRenderer;
 import org.bioshock.rendering.renderers.components.PlayerRendererC;
 import org.bioshock.utils.GlobalConstants;

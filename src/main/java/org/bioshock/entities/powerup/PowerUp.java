@@ -1,4 +1,4 @@
-package org.bioshock.powerup;
+package org.bioshock.entities.powerup;
 
 import org.bioshock.entities.SquareEntity;
 
@@ -16,6 +16,7 @@ public abstract class PowerUp {
     public void tick(double timeDelta){
         if(isActive){
             if(elapsed > DURATION){
+                setActive(false);
                 revert();
                 elapsed = 0;
             }
