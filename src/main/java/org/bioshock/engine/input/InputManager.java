@@ -24,7 +24,8 @@ public class InputManager {
     private static Map<KeyCode, Runnable> keyReleases =
         new EnumMap<>(KeyCode.class);
     
-    private static final KeyCode enterChat = KeyCode.ENTER;
+    private static final KeyCode enterChat = KeyCode.SHIFT;
+    private static final KeyCode sendMessage = KeyCode.ENTER;
 
     private static boolean debug = false;
 
@@ -137,13 +138,10 @@ public class InputManager {
         SceneManager.getScene().setOnKeyPressed(e -> {
             Runnable runnable;
             if(e.getCode() == enterChat) {
-                if(ChatManager.isInChat()) {
-                    ChatManager.popText();
-                    ChatManager.setInChat(false);
-                }
-                else {
-                    ChatManager.setInChat(true);
-                }
+                ChatManager.setInChat(!ChatManager.isInChat());
+            }
+            else if(e.getCode() == sendMessage) {
+                ChatManager.popText();
             }
             else {
                 if ((runnable = keyPresses.get(e.getCode())) != null
@@ -151,8 +149,13 @@ public class InputManager {
                     runnable.run();
                 }
                 else if (ChatManager.isInChat()) {
-                    App.logger.debug("Char to append: " + e.getText());
-                    ChatManager.getStrBuild().append(e.getText());
+                    if(e.getCode() == KeyCode.BACK_SPACE) {
+                        ChatManager.getStrBuild().setLength(ChatManager.getStrBuild().length()-1);
+                    }
+                    else {
+                        App.logger.debug("Char to append: " + e.getText());
+                        ChatManager.getStrBuild().append(e.getText());
+                    }
                 }
             }  
         });
