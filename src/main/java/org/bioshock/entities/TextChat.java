@@ -12,4 +12,5 @@ public class TextChat extends LabelEntity{
         super(p, font, charsPerLine, color);
         setStringBuilder(ChatManager.getStrBuild());
     }
+
 }

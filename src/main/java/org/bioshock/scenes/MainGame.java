@@ -44,6 +44,7 @@ public class MainGame extends GameScene {
     private int mapSeed = 0;
 
     private LabelEntity timer;
+    private static TextChat textChat;
 
     private Map map;
 
@@ -126,18 +127,22 @@ public class MainGame extends GameScene {
                 new Font(20),
                 100,
                 Color.BLACK);
+
+        chatLabel.setDisplay(false);
         
         children.add(chatLabel);
 
         FrameRate.initialise();
         children.add(FrameRate.getLabel());
         
-        TextChat textChat = new TextChat(
-                new Point3D(500, 500, 500), 
-                new Font(20), 
-                50, 
-                Color.BROWN);
-        
+        textChat = new TextChat(
+                new Point3D(10, GameScene.getGameScreen().getHeight() / 2 + GameScene.getGameScreen().getHeight() / 15, 1000),
+                new Font(20),
+                86,
+                Color.BLACK);
+
+        textChat.setDisplay(false);
+
         children.add(textChat);
         
         registerEntities();
@@ -300,5 +305,9 @@ public class MainGame extends GameScene {
 
     public static void appendStringToChat(String s){
         chatLabel.appendString(s);
+    }
+    public static void setChatVisibility(boolean bl){
+        chatLabel.setDisplay(bl);
+        textChat.setDisplay(bl);
     }
 }

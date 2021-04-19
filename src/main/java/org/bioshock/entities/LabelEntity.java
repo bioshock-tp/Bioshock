@@ -37,6 +37,10 @@ public class LabelEntity extends Entity{
         return display;
     }
 
+    public void setDisplay(boolean bl) {
+        display = bl;
+    }
+
     public Font getFont() {
         return font;
     }

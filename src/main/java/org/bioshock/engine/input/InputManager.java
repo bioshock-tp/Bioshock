@@ -9,7 +9,9 @@ import org.bioshock.engine.core.ChatManager;
 import org.bioshock.entities.EntityManager;
 import org.bioshock.entities.LabelEntity;
 import org.bioshock.main.App;
+import org.bioshock.networking.NetworkManager;
 import org.bioshock.rendering.RenderManager;
+import org.bioshock.scenes.MainGame;
 import org.bioshock.scenes.SceneManager;
 
 import javafx.geometry.Point3D;
@@ -139,9 +141,10 @@ public class InputManager {
             Runnable runnable;
             if(e.getCode() == enterChat) {
                 ChatManager.setInChat(!ChatManager.isInChat());
+                MainGame.setChatVisibility(ChatManager.isInChat());
             }
             else if(e.getCode() == sendMessage) {
-                ChatManager.popText();
+                NetworkManager.addMessage(ChatManager.popText());
             }
             else {
                 if ((runnable = keyPresses.get(e.getCode())) != null
@@ -150,11 +153,17 @@ public class InputManager {
                 }
                 else if (ChatManager.isInChat()) {
                     if(e.getCode() == KeyCode.BACK_SPACE) {
-                        ChatManager.getStrBuild().setLength(ChatManager.getStrBuild().length()-1);
+
+                        if(ChatManager.getStrBuild().length() > 6) {
+                            ChatManager.getStrBuild().setLength(ChatManager.getStrBuild().length() - 1);
+                        }
                     }
                     else {
                         App.logger.debug("Char to append: " + e.getText());
                         ChatManager.getStrBuild().append(e.getText());
+                        if(ChatManager.getStrBuild().length() > 86) {
+                            ChatManager.getStrBuild().setLength(86);
+                        }
                     }
                 }
             }  

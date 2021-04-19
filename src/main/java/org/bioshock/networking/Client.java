@@ -124,7 +124,16 @@ public class Client extends WebSocketClient {
 
     @Override
     public void onError(Exception ex) {
+
         App.logger.error("A network error occurred: ", ex);
+
+        try {
+            this.connectBlocking();
+        } catch (InterruptedException e) {
+            App.logger.error(e);
+            Thread.currentThread().interrupt();
+        }
+
     }
 
     @Override
@@ -134,7 +143,13 @@ public class Client extends WebSocketClient {
             code,
             reason
         );
-        App.exit(-1);
+        try {
+            this.connectBlocking();
+        } catch (InterruptedException e) {
+            App.logger.error(e);
+            Thread.currentThread().interrupt();
+        }
+        //App.exit(-1);
     }
 
     public boolean haveInitMessage() {return initMessage;}

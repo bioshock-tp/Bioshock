@@ -21,9 +21,6 @@ public class NetworkManager {
         KeyCode.class
     );
 
-    private static int aux;
-    private static int nrAux = 0;
-
     private static String myID = UUID.randomUUID().toString();
     private static String myName;
     private static Hider me;
@@ -46,7 +43,7 @@ public class NetworkManager {
 
     private static Map<String, String> playerNames = new HashMap<>();
 
-    private LinkedList<String> msList = new LinkedList<String>();
+    private static LinkedList<String> msList = new LinkedList<String>();
 
     private static Client client = new Client();
     private static Object awaitingPlayerLock = new Object();
@@ -58,7 +55,6 @@ public class NetworkManager {
         keyPressed.put(KeyCode.A, false);
         keyPressed.put(KeyCode.S, false);
         keyPressed.put(KeyCode.D, false);
-        aux = 200 + (new Random()).nextInt(400);
 
         Thread initThread = new Thread(new Task<>() {
             @Override
@@ -119,7 +115,7 @@ public class NetworkManager {
     }
 
     private static Message pollInputs() {
-        nrAux++;
+
         int x = (int) me.getX();
         int y = (int) me.getY();
 
@@ -129,8 +125,11 @@ public class NetworkManager {
 
         String message = "";
 
-        if((nrAux % aux) == 0)
-            message = "This is message number \n\n\n" + nrAux / aux + "\n\n\n \n\n\nfrom me\n\n\n!\n\n\n";
+        if(msList.size() > 0 && me.isDead() == false) {
+
+            message = msList.getFirst();
+            msList.poll();
+        }
 
         Message.ClientInput input = new Message.ClientInput(x, y, aiX, aiY, message);
 
@@ -265,5 +264,12 @@ public class NetworkManager {
 
     public static Map<String, String> getPlayerNames() {
         return playerNames;
+    }
+
+    public static void addMessage(String s){
+        if(s.length() > 0) {
+
+            msList.add(s);
+        }
     }
 }
