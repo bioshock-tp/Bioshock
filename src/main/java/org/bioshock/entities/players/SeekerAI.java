@@ -28,7 +28,7 @@ import org.bioshock.scenes.SceneManager;
 import org.bioshock.utils.Direction;
 import org.bioshock.utils.GlobalConstants;
 import org.bioshock.utils.Point;
-import org.bioshock.utils.SizeD;
+import org.bioshock.utils.Size;
 
 import javafx.geometry.Point2D;
 import javafx.geometry.Point3D;
@@ -91,7 +91,7 @@ public class SeekerAI extends SquareEntity {
      * @param c Colour of seeker
      * @param e The initial player to follow
      */
-    public SeekerAI(Point3D p, NetworkC com, SizeD s, int r, Color c, Hider e) {
+    public SeekerAI(Point3D p, NetworkC com, Size s, int r, Color c, Hider e) {
         super(p, com, new SimpleRendererC(), s, r, c);
 
         target = e;

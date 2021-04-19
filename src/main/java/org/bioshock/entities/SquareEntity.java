@@ -4,7 +4,7 @@ import org.bioshock.components.NetworkC;
 import org.bioshock.components.RendererC;
 import org.bioshock.physics.Movement;
 import org.bioshock.utils.Point;
-import org.bioshock.utils.SizeD;
+import org.bioshock.utils.Size;
 
 import javafx.geometry.Point3D;
 import javafx.scene.paint.Color;
@@ -17,14 +17,14 @@ public abstract class SquareEntity extends Entity {
 
     protected final Movement movement = new Movement(this);
 
-    protected SizeD size;
+    protected Size size;
     protected Circle fov;
 
     protected SquareEntity(
         Point3D p,
         NetworkC nCom,
         RendererC rCom,
-        SizeD s,
+        Size s,
         int r,
         Color c
     ) {
@@ -56,7 +56,7 @@ public abstract class SquareEntity extends Entity {
         }
     }
 
-    public void setSize(SizeD size) {
+    public void setSize(Size size) {
         this.size = size;
     }
 
@@ -64,7 +64,7 @@ public abstract class SquareEntity extends Entity {
         return new Point(getX() + getWidth() / 2, getY() + getHeight() / 2);
     }
 
-    public SizeD getSize() {
+    public Size getSize() {
         return size;
     }
 

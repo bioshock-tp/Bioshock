@@ -14,7 +14,7 @@ import org.bioshock.entities.players.Hider;
 import org.bioshock.main.App;
 import org.bioshock.scenes.GameScene;
 import org.bioshock.scenes.SceneManager;
-import org.bioshock.utils.SizeD;
+import org.bioshock.utils.Size;
 
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.Canvas;
@@ -46,7 +46,7 @@ public final class RenderManager {
 
         // clear the entire canvas
         gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
-		SizeD screenSize = GameScene.getGameScreen();
+		Size screenSize = GameScene.getGameScreen();
         Rectangle screen = new Rectangle(
         		cameraPos.getX(), 
         		cameraPos.getY(), 

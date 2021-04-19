@@ -2,7 +2,7 @@ package org.bioshock.animations;
 
 import org.bioshock.entities.Entity;
 import org.bioshock.utils.GlobalConstants;
-import org.bioshock.utils.SizeD;
+import org.bioshock.utils.Size;
 
 import javafx.geometry.Point2D;
 
@@ -19,7 +19,7 @@ public class HiderAnimations implements PlayerAnimation {
         moveDown = new Sprite(
             entity,
             new Point2D(0, 0),
-            new SizeD(
+            new Size(
                 GlobalConstants.PLAYER_WIDTH,
                 GlobalConstants.PLAYER_HEIGHT
             ),
@@ -33,7 +33,7 @@ public class HiderAnimations implements PlayerAnimation {
         moveLeft = new Sprite(
             entity,
             new Point2D(30, 0),
-            new SizeD(
+            new Size(
                 GlobalConstants.PLAYER_WIDTH,
                 GlobalConstants.PLAYER_HEIGHT
             ),
@@ -47,7 +47,7 @@ public class HiderAnimations implements PlayerAnimation {
         moveUp = new Sprite(
             entity,
             new Point2D(60, 0),
-            new SizeD(
+            new Size(
                 GlobalConstants.PLAYER_WIDTH - 1.5,
                 GlobalConstants.PLAYER_HEIGHT
             ),
@@ -61,7 +61,7 @@ public class HiderAnimations implements PlayerAnimation {
         moveRight = new Sprite(
             entity,
             new Point2D(90, 0),
-            new SizeD(
+            new Size(
                 GlobalConstants.PLAYER_WIDTH,
                 GlobalConstants.PLAYER_HEIGHT
             ),
@@ -75,7 +75,7 @@ public class HiderAnimations implements PlayerAnimation {
         idle = new Sprite(
             entity,
             new Point2D(118, 0),
-            new SizeD(
+            new Size(
                 GlobalConstants.PLAYER_WIDTH + 2,
                 GlobalConstants.PLAYER_HEIGHT
             ),
@@ -89,7 +89,7 @@ public class HiderAnimations implements PlayerAnimation {
         die = new Sprite(
             entity,
             new Point2D(296, 0),
-            new SizeD(
+            new Size(
                 GlobalConstants.PLAYER_WIDTH + 6,
                 GlobalConstants.PLAYER_HEIGHT + 2
             ),

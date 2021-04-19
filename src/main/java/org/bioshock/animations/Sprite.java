@@ -5,7 +5,7 @@ import javafx.scene.image.Image;
 import javafx.scene.shape.Rectangle;
 import org.bioshock.entities.Entity;
 import org.bioshock.utils.ImageUtils;
-import org.bioshock.utils.SizeD;
+import org.bioshock.utils.Size;
 
 import java.util.List;
 
@@ -13,7 +13,7 @@ public class Sprite {
     private double playSpeed;
 
     private Point2D spriteLocationOnSheet;
-    private SizeD size;
+    private Size size;
 
     private double scale;
     private int actualSize;
@@ -31,7 +31,7 @@ public class Sprite {
     public Sprite(
         Entity entity,
         Point2D spriteLocationOnSheet,
-        SizeD size,
+        Size size,
         int actualSize,
         int numberOfFrames,
         double scale,
@@ -52,7 +52,7 @@ public class Sprite {
 
     public Sprite(
         Entity entity,
-        SizeD size,
+        Size size,
         int actualSize,
         double scale,
         Image spriteSheet,
@@ -85,7 +85,7 @@ public class Sprite {
         }
     }
 
-    public void setSize(SizeD size) {
+    public void setSize(Size size) {
         this.size = size;
     }
 
@@ -149,7 +149,7 @@ public class Sprite {
         return spriteLocationOnSheet;
     }
 
-    public SizeD getSize() {
+    public Size getSize() {
         return size;
     }
 

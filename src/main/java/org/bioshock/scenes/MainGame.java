@@ -19,8 +19,8 @@ import org.bioshock.main.App;
 import org.bioshock.networking.NetworkManager;
 import org.bioshock.rendering.RenderManager;
 import org.bioshock.utils.GlobalConstants;
-import org.bioshock.utils.SizeD;
-import org.bioshock.utils.SizeI;
+import org.bioshock.utils.Size;
+import org.bioshock.utils.Size;
 
 import javafx.geometry.Point2D;
 import javafx.geometry.Point3D;
@@ -57,8 +57,8 @@ public class MainGame extends GameScene {
         map = new GenericMap(
                 new Point3D(0, 0, 0),
                 1, 
-                new SizeI(5, 7), 
-                new SizeI(3, 5), 
+                new Size(5, 7), 
+                new Size(3, 5), 
                 Color.SADDLEBROWN, 
                 GlobalConstants.singletonMap,
                 0
@@ -70,7 +70,7 @@ public class MainGame extends GameScene {
         Hider hider = new Hider(
             new Point3D(0, 0, 0.5),
             new NetworkC(true),
-            new SizeD(GlobalConstants.UNIT_WIDTH, GlobalConstants.UNIT_HEIGHT),
+            new Size(GlobalConstants.UNIT_WIDTH, GlobalConstants.UNIT_HEIGHT),
             300,
             Color.PINK
         );
@@ -80,7 +80,7 @@ public class MainGame extends GameScene {
             children.add(new Hider(
                 new Point3D(GameScene.getGameScreen().getWidth()*i, 0, i),
                 new NetworkC(true),
-                new SizeD(GlobalConstants.UNIT_WIDTH, GlobalConstants.UNIT_HEIGHT),
+                new Size(GlobalConstants.UNIT_WIDTH, GlobalConstants.UNIT_HEIGHT),
                 300,
                 Color.PINK
             ));
@@ -143,8 +143,8 @@ public class MainGame extends GameScene {
             map = new GenericMap(
                 new Point3D(0, 0, 0),
                 1, 
-                new SizeI(5, 7), 
-                new SizeI(3, 5), 
+                new Size(5, 7), 
+                new Size(3, 5), 
                 Color.SADDLEBROWN, 
                 GlobalConstants.testMap,
                 seed
@@ -154,10 +154,10 @@ public class MainGame extends GameScene {
             map = new RandomMap(
                 new Point3D(0, 0, 0),
                 1,
-                new SizeI(9, 11),
-                new SizeI(3, 5),
+                new Size(9, 11),
+                new Size(3, 5),
                 Color.SADDLEBROWN,
-                new SizeD(3, 3),
+                new Size(3, 3),
                 null,
                 seed
             );
@@ -183,7 +183,7 @@ public class MainGame extends GameScene {
                     rooms.get(rooms.size() / 2).getRoomCenter().getY()-GlobalConstants.UNIT_HEIGHT/2, 
                     0.25),
             new NetworkC(true),
-            new SizeD(GlobalConstants.UNIT_WIDTH, GlobalConstants.UNIT_HEIGHT),
+            new Size(GlobalConstants.UNIT_WIDTH, GlobalConstants.UNIT_HEIGHT),
             300,
             Color.INDIANRED,
             hiders.get(0)

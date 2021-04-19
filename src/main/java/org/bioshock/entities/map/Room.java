@@ -15,8 +15,8 @@ import org.bioshock.entities.map.utils.ConnType;
 import org.bioshock.entities.map.utils.RoomType;
 import org.bioshock.utils.ArrayUtils;
 import org.bioshock.utils.Direction;
-import org.bioshock.utils.SizeD;
-import org.bioshock.utils.SizeI;
+import org.bioshock.utils.Size;
+import org.bioshock.utils.Size;
 
 import javafx.geometry.Point2D;
 import javafx.geometry.Point3D;
@@ -29,12 +29,12 @@ public class Room extends GraphNode {
      *  i.e. the roomSize + corridor width*2 in both dimensions 
      *  (in terms of units)
      */
-    private SizeI totalSize;
+    private Size totalSize;
     /***
      * Stores the internal room size
      * (in terms of units)
      */
-    private SizeI roomSize;
+    private Size roomSize;
     /***
      * Stores a list of all the walls that make up the room
      */
@@ -52,7 +52,7 @@ public class Room extends GraphNode {
     /**
      * the corridor size of all exits (in terms of units)
      */
-    private SizeI coriSize;
+    private Size coriSize;
     /**
      * the color of the walls in the room
      */
@@ -107,14 +107,14 @@ public class Room extends GraphNode {
     public Room(
         Point3D newPos,
         int wallWidth,
-        SizeI newRoomSize,
-        SizeI coriSize,
+        Size newRoomSize,
+        Size coriSize,
         Color c) {
         super();
         this.pos = newPos;
         this.wallWidth = wallWidth;
         this.roomSize = newRoomSize;
-        this.totalSize = new SizeI(
+        this.totalSize = new Size(
             roomSize.getWidth() + 2 * coriSize.getHeight(),
             roomSize.getHeight() + 2 * coriSize.getHeight()
         );
@@ -192,7 +192,7 @@ public class Room extends GraphNode {
                 connections.get(Direction.EAST) != ConnType.SUB_ROOM) {
             Pair<Wall, boolean[][]> sideAndArray = Sides.side(
                 pos.add((coriSize.getHeight() + roomSize.getWidth())*UNIT_WIDTH, 0*UNIT_HEIGHT, 0), 
-                new SizeI(wallWidth, coriSize.getHeight()), 
+                new Size(wallWidth, coriSize.getHeight()), 
                 color);
             
             walls.add(sideAndArray.getKey());
@@ -206,7 +206,7 @@ public class Room extends GraphNode {
                 connections.get(Direction.WEST) != ConnType.SUB_ROOM) {
             Pair<Wall, boolean[][]> sideAndArray = Sides.side(
                 pos.add((coriSize.getHeight()-wallWidth)*UNIT_WIDTH, 0*UNIT_HEIGHT, 0), 
-                new SizeI(wallWidth, coriSize.getHeight()), 
+                new Size(wallWidth, coriSize.getHeight()), 
                 color);
             
             walls.add(sideAndArray.getKey());
@@ -236,7 +236,7 @@ public class Room extends GraphNode {
                 connections.get(Direction.EAST) != ConnType.SUB_ROOM) {
             Pair<Wall, boolean[][]> sideAndArray = Sides.side(
                 pos.add((coriSize.getHeight() + roomSize.getWidth())*UNIT_WIDTH, (coriSize.getHeight() + roomSize.getHeight())*UNIT_HEIGHT, 0), 
-                new SizeI(wallWidth, coriSize.getHeight()), 
+                new Size(wallWidth, coriSize.getHeight()), 
                 color);
             
             walls.add(sideAndArray.getKey());
@@ -250,7 +250,7 @@ public class Room extends GraphNode {
                 connections.get(Direction.WEST) != ConnType.SUB_ROOM) {
             Pair<Wall, boolean[][]> sideAndArray = Sides.side(
                 pos.add((coriSize.getHeight()-wallWidth)*UNIT_WIDTH, (coriSize.getHeight() + roomSize.getHeight())*UNIT_HEIGHT, 0), 
-                new SizeI(wallWidth, coriSize.getHeight()), 
+                new Size(wallWidth, coriSize.getHeight()), 
                 color);
             
             walls.add(sideAndArray.getKey());
@@ -280,7 +280,7 @@ public class Room extends GraphNode {
                 connections.get(Direction.NORTH) != ConnType.SUB_ROOM) {
             Pair<Wall, boolean[][]> sideAndArray = Sides.side(
                 pos.add((coriSize.getHeight() + roomSize.getWidth())*UNIT_WIDTH, (coriSize.getHeight() - wallWidth)*UNIT_HEIGHT, 0), 
-                new SizeI(coriSize.getHeight(), wallWidth), 
+                new Size(coriSize.getHeight(), wallWidth), 
                 color);
             
             walls.add(sideAndArray.getKey());
@@ -294,7 +294,7 @@ public class Room extends GraphNode {
                 connections.get(Direction.SOUTH) != ConnType.SUB_ROOM) {
             Pair<Wall, boolean[][]> sideAndArray = Sides.side(
                 pos.add((coriSize.getHeight() + roomSize.getWidth())*UNIT_WIDTH, (coriSize.getHeight() + roomSize.getHeight())*UNIT_HEIGHT, 0), 
-                new SizeI(coriSize.getHeight(), wallWidth), 
+                new Size(coriSize.getHeight(), wallWidth), 
                 color);
             
             walls.add(sideAndArray.getKey());
@@ -320,7 +320,7 @@ public class Room extends GraphNode {
                 connections.get(Direction.NORTH) != ConnType.SUB_ROOM) {
             Pair<Wall, boolean[][]> sideAndArray = Sides.side(
                 pos.add(0*UNIT_WIDTH, (coriSize.getHeight()-wallWidth)*UNIT_HEIGHT, 0), 
-                new SizeI(coriSize.getHeight(), wallWidth), 
+                new Size(coriSize.getHeight(), wallWidth), 
                 color);
             
             walls.add(sideAndArray.getKey());
@@ -334,7 +334,7 @@ public class Room extends GraphNode {
                 connections.get(Direction.SOUTH) != ConnType.SUB_ROOM) {
             Pair<Wall, boolean[][]> sideAndArray = Sides.side(
                 pos.add((0)*UNIT_WIDTH, (coriSize.getHeight() + roomSize.getHeight())*UNIT_HEIGHT, 0), 
-                new SizeI(coriSize.getHeight(), wallWidth), 
+                new Size(coriSize.getHeight(), wallWidth), 
                 color);
             
             walls.add(sideAndArray.getKey());
@@ -437,7 +437,7 @@ public class Room extends GraphNode {
                     walls.add(new Wall(
                         pos.add(j*UNIT_WIDTH, i*UNIT_HEIGHT,0), 
                         new NetworkC(false), 
-                        new SizeD(UNIT_WIDTH, UNIT_HEIGHT), 
+                        new Size(UNIT_WIDTH, UNIT_HEIGHT), 
                         color.invert()));
                     traversableNodes[i][j] = null;
                     floorSpace[i][j] = false;
@@ -485,7 +485,7 @@ public class Room extends GraphNode {
                 0
             ),
             new NetworkC(false),
-            new SizeD(wallWidth*UNIT_WIDTH, wallWidth*UNIT_HEIGHT),
+            new Size(wallWidth*UNIT_WIDTH, wallWidth*UNIT_HEIGHT),
             color
         );
         walls.add(corner4);
@@ -508,7 +508,7 @@ public class Room extends GraphNode {
     private boolean[][] topSide(
         Point3D pos,
         int wallWidth,
-        SizeI coriSize,
+        Size coriSize,
         Color c,
         ConnType con) {
         Pair<List<Wall>,boolean[][]> wallsAndArray = null;
@@ -565,7 +565,7 @@ public class Room extends GraphNode {
     private boolean[][] botSide(
         Point3D pos,
         int wallWidth,
-        SizeI coriSize,
+        Size coriSize,
         Color c,
         ConnType con) {
         Pair<List<Wall>,boolean[][]> wallsAndArray = null;
@@ -622,7 +622,7 @@ public class Room extends GraphNode {
     private boolean[][] rightSide(
         Point3D pos,
         int wallWidth,
-        SizeI coriSize,
+        Size coriSize,
         Color c,
         ConnType con) {
         Pair<List<Wall>,boolean[][]> wallsAndArray = null;
@@ -679,7 +679,7 @@ public class Room extends GraphNode {
     private boolean[][] leftSide(
         Point3D pos,
         int wallWidth,
-        SizeI coriSize,
+        Size coriSize,
         Color c,
         ConnType con) {
         Pair<List<Wall>,boolean[][]> wallsAndArray = null;
@@ -753,8 +753,8 @@ public class Room extends GraphNode {
      *
      * @return total size of the room with all the sides
      */
-    public SizeD getTotalSize() {
-        return new SizeD(
+    public Size getTotalSize() {
+        return new Size(
             totalSize.getWidth()*UNIT_WIDTH,
             totalSize.getHeight()*UNIT_HEIGHT
         );
@@ -764,8 +764,8 @@ public class Room extends GraphNode {
      *
      * @return size of the internal room
      */
-    public SizeD getRoomSize() {
-        return new SizeD(
+    public Size getRoomSize() {
+        return new Size(
             roomSize.getWidth()*UNIT_WIDTH,
             roomSize.getHeight()*UNIT_HEIGHT
         );
@@ -862,7 +862,7 @@ public class Room extends GraphNode {
      * so when used in calculations you need to scale with either UNIT_WIDTH or UNIT_HEIGHT
      * depending on if its a height or a width
      */
-    public SizeI getCoriSize() {
+    public Size getCoriSize() {
         return coriSize;
     }
 

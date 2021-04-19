@@ -2,7 +2,7 @@ package org.bioshock.animations;
 
 import org.bioshock.entities.Entity;
 import org.bioshock.utils.GlobalConstants;
-import org.bioshock.utils.SizeD;
+import org.bioshock.utils.Size;
 
 import javafx.geometry.Point2D;
 
@@ -21,7 +21,7 @@ public class SwingAnimations {
         topRightSwing = new Sprite(
             entity,
             new Point2D(422, 188),
-            new SizeD(
+            new Size(
                 84,
                 84
             ),
@@ -35,7 +35,7 @@ public class SwingAnimations {
         topRightIdle = new Sprite(
             entity,
             new Point2D(422, 188),
-            new SizeD(
+            new Size(
                 84,
                 84
             ),
@@ -49,7 +49,7 @@ public class SwingAnimations {
         topLeftSwing = new Sprite(
             entity,
             new Point2D(422, 284),
-            new SizeD(
+            new Size(
                 84,
                 84
             ),
@@ -63,7 +63,7 @@ public class SwingAnimations {
         topLeftIdle = new Sprite(
             entity,
             new Point2D(422, 284),
-            new SizeD(
+            new Size(
                 84,
                 84
             ),
@@ -77,7 +77,7 @@ public class SwingAnimations {
         bottomRightSwing = new Sprite(
             entity,
             new Point2D(422, 380),
-            new SizeD(
+            new Size(
                 84,
                 84
             ),
@@ -91,7 +91,7 @@ public class SwingAnimations {
         bottomRightIdle = new Sprite(
             entity,
             new Point2D(422, 380),
-            new SizeD(
+            new Size(
                 84,
                 84
             ),
@@ -105,7 +105,7 @@ public class SwingAnimations {
         bottomLeftSwing = new Sprite(
             entity,
             new Point2D(422, 476),
-            new SizeD(
+            new Size(
                 84,
                 84
             ),
@@ -119,7 +119,7 @@ public class SwingAnimations {
         bottomLeftIdle = new Sprite(
             entity,
             new Point2D(422, 476),
-            new SizeD(
+            new Size(
                 84,
                 84
             ),

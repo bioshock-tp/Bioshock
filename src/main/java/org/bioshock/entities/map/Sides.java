@@ -8,8 +8,8 @@ import java.util.List;
 
 import org.bioshock.components.NetworkC;
 import org.bioshock.utils.ArrayUtils;
-import org.bioshock.utils.SizeD;
-import org.bioshock.utils.SizeI;
+import org.bioshock.utils.Size;
+import org.bioshock.utils.Size;
 
 import javafx.geometry.Point3D;
 import javafx.scene.paint.Color;
@@ -28,7 +28,7 @@ public class Sides {
      */
     public static Pair<Wall,boolean[][]> side(
             Point3D pos,
-            SizeI size,
+            Size size,
             Color c){
         boolean[][] traversable = new boolean
             [(int) Math.round(size.getHeight())]
@@ -37,7 +37,7 @@ public class Sides {
         Wall side = new Wall(
             pos, 
             new NetworkC(false), 
-            new SizeD(size.getWidth()*UNIT_WIDTH, size.getHeight()*UNIT_HEIGHT), 
+            new Size(size.getWidth()*UNIT_WIDTH, size.getHeight()*UNIT_HEIGHT), 
             c);
         
         return new Pair<Wall, boolean[][]>(side, traversable);
@@ -56,9 +56,9 @@ public class Sides {
     public static Pair<List<Wall>,boolean[][]> lExit(
         Point3D pos,
         int wallWidth,
-        int roomHeight,
-        int coriWidth,
-        int coriLen,
+        double roomHeight,
+        double coriWidth,
+        double coriLen,
         Color c
     ) {
         boolean[][] traversable = new boolean
@@ -99,7 +99,7 @@ public class Sides {
             new Wall(
                 pos.add((coriLen - wallWidth)*UNIT_WIDTH, 0*UNIT_HEIGHT, 0),
                 new NetworkC(false),
-                new SizeD(wallWidth*UNIT_WIDTH, ((roomHeight - coriWidth) / 2 - wallWidth)*UNIT_HEIGHT),
+                new Size(wallWidth*UNIT_WIDTH, ((roomHeight - coriWidth) / 2 - wallWidth)*UNIT_HEIGHT),
                 c
             ); 
 
@@ -111,7 +111,7 @@ public class Sides {
                     ((roomHeight + coriWidth) / 2 + wallWidth)*UNIT_HEIGHT, 0
                 ),
                 new NetworkC(false),
-                new SizeD(wallWidth*UNIT_WIDTH, ((roomHeight - coriWidth) / 2 - wallWidth)*UNIT_HEIGHT),
+                new Size(wallWidth*UNIT_WIDTH, ((roomHeight - coriWidth) / 2 - wallWidth)*UNIT_HEIGHT),
                 c
             );
 
@@ -124,7 +124,7 @@ public class Sides {
                     0
                 ),
                 new NetworkC(false),
-                new SizeD((coriLen - wallWidth)*UNIT_WIDTH + padding, wallWidth*UNIT_HEIGHT),
+                new Size((coriLen - wallWidth)*UNIT_WIDTH + padding, wallWidth*UNIT_HEIGHT),
                 c
             );
 
@@ -133,7 +133,7 @@ public class Sides {
             new Wall(
                 pos.add(0*UNIT_WIDTH, ((roomHeight + coriWidth) / 2)*UNIT_HEIGHT, 0),
                 new NetworkC(false),
-                new SizeD((coriLen - wallWidth)*UNIT_WIDTH + padding, wallWidth*UNIT_HEIGHT),
+                new Size((coriLen - wallWidth)*UNIT_WIDTH + padding, wallWidth*UNIT_HEIGHT),
                 c
             );
 
@@ -146,7 +146,7 @@ public class Sides {
                     0
                 ),
                 new NetworkC(false),
-                new SizeD(wallWidth*UNIT_WIDTH, wallWidth*UNIT_HEIGHT),
+                new Size(wallWidth*UNIT_WIDTH, wallWidth*UNIT_HEIGHT),
                 c
             );
 
@@ -159,7 +159,7 @@ public class Sides {
                     0
                 ),
                 new NetworkC(false),
-                new SizeD(wallWidth*UNIT_WIDTH, wallWidth*UNIT_HEIGHT),
+                new Size(wallWidth*UNIT_WIDTH, wallWidth*UNIT_HEIGHT),
                 c
             );
         
@@ -186,9 +186,9 @@ public class Sides {
     public static Pair<List<Wall>,boolean[][]> rExit(
         Point3D pos,
         int wallWidth,
-        int roomHeight,
-        int coriWidth,
-        int coriLen,
+        double roomHeight,
+        double coriWidth,
+        double coriLen,
         Color c
     ) {
         
@@ -230,7 +230,7 @@ public class Sides {
             new Wall(
                 pos,
                 new NetworkC(false),
-                new SizeD(wallWidth*UNIT_WIDTH, ((roomHeight - coriWidth) / 2 - wallWidth)*UNIT_HEIGHT),
+                new Size(wallWidth*UNIT_WIDTH, ((roomHeight - coriWidth) / 2 - wallWidth)*UNIT_HEIGHT),
                 c
             );
 
@@ -243,7 +243,7 @@ public class Sides {
                     0
                 ),
                 new NetworkC(false),
-                new SizeD(wallWidth*UNIT_WIDTH, ((roomHeight - coriWidth) / 2 - wallWidth)*UNIT_HEIGHT),
+                new Size(wallWidth*UNIT_WIDTH, ((roomHeight - coriWidth) / 2 - wallWidth)*UNIT_HEIGHT),
                 c
             );
 
@@ -256,7 +256,7 @@ public class Sides {
                     0
                 ),
                 new NetworkC(false),
-                new SizeD((coriLen - wallWidth)*UNIT_WIDTH + padding, wallWidth*UNIT_HEIGHT),
+                new Size((coriLen - wallWidth)*UNIT_WIDTH + padding, wallWidth*UNIT_HEIGHT),
                 c
             );
 
@@ -265,7 +265,7 @@ public class Sides {
             new Wall(
                 pos.add(wallWidth*UNIT_WIDTH, ((roomHeight + coriWidth) / 2)*UNIT_HEIGHT, 0),
                 new NetworkC(false),
-                new SizeD((coriLen - wallWidth)*UNIT_WIDTH + padding, wallWidth*UNIT_HEIGHT),
+                new Size((coriLen - wallWidth)*UNIT_WIDTH + padding, wallWidth*UNIT_HEIGHT),
                 c
             );
 
@@ -278,7 +278,7 @@ public class Sides {
                     0
             ),
                 new NetworkC(false),
-                new SizeD(wallWidth*UNIT_WIDTH, wallWidth*UNIT_HEIGHT),
+                new Size(wallWidth*UNIT_WIDTH, wallWidth*UNIT_HEIGHT),
                 c
             );
 
@@ -287,7 +287,7 @@ public class Sides {
             new Wall(
                 pos.add(0*UNIT_WIDTH, ((roomHeight + coriWidth) / 2)*UNIT_HEIGHT, 0),
                 new NetworkC(false),
-                new SizeD(wallWidth*UNIT_WIDTH, wallWidth*UNIT_HEIGHT),
+                new Size(wallWidth*UNIT_WIDTH, wallWidth*UNIT_HEIGHT),
                 c
             );
 
@@ -312,9 +312,9 @@ public class Sides {
     public static Pair<List<Wall>,boolean[][]> tExit(
         Point3D pos,
         int wallWidth,
-        int roomWidth,
-        int coriWidth,
-        int coriLen,
+        double roomWidth,
+        double coriWidth,
+        double coriLen,
         Color c
     ) {
 
@@ -356,7 +356,7 @@ public class Sides {
             new Wall(
                 pos.add(0*UNIT_WIDTH, (coriLen - wallWidth)*UNIT_HEIGHT, 0),
                 new NetworkC(false),
-                new SizeD(((roomWidth - coriWidth) / 2 - wallWidth)*UNIT_WIDTH, wallWidth*UNIT_HEIGHT),
+                new Size(((roomWidth - coriWidth) / 2 - wallWidth)*UNIT_WIDTH, wallWidth*UNIT_HEIGHT),
                 c
             );
 
@@ -369,7 +369,7 @@ public class Sides {
                     0
                 ),
                 new NetworkC(false),
-                new SizeD(((roomWidth - coriWidth) / 2 - wallWidth)*UNIT_WIDTH, wallWidth*UNIT_HEIGHT),
+                new Size(((roomWidth - coriWidth) / 2 - wallWidth)*UNIT_WIDTH, wallWidth*UNIT_HEIGHT),
                 c
             );
 
@@ -382,7 +382,7 @@ public class Sides {
                     0
                 ),
                 new NetworkC(false),
-                new SizeD(wallWidth*UNIT_WIDTH, (coriLen - wallWidth)*UNIT_HEIGHT + padding),
+                new Size(wallWidth*UNIT_WIDTH, (coriLen - wallWidth)*UNIT_HEIGHT + padding),
                 c
             );
 
@@ -391,7 +391,7 @@ public class Sides {
             new Wall(
                 pos.add(((roomWidth + coriWidth) / 2)*UNIT_WIDTH, 0*UNIT_HEIGHT, 0),
                 new NetworkC(false),
-                new SizeD(wallWidth*UNIT_WIDTH, (coriLen - wallWidth)*UNIT_HEIGHT + padding),
+                new Size(wallWidth*UNIT_WIDTH, (coriLen - wallWidth)*UNIT_HEIGHT + padding),
                 c
             );
 
@@ -404,7 +404,7 @@ public class Sides {
                     0
                 ),
                 new NetworkC(false),
-                new SizeD(wallWidth*UNIT_WIDTH, wallWidth*UNIT_HEIGHT),
+                new Size(wallWidth*UNIT_WIDTH, wallWidth*UNIT_HEIGHT),
                 c
             );
 
@@ -417,7 +417,7 @@ public class Sides {
                     0
                 ),
                 new NetworkC(false),
-                new SizeD(wallWidth*UNIT_WIDTH, wallWidth*UNIT_HEIGHT),
+                new Size(wallWidth*UNIT_WIDTH, wallWidth*UNIT_HEIGHT),
                 c
             );
 
@@ -442,9 +442,9 @@ public class Sides {
     public static Pair<List<Wall>,boolean[][]> bExit(
         Point3D pos,
         int wallWidth,
-        int roomWidth,
-        int coriWidth,
-        int coriLen,
+        double roomWidth,
+        double coriWidth,
+        double coriLen,
         Color c
     ) {
         boolean[][] traversable = new boolean
@@ -485,7 +485,7 @@ public class Sides {
             new Wall(
                 pos,
                 new NetworkC(false),
-                new SizeD(((roomWidth - coriWidth) / 2 - wallWidth)*UNIT_WIDTH, wallWidth*UNIT_HEIGHT),
+                new Size(((roomWidth - coriWidth) / 2 - wallWidth)*UNIT_WIDTH, wallWidth*UNIT_HEIGHT),
                 c
             );
 
@@ -498,7 +498,7 @@ public class Sides {
                     0
                 ),
                 new NetworkC(false),
-                new SizeD(((roomWidth - coriWidth) / 2 - wallWidth)*UNIT_WIDTH, wallWidth*UNIT_HEIGHT),
+                new Size(((roomWidth - coriWidth) / 2 - wallWidth)*UNIT_WIDTH, wallWidth*UNIT_HEIGHT),
                 c
             );
 
@@ -511,7 +511,7 @@ public class Sides {
                     0
                 ),
                 new NetworkC(false),
-                new SizeD(wallWidth*UNIT_WIDTH, (coriLen - wallWidth)*UNIT_HEIGHT + padding),
+                new Size(wallWidth*UNIT_WIDTH, (coriLen - wallWidth)*UNIT_HEIGHT + padding),
                 c
             );
 
@@ -520,7 +520,7 @@ public class Sides {
             new Wall(
                 pos.add(((roomWidth + coriWidth) / 2)*UNIT_WIDTH, wallWidth*UNIT_HEIGHT, 0),
                 new NetworkC(false),
-                new SizeD(wallWidth*UNIT_WIDTH, (coriLen - wallWidth)*UNIT_HEIGHT + padding),
+                new Size(wallWidth*UNIT_WIDTH, (coriLen - wallWidth)*UNIT_HEIGHT + padding),
                 c
             );
 
@@ -533,7 +533,7 @@ public class Sides {
                     0
                 ),
                 new NetworkC(false),
-                new SizeD(wallWidth*UNIT_WIDTH, wallWidth*UNIT_HEIGHT),
+                new Size(wallWidth*UNIT_WIDTH, wallWidth*UNIT_HEIGHT),
                 c
             );
 
@@ -542,7 +542,7 @@ public class Sides {
             new Wall(
                 pos.add(((roomWidth + coriWidth) / 2)*UNIT_WIDTH, 0*UNIT_HEIGHT, 0),
                 new NetworkC(false),
-                new SizeD(wallWidth*UNIT_WIDTH, wallWidth*UNIT_HEIGHT),
+                new Size(wallWidth*UNIT_WIDTH, wallWidth*UNIT_HEIGHT),
                 c
             );
 
@@ -567,9 +567,9 @@ public class Sides {
     public static Pair<List<Wall>,boolean[][]> lNoExit(
         Point3D pos,
         int wallWidth,
-        int roomHeight,
-        int coriWidth,
-        int coriLen,
+        double roomHeight,
+        double coriWidth,
+        double coriLen,
         Color c
     ) {
         
@@ -591,7 +591,7 @@ public class Sides {
             new Wall(
                 pos.add((coriLen - wallWidth)*UNIT_WIDTH, 0*UNIT_HEIGHT, 0),
                 new NetworkC(false),
-                new SizeD(wallWidth*UNIT_WIDTH, roomHeight*UNIT_HEIGHT),
+                new Size(wallWidth*UNIT_WIDTH, roomHeight*UNIT_HEIGHT),
                 c
             );
 
@@ -614,9 +614,9 @@ public class Sides {
     public static Pair<List<Wall>,boolean[][]> rNoExit(
         Point3D pos,
         int wallWidth,
-        int roomHeight,
-        int coriWidth,
-        int coriLen,
+        double roomHeight,
+        double coriWidth,
+        double coriLen,
         Color c
     ) {
         boolean[][] traversable = new boolean
@@ -637,7 +637,7 @@ public class Sides {
             new Wall(
                 pos,
                 new NetworkC(false),
-                new SizeD(wallWidth*UNIT_WIDTH, roomHeight*UNIT_HEIGHT),
+                new Size(wallWidth*UNIT_WIDTH, roomHeight*UNIT_HEIGHT),
                 c
             );
 
@@ -660,9 +660,9 @@ public class Sides {
     public static Pair<List<Wall>,boolean[][]> tNoExit(
         Point3D pos,
         int wallWidth,
-        int roomWidth,
-        int coriWidth,
-        int coriLen,
+        double roomWidth,
+        double coriWidth,
+        double coriLen,
         Color c
     ) {
         
@@ -684,7 +684,7 @@ public class Sides {
             new Wall(
                 pos.add(0*UNIT_WIDTH, (coriLen - wallWidth)*UNIT_HEIGHT, 0),
                 new NetworkC(false),
-                new SizeD(roomWidth*UNIT_WIDTH, wallWidth*UNIT_HEIGHT),
+                new Size(roomWidth*UNIT_WIDTH, wallWidth*UNIT_HEIGHT),
                 c
             );
 
@@ -707,9 +707,9 @@ public class Sides {
     public static Pair<List<Wall>,boolean[][]> bNoExit(
         Point3D pos,
         int wallWidth,
-        int roomWidth,
-        int coriWidth,
-        int coriLen,
+        double roomWidth,
+        double coriWidth,
+        double coriLen,
         Color c
     ) {
         
@@ -731,7 +731,7 @@ public class Sides {
             new Wall(
                 pos,
                 new NetworkC(false),
-                new SizeD(roomWidth*UNIT_WIDTH, wallWidth*UNIT_HEIGHT),
+                new Size(roomWidth*UNIT_WIDTH, wallWidth*UNIT_HEIGHT),
                 c
             );
 

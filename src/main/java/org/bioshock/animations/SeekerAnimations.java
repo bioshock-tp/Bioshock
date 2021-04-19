@@ -2,7 +2,7 @@ package org.bioshock.animations;
 
 import org.bioshock.entities.Entity;
 import org.bioshock.utils.GlobalConstants;
-import org.bioshock.utils.SizeD;
+import org.bioshock.utils.Size;
 
 import javafx.geometry.Point2D;
 
@@ -19,7 +19,7 @@ public class SeekerAnimations implements PlayerAnimation {
         moveDown = new Sprite(
             entity,
             new Point2D(420, 0),
-            new SizeD(
+            new Size(
                 GlobalConstants.PLAYER_WIDTH,
                 GlobalConstants.PLAYER_HEIGHT
             ),
@@ -33,7 +33,7 @@ public class SeekerAnimations implements PlayerAnimation {
         moveLeft = new Sprite(
             entity,
             new Point2D(480, 0),
-            new SizeD(
+            new Size(
                 GlobalConstants.PLAYER_WIDTH,
                 GlobalConstants.PLAYER_HEIGHT
             ),
@@ -47,7 +47,7 @@ public class SeekerAnimations implements PlayerAnimation {
         moveUp = new Sprite(
             entity,
             new Point2D(540, 0),
-            new SizeD(
+            new Size(
                 GlobalConstants.PLAYER_WIDTH - 1.5,
                 GlobalConstants.PLAYER_HEIGHT
             ),
@@ -61,7 +61,7 @@ public class SeekerAnimations implements PlayerAnimation {
         moveRight = new Sprite(
             entity,
             new Point2D(600, 0),
-            new SizeD(
+            new Size(
                 GlobalConstants.PLAYER_WIDTH,
                 GlobalConstants.PLAYER_HEIGHT
             ),
@@ -75,7 +75,7 @@ public class SeekerAnimations implements PlayerAnimation {
         idle = new Sprite(
             entity,
             new Point2D(656, 0),
-            new SizeD(
+            new Size(
                 GlobalConstants.PLAYER_WIDTH + 2,
                 GlobalConstants.PLAYER_HEIGHT
             ),
@@ -89,7 +89,7 @@ public class SeekerAnimations implements PlayerAnimation {
         die = new Sprite(
             entity,
             new Point2D(516, 0),
-            new SizeD(
+            new Size(
                 GlobalConstants.PLAYER_WIDTH + 4,
                 GlobalConstants.PLAYER_HEIGHT + 2
             ),

@@ -1,10 +1,10 @@
 package org.bioshock.utils;
 
-public class SizeD {
+public class Size {
     private double width;
     private double height;
 
-    public SizeD(double width, double height) {
+    public Size(double width, double height) {
         this.width = width;
         this.height = height;
     }
