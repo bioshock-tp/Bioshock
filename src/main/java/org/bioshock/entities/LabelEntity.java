@@ -13,7 +13,7 @@ import java.util.LinkedList;
 
 public class LabelEntity extends Entity{
     
-    private StringBuilder sb = new StringBuilder();
+    protected StringBuilder sb = new StringBuilder();
     private Font font;
     private boolean display = true;
     private int charsPerLine = 50;
@@ -44,6 +44,10 @@ public class LabelEntity extends Entity{
     public StringBuilder getStringBuilder() {
         return sb;
     }
+    
+    public void setStringBuilder(StringBuilder sb) {
+        this.sb = sb;
+    }
 
     public void appendString(String s) {
 
@@ -60,8 +64,6 @@ public class LabelEntity extends Entity{
 
         sb.append(s);
     }
-
-
 
     public LabelEntity(Point3D p, String initText, Font font, int charsPerLine, Color color) {
         super(p, new Rectangle(0,0), new NetworkC(false), new SimpleRendererC());

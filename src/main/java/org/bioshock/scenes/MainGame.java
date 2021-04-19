@@ -8,6 +8,7 @@ import org.bioshock.engine.core.WindowManager;
 import org.bioshock.engine.input.InputManager;
 import org.bioshock.entities.EntityManager;
 import org.bioshock.entities.LabelEntity;
+import org.bioshock.entities.TextChat;
 import org.bioshock.entities.map.Room;
 import org.bioshock.entities.map.RoomEntity;
 import org.bioshock.entities.map.TexRectEntity;
@@ -130,6 +131,14 @@ public class MainGame extends GameScene {
 
         FrameRate.initialise();
         children.add(FrameRate.getLabel());
+        
+        TextChat textChat = new TextChat(
+                new Point3D(500, 500, 500), 
+                new Font(20), 
+                50, 
+                Color.BROWN);
+        
+        children.add(textChat);
         
         registerEntities();
     }
