@@ -46,6 +46,8 @@ public class MainGame extends GameScene {
 
     private Map map;
 
+    private static LabelEntity chatLabel;
+
     public MainGame() {
         super();
 
@@ -93,7 +95,7 @@ public class MainGame extends GameScene {
             new Point3D(GameScene.getGameScreen().getWidth()/2, 50, 100), 
             "mm:ss.ms", 
             new Font("arial", 20), 
-            50, 
+            50,
             Color.BLACK);
         
         children.add(timer);
@@ -117,16 +119,14 @@ public class MainGame extends GameScene {
                 () -> RenderManager.setCameraPos(RenderManager.getCameraPos().add(0,-10)));
         InputManager.onPress(KeyCode.DOWN, 
                 () -> RenderManager.setCameraPos(RenderManager.getCameraPos().add(0,10)));
+        //On a full screen you can have up to 40 rows of messages. So I can keep only the last 20 messages always
+        chatLabel = new LabelEntity(
+                new Point3D(10, 70, 1000),
+                new Font(20),
+                100,
+                Color.BLACK);
         
-        LabelEntity testLabel = new LabelEntity(
-            new Point3D(10, 70, 100), 
-            "This is a test string that is longer than 30 characters long"
-            + "\n with\n newline\n charachters\n in", 
-            new Font(20), 
-            30,
-            Color.BLACK);
-        
-        children.add(testLabel);
+        children.add(chatLabel);
 
         FrameRate.initialise();
         children.add(FrameRate.getLabel());
@@ -287,5 +287,9 @@ public class MainGame extends GameScene {
         RenderManager.setCameraPos(new Point2D(0, 0));
 
         SceneManager.setInGame(false);
+    }
+
+    public static void appendStringToChat(String s){
+        chatLabel.appendString(s);
     }
 }

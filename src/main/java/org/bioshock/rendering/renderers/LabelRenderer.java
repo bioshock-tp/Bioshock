@@ -5,6 +5,7 @@ import static org.bioshock.rendering.RenderManager.getRenWidth;
 import static org.bioshock.rendering.RenderManager.getRenX;
 import static org.bioshock.rendering.RenderManager.getRenY;
 
+import javafx.scene.text.Font;
 import org.bioshock.entities.LabelEntity;
 import org.bioshock.main.App;
 
@@ -37,7 +38,8 @@ public class LabelRenderer implements Renderer {
                     if(endIndex > line.length()) {
                         endIndex = line.length();
                     }
-                    
+
+                    gc.setFont(new Font(getRenHeight(label.getFont().getSize())));
                                         
                     gc.fillText(
                             line.substring(

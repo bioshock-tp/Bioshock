@@ -9,6 +9,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 
+import java.util.LinkedList;
+
 public class LabelEntity extends Entity{
     
     private StringBuilder sb = new StringBuilder();
@@ -16,6 +18,7 @@ public class LabelEntity extends Entity{
     private boolean display = true;
     private int charsPerLine = 50;
     private int lineSpacing = 5;
+    private LinkedList<Integer> msLen = new LinkedList<Integer>();
     private Color color;
 
     public Color getColor() {
@@ -42,11 +45,39 @@ public class LabelEntity extends Entity{
         return sb;
     }
 
+    public void appendString(String s) {
+
+        s = s.replace("\n", "");
+        s = s + '\n';
+
+        msLen.add(s.length());
+        if(msLen.size() == 21){
+
+            int len = msLen.getFirst();
+            sb.delete(0, len);
+            msLen.poll();
+        }
+
+        sb.append(s);
+    }
+
+
+
     public LabelEntity(Point3D p, String initText, Font font, int charsPerLine, Color color) {
         super(p, new Rectangle(0,0), new NetworkC(false), new SimpleRendererC());
         this.font = font;
         this.charsPerLine = charsPerLine;
         sb.append(initText);
+        renderer = LabelRenderer.class;
+        alwaysRender = true;
+        this.color = color;
+    }
+
+    public LabelEntity(Point3D p, Font font, int charsPerLine, Color color) {
+        super(p, new Rectangle(0, 0), new NetworkC(false), new SimpleRendererC());
+        this.font = font;
+        this.charsPerLine = charsPerLine;
+        sb.append("");
         renderer = LabelRenderer.class;
         alwaysRender = true;
         this.color = color;

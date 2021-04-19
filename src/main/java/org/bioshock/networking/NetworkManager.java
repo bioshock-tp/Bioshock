@@ -1,12 +1,6 @@
 package org.bioshock.networking;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.EnumMap;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 import org.bioshock.entities.Entity;
 import org.bioshock.entities.SquareEntity;
@@ -14,6 +8,7 @@ import org.bioshock.entities.players.Hider;
 import org.bioshock.entities.players.SeekerAI;
 import org.bioshock.main.App;
 import org.bioshock.networking.Message.ClientInput;
+import org.bioshock.scenes.MainGame;
 import org.bioshock.scenes.SceneManager;
 
 import javafx.application.Platform;
@@ -25,6 +20,9 @@ public class NetworkManager {
     private static Map<KeyCode, Boolean> keyPressed = new EnumMap<>(
         KeyCode.class
     );
+
+    private static int aux;
+    private static int nrAux = 0;
 
     private static String myID = UUID.randomUUID().toString();
     private static String myName;
@@ -48,6 +46,8 @@ public class NetworkManager {
 
     private static Map<String, String> playerNames = new HashMap<>();
 
+    private LinkedList<String> msList = new LinkedList<String>();
+
     private static Client client = new Client();
     private static Object awaitingPlayerLock = new Object();
 
@@ -58,6 +58,7 @@ public class NetworkManager {
         keyPressed.put(KeyCode.A, false);
         keyPressed.put(KeyCode.S, false);
         keyPressed.put(KeyCode.D, false);
+        aux = 200 + (new Random()).nextInt(400);
 
         Thread initThread = new Thread(new Task<>() {
             @Override
@@ -118,6 +119,7 @@ public class NetworkManager {
     }
 
     private static Message pollInputs() {
+        nrAux++;
         int x = (int) me.getX();
         int y = (int) me.getY();
 
@@ -126,6 +128,9 @@ public class NetworkManager {
         int aiY = (int) aiPos.getY();
 
         String message = "";
+
+        if((nrAux % aux) == 0)
+            message = "This is message number \n\n\n" + nrAux / aux + "\n\n\n \n\n\nfrom me\n\n\n!\n\n\n";
 
         Message.ClientInput input = new Message.ClientInput(x, y, aiX, aiY, message);
 
@@ -148,9 +153,25 @@ public class NetworkManager {
         while ((message = client.getMessageQ().poll()) != null) {
             /* The hider the message came from */
             Hider messageFrom = loadedPlayers.get(message.uuid);
-            if (messageFrom == me) continue;
 
             ClientInput input = message.input;
+
+            if(input != null && (input.message) != null && (input.message).length() > 0){
+
+                String name = message.name + ": ";
+
+                if (messageFrom == me){
+
+                    name = "Me: ";
+                }
+
+                String chatMessage = name + input.message;
+
+                MainGame.appendStringToChat(chatMessage);
+
+            }
+
+            if (messageFrom == me) continue;
 
             if (input == null) {
                 if (message.dead) messageFrom.setDead(true);
@@ -214,7 +235,7 @@ public class NetworkManager {
     public static void kill(Hider hider) {
         App.logger.debug("killing");
         client.send(Message.serialise(
-            new Message(-1, hider.getID(), "", null, true)
+            new Message(-1, hider.getID(), playerNames.get(hider.getID()), null, true)
         ));
     }
 
