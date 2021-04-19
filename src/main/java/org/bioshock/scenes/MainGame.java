@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.bioshock.components.NetworkC;
 import org.bioshock.engine.core.FrameRate;
+import org.bioshock.engine.core.GameLoop;
 import org.bioshock.engine.input.InputManager;
 import org.bioshock.entities.EntityManager;
 import org.bioshock.entities.LabelEntity;
@@ -209,9 +210,9 @@ public class MainGame extends GameScene {
         renderEntities();
 
         FrameRate.initialise();
-
+        
         SceneManager.setInLobby(false);
-        SceneManager.setInGame(true);
+        SceneManager.setInGame(true);        
 
         if (App.isNetworked()) {
             Object lock = NetworkManager.getPlayerJoinLock();

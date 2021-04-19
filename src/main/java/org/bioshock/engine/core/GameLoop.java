@@ -1,6 +1,7 @@
 package org.bioshock.engine.core;
 
 import org.bioshock.entities.EntityManager;
+import org.bioshock.main.App;
 import org.bioshock.networking.NetworkManager;
 import org.bioshock.rendering.RenderManager;
 import org.bioshock.scenes.SceneManager;
@@ -28,28 +29,42 @@ public final class GameLoop extends AnimationTimer {
 
         if (!SceneManager.inGame() || previous == 0) {
         	previous = now;
+        	lag=0.0;
             return;
         }
         
         double current = now;
         double elapsed = current - previous;
         previous = current;
+//        App.logger.debug("Elapsed: "+elapsed);
         lag += elapsed;
+//        App.logger.debug("Lag: "+lag);
         
         for (int i=0; lag >= NS_PER_UPDATE && i<minFPS;i++)
         {
-        	NetworkManager.tick();
-            EntityManager.tick(1/LOGICRATE);
-            SceneManager.getScene().logicTick(1/LOGICRATE);
+//            App.logger.debug("Logic Tick");  
+            logicTick();
             lag -= NS_PER_UPDATE;
         }
+        previous=System.nanoTime();
 
-        SceneManager.getScene().renderTick(0);
-        RenderManager.tick();
-        FrameRate.tick(now);
+//        App.logger.debug("Render Tick");
+        renderTick(now);
     }
 
 	public static double getCurrentGameTime() {
         return currentGameTime;
     }
+	
+	private static void logicTick() {
+	    NetworkManager.tick();
+        EntityManager.tick(1/LOGICRATE);
+        SceneManager.getScene().logicTick(1/LOGICRATE);
+	}
+	
+	private static void renderTick(long now) {
+	    SceneManager.getScene().renderTick(0);
+        RenderManager.tick();
+        FrameRate.tick(now);
+	}
 }
