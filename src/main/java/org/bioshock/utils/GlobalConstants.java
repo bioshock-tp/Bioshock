@@ -15,8 +15,8 @@ public final class GlobalConstants {
     	{{NO_ROOM, SINGLE_ROOM, SINGLE_ROOM, SINGLE_ROOM},
 		{NO_ROOM, SINGLE_ROOM, SINGLE_ROOM, SINGLE_ROOM},
 		{NO_ROOM, SINGLE_ROOM, SINGLE_ROOM, SINGLE_ROOM}};
-    public static final int  UNIT_WIDTH = 40;
-    public static final int  UNIT_HEIGHT = 80;
+    public static final int  UNIT_WIDTH = 59;
+    public static final int  UNIT_HEIGHT = 66;
     
     public static final RoomType[][] testMap = 
        {{B,B,B,B,A,B},

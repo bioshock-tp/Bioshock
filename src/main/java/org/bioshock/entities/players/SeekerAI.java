@@ -173,13 +173,13 @@ public class SeekerAI extends SquareEntity {
             if (x >= 0 && y >= 0) {
                 animation = SwingAnimations.getBottomRightSwing();
             }
-            else if (x > 0) {
+            else if (x >= 0) {
                 animation = SwingAnimations.getTopRightSwing();
             }
             else if (y >= 0) {
                 animation = SwingAnimations.getBottomLeftSwing();
             }
-            else if (x < 0) {
+            else {
                 animation = SwingAnimations.getTopLeftSwing();
             }
         }
