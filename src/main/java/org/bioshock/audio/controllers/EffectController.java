@@ -38,10 +38,10 @@ public class EffectController {
         }
 
         Platform.runLater(() -> {
-            App.logger.debug(
-                "Playing Effect: {}",
-                clip.getSource()
-            );
+//            App.logger.debug(
+//                "Playing Effect: {}",
+//                clip.getSource()
+//            );
 
             clip.play();
         });
@@ -54,10 +54,10 @@ public class EffectController {
      */
     public void stop() {
         Platform.runLater(() -> {
-                App.logger.debug(
-                    "Stopping Effect: ",
-                    clip.getSource()
-                );
+//                App.logger.debug(
+//                    "Stopping Effect: ",
+//                    clip.getSource()
+//                );
 
             clip.stop();
         });

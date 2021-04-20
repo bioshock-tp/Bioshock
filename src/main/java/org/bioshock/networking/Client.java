@@ -10,9 +10,16 @@ import java.nio.ByteBuffer;
 import java.util.ArrayDeque;
 import java.util.Queue;
 import java.util.concurrent.Semaphore;
+import java.util.prefs.Preferences;
+
+import org.bioshock.gui.SettingsController;
+import org.bioshock.main.App;
+import org.java_websocket.client.WebSocketClient;
+import org.java_websocket.handshake.ServerHandshake;
 
 public class Client extends WebSocketClient {
     private static final String DEFURI = "ws://51.15.109.210:8029/";
+//    private static final String DEFURI = "ws://localhost:8029/";
 
     private int playerNumber;
 
@@ -20,6 +27,8 @@ public class Client extends WebSocketClient {
     private Queue<Message> initialMessages = new ArrayDeque<>();
     private Queue<Message> messageQueue = new ArrayDeque<>();
     private boolean connected = false;
+    private boolean initMessage = true;
+    private String playerName;
 
     private Client(URI serverURI) {
         super(serverURI);
@@ -45,15 +54,28 @@ public class Client extends WebSocketClient {
 
     @Override
     public void onOpen(ServerHandshake handshakedata) {
+
         setTcpNoDelay(true);
+        Preferences prefs = Preferences.userNodeForPackage(SettingsController.class);
+        playerName = prefs.get("playerName", App.getBundle().getString("DEFAULT_PLAYER_NAME_TEXT"));
     }
 
     @Override
     public void onMessage(String string) {
         /* Case of player number */
+        //System.out.println(string);
         try {
-            playerNumber = Integer.parseInt(string);
-            send("New Player");
+            if(initMessage) {
+                playerNumber = Integer.parseInt(string);
+                send(Integer.toString(10000));
+                initMessage = (!initMessage);
+            }
+            else {
+                long seed = Long.parseLong(string);
+                NetworkManager.setSeed(seed);
+                send("New Player");
+                initMessage = (!initMessage);
+            }
             return;
         } catch (NumberFormatException ignored) {
             /* Was not playerNumber message */
@@ -62,9 +84,9 @@ public class Client extends WebSocketClient {
         /* Case of new player joining */
         if (string.equals("New Player")) {
             Message queueMessage = Message.inLobby(
-                playerNumber,
-                NetworkManager.getMyID()
-            );
+                    playerNumber,
+                    NetworkManager.getMyID(),
+                    playerName);
 
             send(Message.serialise(queueMessage));
             return;
@@ -106,7 +128,16 @@ public class Client extends WebSocketClient {
 
     @Override
     public void onError(Exception ex) {
+
         App.logger.error("A network error occurred: ", ex);
+
+        try {
+            this.connectBlocking();
+        } catch (InterruptedException e) {
+            App.logger.error(e);
+            Thread.currentThread().interrupt();
+        }
+
     }
 
     @Override
@@ -116,8 +147,18 @@ public class Client extends WebSocketClient {
             code,
             reason
         );
-        App.exit(-1);
+        try {
+            this.connectBlocking();
+        } catch (InterruptedException e) {
+            App.logger.error(e);
+            Thread.currentThread().interrupt();
+        }
+        //App.exit(-1);
     }
+
+    public boolean haveInitMessage() {return initMessage;}
+
+    public String getPlayerName() {return playerName;}
 
     public Queue<Message> getInitialMessages() {
         return initialMessages;

@@ -186,7 +186,7 @@ public class AudioController {
 
         @Nullable EffectController effect = effectCache.getIfPresent(name);
         if (effect != null) {
-            App.logger.debug("Loaded Effect: {}", name);
+//            App.logger.debug("Loaded Effect: {}", name);
 
             return effect;
         }
@@ -194,7 +194,7 @@ public class AudioController {
         effect = new EffectController(effectUris.get(name.toLowerCase()));
         effectCache.put(name, effect);
 
-        App.logger.debug("Loaded Effect: {}", name);
+//        App.logger.debug("Loaded Effect: {}", name);
 
         return effect;
     }

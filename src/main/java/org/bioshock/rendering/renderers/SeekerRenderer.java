@@ -91,8 +91,8 @@ public class SeekerRenderer implements Renderer {
         );
 
         
-        gc.setFill(Color.BLACK);
-        gc.setFont(new Font(getRenHeight(25)));
+        gc.setFill(Color.RED);
+        gc.setFont(new Font(getRenHeight(20)));
         gc.fillText("Seeker(AI)", getRenX(x-width), getRenY(y-5), getRenWidth(width*3));
 
         gc.restore();

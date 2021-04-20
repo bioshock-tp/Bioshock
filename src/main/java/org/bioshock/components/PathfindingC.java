@@ -206,7 +206,7 @@ public class PathfindingC<T extends GraphNode,S> {
 
         }
         //pathToFollow.remove(0);
-        App.logger.debug("Path created is {}", pathToFollow);
+//        App.logger.debug("Path created is {}", pathToFollow);
 
         return pathToFollow;
     }

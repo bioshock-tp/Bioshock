@@ -77,7 +77,7 @@ public abstract class GameScene extends Scene {
      * {@link org.bioshock.scenes.SceneManager#setScene(GameScene)
      * SceneManager.setScene(GameScene)}
      */
-    public void initScene() {
+    public void initScene(long seed) {
         registerEntities();
         renderEntities();
     }

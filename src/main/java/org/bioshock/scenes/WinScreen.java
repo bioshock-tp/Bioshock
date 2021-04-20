@@ -42,7 +42,7 @@ public class WinScreen extends GameScene{
     }
 
     @Override
-    public void initScene() {
+    public void initScene(long seed) {
         fadeIn.play();
 
         fadeIn.setOnFinished(e -> fadeOut.play());

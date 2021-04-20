@@ -31,7 +31,7 @@ public class FrameRate {
         long oldFrameTime = frames[frameTimeIndex];
         frames[frameTimeIndex] = now;
         frameTimeIndex = (frameTimeIndex + 1) % N;
-        App.logger.debug("frameTimeIndex = " + frameTimeIndex);
+//        App.logger.debug("frameTimeIndex = " + frameTimeIndex);
 
         if (frameTimeIndex == 0) {
             arrayFilled = true;
@@ -43,7 +43,7 @@ public class FrameRate {
             long elapsedNanosPerFrame = elapsedNanos / N;
             double frameRate = 1e9 / elapsedNanosPerFrame;
             label.getStringBuilder().setLength(0);
-            App.logger.debug("Label value = " + String.format("%.0f", frameRate));
+//            App.logger.debug("Label value = " + String.format("%.0f", frameRate));
             label.getStringBuilder().append(String.format("%.0f", frameRate));
         }
     }

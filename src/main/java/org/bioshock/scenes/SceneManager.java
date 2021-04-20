@@ -4,6 +4,7 @@ import org.bioshock.engine.core.WindowManager;
 import org.bioshock.engine.input.InputManager;
 import org.bioshock.entities.map.maps.Map;
 import org.bioshock.main.App;
+import org.bioshock.networking.NetworkManager;
 
 import javafx.scene.canvas.Canvas;
 import javafx.scene.layout.StackPane;
@@ -37,7 +38,7 @@ public final class SceneManager {
 
         stage.setScene(currentScene);
 
-        currentScene.initScene();
+        currentScene.initScene(NetworkManager.getSeed());
 	}
 
     public static void setInLobby(boolean b) {
