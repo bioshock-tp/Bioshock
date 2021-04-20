@@ -22,32 +22,6 @@ public class LabelEntity extends Entity{
     private LinkedList<Integer> msLen = new LinkedList<Integer>();
     private Color color;
 
-    public LabelEntity(
-        Point3D point,
-        String initText,
-        Font font,
-        int charsPerLine,
-        Color colour
-    ) {
-        super(
-            point,
-            new Rectangle(),
-            new NetworkC(false),
-            new SimpleRendererC()
-        );
-
-        this.font = font;
-        this.charsPerLine = charsPerLine;
-
-        sb.append(initText);
-
-        renderer = LabelRenderer.class;
-
-        alwaysRender = true;
-
-        rendererC.setColour(colour);
-    }
-
     @Override
     protected void tick(double timeDelta) {
         /* Entity does not change */

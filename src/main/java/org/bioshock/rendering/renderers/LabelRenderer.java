@@ -21,7 +21,7 @@ public class LabelRenderer implements Renderer {
             if(label.isDisplayed()) {
                 gc.save();
                 gc.setFont(label.getFont());            
-                gc.setFill(label.getColor());
+                gc.setFill(label.getRendererC().getColour());
                 
                 String textToDisplay = label.getStringBuilder().toString();
                 String lines[] = textToDisplay.split("\\r?\\n");

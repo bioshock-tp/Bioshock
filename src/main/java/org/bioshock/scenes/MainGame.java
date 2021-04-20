@@ -89,23 +89,6 @@ public class MainGame extends GameScene {
             ));
         }
 
-
-        double centreX = rooms.get(rooms.size() / 2).getRoomCenter().getX();
-        double centreY = rooms.get(rooms.size() / 2).getRoomCenter().getY();
-
-        SeekerAI seeker = new SeekerAI(
-            new Point3D(centreX-GlobalConstants.UNIT_WIDTH/2, centreY-GlobalConstants.UNIT_HEIGHT/2, 0.25),
-            new NetworkC(true),
-            new Size(GlobalConstants.UNIT_WIDTH, GlobalConstants.UNIT_HEIGHT),
-            300,
-            Color.INDIANRED,
-            hider
-        );
-
-        seeker.initAnimations();
-
-        children.add(seeker);
-
         Size timerSize = new Size(100, 100);
         timer = new LabelEntity(
             new Point3D(GameScene.getGameScreen().getWidth()/2, 50, 100), 
@@ -216,6 +199,8 @@ public class MainGame extends GameScene {
             hiders.get(0)
         );
 
+        seeker.initAnimations();
+
         EntityManager.register(seeker);
         children.add(seeker);        
         
@@ -226,8 +211,8 @@ public class MainGame extends GameScene {
         for (int i = 1; i < App.playerCount(); i++) {
             int roomNumber = i % rooms.size();
             if (roomNumber >= rooms.size() / 2) roomNumber++;
-            double x = rooms.get(roomNumber % rooms.size()).getRoomCenter().getX();
-            double y = rooms.get(roomNumber % rooms.size()).getRoomCenter().getY();
+            double x = rooms.get(roomNumber % rooms.size()).getRoomCenter().getX() - GlobalConstants.UNIT_WIDTH/2;
+            double y = rooms.get(roomNumber % rooms.size()).getRoomCenter().getY() - GlobalConstants.UNIT_HEIGHT/2;
             hiders.get(i).setPosition(x, y);
         }
             

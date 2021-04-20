@@ -32,8 +32,6 @@ public class InputManager {
 
     private static boolean debug = false;
 
-    private static boolean debug = false;
-
     private InputManager() {}
 
 	public static void initialise() {
