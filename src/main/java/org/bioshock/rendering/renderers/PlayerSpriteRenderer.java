@@ -7,16 +7,19 @@ import static org.bioshock.rendering.RenderManager.getRenY;
 
 import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
+
+import javafx.geometry.Point2D;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
+import javafx.scene.transform.Rotate;
+
 import org.bioshock.animations.AnimationPlayer;
 import org.bioshock.entities.EntityManager;
 import org.bioshock.entities.SquareEntity;
 import org.bioshock.entities.players.Hider;
 import org.bioshock.rendering.RenderManager;
 
-import javafx.geometry.Point2D;
-import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.paint.Color;
-import javafx.scene.transform.Rotate;
+import static org.bioshock.rendering.RenderManager.*;
 
 public class PlayerSpriteRenderer implements Renderer {
     private PlayerSpriteRenderer() {}
@@ -95,4 +98,5 @@ public class PlayerSpriteRenderer implements Renderer {
 
         gc.restore();
     }
+
 }

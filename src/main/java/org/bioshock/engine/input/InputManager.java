@@ -1,5 +1,6 @@
 package org.bioshock.engine.input;
 
+import java.lang.annotation.Target;
 import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.List;
@@ -28,6 +29,8 @@ public class InputManager {
     
     private static final KeyCode enterChat = KeyCode.SHIFT;
     private static final KeyCode sendMessage = KeyCode.ENTER;
+
+    private static boolean debug = false;
 
     private static boolean debug = false;
 

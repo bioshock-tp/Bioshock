@@ -1,5 +1,9 @@
 package org.bioshock.networking;
 
+import org.bioshock.main.App;
+import org.java_websocket.client.WebSocketClient;
+import org.java_websocket.handshake.ServerHandshake;
+
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.ByteBuffer;

@@ -1,17 +1,22 @@
 package org.bioshock.entities.players;
 
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-
+import javafx.geometry.Point2D;
+import javafx.geometry.Point3D;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.*;
+import javafx.util.Pair;
+import org.bioshock.animations.SeekerAnimations;
+import org.bioshock.animations.Sprite;
+import org.bioshock.animations.SwingAnimations;
+import org.bioshock.audio.AudioManager;
 import org.bioshock.components.NetworkC;
+import org.bioshock.components.PathfindingC;
 import org.bioshock.engine.core.WindowManager;
 import org.bioshock.engine.pathfinding.Graph;
 import org.bioshock.engine.pathfinding.GraphNode;
 import org.bioshock.entities.Entity;
 import org.bioshock.entities.EntityManager;
-import org.bioshock.components.PathfindingC;
 import org.bioshock.entities.SquareEntity;
 import org.bioshock.entities.map.Room;
 import org.bioshock.entities.map.TexRectEntity;
@@ -26,16 +31,9 @@ import org.bioshock.utils.GlobalConstants;
 import org.bioshock.utils.Point;
 import org.bioshock.utils.Size;
 
-import javafx.geometry.Point2D;
-import javafx.geometry.Point3D;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Arc;
-import javafx.scene.shape.ArcType;
-import javafx.scene.shape.Circle;
-import javafx.scene.shape.Line;
-import javafx.scene.shape.Rectangle;
-import javafx.scene.shape.Shape;
-import javafx.util.Pair;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 public class SeekerAI extends SquareEntity {
     private Hider target;
@@ -55,6 +53,11 @@ public class SeekerAI extends SquareEntity {
     private Point2D currentTargetLocation;
     private Point2D lastSeenPosition;
     private Point lastSeekerPosition;
+    private Sprite currentSprite;
+
+    private Sprite currentSwingAnimation;
+    private SeekerAnimations seekerAnimations;
+    private SwingAnimations swingAnimations;
 
     private static final double TIME_BETWEEN_SWINGS = 1.0;
     private static final double TIME_SWINGING = 1.0;
@@ -67,6 +70,7 @@ public class SeekerAI extends SquareEntity {
     private boolean isActive = false;
     private boolean isSearching = false;
     private boolean colorChanged = false;
+    private boolean wooshSoundPlayed = false;
 
     private Random rand = new Random();
 
@@ -105,6 +109,88 @@ public class SeekerAI extends SquareEntity {
         currentTargetLocation = new Point2D(getCentre().getX(), getCentre().getY());
     }
 
+    public void initAnimations() {
+        seekerAnimations = new SeekerAnimations(
+            this,
+            GlobalConstants.PLAYER_SCALE
+        );
+        currentSprite = seekerAnimations.getPlayerIdleSprite();
+        swingAnimations = new SwingAnimations(
+            this,
+            1.5
+        );
+        currentSwingAnimation = SwingAnimations.getIdle();
+    }
+
+    private void setCurrentSprite(Sprite s) {
+        if (s != null) {
+            currentSprite = s;
+        } else {
+            App.logger.debug("Sprite is missing!");
+        }
+    }
+
+    public void setCurrentSwingAnimation(Sprite s) {
+        if (s != null) {
+            currentSwingAnimation = s;
+        } else {
+            App.logger.debug("Sprite is missing!");
+        }
+    }
+
+    @Override
+    public void setAnimation() {
+        Point2D translation = currentTargetLocation.subtract(getCentre());
+
+        int x = (int) translation.getX();
+        int y = (int) translation.getY();
+        Sprite animation = seekerAnimations.getPlayerIdleSprite();
+
+        if (x > 0) animation = seekerAnimations.getMoveRightSprite();
+
+        else if (x < 0) animation = seekerAnimations.getMoveLeftSprite();
+
+        else if (y > 0) animation = seekerAnimations.getMoveDownSprite();
+
+        else if (y < 0) animation = seekerAnimations.getMoveUpSprite();
+
+        setCurrentSprite(animation);
+    }
+
+    public Sprite getCurrentSprite() {
+        return currentSprite;
+    }
+
+    public void setSwingAnimation() {
+        Sprite animation = SwingAnimations.getIdle();
+
+        if (wooshSoundPlayed && !target.isDead()) {
+            Point2D translation = currentTargetLocation.subtract(getCentre());
+
+            int x = (int) translation.getX();
+            int y = (int) translation.getY();
+
+            if (x >= 0 && y >= 0) {
+                animation = SwingAnimations.getBottomRightSwing();
+            }
+            else if (x > 0) {
+                animation = SwingAnimations.getTopRightSwing();
+            }
+            else if (y >= 0) {
+                animation = SwingAnimations.getBottomLeftSwing();
+            }
+            else if (x < 0) {
+                animation = SwingAnimations.getTopLeftSwing();
+            }
+        }
+
+        setCurrentSwingAnimation(animation);
+    }
+
+    public Sprite getCurrentSwingAnimation() {
+        return currentSwingAnimation;
+    }
+
     protected void tick(double timeDelta) {
         timeBetweenSwings += timeDelta;
         if(getIsActive()){
@@ -115,6 +201,7 @@ public class SeekerAI extends SquareEntity {
         lastSeekerPosition = getCentre();
         setSwatterPos();
         setSwatterRot();
+        movement.tick(timeDelta);
     }
 
     private void checkStill(double timeDelta, Point centre) {
@@ -151,8 +238,13 @@ public class SeekerAI extends SquareEntity {
             ) {
                 if(timeBetweenSwings >= TIME_BETWEEN_SWINGS){
                     setActive(true);
+                    if(!wooshSoundPlayed){
+                        AudioManager.playWooshSfx();
+                        wooshSoundPlayed = true;
+                    }
                     if(timeSwinging >= TIME_SWINGING){
                         setActive(false);
+                        wooshSoundPlayed = false;
                         timeSwinging = 0;
                         timeBetweenSwings = 0;
                     }

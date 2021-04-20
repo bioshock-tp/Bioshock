@@ -2,8 +2,6 @@ package org.bioshock.rendering.renderers;
 
 import static org.bioshock.rendering.RenderManager.getRenHeight;
 import static org.bioshock.rendering.RenderManager.getRenWidth;
-import static org.bioshock.rendering.RenderManager.getRenX;
-import static org.bioshock.rendering.RenderManager.getRenY;
 
 import javafx.scene.text.Font;
 import org.bioshock.entities.LabelEntity;
@@ -12,13 +10,15 @@ import org.bioshock.main.App;
 import javafx.scene.canvas.GraphicsContext;
 
 public class LabelRenderer implements Renderer {
-    
+    private LabelRenderer() {}
+
     public static <E extends LabelEntity> void render(
+
             GraphicsContext gc,
             E label
         ) {
         try {
-            if(label.isDisplay()) {
+            if(label.isDisplayed()) {
                 gc.save();
                 gc.setFont(label.getFont());            
                 gc.setFill(label.getColor());
@@ -58,9 +58,10 @@ public class LabelRenderer implements Renderer {
             }
         } catch (Exception e) {
             App.logger.debug("Error in Label Rederer: " + e.toString());
+
         }
         
-        
+    
         
     }
 }

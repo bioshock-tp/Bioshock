@@ -1,18 +1,18 @@
 package org.bioshock.rendering.renderers;
 
-import static org.bioshock.rendering.RenderManager.getRenHeight;
-import static org.bioshock.rendering.RenderManager.getRenWidth;
-import static org.bioshock.rendering.RenderManager.getRenX;
-import static org.bioshock.rendering.RenderManager.getRenY;
-
-import org.bioshock.entities.players.SeekerAI;
-import org.bioshock.rendering.RenderManager;
-
+import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Arc;
 import javafx.scene.text.Font;
 import javafx.scene.transform.Rotate;
+import org.bioshock.animations.AnimationPlayer;
+import org.bioshock.animations.Sprite;
+import org.bioshock.animations.SwingAnimations;
+import org.bioshock.entities.players.SeekerAI;
+import org.bioshock.rendering.RenderManager;
+
+import static org.bioshock.rendering.RenderManager.*;
 
 public class SeekerRenderer implements Renderer {
     private SeekerRenderer() {}
@@ -72,12 +72,56 @@ public class SeekerRenderer implements Renderer {
                 swatter.getType()
             );
 
+
+
         }
+        // Handles animations
+        Sprite currentSwingAnimation = ent.getCurrentSwingAnimation();
+        AnimationPlayer.playAnimation(
+            currentSwingAnimation,
+            calcSwingPosition(currentSwingAnimation, x, y)
+        );
+
+        AnimationPlayer.playAnimation(
+            ent.getCurrentSprite(),
+            new Point2D(
+                getRenX(x),
+                getRenY(y)
+            )
+        );
+
         
         gc.setFill(Color.RED);
         gc.setFont(new Font(getRenHeight(20)));
         gc.fillText("Seeker(AI)", getRenX(x-width), getRenY(y-5), getRenWidth(width*3));
 
         gc.restore();
+    }
+
+    private static Point2D calcSwingPosition(Sprite swingAnimation, double x, double y) {
+        int rightXOffset = 12;
+        int topYOffset = 70;
+        int leftXOffset = 80;
+        if (SwingAnimations.getTopRightSwing().equals(swingAnimation)) {
+            return (
+                new Point2D(getRenX(x + rightXOffset), getRenY(y - topYOffset))
+            );
+        }
+        else if (SwingAnimations.getTopLeftSwing().equals(swingAnimation)) {
+            return (
+                new Point2D(getRenX(x - leftXOffset), getRenY(y - topYOffset))
+            );
+        }
+        else if (SwingAnimations.getBottomRightSwing().equals(swingAnimation)) {
+            return (
+                new Point2D(getRenX(x + rightXOffset), getRenY(y))
+            );
+        }
+        else if (SwingAnimations.getBottomLeftSwing().equals(swingAnimation)) {
+            return (
+                new Point2D(getRenX(x - leftXOffset), getRenY(y))
+            );
+        }
+        return (new Point2D (getRenX(x), getRenY(y)));
     }
 }
