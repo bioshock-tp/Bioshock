@@ -202,8 +202,8 @@ public class MainGame extends GameScene {
         for (int i = 1; i < App.playerCount(); i++) {
             int roomNumber = i % rooms.size();
             if (roomNumber >= rooms.size() / 2) roomNumber++;
-            double x = rooms.get(roomNumber % rooms.size()).getRoomCenter().getX();
-            double y = rooms.get(roomNumber % rooms.size()).getRoomCenter().getY();
+            double x = rooms.get(roomNumber % rooms.size()).getRoomCenter().getX()-GlobalConstants.UNIT_WIDTH/2;
+            double y = rooms.get(roomNumber % rooms.size()).getRoomCenter().getY()-GlobalConstants.UNIT_HEIGHT/2;
             hiders.get(i).setPosition(x, y);
         }
             

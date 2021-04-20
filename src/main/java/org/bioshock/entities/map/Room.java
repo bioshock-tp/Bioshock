@@ -95,6 +95,8 @@ public class Room extends GraphNode {
      * and where floor should be rendered
      */
     boolean[][] floorSpace;
+    Random rand = new Random();
+    
 
     /***
      * Generates a room with the position being the top left of the room
@@ -138,11 +140,7 @@ public class Room extends GraphNode {
          
         //if a seed is given use a seeded random number generator
         //otherwise use a non seeded one
-        Random rand;
-        if(seed == null) {
-            rand = new Random();
-        }
-        else {
+        if(seed != null) {       
             rand = new Random(seed);
         }
         
@@ -164,7 +162,7 @@ public class Room extends GraphNode {
     /***
      * 
      */
-    public void init(
+    private void init(
         List<Pair<Direction,ConnType>> edges,
         boolean[][] locationsToSpawn
     ) {        
@@ -447,7 +445,8 @@ public class Room extends GraphNode {
                     traversableNodes[i][j] = null;
                 }
             }
-        }
+        }        
+        
         traversableArray = traversableNodes;
         
         //get a graph representing the positions reachable from the centre of the room again now walls have been spawned into the room
