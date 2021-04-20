@@ -9,6 +9,7 @@ import static org.bioshock.utils.GlobalConstants.UNIT_WIDTH;
 
 import org.bioshock.entities.map.Room;
 import org.bioshock.entities.map.RoomEntity;
+import org.bioshock.utils.GlobalConstants;
 
 import javafx.scene.canvas.GraphicsContext;
 
@@ -25,7 +26,6 @@ public class RoomRenderer implements Renderer {
 //        double roomHeight = room.getRoomSize().getHeight();
 //        double wallWidth = room.getWallWidth();  
         boolean[][] floorSpace = room.getFloorSpace();
-        
         
         gc.save();
           
@@ -152,17 +152,25 @@ public class RoomRenderer implements Renderer {
         for(int i=0;i<floorSpace.length;i++) {
             for(int j=0;j<floorSpace[0].length;j++) {
                 if(floorSpace[i][j]) {
-                    gc.strokeRect(
+                    
+                    gc.drawImage(
+                        GlobalConstants.FLOOR_IMAGE, 
                         getRenX(room.getPos().getX() + j*UNIT_WIDTH), 
                         getRenY(room.getPos().getY() + i*UNIT_HEIGHT), 
                         getRenWidth(UNIT_WIDTH), 
                         getRenHeight(UNIT_HEIGHT));
                     
-                    gc.fillOval(
-                            getRenX(room.getPos().getX() + j*UNIT_WIDTH + UNIT_WIDTH/2), 
-                            getRenY(room.getPos().getY() + i*UNIT_HEIGHT + UNIT_HEIGHT/2), 
-                            getRenWidth(5), 
-                            getRenHeight(5));    
+//                    gc.strokeRect(
+//                        getRenX(room.getPos().getX() + j*UNIT_WIDTH), 
+//                        getRenY(room.getPos().getY() + i*UNIT_HEIGHT), 
+//                        getRenWidth(UNIT_WIDTH), 
+//                        getRenHeight(UNIT_HEIGHT));
+//                    
+//                    gc.fillOval(
+//                        getRenX(room.getPos().getX() + j*UNIT_WIDTH + UNIT_WIDTH/2), 
+//                        getRenY(room.getPos().getY() + i*UNIT_HEIGHT + UNIT_HEIGHT/2), 
+//                        getRenWidth(5), 
+//                        getRenHeight(5));    
                 }
             }
         }      

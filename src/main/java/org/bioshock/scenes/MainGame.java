@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.bioshock.components.NetworkC;
 import org.bioshock.engine.core.FrameRate;
-import org.bioshock.engine.core.GameLoop;
 import org.bioshock.engine.input.InputManager;
 import org.bioshock.entities.EntityManager;
 import org.bioshock.entities.LabelEntity;
@@ -20,7 +19,6 @@ import org.bioshock.main.App;
 import org.bioshock.networking.NetworkManager;
 import org.bioshock.rendering.RenderManager;
 import org.bioshock.utils.GlobalConstants;
-import org.bioshock.utils.Size;
 import org.bioshock.utils.Size;
 
 import javafx.geometry.Point2D;

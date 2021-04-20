@@ -15,11 +15,12 @@ import org.bioshock.entities.map.utils.ConnType;
 import org.bioshock.entities.map.utils.RoomType;
 import org.bioshock.utils.ArrayUtils;
 import org.bioshock.utils.Direction;
-import org.bioshock.utils.Size;
+import org.bioshock.utils.GlobalConstants;
 import org.bioshock.utils.Size;
 
 import javafx.geometry.Point2D;
 import javafx.geometry.Point3D;
+import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import javafx.util.Pair;
 
@@ -191,7 +192,8 @@ public class Room extends GraphNode {
             Pair<Wall, boolean[][]> sideAndArray = Sides.side(
                 pos.add((coriSize.getHeight() + roomSize.getWidth())*UNIT_WIDTH, 0*UNIT_HEIGHT, 0), 
                 new Size(wallWidth, coriSize.getHeight()), 
-                color);
+                color,
+                GlobalConstants.VERT_WALL_IMAGE);
             
             walls.add(sideAndArray.getKey());
             ArrayUtils.copyInArray(
@@ -205,7 +207,8 @@ public class Room extends GraphNode {
             Pair<Wall, boolean[][]> sideAndArray = Sides.side(
                 pos.add((coriSize.getHeight()-wallWidth)*UNIT_WIDTH, 0*UNIT_HEIGHT, 0), 
                 new Size(wallWidth, coriSize.getHeight()), 
-                color);
+                color,
+                GlobalConstants.VERT_WALL_IMAGE);
             
             walls.add(sideAndArray.getKey());
             ArrayUtils.copyInArray(
@@ -235,7 +238,8 @@ public class Room extends GraphNode {
             Pair<Wall, boolean[][]> sideAndArray = Sides.side(
                 pos.add((coriSize.getHeight() + roomSize.getWidth())*UNIT_WIDTH, (coriSize.getHeight() + roomSize.getHeight())*UNIT_HEIGHT, 0), 
                 new Size(wallWidth, coriSize.getHeight()), 
-                color);
+                color,
+                GlobalConstants.VERT_WALL_IMAGE);
             
             walls.add(sideAndArray.getKey());
             ArrayUtils.copyInArray(
@@ -249,7 +253,8 @@ public class Room extends GraphNode {
             Pair<Wall, boolean[][]> sideAndArray = Sides.side(
                 pos.add((coriSize.getHeight()-wallWidth)*UNIT_WIDTH, (coriSize.getHeight() + roomSize.getHeight())*UNIT_HEIGHT, 0), 
                 new Size(wallWidth, coriSize.getHeight()), 
-                color);
+                color,
+                GlobalConstants.VERT_WALL_IMAGE);
             
             walls.add(sideAndArray.getKey());
             ArrayUtils.copyInArray(
@@ -279,7 +284,8 @@ public class Room extends GraphNode {
             Pair<Wall, boolean[][]> sideAndArray = Sides.side(
                 pos.add((coriSize.getHeight() + roomSize.getWidth())*UNIT_WIDTH, (coriSize.getHeight() - wallWidth)*UNIT_HEIGHT, 0), 
                 new Size(coriSize.getHeight(), wallWidth), 
-                color);
+                color,
+                GlobalConstants.TOP_HORI_WALL_IMAGE);
             
             walls.add(sideAndArray.getKey());
             ArrayUtils.copyInArray(
@@ -293,7 +299,8 @@ public class Room extends GraphNode {
             Pair<Wall, boolean[][]> sideAndArray = Sides.side(
                 pos.add((coriSize.getHeight() + roomSize.getWidth())*UNIT_WIDTH, (coriSize.getHeight() + roomSize.getHeight())*UNIT_HEIGHT, 0), 
                 new Size(coriSize.getHeight(), wallWidth), 
-                color);
+                color,
+                GlobalConstants.BOT_HORI_WALL_IMAGE);
             
             walls.add(sideAndArray.getKey());
             ArrayUtils.copyInArray(
@@ -319,7 +326,8 @@ public class Room extends GraphNode {
             Pair<Wall, boolean[][]> sideAndArray = Sides.side(
                 pos.add(0*UNIT_WIDTH, (coriSize.getHeight()-wallWidth)*UNIT_HEIGHT, 0), 
                 new Size(coriSize.getHeight(), wallWidth), 
-                color);
+                color,
+                GlobalConstants.TOP_HORI_WALL_IMAGE);
             
             walls.add(sideAndArray.getKey());
             ArrayUtils.copyInArray(
@@ -333,7 +341,8 @@ public class Room extends GraphNode {
             Pair<Wall, boolean[][]> sideAndArray = Sides.side(
                 pos.add((0)*UNIT_WIDTH, (coriSize.getHeight() + roomSize.getHeight())*UNIT_HEIGHT, 0), 
                 new Size(coriSize.getHeight(), wallWidth), 
-                color);
+                color,
+                GlobalConstants.BOT_HORI_WALL_IMAGE);
             
             walls.add(sideAndArray.getKey());
             ArrayUtils.copyInArray(
@@ -350,7 +359,8 @@ public class Room extends GraphNode {
             corner(
         		traversable, 
         		(int)(coriSize.getHeight() - wallWidth), 
-                (int)(coriSize.getHeight() - wallWidth));
+                (int)(coriSize.getHeight() - wallWidth),
+                GlobalConstants.BOT_RIGHT_CORNER_WALL_IMAGE);
         }
 
         //if none of the sides are a SUB_ROOM connection add the corner in the top right of the room
@@ -360,7 +370,8 @@ public class Room extends GraphNode {
             corner(
         		traversable, 
         		(int)(coriSize.getHeight() + roomSize.getWidth()), 
-                (int)(coriSize.getHeight() - wallWidth));
+                (int)(coriSize.getHeight() - wallWidth),
+                GlobalConstants.BOT_LEFT_CORNER_WALL_IMAGE);
         }
 
         //if none of the sides are a SUB_ROOM connection add the corner in the bottom left of the room
@@ -370,7 +381,8 @@ public class Room extends GraphNode {
             corner(
         		traversable,
         		(int)(coriSize.getHeight() - wallWidth),
-        		(int)(coriSize.getHeight() + roomSize.getHeight()));
+        		(int)(coriSize.getHeight() + roomSize.getHeight()),
+        		GlobalConstants.TOP_RIGHT_CORNER_WALL_IMAGE);
         }
        
         //if none of the sides are a SUB_ROOM connection add the corner in the bottom right of the room
@@ -380,7 +392,8 @@ public class Room extends GraphNode {
             corner(
         		traversable, 
         		(int)(coriSize.getHeight() + roomSize.getWidth()), 
-        		(int)(coriSize.getHeight() + roomSize.getHeight()));
+        		(int)(coriSize.getHeight() + roomSize.getHeight()),
+        		GlobalConstants.TOP_RIGHT_CORNER_WALL_IMAGE);
         }
         
         //generate a Graph node at every traversable position
@@ -436,7 +449,8 @@ public class Room extends GraphNode {
                         pos.add(j*UNIT_WIDTH, i*UNIT_HEIGHT,0), 
                         new NetworkC(false), 
                         new Size(UNIT_WIDTH, UNIT_HEIGHT), 
-                        color.invert()));
+                        color.invert(),
+                        GlobalConstants.VERT_WALL_IMAGE));
                     traversableNodes[i][j] = null;
                     floorSpace[i][j] = false;
                 }
@@ -475,7 +489,8 @@ public class Room extends GraphNode {
     private void corner(
 		boolean[][] traversable,
 		int relX,
-		int relY) {
+		int relY,
+		Image image) {
         //add the entity representing the corner
     	Wall corner4 = new Wall(
             pos.add(
@@ -485,7 +500,8 @@ public class Room extends GraphNode {
             ),
             new NetworkC(false),
             new Size(wallWidth*UNIT_WIDTH, wallWidth*UNIT_HEIGHT),
-            color
+            color,
+            image
         );
         walls.add(corner4);
         //fill the array making the corner not traversable

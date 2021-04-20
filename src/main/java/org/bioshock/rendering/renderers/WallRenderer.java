@@ -26,6 +26,13 @@ public class WallRenderer implements Renderer{
         gc.setTransform(r.getMxx(), r.getMyx(), r.getMxy(), r.getMyy(), r.getTx(), r.getTy());
         gc.setFill(wall.getRendererC().getColour());
         gc.fillRect(getRenX(x), getRenY(y), getRenWidth(width), getRenHeight(height));
+        
+        gc.drawImage(
+            wall.getImage(), 
+            getRenX(x), 
+            getRenY(y), 
+            getRenWidth(width), 
+            getRenHeight(height));
 
         gc.restore();
     }
