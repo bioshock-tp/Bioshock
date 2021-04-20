@@ -80,4 +80,5 @@ public class PlayerSpriteRenderer implements Renderer {
 
         gc.restore();
     }
+
 }
