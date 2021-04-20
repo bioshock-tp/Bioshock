@@ -61,26 +61,13 @@ public class SeekerRenderer implements Renderer {
         gc.setStroke(seeker.getRendererC().getColour());
 
         if(isActive) {
-            // TODO: put animation here instead of gc.fillArc
-            gc.fillArc(
-                getRenX(swatter.getCenterX() - swatter.getRadiusX()),
-                getRenY(swatter.getCenterY() - swatter.getRadiusY()),
-                getRenWidth(swatter.getRadiusX()*2),
-                getRenHeight(swatter.getRadiusY()*2),
-                swatter.getStartAngle(),
-                swatter.getLength(),
-                swatter.getType()
+            // Handles swing animation
+            Sprite currentSwingAnimation = ent.getCurrentSwingAnimation();
+            AnimationPlayer.playAnimation(
+                currentSwingAnimation,
+                calcSwingPosition(currentSwingAnimation, x, y)
             );
-
-
-
         }
-        // Handles animations
-        Sprite currentSwingAnimation = ent.getCurrentSwingAnimation();
-        AnimationPlayer.playAnimation(
-            currentSwingAnimation,
-            calcSwingPosition(currentSwingAnimation, x, y)
-        );
 
         AnimationPlayer.playAnimation(
             ent.getCurrentSprite(),

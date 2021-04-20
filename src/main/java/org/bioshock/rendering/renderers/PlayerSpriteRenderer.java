@@ -1,18 +1,11 @@
 package org.bioshock.rendering.renderers;
 
-import static org.bioshock.rendering.RenderManager.getRenHeight;
-import static org.bioshock.rendering.RenderManager.getRenWidth;
-import static org.bioshock.rendering.RenderManager.getRenX;
-import static org.bioshock.rendering.RenderManager.getRenY;
-
-import javafx.scene.text.Font;
-import javafx.scene.text.TextAlignment;
-
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.TextAlignment;
 import javafx.scene.transform.Rotate;
-
 import org.bioshock.animations.AnimationPlayer;
 import org.bioshock.entities.EntityManager;
 import org.bioshock.entities.SquareEntity;
@@ -83,7 +76,7 @@ public class PlayerSpriteRenderer implements Renderer {
             ((Hider) player).getCurrentSprite(),
             new Point2D (
                 getRenX(x),
-                getRenY(y)
+                getRenY(y-2)
             )
         );
         gc.setTextAlign(TextAlignment.CENTER);
