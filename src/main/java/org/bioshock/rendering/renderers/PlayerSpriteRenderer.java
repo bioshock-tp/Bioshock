@@ -80,7 +80,8 @@ public class PlayerSpriteRenderer implements Renderer {
             new Point2D (
                 getRenX(x),
                 getRenY(y)
-            )
+            ),
+            player.getSize()
         );
 
         gc.setFill(Color.BLACK);

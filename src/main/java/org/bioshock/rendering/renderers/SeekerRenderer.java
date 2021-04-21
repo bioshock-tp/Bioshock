@@ -79,14 +79,16 @@ public class SeekerRenderer implements Renderer {
             new Point2D(
                 getRenX(x),
                 getRenY(y)
-            )
+            ),
+            seeker.getSize()
         );
         AnimationPlayer.playAnimation(
             ent.getCurrentSwingAnimation(),
             new Point2D(
                 getRenX(x),
                 getRenY(y)
-            )
+            ),
+            seeker.getCurrentSprite().getSize()
         );
         
         gc.setFill(Color.RED);
