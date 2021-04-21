@@ -10,6 +10,7 @@ import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import javafx.scene.text.TextAlignment;
 import javafx.scene.transform.Rotate;
 
 import static org.bioshock.rendering.RenderManager.getRenWidth;
@@ -83,11 +84,17 @@ public class PlayerSpriteRenderer implements Renderer {
             ),
             player.getSize()
         );
-
-        gc.setFill(Color.BLACK);
+        gc.setTextAlign(TextAlignment.CENTER);
+        if (player == EntityManager.getCurrentPlayer()) {
+            gc.setFill(Color.GREEN);
+        }
+        else{
+            gc.setFill(Color.BLACK);
+        }
         gc.setFont(new Font(getRenHeight(20)));
-        gc.fillText("Player(Human)", getRenX(x-width), getRenY(y-5), getRenWidth(width*3));
+        gc.fillText(((Hider) player).getName(), getRenX(x + width / 2), getRenY(y-5), getRenWidth(width*3));
 
         gc.restore();
     }
+
 }

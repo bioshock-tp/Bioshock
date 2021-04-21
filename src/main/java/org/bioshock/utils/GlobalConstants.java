@@ -10,7 +10,6 @@ import java.util.List;
 import org.bioshock.entities.map.utils.RoomType;
 
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 
 public final class GlobalConstants {
     public static final double PLAYER_WIDTH = 36;
@@ -22,8 +21,8 @@ public final class GlobalConstants {
     	{{NO_ROOM, SINGLE_ROOM, SINGLE_ROOM, SINGLE_ROOM},
 		{NO_ROOM, SINGLE_ROOM, SINGLE_ROOM, SINGLE_ROOM},
 		{NO_ROOM, SINGLE_ROOM, SINGLE_ROOM, SINGLE_ROOM}};
-    public static final int  UNIT_WIDTH = 40;
-    public static final int  UNIT_HEIGHT = 40;
+    public static final int  UNIT_WIDTH = 59;
+    public static final int  UNIT_HEIGHT = 66;
     
     public static final RoomType[][] testMap = 
        {{B,B,B,B,A,B},

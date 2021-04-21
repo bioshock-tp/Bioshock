@@ -97,7 +97,7 @@ public class SeekerAnimations implements PlayerAnimation {
             1,
             scale,
             false,
-            GlobalConstants.PLAYER_ANIMATION_SPEED
+            GlobalConstants.PLAYER_ANIMATION_SPEED * 2
         );
     }
 

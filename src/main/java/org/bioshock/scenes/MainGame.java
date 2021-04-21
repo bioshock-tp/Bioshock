@@ -1,12 +1,19 @@
 package org.bioshock.scenes;
 
-import java.util.List;
-
+import javafx.geometry.Point2D;
+import javafx.geometry.Point3D;
+import javafx.scene.Cursor;
+import javafx.scene.input.KeyCode;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import org.bioshock.components.NetworkC;
 import org.bioshock.engine.core.FrameRate;
 import org.bioshock.engine.input.InputManager;
 import org.bioshock.entities.EntityManager;
 import org.bioshock.entities.LabelEntity;
+import org.bioshock.entities.TextChat;
 import org.bioshock.entities.map.Room;
 import org.bioshock.entities.map.RoomEntity;
 import org.bioshock.entities.map.Wall;
@@ -21,14 +28,7 @@ import org.bioshock.rendering.RenderManager;
 import org.bioshock.utils.GlobalConstants;
 import org.bioshock.utils.Size;
 
-import javafx.geometry.Point2D;
-import javafx.geometry.Point3D;
-import javafx.scene.Cursor;
-import javafx.scene.input.KeyCode;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
+import java.util.List;
 
 public class MainGame extends GameScene {
     private static final double ENDTIME = 2 * 60f + 3;
@@ -40,8 +40,11 @@ public class MainGame extends GameScene {
     private double timeLosing = 0;
 
     private LabelEntity timer;
+    private static TextChat textChat;
 
     private Map map;
+
+    private static LabelEntity chatLabel;
 
     public MainGame() {
         super();
@@ -89,7 +92,7 @@ public class MainGame extends GameScene {
             new Point3D(GameScene.getGameScreen().getWidth()/2, 50, 100), 
             "mm:ss.ms", 
             new Font("arial", 20), 
-            50, 
+            50,
             Color.BLACK);
         
         children.add(timer);
@@ -118,18 +121,29 @@ public class MainGame extends GameScene {
         InputManager.onPress(KeyCode.MINUS, 
         		() -> RenderManager.setZoom(RenderManager.getZoom()*0.9));
         
-        LabelEntity testLabel = new LabelEntity(
-            new Point3D(10, 70, 100), 
-            "This is a test string that is longer than 30 characters long"
-            + "\n with\n newline\n charachters\n in", 
-            new Font(20), 
-            30,
-            Color.BLACK);
+        //On a full screen you can have up to 40 rows of messages. So I can keep only the last 20 messages always
+        chatLabel = new LabelEntity(
+                new Point3D(10, 70, 1000),
+                new Font(20),
+                100,
+                Color.BLACK);
+
+        chatLabel.setDisplay(false);
         
-        children.add(testLabel);
+        children.add(chatLabel);
 
         FrameRate.initialise();
         children.add(FrameRate.getLabel());
+        
+		textChat = new TextChat(
+                new Point3D(10, GameScene.getGameScreen().getHeight() / 2 + GameScene.getGameScreen().getHeight() / 15, 1000),
+                new Font(20),
+                86,
+                Color.BLACK);
+
+        textChat.setDisplay(false);
+
+        children.add(textChat);
         
         registerEntities();
     }
@@ -152,7 +166,7 @@ public class MainGame extends GameScene {
         else {
             map = new RandomMap(
                 new Point3D(0, 0, 0),
-                1,
+                2,
                 new Size(9, 11),
                 new Size(3, 5),
                 Color.SADDLEBROWN,
@@ -187,9 +201,8 @@ public class MainGame extends GameScene {
             Color.INDIANRED,
             hiders.get(0)
         );
-        
-        seeker.initAnimations();
 
+        seeker.initAnimations();
         EntityManager.register(seeker);
         children.add(seeker);        
         
@@ -208,9 +221,9 @@ public class MainGame extends GameScene {
         renderEntities();
 
         FrameRate.initialise();
-        
+
         SceneManager.setInLobby(false);
-        SceneManager.setInGame(true);        
+        SceneManager.setInGame(true);
 
         if (App.isNetworked()) {
             Object lock = NetworkManager.getPlayerJoinLock();
@@ -223,6 +236,7 @@ public class MainGame extends GameScene {
             EntityManager.getPlayers().get(0).getMovement().initMovement();
             EntityManager.getPlayers().get(0).initAnimations();
         }
+
     }
 
     @Override
@@ -289,5 +303,12 @@ public class MainGame extends GameScene {
         RenderManager.setCameraPos(new Point2D(0, 0));
 
         SceneManager.setInGame(false);
+    }
+    public static void appendStringToChat(String s){
+        chatLabel.appendString(s);
+    }
+    public static void setChatVisibility(boolean bl){
+        chatLabel.setDisplay(bl);
+        textChat.setDisplay(bl);
     }
 }

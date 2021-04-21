@@ -1,15 +1,15 @@
 package org.bioshock.animations;
 
-import javafx.geometry.Point2D;
-import javafx.scene.canvas.Canvas;
-import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.image.Image;
 import org.bioshock.engine.core.GameLoop;
-import org.bioshock.entities.Entity;
 import org.bioshock.rendering.RenderManager;
 import org.bioshock.scenes.SceneManager;
 import org.bioshock.utils.ImageUtils;
 import org.bioshock.utils.Size;
+
+import javafx.geometry.Point2D;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.Image;
 
 public class AnimationPlayer {
     private static final String IMAGE_PATH =

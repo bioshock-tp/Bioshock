@@ -1,18 +1,27 @@
 package org.bioshock.networking;
 
-import javafx.application.Platform;
-import javafx.concurrent.Task;
-import javafx.geometry.Point2D;
-import javafx.scene.input.KeyCode;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.EnumMap;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
 import org.bioshock.entities.Entity;
 import org.bioshock.entities.SquareEntity;
 import org.bioshock.entities.players.Hider;
 import org.bioshock.entities.players.SeekerAI;
 import org.bioshock.main.App;
 import org.bioshock.networking.Message.ClientInput;
+import org.bioshock.scenes.MainGame;
 import org.bioshock.scenes.SceneManager;
 
-import java.util.*;
+import javafx.application.Platform;
+import javafx.concurrent.Task;
+import javafx.geometry.Point2D;
+import javafx.scene.input.KeyCode;
 
 public class NetworkManager {
     private static Map<KeyCode, Boolean> keyPressed = new EnumMap<>(
@@ -20,6 +29,7 @@ public class NetworkManager {
     );
 
     private static String myID = UUID.randomUUID().toString();
+    private static String myName;
     private static Hider me;
     private static Hider masterHider;
     private static SeekerAI seeker;
@@ -37,6 +47,10 @@ public class NetworkManager {
     private static Map<String, Hider> loadedPlayers = new HashMap<>(
         App.playerCount()
     );
+
+    private static Map<String, String> playerNames = new HashMap<>();
+
+    private static LinkedList<String> msList = new LinkedList<String>();
 
     private static Client client = new Client();
     private static Object awaitingPlayerLock = new Object();
@@ -61,6 +75,8 @@ public class NetworkManager {
                     App.logger.error(e);
                     Thread.currentThread().interrupt();
                 }
+
+                myName = client.getPlayerName();
                 client.send(Integer.toString(App.playerCount()));
 
                 /* Wait until players join then add them to loadedPlayers */
@@ -77,9 +93,12 @@ public class NetworkManager {
                     }
 
                     Message message = client.getInitialMessages().remove();
+
                     Hider hider = playerList.get(message.playerNumber - 1);
                     hider.setID(message.uuid);
+                    hider.setName(message.name);
                     loadedPlayers.putIfAbsent(message.uuid, hider);
+                    playerNames.putIfAbsent(message.uuid, message.name);
                     Platform.runLater(() ->
                         SceneManager.getLobby().updatePlayerCount()
                     );
@@ -104,6 +123,7 @@ public class NetworkManager {
     }
 
     private static Message pollInputs() {
+
         int x = (int) me.getX();
         int y = (int) me.getY();
 
@@ -111,9 +131,17 @@ public class NetworkManager {
         int aiX = (int) aiPos.getX();
         int aiY = (int) aiPos.getY();
 
-        Message.ClientInput input = new Message.ClientInput(x, y, aiX, aiY);
+        String message = "";
 
-        return new Message(-1, myID, input, me.isDead());
+        if(msList.size() > 0 && me.isDead() == false) {
+
+            message = msList.getFirst();
+            msList.poll();
+        }
+
+        Message.ClientInput input = new Message.ClientInput(x, y, aiX, aiY, message);
+
+        return new Message(-1, myID, myName, input, me.isDead());
     }
 
     public static void tick() {
@@ -132,9 +160,25 @@ public class NetworkManager {
         while ((message = client.getMessageQ().poll()) != null) {
             /* The hider the message came from */
             Hider messageFrom = loadedPlayers.get(message.uuid);
-            if (messageFrom == me) continue;
 
             ClientInput input = message.input;
+
+            if(input != null && (input.message) != null && (input.message).length() > 0){
+
+                String name = message.name + ": ";
+
+                if (messageFrom == me){
+
+                    name = "Me: ";
+                }
+
+                String chatMessage = name + input.message;
+
+                MainGame.appendStringToChat(chatMessage);
+
+            }
+
+            if (messageFrom == me) continue;
 
             if (input == null) {
                 if (message.dead) messageFrom.setDead(true);
@@ -198,7 +242,7 @@ public class NetworkManager {
     public static void kill(Hider hider) {
         App.logger.debug("killing");
         client.send(Message.serialise(
-            new Message(-1, hider.getID(), null, true)
+            new Message(-1, hider.getID(), playerNames.get(hider.getID()), null, true)
         ));
     }
 
@@ -224,5 +268,16 @@ public class NetworkManager {
 
     public static Map<String, Hider> getLoadedPlayers() {
         return loadedPlayers;
+    }
+
+    public static Map<String, String> getPlayerNames() {
+        return playerNames;
+    }
+
+    public static void addMessage(String s){
+        if(s.length() > 0) {
+
+            msList.add(s);
+        }
     }
 }

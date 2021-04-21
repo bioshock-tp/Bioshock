@@ -9,8 +9,6 @@ import org.bioshock.entities.map.Wall;
 import org.bioshock.utils.GlobalConstants;
 
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.image.Image;
-import javafx.scene.transform.Rotate;
 
 public class WallRenderer implements Renderer{
     public static <E extends Wall> void render(
@@ -36,17 +34,16 @@ public class WallRenderer implements Renderer{
             gc.drawImage(
                 wall.getImage(), 
                 getRenX(x+i*imageWidth*horiModifier), 
-                getRenY(y+i*imageWidth*(1-horiModifier)), 
+                getRenY(y+i*imageHeight*(1-horiModifier)), 
                 getRenWidth(imageWidth), 
                 getRenHeight(imageHeight));
         }
         if(wall.needsCroppedImage()) {
-            Image croppedImage = wall.getCroppedImage();
             if(wall.isHorizontal()) {
                 gc.drawImage(
                     wall.getImage(), 
                     getRenX(x+wall.getNumImages()*imageWidth*horiModifier), 
-                    getRenY(y+wall.getNumImages()*imageWidth*(1-horiModifier)),
+                    getRenY(y+wall.getNumImages()*imageHeight*(1-horiModifier)),
                     getRenWidth(imageWidth*wall.getWallScaler()),
                     getRenHeight(imageHeight));
             }
@@ -54,16 +51,10 @@ public class WallRenderer implements Renderer{
                 gc.drawImage(
                     wall.getImage(), 
                     getRenX(x+wall.getNumImages()*imageWidth*horiModifier), 
-                    getRenY(y+wall.getNumImages()*imageWidth*(1-horiModifier)),
+                    getRenY(y+wall.getNumImages()*imageHeight*(1-horiModifier)),
                     getRenWidth(imageWidth),
                     getRenHeight(imageHeight*wall.getWallScaler()));
             }
-            
-//            gc.fillRect(
-//                    getRenX(x+wall.getNumImages()*imageWidth*horiModifier), 
-//                    getRenY(y+wall.getNumImages()*imageWidth*(1-horiModifier)),
-//                    getRenWidth(croppedImage.getWidth()*imageSize),
-//                    getRenHeight(croppedImage.getHeight()*imageSize));
         }
         
         

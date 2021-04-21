@@ -2,20 +2,14 @@ package org.bioshock.entities.map;
 
 import org.bioshock.components.NetworkC;
 import org.bioshock.entities.SquareEntity;
-import org.bioshock.main.App;
 import org.bioshock.rendering.renderers.WallRenderer;
 import org.bioshock.rendering.renderers.components.SimpleRendererC;
 import org.bioshock.utils.GlobalConstants;
 import org.bioshock.utils.Size;
 
 import javafx.geometry.Point3D;
-import javafx.geometry.Rectangle2D;
-import javafx.scene.SnapshotParameters;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
 
 public class Wall extends SquareEntity {
     private Image image;
@@ -35,6 +29,7 @@ public class Wall extends SquareEntity {
         super(p, com, new SimpleRendererC(), s, 0, c);
         renderer = WallRenderer.class;
         this.image = image;
+        
         
         int width = (int) (s.getWidth()/GlobalConstants.UNIT_WIDTH);
         int height = (int) (s.getHeight()/GlobalConstants.UNIT_HEIGHT);

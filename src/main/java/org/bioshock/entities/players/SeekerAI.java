@@ -123,9 +123,9 @@ public class SeekerAI extends SquareEntity {
         currentSprite = seekerAnimations.getPlayerIdleSprite();
         swingAnimations = new SwingAnimations(
             this,
-            ((GlobalConstants.PLAYER_SCALE * 3) / 4)
+            1.5
         );
-        currentSwingAnimation = swingAnimations.getTopRightIdle();
+        currentSwingAnimation = SwingAnimations.getIdle();
     }
 
     private void setCurrentSprite(Sprite s) {
@@ -168,19 +168,27 @@ public class SeekerAI extends SquareEntity {
     }
 
     public void setSwingAnimation() {
-        Point2D translation = currentTargetLocation.subtract(getCentre());
+        Sprite animation = SwingAnimations.getIdle();
 
-        int x = (int) translation.getX();
-        int y = (int) translation.getY();
-        Sprite animation = swingAnimations.getTopRightIdle();
+        if (wooshSoundPlayed && !target.isDead()) {
+            Point2D translation = currentTargetLocation.subtract(getCentre());
 
-        if (x > 0) animation = swingAnimations.getTopRightIdle();
+            int x = (int) translation.getX();
+            int y = (int) translation.getY();
 
-        else if (x < 0) animation = swingAnimations.getTopLeftIdle();
-
-        else if (y > 0) animation = swingAnimations.getBottomRightIdle();
-
-        else if (y < 0) animation = swingAnimations.getBottomLeftIdle();
+            if (x >= 0 && y >= 0) {
+                animation = SwingAnimations.getBottomRightSwing();
+            }
+            else if (x >= 0) {
+                animation = SwingAnimations.getTopRightSwing();
+            }
+            else if (y >= 0) {
+                animation = SwingAnimations.getBottomLeftSwing();
+            }
+            else {
+                animation = SwingAnimations.getTopLeftSwing();
+            }
+        }
 
         setCurrentSwingAnimation(animation);
     }
@@ -239,7 +247,6 @@ public class SeekerAI extends SquareEntity {
                     if(!wooshSoundPlayed){
                         AudioManager.playWooshSfx();
                         wooshSoundPlayed = true;
-                        playSwingAnimation();
                     }
                     if(timeSwinging >= TIME_SWINGING){
                         setActive(false);
@@ -263,12 +270,6 @@ public class SeekerAI extends SquareEntity {
         	setActive(false);
         	search();
         }
-    }
-
-    private void playSwingAnimation() {
-        Sprite animation = swingAnimations.getTopRightSwing();
-
-        setCurrentSwingAnimation(animation);
     }
 
     /**
