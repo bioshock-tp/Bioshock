@@ -31,7 +31,8 @@ public class Sides {
             Point3D pos,
             Size size,
             Color c,
-            Image image){
+            Image image,
+            double wallWidth){
         boolean[][] traversable = new boolean
             [(int) Math.round(size.getHeight())]
             [(int) Math.round(size.getWidth())];
@@ -41,7 +42,8 @@ public class Sides {
             new NetworkC(false), 
             new Size(size.getWidth()*UNIT_WIDTH, size.getHeight()*UNIT_HEIGHT), 
             c,
-            image);
+            image,
+            wallWidth);
         
         return new Pair<Wall, boolean[][]>(side, traversable);
     }
@@ -104,7 +106,8 @@ public class Sides {
                 new NetworkC(false),
                 new Size(wallWidth*UNIT_WIDTH, ((roomHeight - coriWidth) / 2 - wallWidth)*UNIT_HEIGHT),
                 c,
-                GlobalConstants.VERT_WALL_IMAGE
+                GlobalConstants.VERT_WALL_IMAGE,
+                wallWidth
             ); 
 
         //vertical wall
@@ -117,7 +120,8 @@ public class Sides {
                 new NetworkC(false),
                 new Size(wallWidth*UNIT_WIDTH, ((roomHeight - coriWidth) / 2 - wallWidth)*UNIT_HEIGHT),
                 c,
-                GlobalConstants.VERT_WALL_IMAGE
+                GlobalConstants.VERT_WALL_IMAGE,
+                wallWidth
             );
 
         //top wall
@@ -131,7 +135,8 @@ public class Sides {
                 new NetworkC(false),
                 new Size((coriLen - wallWidth)*UNIT_WIDTH + padding, wallWidth*UNIT_HEIGHT),
                 c,
-                GlobalConstants.TOP_HORI_WALL_IMAGE
+                GlobalConstants.TOP_HORI_WALL_IMAGE,
+                wallWidth
             );
 
         //bottom wall
@@ -141,7 +146,8 @@ public class Sides {
                 new NetworkC(false),
                 new Size((coriLen - wallWidth)*UNIT_WIDTH + padding, wallWidth*UNIT_HEIGHT),
                 c,
-                GlobalConstants.BOT_HORI_WALL_IMAGE
+                GlobalConstants.BOT_HORI_WALL_IMAGE,
+                wallWidth
             );
 
         //corner connecting top and left
@@ -155,7 +161,8 @@ public class Sides {
                 new NetworkC(false),
                 new Size(wallWidth*UNIT_WIDTH, wallWidth*UNIT_HEIGHT),
                 c,
-                GlobalConstants.TOP_LEFT_CORNER_WALL_IMAGE
+                GlobalConstants.TOP_LEFT_CORNER_WALL_IMAGE,
+                wallWidth
             );
 
         //corner connecting bottom and left
@@ -169,7 +176,8 @@ public class Sides {
                 new NetworkC(false),
                 new Size(wallWidth*UNIT_WIDTH, wallWidth*UNIT_HEIGHT),
                 c,
-                GlobalConstants.BOT_LEFT_CORNER_WALL_IMAGE
+                GlobalConstants.BOT_LEFT_CORNER_WALL_IMAGE,
+                wallWidth
             );
         
         
@@ -241,7 +249,8 @@ public class Sides {
                 new NetworkC(false),
                 new Size(wallWidth*UNIT_WIDTH, ((roomHeight - coriWidth) / 2 - wallWidth)*UNIT_HEIGHT),
                 c,
-                GlobalConstants.VERT_WALL_IMAGE
+                GlobalConstants.VERT_WALL_IMAGE,
+                wallWidth
             );
 
         //vertical wall
@@ -255,7 +264,8 @@ public class Sides {
                 new NetworkC(false),
                 new Size(wallWidth*UNIT_WIDTH, ((roomHeight - coriWidth) / 2 - wallWidth)*UNIT_HEIGHT),
                 c,
-                GlobalConstants.VERT_WALL_IMAGE
+                GlobalConstants.VERT_WALL_IMAGE,
+                wallWidth
             );
 
         //top wall
@@ -269,7 +279,8 @@ public class Sides {
                 new NetworkC(false),
                 new Size((coriLen - wallWidth)*UNIT_WIDTH + padding, wallWidth*UNIT_HEIGHT),
                 c,
-                GlobalConstants.TOP_HORI_WALL_IMAGE
+                GlobalConstants.TOP_HORI_WALL_IMAGE,
+                wallWidth
             );
 
         //bottom wall
@@ -279,7 +290,8 @@ public class Sides {
                 new NetworkC(false),
                 new Size((coriLen - wallWidth)*UNIT_WIDTH + padding, wallWidth*UNIT_HEIGHT),
                 c,
-                GlobalConstants.BOT_HORI_WALL_IMAGE
+                GlobalConstants.BOT_HORI_WALL_IMAGE,
+                wallWidth
             );
 
         //corner connecting top and right
@@ -293,7 +305,8 @@ public class Sides {
                 new NetworkC(false),
                 new Size(wallWidth*UNIT_WIDTH, wallWidth*UNIT_HEIGHT),
                 c,
-                GlobalConstants.TOP_RIGHT_CORNER_WALL_IMAGE
+                GlobalConstants.TOP_RIGHT_CORNER_WALL_IMAGE,
+                wallWidth
             );
 
         //corner connecting bottom and right
@@ -303,7 +316,8 @@ public class Sides {
                 new NetworkC(false),
                 new Size(wallWidth*UNIT_WIDTH, wallWidth*UNIT_HEIGHT),
                 c,
-                GlobalConstants.BOT_RIGHT_CORNER_WALL_IMAGE
+                GlobalConstants.BOT_RIGHT_CORNER_WALL_IMAGE,
+                wallWidth
             );
 
         return new Pair<>(
@@ -373,7 +387,8 @@ public class Sides {
                 new NetworkC(false),
                 new Size(((roomWidth - coriWidth) / 2 - wallWidth)*UNIT_WIDTH, wallWidth*UNIT_HEIGHT),
                 c,
-                GlobalConstants.TOP_HORI_WALL_IMAGE
+                GlobalConstants.TOP_HORI_WALL_IMAGE,
+                wallWidth
             );
 
         //top wall
@@ -387,7 +402,8 @@ public class Sides {
                 new NetworkC(false),
                 new Size(((roomWidth - coriWidth) / 2 - wallWidth)*UNIT_WIDTH, wallWidth*UNIT_HEIGHT),
                 c,
-                GlobalConstants.TOP_HORI_WALL_IMAGE
+                GlobalConstants.TOP_HORI_WALL_IMAGE,
+                wallWidth
             );
 
         //vertical wall
@@ -401,7 +417,8 @@ public class Sides {
                 new NetworkC(false),
                 new Size(wallWidth*UNIT_WIDTH, (coriLen - wallWidth)*UNIT_HEIGHT + padding),
                 c,
-                GlobalConstants.VERT_WALL_IMAGE
+                GlobalConstants.VERT_WALL_IMAGE,
+                wallWidth
             );
 
         //vertical wall
@@ -411,7 +428,8 @@ public class Sides {
                 new NetworkC(false),
                 new Size(wallWidth*UNIT_WIDTH, (coriLen - wallWidth)*UNIT_HEIGHT + padding),
                 c,
-                GlobalConstants.VERT_WALL_IMAGE
+                GlobalConstants.VERT_WALL_IMAGE,
+                wallWidth
             );
 
         //corner connecting top and left
@@ -425,7 +443,8 @@ public class Sides {
                 new NetworkC(false),
                 new Size(wallWidth*UNIT_WIDTH, wallWidth*UNIT_HEIGHT),
                 c,
-                GlobalConstants.TOP_LEFT_CORNER_WALL_IMAGE
+                GlobalConstants.TOP_LEFT_CORNER_WALL_IMAGE,
+                wallWidth
             );
 
         //corner connecting top and right
@@ -439,7 +458,8 @@ public class Sides {
                 new NetworkC(false),
                 new Size(wallWidth*UNIT_WIDTH, wallWidth*UNIT_HEIGHT),
                 c,
-                GlobalConstants.TOP_RIGHT_CORNER_WALL_IMAGE
+                GlobalConstants.TOP_RIGHT_CORNER_WALL_IMAGE,
+                wallWidth
             );
 
         return new Pair<>(
@@ -508,7 +528,8 @@ public class Sides {
                 new NetworkC(false),
                 new Size(((roomWidth - coriWidth) / 2 - wallWidth)*UNIT_WIDTH, wallWidth*UNIT_HEIGHT),
                 c,
-                GlobalConstants.BOT_HORI_WALL_IMAGE
+                GlobalConstants.BOT_HORI_WALL_IMAGE,
+                wallWidth
             );
 
         //bottom wall
@@ -522,7 +543,8 @@ public class Sides {
                 new NetworkC(false),
                 new Size(((roomWidth - coriWidth) / 2 - wallWidth)*UNIT_WIDTH, wallWidth*UNIT_HEIGHT),
                 c,
-                GlobalConstants.BOT_HORI_WALL_IMAGE
+                GlobalConstants.BOT_HORI_WALL_IMAGE,
+                wallWidth
             );
 
         //vertical wall
@@ -536,7 +558,8 @@ public class Sides {
                 new NetworkC(false),
                 new Size(wallWidth*UNIT_WIDTH, (coriLen - wallWidth)*UNIT_HEIGHT + padding),
                 c,
-                GlobalConstants.VERT_WALL_IMAGE
+                GlobalConstants.VERT_WALL_IMAGE,
+                wallWidth
             );
 
         //vertical wall
@@ -546,7 +569,8 @@ public class Sides {
                 new NetworkC(false),
                 new Size(wallWidth*UNIT_WIDTH, (coriLen - wallWidth)*UNIT_HEIGHT + padding),
                 c,
-                GlobalConstants.VERT_WALL_IMAGE
+                GlobalConstants.VERT_WALL_IMAGE,
+                wallWidth
             );
 
         //corner connecting bottom and left
@@ -560,7 +584,8 @@ public class Sides {
                 new NetworkC(false),
                 new Size(wallWidth*UNIT_WIDTH, wallWidth*UNIT_HEIGHT),
                 c,
-                GlobalConstants.BOT_LEFT_CORNER_WALL_IMAGE
+                GlobalConstants.BOT_LEFT_CORNER_WALL_IMAGE,
+                wallWidth
             );
 
         //corner connecting bottom and right
@@ -570,7 +595,8 @@ public class Sides {
                 new NetworkC(false),
                 new Size(wallWidth*UNIT_WIDTH, wallWidth*UNIT_HEIGHT),
                 c,
-                GlobalConstants.BOT_RIGHT_CORNER_WALL_IMAGE
+                GlobalConstants.BOT_RIGHT_CORNER_WALL_IMAGE,
+                wallWidth
             );
 
         return new Pair<>(
@@ -620,7 +646,8 @@ public class Sides {
                 new NetworkC(false),
                 new Size(wallWidth*UNIT_WIDTH, roomHeight*UNIT_HEIGHT),
                 c,
-                GlobalConstants.VERT_WALL_IMAGE
+                GlobalConstants.VERT_WALL_IMAGE,
+                wallWidth
             );
 
         return new Pair<>(
@@ -667,7 +694,8 @@ public class Sides {
                 new NetworkC(false),
                 new Size(wallWidth*UNIT_WIDTH, roomHeight*UNIT_HEIGHT),
                 c,
-                GlobalConstants.VERT_WALL_IMAGE
+                GlobalConstants.VERT_WALL_IMAGE,
+                wallWidth
             );
 
         return new Pair<>(
@@ -715,7 +743,8 @@ public class Sides {
                 new NetworkC(false),
                 new Size(roomWidth*UNIT_WIDTH, wallWidth*UNIT_HEIGHT),
                 c,
-                GlobalConstants.TOP_HORI_WALL_IMAGE
+                GlobalConstants.TOP_HORI_WALL_IMAGE,
+                wallWidth
             );
 
         return new Pair<>(
@@ -763,7 +792,8 @@ public class Sides {
                 new NetworkC(false),
                 new Size(roomWidth*UNIT_WIDTH, wallWidth*UNIT_HEIGHT),
                 c,
-                GlobalConstants.BOT_HORI_WALL_IMAGE
+                GlobalConstants.BOT_HORI_WALL_IMAGE,
+                wallWidth
             );
 
         return new Pair<>(
