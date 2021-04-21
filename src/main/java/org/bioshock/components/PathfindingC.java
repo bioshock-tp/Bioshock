@@ -77,7 +77,7 @@ public class PathfindingC<T extends GraphNode,S> {
         }
 //        App.logger.debug("Start room is {}", startRoom.getRoomCenter());
         if(endNode == null){
-            while(destination == current) {
+            while(destination.equals(current) || destination.equals(avoidNode)) {
                 r = rand.nextInt(graph.getNodes().size());
                 destination = graph.getNodes().get(r);
             }
