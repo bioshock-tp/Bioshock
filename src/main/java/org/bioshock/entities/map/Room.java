@@ -458,7 +458,7 @@ public class Room extends GraphNode {
                         new NetworkC(false), 
                         new Size(UNIT_WIDTH, UNIT_HEIGHT), 
                         color.invert(),
-                        GlobalConstants.VERT_WALL_IMAGE,
+                        GlobalConstants.inRoomObjects.get(rand.nextInt(GlobalConstants.inRoomObjects.size())),
                         1));
                     traversableNodes[i][j] = null;
                     floorSpace[i][j] = false;

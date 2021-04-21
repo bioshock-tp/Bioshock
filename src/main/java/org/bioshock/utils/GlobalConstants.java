@@ -4,6 +4,8 @@ import static org.bioshock.entities.map.utils.RoomType.NO_ROOM;
 import static org.bioshock.entities.map.utils.RoomType.SINGLE_ROOM;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.bioshock.entities.map.utils.RoomType;
 
@@ -109,6 +111,27 @@ public final class GlobalConstants {
         UNIT_HEIGHT, 
         false, 
         true);
+    
+    private static final String OBJECT_DIRECTORY_PATH = 
+            GlobalConstants.class.getResource("/org/bioshock/images/inRoomObjects").getPath();
+    private static final File OBJECT_DIRECTORY_FILE= new File(OBJECT_DIRECTORY_PATH);
+    
+    
+    public static List<Image> inRoomObjects = new ArrayList<>();
+    static {
+        for(String fileName : OBJECT_DIRECTORY_FILE.list()) {
+            String pathName = 
+                GlobalConstants.class.getResource("/org/bioshock/images/inRoomObjects/" + fileName).getPath();
+            
+            inRoomObjects.add(new Image(
+                new File(pathName).toURI().toString(), 
+                UNIT_WIDTH, 
+                UNIT_HEIGHT, 
+                false, 
+                true));
+        }
+    }
+    
     
     private GlobalConstants() {}
 }
