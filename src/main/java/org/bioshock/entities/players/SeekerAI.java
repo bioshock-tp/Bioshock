@@ -340,11 +340,13 @@ public class SeekerAI extends SquareEntity {
      *
      * @param entity the entity to chase
      */
-    private void chasePlayer(Entity entity) {
+    private void chasePlayer(SquareEntity entity) {
         setSearch(false);
         path.clear();
-        lastSeenPosition = new Point2D(entity.getX(), entity.getY());
+        lastSeenPosition = new Point2D(entity.getCentre().getX(), entity.getCentre().getY());
+        App.logger.debug("Last seen player position is {}", lastSeenPosition);
         path = nodePathfinding.createBestPath(this.getCentre(), lastSeenPosition);
+        path.add(lastSeenPosition);
         if(!path.isEmpty()){
             currentTargetLocation = path.remove(0);
         }
@@ -366,6 +368,7 @@ public class SeekerAI extends SquareEntity {
         }
         else{
             //continue searching
+            App.logger.debug("Current target Location is {}", currentTargetLocation);
             movement.moveTo(currentTargetLocation.subtract(new Point2D(getWidth()/2, getHeight()/2)));
 
             double absX = Math.abs(currentTargetLocation.getX() - getWidth()/2 - getX());
