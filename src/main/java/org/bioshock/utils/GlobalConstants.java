@@ -38,7 +38,7 @@ public final class GlobalConstants {
         {{B}};
     
     public static final String FLOOR_PATH =
-        GlobalConstants.class.getResource("/org/bioshock/images/tile_71.png").getPath();
+        GlobalConstants.class.getResource("/org/bioshock/images/floors/tile_71.png").getPath();
     
     public static Image FLOOR_IMAGE = new Image(
         new File(FLOOR_PATH).toURI().toString(), 
@@ -109,9 +109,6 @@ public final class GlobalConstants {
         UNIT_HEIGHT, 
         false, 
         true);
-    
-    
-    public static ImageView FLOOR_IMAGEVIEW =  new ImageView(FLOOR_IMAGE);
     
     private GlobalConstants() {}
 }
