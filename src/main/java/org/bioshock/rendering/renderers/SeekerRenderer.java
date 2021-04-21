@@ -7,6 +7,8 @@ import javafx.scene.shape.Arc;
 import javafx.scene.text.Font;
 import javafx.scene.transform.Rotate;
 import org.bioshock.animations.AnimationPlayer;
+import org.bioshock.animations.Sprite;
+import org.bioshock.animations.SwingAnimations;
 import org.bioshock.entities.players.SeekerAI;
 import org.bioshock.rendering.RenderManager;
 
@@ -59,15 +61,12 @@ public class SeekerRenderer implements Renderer {
         gc.setStroke(seeker.getRendererC().getColour());
 
         if(isActive) {
-            // TODO: put animation here instead of gc.fillArc
-            gc.fillArc(
-                getRenX(swatter.getCenterX() - swatter.getRadiusX()),
-                getRenY(swatter.getCenterY() - swatter.getRadiusY()),
-                getRenWidth(swatter.getRadiusX()*2),
-                getRenHeight(swatter.getRadiusY()*2),
-                swatter.getStartAngle(),
-                swatter.getLength(),
-                swatter.getType()
+            // Handles swing animation
+            Sprite currentSwingAnimation = ent.getCurrentSwingAnimation();
+            AnimationPlayer.playAnimation(
+                currentSwingAnimation,
+                calcSwingPosition(currentSwingAnimation, x, y),
+                currentSwingAnimation.getSize()
             );
 
 
@@ -79,20 +78,42 @@ public class SeekerRenderer implements Renderer {
             new Point2D(
                 getRenX(x),
                 getRenY(y)
-            )
-        );
-        AnimationPlayer.playAnimation(
-            ent.getCurrentSwingAnimation(),
-            new Point2D(
-                getRenX(x),
-                getRenY(y)
-            )
+            ),
+            seeker.getSize()
         );
         
-        gc.setFill(Color.BLACK);
-        gc.setFont(new Font(getRenHeight(25)));
+        
+        gc.setFill(Color.RED);
+        gc.setFont(new Font(getRenHeight(20)));
         gc.fillText("Seeker(AI)", getRenX(x-width), getRenY(y-5), getRenWidth(width*3));
 
         gc.restore();
+    }
+
+    private static Point2D calcSwingPosition(Sprite swingAnimation, double x, double y) {
+        int rightXOffset = 12;
+        int topYOffset = 70;
+        int leftXOffset = 80;
+        if (SwingAnimations.getTopRightSwing().equals(swingAnimation)) {
+            return (
+                new Point2D(getRenX(x + rightXOffset), getRenY(y - topYOffset))
+            );
+        }
+        else if (SwingAnimations.getTopLeftSwing().equals(swingAnimation)) {
+            return (
+                new Point2D(getRenX(x - leftXOffset), getRenY(y - topYOffset))
+            );
+        }
+        else if (SwingAnimations.getBottomRightSwing().equals(swingAnimation)) {
+            return (
+                new Point2D(getRenX(x + rightXOffset), getRenY(y))
+            );
+        }
+        else if (SwingAnimations.getBottomLeftSwing().equals(swingAnimation)) {
+            return (
+                new Point2D(getRenX(x - leftXOffset), getRenY(y))
+            );
+        }
+        return (new Point2D (getRenX(x), getRenY(y)));
     }
 }

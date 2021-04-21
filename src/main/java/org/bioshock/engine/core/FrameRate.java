@@ -1,12 +1,9 @@
 package org.bioshock.engine.core;
 
 import org.bioshock.entities.LabelEntity;
-import org.bioshock.main.App;
 import org.bioshock.scenes.GameScene;
-import org.bioshock.scenes.SceneManager;
 
 import javafx.geometry.Point3D;
-import javafx.scene.control.Label;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 
@@ -31,7 +28,7 @@ public class FrameRate {
         long oldFrameTime = frames[frameTimeIndex];
         frames[frameTimeIndex] = now;
         frameTimeIndex = (frameTimeIndex + 1) % N;
-        App.logger.debug("frameTimeIndex = " + frameTimeIndex);
+//        App.logger.debug("frameTimeIndex = " + frameTimeIndex);
 
         if (frameTimeIndex == 0) {
             arrayFilled = true;
@@ -43,7 +40,7 @@ public class FrameRate {
             long elapsedNanosPerFrame = elapsedNanos / N;
             double frameRate = 1e9 / elapsedNanosPerFrame;
             label.getStringBuilder().setLength(0);
-            App.logger.debug("Label value = " + String.format("%.0f", frameRate));
+//            App.logger.debug("Label value = " + String.format("%.0f", frameRate));
             label.getStringBuilder().append(String.format("%.0f", frameRate));
         }
     }

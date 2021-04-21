@@ -1,11 +1,10 @@
 package org.bioshock.entities.players;
 
 
-import javafx.geometry.Point2D;
-import javafx.geometry.Point3D;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.*;
-import javafx.util.Pair;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+
 import org.bioshock.animations.SeekerAnimations;
 import org.bioshock.animations.Sprite;
 import org.bioshock.animations.SwingAnimations;
@@ -19,7 +18,7 @@ import org.bioshock.entities.Entity;
 import org.bioshock.entities.EntityManager;
 import org.bioshock.entities.SquareEntity;
 import org.bioshock.entities.map.Room;
-import org.bioshock.entities.map.TexRectEntity;
+import org.bioshock.entities.map.Wall;
 import org.bioshock.entities.map.utils.ConnType;
 import org.bioshock.main.App;
 import org.bioshock.physics.Movement;
@@ -31,9 +30,16 @@ import org.bioshock.utils.GlobalConstants;
 import org.bioshock.utils.Point;
 import org.bioshock.utils.Size;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import javafx.geometry.Point2D;
+import javafx.geometry.Point3D;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Arc;
+import javafx.scene.shape.ArcType;
+import javafx.scene.shape.Circle;
+import javafx.scene.shape.Line;
+import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.Shape;
+import javafx.util.Pair;
 
 public class SeekerAI extends SquareEntity {
     private Hider target;
@@ -113,9 +119,9 @@ public class SeekerAI extends SquareEntity {
         currentSprite = seekerAnimations.getPlayerIdleSprite();
         swingAnimations = new SwingAnimations(
             this,
-            ((GlobalConstants.PLAYER_SCALE * 3) / 4)
+            1.5
         );
-        currentSwingAnimation = swingAnimations.getTopRightIdle();
+        currentSwingAnimation = SwingAnimations.getIdle();
     }
 
     private void setCurrentSprite(Sprite s) {
@@ -158,19 +164,27 @@ public class SeekerAI extends SquareEntity {
     }
 
     public void setSwingAnimation() {
-        Point2D translation = currentTargetLocation.subtract(getCentre());
+        Sprite animation = SwingAnimations.getIdle();
 
-        int x = (int) translation.getX();
-        int y = (int) translation.getY();
-        Sprite animation = swingAnimations.getTopRightIdle();
+        if (wooshSoundPlayed && !target.isDead()) {
+            Point2D translation = currentTargetLocation.subtract(getCentre());
 
-        if (x > 0) animation = swingAnimations.getTopRightIdle();
+            int x = (int) translation.getX();
+            int y = (int) translation.getY();
 
-        else if (x < 0) animation = swingAnimations.getTopLeftIdle();
-
-        else if (y > 0) animation = swingAnimations.getBottomRightIdle();
-
-        else if (y < 0) animation = swingAnimations.getBottomLeftIdle();
+            if (x >= 0 && y >= 0) {
+                animation = SwingAnimations.getBottomRightSwing();
+            }
+            else if (x >= 0) {
+                animation = SwingAnimations.getTopRightSwing();
+            }
+            else if (y >= 0) {
+                animation = SwingAnimations.getBottomLeftSwing();
+            }
+            else {
+                animation = SwingAnimations.getTopLeftSwing();
+            }
+        }
 
         setCurrentSwingAnimation(animation);
     }
@@ -219,7 +233,6 @@ public class SeekerAI extends SquareEntity {
                     if(!wooshSoundPlayed){
                         AudioManager.playWooshSfx();
                         wooshSoundPlayed = true;
-                        playSwingAnimation();
                     }
                     if(timeSwinging >= TIME_SWINGING){
                         setActive(false);
@@ -243,12 +256,6 @@ public class SeekerAI extends SquareEntity {
         	setActive(false);
         	search();
         }
-    }
-
-    private void playSwingAnimation() {
-        Sprite animation = swingAnimations.getTopRightSwing();
-
-        setCurrentSwingAnimation(animation);
     }
 
     /**
@@ -309,7 +316,7 @@ public class SeekerAI extends SquareEntity {
         roomsToCheck.add(entity.findCurrentRoom());
 
         for (Room room : roomsToCheck) {
-            for(TexRectEntity wall : room.getWalls()) {
+            for(Wall wall : room.getWalls()) {
                 wallHitbox = new Rectangle(
                         wall.getX(),
                         wall.getY(),

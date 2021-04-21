@@ -1,11 +1,9 @@
 package org.bioshock.entities;
 
-import javafx.geometry.Point2D;
-import javafx.geometry.Point3D;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
-import javafx.scene.shape.Shape;
-import javafx.util.Pair;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
 import org.bioshock.components.NetworkC;
 import org.bioshock.components.RendererC;
 import org.bioshock.entities.map.Room;
@@ -14,9 +12,12 @@ import org.bioshock.scenes.SceneManager;
 import org.bioshock.utils.ArrayUtils;
 import org.bioshock.utils.Point;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import javafx.geometry.Point2D;
+import javafx.geometry.Point3D;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.Shape;
+import javafx.util.Pair;
 
 public abstract class Entity {
     protected Point position;

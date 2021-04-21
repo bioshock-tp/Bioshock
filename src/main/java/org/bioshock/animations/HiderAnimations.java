@@ -15,7 +15,7 @@ public class HiderAnimations implements PlayerAnimation {
     Sprite idle;
     Sprite die;
 
-    public HiderAnimations(Entity entity, double scale) {
+    public HiderAnimations(Entity entity, int scale) {
         moveDown = new Sprite(
             entity,
             new Point2D(0, 0),

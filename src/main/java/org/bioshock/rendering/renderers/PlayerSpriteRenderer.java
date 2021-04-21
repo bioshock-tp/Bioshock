@@ -1,16 +1,22 @@
 package org.bioshock.rendering.renderers;
 
-import javafx.geometry.Point2D;
-import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.paint.Color;
-import javafx.scene.transform.Rotate;
 import org.bioshock.animations.AnimationPlayer;
 import org.bioshock.entities.EntityManager;
 import org.bioshock.entities.SquareEntity;
 import org.bioshock.entities.players.Hider;
 import org.bioshock.rendering.RenderManager;
 
-import static org.bioshock.rendering.RenderManager.*;
+import javafx.geometry.Point2D;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.TextAlignment;
+import javafx.scene.transform.Rotate;
+
+import static org.bioshock.rendering.RenderManager.getRenWidth;
+import static org.bioshock.rendering.RenderManager.getRenHeight;
+import static org.bioshock.rendering.RenderManager.getRenX;
+import static org.bioshock.rendering.RenderManager.getRenY;
 
 public class PlayerSpriteRenderer implements Renderer {
     private PlayerSpriteRenderer() {}
@@ -75,9 +81,20 @@ public class PlayerSpriteRenderer implements Renderer {
             new Point2D (
                 getRenX(x),
                 getRenY(y)
-            )
+            ),
+            player.getSize()
         );
+        gc.setTextAlign(TextAlignment.CENTER);
+        if (player == EntityManager.getCurrentPlayer()) {
+            gc.setFill(Color.GREEN);
+        }
+        else{
+            gc.setFill(Color.BLACK);
+        }
+        gc.setFont(new Font(getRenHeight(20)));
+        gc.fillText(((Hider) player).getName(), getRenX(x + width / 2), getRenY(y-5), getRenWidth(width*3));
 
         gc.restore();
     }
+
 }

@@ -23,6 +23,8 @@ public class Lobby extends GameScene {
             null
         )));
 		
+		mainGame = new MainGame();
+		
         Label waitingText = new Label("Waiting for players...");
 
         waitingText.setTranslateY(-100);
@@ -33,7 +35,7 @@ public class Lobby extends GameScene {
 	}
 
     @Override
-    public void initScene() {
+    public void initScene(long seed) {
         SceneManager.setInLobby(true);
 
         if (App.isNetworked()) {
@@ -49,7 +51,7 @@ public class Lobby extends GameScene {
         ));
 
         if (NetworkManager.playerCount() == App.playerCount()) {
-            SceneManager.setScene(new MainGame(NetworkManager.getSeed()));
+            SceneManager.setScene(mainGame);
         }
     }
 }

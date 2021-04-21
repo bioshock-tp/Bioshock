@@ -10,7 +10,7 @@ import javafx.geometry.Point2D;
  *
  * @author Kian Wells
  */
-public class GraphNode {
+public class GraphNode{
 
     private int hCost;
     private int gCost;
@@ -34,7 +34,7 @@ public class GraphNode {
     	this();
     	this.location = location; 
     }
-
+    
     public Point2D getLocation() {
         return location;
     }
