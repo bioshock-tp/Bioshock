@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.bioshock.utils.DeepCopy;
 import org.bioshock.utils.Direction;
@@ -28,43 +29,55 @@ import javafx.util.Pair;
  * @param <S> The type of the edges in a graph
  */
 public class Graph<T extends GraphNode, S> {
-
     /***
      * The map that stores the graph
      */
-    private Map< T, List<Pair<T, S>> > nodeMap = new HashMap<>();
+    private Map<T, List<Pair<T, S>>> nodeMap = new HashMap<>();
+
 
     /***
      * constructs an empty graph
      */
-    public Graph() {
-    }
+    public Graph() {}
 
     public Graph(T[][] nodes2D, EdgeGenerator<T, S> eg) {
-    	for (T[] nodes: nodes2D) {
-    		for (T node: nodes) {
-    			if (node != null) {
-        			addNode(node);
-    			}
-    		}
-    	}
-
-    	for (int i = 0;i<nodes2D.length;i++) {
-    		for (int j = 0;j<nodes2D[0].length;j++) {
-    			if (nodes2D[i][j] != null) {
-                	// add an edge in the graph if there should be one in each possible direction
-                    safeAddEdge(i, j, i - 1, 	j, 		NORTH, 		nodes2D, eg);
-                    safeAddEdge(i, j, i - 1, 	j + 1, 	NORTH_EAST, nodes2D, eg);
-                    safeAddEdge(i, j, i, 	j + 1, 	EAST, 		nodes2D, eg);
-                    safeAddEdge(i, j, i + 1, 	j + 1, 	SOUTH_EAST, nodes2D, eg);
-                    safeAddEdge(i, j, i + 1, 	j, 		SOUTH, 		nodes2D, eg);
-                    safeAddEdge(i, j, i + 1, 	j - 1,	SOUTH_WEST, nodes2D, eg);
-                    safeAddEdge(i, j, i, 	j - 1, 	WEST, 		nodes2D, eg);
-                    safeAddEdge(i, j, i - 1, 	j - 1, 	NORTH_WEST, nodes2D, eg);
+        for (T[] nodes: nodes2D) {
+            for (T node: nodes) {
+                if (node != null) {
+                    addNode(node);
                 }
-    		}
-    	}
+            }
+        }
+
+        for (int i = 0; i < nodes2D.length; i++) {
+            for (int j = 0; j < nodes2D[0].length; j++) {
+                if (nodes2D[i][j] != null) {
+                    /*
+                     * add an edge in the graph if there should be one in each
+                     * possible direction
+                     */
+                    safeAddEdge(i, j, i - 1, j, 	NORTH, 		nodes2D, eg);
+                    safeAddEdge(i, j, i - 1, j + 1, NORTH_EAST, nodes2D, eg);
+                    safeAddEdge(i, j, i, 	 j + 1, EAST, 		nodes2D, eg);
+                    safeAddEdge(i, j, i + 1, j + 1, SOUTH_EAST, nodes2D, eg);
+                    safeAddEdge(i, j, i + 1, j,     SOUTH, 		nodes2D, eg);
+                    safeAddEdge(i, j, i + 1, j - 1,	SOUTH_WEST, nodes2D, eg);
+                    safeAddEdge(i, j, i, 	 j - 1, WEST, 		nodes2D, eg);
+                    safeAddEdge(i, j, i - 1, j - 1, NORTH_WEST, nodes2D, eg);
+                }
+            }
+        }
     }
+
+
+    /**
+     * Clones a graph
+     * @param graph the graph to clone
+     */
+    public Graph(Graph<T, S> graph) {
+        this.nodeMap = new HashMap<>(graph.nodeMap);
+    }
+
 
     /***
      * Adds a 1 directional edge between the room at
@@ -81,32 +94,46 @@ public class Graph<T extends GraphNode, S> {
      * @param eg an implementation of the edge generator interface
      * for the types of the graph
      */
-    private void safeAddEdge(int i1, int j1, int i2, int j2, Direction d,
-		T[][] nodes2D, EdgeGenerator<T, S> eg) {
-    	// If all the points are in the array then add the edge
-    	if (0 <= i1 && i1 < nodes2D.length
-			&& 0 <= i2 && i2 < nodes2D.length
-			&& 0 <= j1 && j1 < nodes2D[0].length
-			&& 0 <= j2 && j2 < nodes2D[0].length) {
+    private void safeAddEdge(
+        int i1,
+        int j1,
+        int i2,
+        int j2,
+        Direction d,
+        T[][] nodes2D,
+        EdgeGenerator<T, S> eg
+     ) {
+        // If all the points are in the array then add the edge
+        if (
+            0 <= i1 && i1 < nodes2D.length
+            && 0 <= i2 && i2 < nodes2D.length
+            && 0 <= j1 && j1 < nodes2D[0].length
+            && 0 <= j2 && j2 < nodes2D[0].length
+            && nodes2D[i1][j1] != null && nodes2D[i2][j2] != null
+        ) {
+            /*
+             * If both the rooms to add an edge between are not null start
+             * adding the edge
+             */
 
-    		// If both the rooms to add an edge between are not null start adding the edge
-    		if (nodes2D[i1][j1] != null && nodes2D[i2][j2] != null) {
-    			//Get the connection type between the two rooms
-    			S edgeInfo = eg.getEdgeInfo(nodes2D[i1][j1], nodes2D[i2][j2], d);
-    			//If there is no edge info don't add the edge
-    			if (edgeInfo == null) {
-    				return;
-    			}
+            // Get the connection type between the two rooms
+            S edgeInfo = eg.getEdgeInfo(nodes2D[i1][j1], nodes2D[i2][j2], d);
 
-    			// Adds the edge to the room graph
-				addEdge(
-					nodes2D[i1][j1],
-					new Pair<>(nodes2D[i2][j2], edgeInfo),
-					false
-				);
-    		}
-    	}
+            // If there is no edge info don't add the edge
+            if (edgeInfo == null) {
+                return;
+            }
+
+            // Adds the edge to the room graph
+            addEdge(
+                nodes2D[i1][j1],
+                new Pair<>(nodes2D[i2][j2], edgeInfo),
+                false
+            );
+        }
     }
+
+
     /***
      * Adds a node to the map with no edges exiting it
      * @param nodeToAdd The node to be added
@@ -115,12 +142,17 @@ public class Graph<T extends GraphNode, S> {
         nodeMap.putIfAbsent(nodeToAdd, new ArrayList<>());
     }
 
+
     /***
      * Adds an one directional edge between the two nodes
      * @param startNode The node the edge leaves from
      * @param endNode The node the edge enters into
      */
-    public void addEdge(T startNode, Pair<T, S> endNode, boolean bidirectional) {
+    public void addEdge(
+        T startNode,
+        Pair<T, S> endNode,
+        boolean bidirectional
+    ) {
         if (!nodeMap.containsKey(startNode)) {
             addNode(startNode);
         }
@@ -130,14 +162,17 @@ public class Graph<T extends GraphNode, S> {
             if (!nodeMap.containsKey(endNode.getKey())) {
                 addNode(endNode.getKey());
             }
-            nodeMap.get(endNode.getKey()).add(new Pair<T, S>(startNode, endNode.getValue()));
+            nodeMap.get(endNode.getKey()).add(new Pair<>(
+                startNode,
+                endNode.getValue()
+            ));
         }
     }
 
     /***
-     *
      * @param node
-     * @return a list of all nodes connected to the given node not including the node itself
+     * @return a list of all nodes connected to the given node not including
+     * the node itself
      */
     public List<T> getConnectedNodes(T node) {
         List<T> nodes = new ArrayList<>();
@@ -160,6 +195,7 @@ public class Graph<T extends GraphNode, S> {
         return nodeMap.get(node);
     }
 
+
     /***
      *
      * @param node the node to count the number of edges
@@ -169,13 +205,15 @@ public class Graph<T extends GraphNode, S> {
         return nodeMap.get(node).size();
     }
 
+
     /***
      *
      * @return all the nodes that make up the graph
      */
-    public List<T> getNodes() {
-        return new ArrayList<>(nodeMap.keySet());
+    public Set<T> getNodes() {
+        return nodeMap.keySet();
     }
+
 
     /***
      * gets a new Graph which only contains nodes you can
@@ -193,8 +231,9 @@ public class Graph<T extends GraphNode, S> {
          */
         List<T> reachableNodes = getIndirectlyConnectedNodes(node);
         /***
-         * list of nodes which you can reach from the given node and can traverse to the given node
-         * i.e. if there was a one directional edge from A->B but not from B->A B wouldn't be in the list
+         * list of nodes which you can reach from the given node and can
+         * traverse to the given node i.e. if there was a one directional edge
+         * from A->B but not from B->A B wouldn't be in the list
          */
         ArrayList<T> bidirectionalNodes = new ArrayList<>();
 
@@ -208,6 +247,7 @@ public class Graph<T extends GraphNode, S> {
         return getTrimmedGraph(bidirectionalNodes);
     }
 
+
     /***
      *
      * @param node
@@ -216,10 +256,12 @@ public class Graph<T extends GraphNode, S> {
      */
     public List<T> getIndirectlyConnectedNodes(T node) {
         if (node == null) {
-            throw new RuntimeException("node is null");
+            throw new NullPointerException("node is null");
         }
         if (!nodeMap.containsKey(node)) {
-            throw new RuntimeException("Node provided is not in graph");
+            throw new IllegalArgumentException(
+                "Node provided is not in graph"
+            );
         }
 
         /***
@@ -244,7 +286,10 @@ public class Graph<T extends GraphNode, S> {
             //to the frontier if they haven't already been visited and aren't
             //already in the frontier
             for(T dirConNode : getConnectedNodes(currNode)) {
-                if (!visited.contains(dirConNode) && !frontier.contains(dirConNode)) {
+                if (
+                    !visited.contains(dirConNode)
+                    && !frontier.contains(dirConNode)
+                ) {
                     frontier.add(dirConNode);
                 }
             }
@@ -267,19 +312,22 @@ public class Graph<T extends GraphNode, S> {
          * The trimmed graph we're going to add
          */
         Graph<T, S> trimmedGraph = new Graph<>();
-        for(T node:nodes) {
-        	trimmedGraph.addNode(node);
+        for (T node:nodes) {
+            trimmedGraph.addNode(node);
         }
 
-        for(T node:nodes) {
-            //for each edge coming out of the node in the parent graph
-            for(Pair<T, S> edge:nodeMap.get(node)) {
-                //if that edge connects to a node we want to have in the new graph
+        for (T node:nodes) {
+            // for each edge coming out of the node in the parent graph
+            for (Pair<T, S> edge:nodeMap.get(node)) {
+                /*
+                 * if that edge connects to a node we want to have in the new
+                 * graph
+                 */
                 if (nodes.contains(edge.getKey())) {
-                    //add the edge to the new graph but with the new
+                    // add the edge to the new graph but with the new
                     trimmedGraph.addEdge(
                         node,
-                        new Pair<T, S>(edge.getKey(),edge.getValue()),
+                        new Pair<>(edge.getKey(),edge.getValue()),
                         false
                     );
                 }
@@ -289,7 +337,8 @@ public class Graph<T extends GraphNode, S> {
     }
 
     /**
-     * Will find the first node that is connected to the given node with the given connection
+     * Will find the first node that is connected to the given node with the
+     * given connection
      * @param edge the type of connection to look for
      * @param node the node to look at the connections of
      * @return the first node with that connection
@@ -308,20 +357,15 @@ public class Graph<T extends GraphNode, S> {
     }
 
 
-    public Graph<T, S> makeCopy() {
-        Graph<T, S> copy = new Graph<>();
-        copy.nodeMap = new HashMap<>(this.nodeMap);
-        return copy;
-    }
-
     /***
      *
-     * @param dc an implementation of the deep copy interface for the type of the node
+     * @param dc an implementation of the deep copy interface for the type of
+     * the node
      * @return a deep copy of the graph this is called on
      */
     public Graph<T, S> deepCopy(DeepCopy<T> dc) {
-    	List<T> nodes = this.getNodes();
-    	/***
+        Set<T> nodes = this.getNodes();
+        /***
          * A mapping from old nodes to new nodes
          */
         HashMap<T, T> oldToNew = new HashMap<>();
@@ -330,7 +374,7 @@ public class Graph<T extends GraphNode, S> {
          */
         Graph<T, S> copy = new Graph<>();
 
-    	for(T node:nodes) {
+        for (T node : nodes) {
             //make a copy of each node and add to the mapping and the new graph
             T nodeCopy;
             nodeCopy = dc.deepCopy(node);
@@ -338,22 +382,28 @@ public class Graph<T extends GraphNode, S> {
             copy.addNode(nodeCopy);
         }
 
-    	for(T node:nodes) {
-            //for each edge coming out of the node in the parent graph
-            for(Pair<T, S> edge:nodeMap.get(node)) {
-                //if that edge connects to a node we want to have in the new graph
+        for (T node : nodes) {
+            // for each edge coming out of the node in the parent graph
+            for (Pair<T, S> edge:nodeMap.get(node)) {
+                /*
+                 * if that edge connects to a node we want to have in the new
+                 * graph
+                 */
                 if (nodes.contains(edge.getKey())) {
-                    //add the edge to the new graph but with the new
-                	copy.addEdge(
+                    // add the edge to the new graph but with the new
+                    copy.addEdge(
                         oldToNew.get(node),
-                        new Pair<T, S>(oldToNew.get(edge.getKey()),edge.getValue()),
+                        new Pair<>(
+                            oldToNew.get(edge.getKey()),
+                            edge.getValue()
+                        ),
                         false
                     );
                 }
             }
         }
 
-    	return copy;
+        return copy;
     }
 
     /***
@@ -361,17 +411,20 @@ public class Graph<T extends GraphNode, S> {
      * @return the largest connected subgraph
      */
     public Graph<T, S> getLargestConnectedSubgraph() {
-    	/***
+        /***
          * list of all unchecked rooms in the parentGraph
          */
-        List<T> uncheckedRooms = this.getNodes();
+        Set<T> uncheckedRooms = this.getNodes();
         Graph<T, S> currGraph = new Graph<>();
 
-        /* Find the biggest connected subgraph and set the room graph to be the
+        /*
+         * Find the biggest connected subgraph and set the room graph to be the
          * biggest connected subgraph
          */
         while (!uncheckedRooms.isEmpty()) {
-            Graph<T, S> newGraph = getConnectedSubgraph(uncheckedRooms.get(0));
+            Graph<T, S> newGraph = getConnectedSubgraph(
+                uncheckedRooms.iterator().next()
+            );
             uncheckedRooms.removeAll(newGraph.getNodes());
 
             if (currGraph.getNodes().size() < newGraph.getNodes().size()) {

@@ -4,7 +4,7 @@ import lombok.Getter;
 
 public class EffectSettings extends AudioSettings {
     /**
-     * The relative "center" of the clip.import org.bioshock.audio.settings.AudioSettings;
+     * The relative "centre" of the clip.import org.bioshock.audio.settings.AudioSettings;
      *
      * A pan value of 0.0 plays the clip normally where a -1.0 pan shifts the clip entirely to the left channel
      * and 1.0 shifts entirely to the right channel.
@@ -20,6 +20,7 @@ public class EffectSettings extends AudioSettings {
     public EffectSettings deepCopy()  {
         final EffectSettings settings = new EffectSettings();
         settings.setVolume(super.volume);
+        settings.setCycleCount(super.cycleCount);
         return settings;
     }
 
@@ -43,4 +44,7 @@ public class EffectSettings extends AudioSettings {
     public double getVolume() {
         return super.volume;
     }
+
+//    @Override
+//    public int getCycleCount() { return  super.cycleCount; }
 }

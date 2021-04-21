@@ -80,19 +80,20 @@ public class Room extends GraphNode {
     private GraphNode centreNode;
 
     /**
+     * an array representing which positions are traversable in the room
+     */
+    GraphNode[][] traversableArray;
+
+    private RoomType roomType = RoomType.SINGLE_ROOM;
+
+    /**
      * a list of rooms that it is openly connected to
      * i.e. all adjacent rooms which are part of the same big room
      */
     private List<Room> openlyConnectedRooms = new ArrayList<>();
 
-    private RoomType roomType = RoomType.SINGLE_ROOM;
-
     private Random rand = new Random();
 
-    /**
-     * an array representing which positions are traversable in the room
-     */
-    GraphNode[][] traversableArray;
 
     /***
      * Stores the connection type for each direction
@@ -153,8 +154,10 @@ public class Room extends GraphNode {
             [(int) totalSize.getHeight()]
             [(int) totalSize.getWidth()];
 
-        // if a seed is given use a seeded random number generator
-        // otherwise use a non seeded one
+        /*
+         * if a seed is given use a seeded random number generator
+         * otherwise use a non seeded one
+         */
 
         if (seed != null) {
             rand = new Random(seed);
@@ -246,7 +249,7 @@ public class Room extends GraphNode {
                 traversable,
                 sideAndArray.getValue(),
                 0,
-                (int) (coriSize.getHeight()-wallWidth)
+                (int) (coriSize.getHeight() - wallWidth)
             );
         }
 
@@ -309,11 +312,11 @@ public class Room extends GraphNode {
                 traversable,
                 sideAndArray.getValue(),
                 (int) (coriSize.getHeight() + roomSize.getHeight()),
-                (int) (coriSize.getHeight()-wallWidth)
+                (int) (coriSize.getHeight() - wallWidth)
             );
         }
 
-        //Add the sides relevant for the connection type in the east direction
+        // Add the sides relevant for the connection type in the east direction
         ArrayUtils.copyInArray(
             traversable,
             rightSide(
@@ -327,8 +330,11 @@ public class Room extends GraphNode {
             (int) (coriSize.getHeight() + roomSize.getWidth())
         );
 
-        //then check if it is a sub-room connection and if it is you need to add sides to connect
-        //to the other sub-room that makes up the bigger room
+        /*
+         * then check if it is a sub-room connection and if it is you need to
+         * add sides to connect to the other sub-room that makes up the bigger
+         * room
+         */
         if (
             connections.get(Direction.EAST) == ConnType.SUB_ROOM
             && connections.get(Direction.NORTH) != ConnType.SUB_ROOM
@@ -429,7 +435,10 @@ public class Room extends GraphNode {
             );
         }
 
-        //if none of the sides are a SUB_ROOM connection add the corner in the top left of the room
+        /*
+         * if none of the sides are a SUB_ROOM connection add the corner in the
+         * top left of the room
+         */
         if (
             connections.get(Direction.WEST) != ConnType.SUB_ROOM
             && connections.get(Direction.NORTH) != ConnType.SUB_ROOM
@@ -450,8 +459,8 @@ public class Room extends GraphNode {
             //corner connecting bottom and left
             corner(
                 traversable,
-                (int)(coriSize.getHeight() + roomSize.getWidth()),
-                (int)(coriSize.getHeight() - wallWidth)
+                (int) (coriSize.getHeight() + roomSize.getWidth()),
+                (int) (coriSize.getHeight() - wallWidth)
             );
         }
 
@@ -463,8 +472,8 @@ public class Room extends GraphNode {
             //corner connecting top and right
             corner(
                 traversable,
-                (int)(coriSize.getHeight() - wallWidth),
-                (int)(coriSize.getHeight() + roomSize.getHeight())
+                (int) (coriSize.getHeight() - wallWidth),
+                (int) (coriSize.getHeight() + roomSize.getHeight())
             );
         }
 
@@ -571,6 +580,14 @@ public class Room extends GraphNode {
             }
         }
         traversableArray = traversableNodes;
+
+        /*
+         * get a graph representing the positions reachable from the centre of
+         * the room again now walls have been spawned into the room
+         */
+        graph = new Graph<>(traversableNodes, new TraversableEdgeGenerator());
+
+        traversableGraph = graph.getConnectedSubgraph(centreNode);
     }
 
 	/***
@@ -619,53 +636,60 @@ public class Room extends GraphNode {
         Color c,
         ConnType con
     ) {
-        Pair<List<TexRectEntity>,boolean[][]> wallsAndArray = null;
-        //chooses either a top side with or without an exit
-        switch(con) {
-        case NO_EXIT:
-            wallsAndArray = Sides.tNoExit(
-                pos,
-                wallWidth,
-                roomSize.getWidth(),
-                coriSize.getWidth(),
-                coriSize.getHeight(),
-                c
-            );
-            break;
-        case ROOM_TO_ROOM:
-            wallsAndArray = Sides.tExit(
-                pos,
-                wallWidth,
-                roomSize.getWidth(),
-                coriSize.getWidth(),
-                coriSize.getHeight(),
-                c
-            );
-            corridorPoints.add(new Pair<>(
-                new Point2D(
-                    getLocation().getX(),
-                    getLocation().getY() - roomSize.getHeight() / 2 * UNIT_HEIGHT
-                ),
-                Direction.NORTH));
-            break;
-        case SUB_ROOM:
-            //if it is a sub_room connection there should be no side so have a placeholder array so
-            //you don't get null pointers
-            wallsAndArray = new Pair<>(null, ArrayUtils.fill2DArray(new boolean[1][1],true));
-            break;
-        default:
-            wallsAndArray = Sides.tNoExit(
-                pos,
-                wallWidth,
-                roomSize.getWidth(),
-                coriSize.getWidth(),
-                coriSize.getHeight(),
-                c
-            );
-            break;
+        Pair<List<TexRectEntity>,boolean[][]> wallsAndArray;
+        // chooses either a top side with or without an exit
+        switch (con) {
+            case NO_EXIT:
+                wallsAndArray = Sides.tNoExit(
+                    pos,
+                    wallWidth,
+                    roomSize.getWidth(),
+                    coriSize.getWidth(),
+                    coriSize.getHeight(),
+                    c
+                );
+                break;
+            case ROOM_TO_ROOM:
+                wallsAndArray = Sides.tExit(
+                    pos,
+                    wallWidth,
+                    roomSize.getWidth(),
+                    coriSize.getWidth(),
+                    coriSize.getHeight(),
+                    c
+                );
+                corridorPoints.add(new Pair<>(
+                    new Point2D(
+                        getLocation().getX(),
+                        getLocation().getY()
+                        - roomSize.getHeight() / 2 * UNIT_HEIGHT
+                    ),
+                    Direction.NORTH
+                ));
+                break;
+            case SUB_ROOM:
+                /*
+                * if it is a sub_room connection there should be no side so have a
+                * placeholder array so you don't get null pointers
+                */
+                wallsAndArray = new Pair<>(
+                    null,
+                    ArrayUtils.fill2DArray(new boolean[1][1], true)
+                );
+                break;
+            default:
+                wallsAndArray = Sides.tNoExit(
+                    pos,
+                    wallWidth,
+                    roomSize.getWidth(),
+                    coriSize.getWidth(),
+                    coriSize.getHeight(),
+                    c
+                );
+                break;
         }
 
-        if(wallsAndArray.getKey() != null) {
+        if (wallsAndArray.getKey() != null) {
             walls.addAll(wallsAndArray.getKey());
         }
 
@@ -686,9 +710,9 @@ public class Room extends GraphNode {
         Color c,
         ConnType con
     ) {
-        Pair<List<TexRectEntity>,boolean[][]> wallsAndArray = null;
-      //chooses either a bottom side with or without an exit
-        switch(con) {
+        Pair<List<TexRectEntity>,boolean[][]> wallsAndArray;
+        // chooses either a bottom side with or without an exit
+        switch (con) {
         case ROOM_TO_ROOM:
             wallsAndArray = Sides.bExit(
                 pos,
@@ -708,16 +732,23 @@ public class Room extends GraphNode {
                 coriSize.getHeight(),
                 c
             );
+
             corridorPoints.add(new Pair<>(
-                    new Point2D(
-                            getLocation().getX(),
-                            getLocation().getY() + roomSize.getHeight() / 2),
-                    Direction.SOUTH));
+                new Point2D(
+                    getLocation().getX(),
+                    getLocation().getY() + roomSize.getHeight() / 2
+                ),
+                Direction.SOUTH
+            ));
             break;
         case SUB_ROOM:
-            //if it is a sub_room connection there should be no side so have a placeholder array so
-            //you don't get null pointers
-            wallsAndArray = new Pair<>(null, ArrayUtils.fill2DArray(new boolean[1][1],true));
+            /*
+             * if it is a sub_room connection there should be no side so have a
+             * placeholder array so you don't get null pointers
+             */
+            wallsAndArray = new Pair<>(
+                null, ArrayUtils.fill2DArray(new boolean[1][1],true)
+            );
             break;
         default:
             wallsAndArray = Sides.bExit(
@@ -731,7 +762,7 @@ public class Room extends GraphNode {
             break;
         }
 
-        if(wallsAndArray.getKey() != null) {
+        if (wallsAndArray.getKey() != null) {
             walls.addAll(wallsAndArray.getKey());
         }
 
@@ -753,8 +784,8 @@ public class Room extends GraphNode {
         ConnType con
     ) {
         Pair<List<TexRectEntity>,boolean[][]> wallsAndArray;
-        //chooses either a right side with or without an exit
-        switch(con) {
+        // chooses either a right side with or without an exit
+        switch (con) {
         case NO_EXIT:
             wallsAndArray = Sides.rNoExit(
                 pos,
@@ -784,9 +815,14 @@ public class Room extends GraphNode {
             ));
             break;
         case SUB_ROOM:
-            //if it is a sub_room connection there should be no side so have a placeholder array so
-            //you don't get null pointers
-            wallsAndArray = new Pair<>(null, ArrayUtils.fill2DArray(new boolean[1][1], true));
+            /*
+             * if it is a sub_room connection there should be no side so have a
+             * placeholder array so you don't get null pointers
+             */
+            wallsAndArray = new Pair<>(
+                null,
+                ArrayUtils.fill2DArray(new boolean[1][1], true)
+            );
             break;
         default:
             wallsAndArray = Sides.rNoExit(
@@ -801,7 +837,7 @@ public class Room extends GraphNode {
             break;
         }
 
-        if(wallsAndArray.getKey() != null) {
+        if (wallsAndArray.getKey() != null) {
             walls.addAll(wallsAndArray.getKey());
         }
 
@@ -854,9 +890,14 @@ public class Room extends GraphNode {
                 ));
                 break;
             case SUB_ROOM:
-                //if it is a sub_room connection there should be no side so have a placeholder array so
-                //you don't get null pointers
-                wallsAndArray = new Pair<>(null, ArrayUtils.fill2DArray(new boolean[1][1],true));
+                /*
+                 * if it is a sub_room connection there should be no side so
+                 * have a placeholder array so you don't get null pointers
+                 */
+                wallsAndArray = new Pair<>(
+                    null,
+                    ArrayUtils.fill2DArray(new boolean[1][1], true)
+                );
                 break;
             default:
                 wallsAndArray = Sides.rNoExit(
@@ -1008,7 +1049,7 @@ public class Room extends GraphNode {
 
     /**
      *
-     * @return the coridor size (in terms of units)
+     * @return the corridor size (in terms of units)
      * this is given in units at this can be used vertically or horizontally
      * so when used in calculations you need to scale with either UNIT_WIDTH or UNIT_HEIGHT
      * depending on if its a height or a width

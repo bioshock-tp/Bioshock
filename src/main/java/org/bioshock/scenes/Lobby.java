@@ -11,7 +11,6 @@ import javafx.scene.paint.Color;
 
 public class Lobby extends GameScene {
     private Label playerCountLabel = new Label("0/" + App.playerCount());
-    private MainGame mainGame;
 
     public Lobby() {
 		super();
@@ -22,8 +21,6 @@ public class Lobby extends GameScene {
             null,
             null
         )));
-
-        mainGame = new MainGame();
 
         Label waitingText = new Label("Waiting for players...");
 
@@ -51,7 +48,7 @@ public class Lobby extends GameScene {
         ));
 
         if (NetworkManager.playerCount() == App.playerCount()) {
-            SceneManager.setScene(mainGame);
+            SceneManager.setScene(new MainGame(NetworkManager.getSeed()));
         }
     }
 }

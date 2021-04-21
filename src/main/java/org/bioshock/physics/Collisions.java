@@ -4,9 +4,9 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.bioshock.entities.Entity;
-import org.bioshock.entities.map.Room;
 import org.bioshock.main.App;
 
 /**
@@ -34,29 +34,16 @@ public interface Collisions {
      */
     private static void updateCollisions() {
         CollisionUtils.collidables.forEach(entity -> {
-            Set<Entity> newCollisions = new HashSet<>();
+            Set<Entity> newCollisions = CollisionUtils.collidables.stream()
+                .filter(entity::intersects)
+                .collect(Collectors.toCollection(HashSet::new));
 
-            CollisionUtils.collidables.forEach(collision -> {
-                if (collision == entity) return;
-
-                if (entity.intersects(collision)) {
-                    newCollisions.add(collision);
-                }
-            });
-
-            Room[] rooms = entity.getCurrentRooms();
-
-            rooms[0].getWalls().forEach(wall -> {
-                if (entity.intersects(wall)) {
-                    newCollisions.add(wall);
-                }
-            });
-
-            rooms[1].getWalls().forEach(wall -> {
-                if (entity.intersects(wall)) {
-                    newCollisions.add(wall);
-                }
-            });
+            entity.find4ClosestRooms().forEach(room ->
+                newCollisions.addAll(room.getWalls().stream()
+                    .filter(entity::intersects)
+                    .collect(Collectors.toSet())
+                )
+            );
 
             CollisionUtils.collisions.replace(entity, newCollisions);
         });

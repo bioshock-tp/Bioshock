@@ -29,6 +29,11 @@ public abstract class Entity {
     protected double z;
     protected NetworkC networkC;
     protected RendererC rendererC;
+    protected boolean alwaysRender = false;
+
+    public boolean isAlwaysRender() {
+        return alwaysRender;
+    }
 
     protected boolean enabled = true;
 
@@ -81,6 +86,8 @@ public abstract class Entity {
     }
 
     public boolean intersects(Entity entity) {
+        if (entity == this) return false;
+
         Shape intersects = Shape.intersect(
             this.getHitbox(),
             entity.getHitbox()
@@ -138,20 +145,14 @@ public abstract class Entity {
 
     public Rectangle getRenderArea() {
         return new Rectangle(
-                position.getX(),
-                position.getY(),
-                hitbox.getWidth(),
-                hitbox.getHeight());
+            position.getX(),
+            position.getY(),
+            hitbox.getWidth(),
+            hitbox.getHeight());
     }
 
     public Point getPosition() {
         return position;
-    }
-
-    private Point2D getCentre() {
-        double x = getX() + hitbox.getWidth();
-        double y = getY() + hitbox.getHeight();
-        return new Point2D(x, y);
     }
 
     public double getX() {
@@ -184,46 +185,17 @@ public abstract class Entity {
 
 
     /**
-     * Finds the nearest room that this {@code Entity} is in
-     * @return the room that this {@code Entity} is in
+     *
+     * Finds the current room that an entity is in
+     *
+     * @param entity the entity to find current room of
+     * @return the current room of the entity
      */
-    public Room getCurrentRoom() {
-        return roomOf(getCentre());
+    public Room findCurrentRoom() {
+        return findCurrentRoom(this.getPosition());
     }
 
 
-    /**
-     * Finds the two nearest rooms to this {@code Entity}, used for collisions
-     * in-between rooms
-     * @return the two nearest rooms to this {@code Entity}
-     */
-    public Room[] getCurrentRooms() {
-        Room first = roomOf(getCentre());
-
-        List<Room> otherRooms = new ArrayList<>(SceneManager.getMap().getRooms());
-        otherRooms.remove(first);
-
-        Room second = roomOf(getCentre(), otherRooms);
-
-        return new Room[]{first, second};
-    }
-
-
-    @Override
-    public String toString() {
-        return getClass().getSimpleName();
-    }
-
-    /**
-    *
-    * Finds the current room that an entity is in
-    *
-    * @param entity the entity to find current room of
-    * @return the current room of the entity
-    */
-   public Room findCurrentRoom() {
-       return findCurrentRoom(this.getPosition());
-   }
     /**
      *
      * Finds the current room that a position is in
@@ -242,6 +214,7 @@ public abstract class Entity {
 
         return current[i][j];
     }
+
 
     /**
      * @return the current room and the 2 rooms that you are closest too and then the room those 2 are connected too
@@ -264,9 +237,10 @@ public abstract class Entity {
      * if you were in the top left of room y
      * (in this case only two rooms would be in the list)
      */
-    public List<Room> find4ClosestRoom() {
-        return find4ClosestRoom(this.getPosition());
+    public List<Room> find4ClosestRooms() {
+        return find4ClosestRooms(this.getPosition());
     }
+
 
     /**
      *
@@ -291,7 +265,7 @@ public abstract class Entity {
      * if you were in the top left of room y
      * (in this case only two rooms would be in the list)
      */
-    public static List<Room> find4ClosestRoom(Point2D pos){
+    public static List<Room> find4ClosestRooms(Point2D pos){
         Room[][] current = SceneManager.getMap().getRoomArray();
         Room temp = SceneManager.getMap().getRooms().get(0);
         double tRoomWidth = temp.getTotalSize().getWidth();
@@ -306,11 +280,17 @@ public abstract class Entity {
         coords.add(new Pair<>(i - 1, j - 1));
 
         List<Room> rooms = new ArrayList<>();
-        for(Pair<Integer, Integer> coord : coords) {
-            if(ArrayUtils.safeGet(current, coord.getKey(), coord.getValue()) != null) {
+        for (Pair<Integer, Integer> coord : coords) {
+            if (ArrayUtils.safeGet(current, coord.getKey(), coord.getValue()) != null) {
                 rooms.add(ArrayUtils.safeGet(current, coord.getKey(), coord.getValue()));
             }
         }
         return rooms;
+    }
+
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName();
     }
 }

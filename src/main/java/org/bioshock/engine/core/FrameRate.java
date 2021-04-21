@@ -1,23 +1,26 @@
 package org.bioshock.engine.core;
 
-import org.bioshock.scenes.SceneManager;
+import org.bioshock.entities.LabelEntity;
+import org.bioshock.scenes.GameScene;
 
-import javafx.scene.control.Label;
+import javafx.geometry.Point3D;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 
 public class FrameRate {
     private static final int N = 100;
     private static final long[] frames = new long[N];
-    private static Label label;
+    private static LabelEntity label = new LabelEntity(
+        new Point3D(GameScene.getGameScreen().getWidth() - 100, 50, 100),
+        "0",
+        new Font("arial", 20),
+        3,
+        Color.BLACK
+    );
     private static int frameTimeIndex = 0;
     private static boolean arrayFilled = false;
 
     private FrameRate() {}
-
-    public static void initialise() {
-        label = new Label("0");
-        updatePosition();
-        SceneManager.getPane().getChildren().add(label);
-    }
 
     public static final void tick(long now) {
         long oldFrameTime = frames[frameTimeIndex];
@@ -31,15 +34,13 @@ public class FrameRate {
         if (arrayFilled) {
             long elapsedNanos = now - oldFrameTime;
             long elapsedNanosPerFrame = elapsedNanos / N;
-            double frameRate = 1e9 / elapsedNanosPerFrame;
-            label.setText(String.format("%.0f", frameRate));
+            double frameRate = Math.min(1e9 / elapsedNanosPerFrame, 999);
+
+            label.setLabel(String.format("%.0f", frameRate));
         }
     }
 
-    public static void updatePosition() {
-        if (label != null) {
-            label.setTranslateX(WindowManager.getWindowWidth() / 2 - 10);
-            label.setTranslateY(10 - WindowManager.getWindowHeight() / 2);
-        }
+    public static LabelEntity getLabel() {
+        return label;
     }
 }

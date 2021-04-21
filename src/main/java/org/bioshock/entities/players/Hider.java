@@ -5,16 +5,18 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.bioshock.animations.PlayerAnimations;
+import org.bioshock.animations.HiderAnimations;
 import org.bioshock.animations.Sprite;
+import org.bioshock.audio.AudioManager;
 import org.bioshock.components.NetworkC;
 import org.bioshock.entities.Entity;
 import org.bioshock.entities.EntityManager;
 import org.bioshock.entities.SquareEntity;
-import org.bioshock.entities.map.Room;
+import org.bioshock.entities.map.TexRectEntity;
 import org.bioshock.main.App;
 import org.bioshock.networking.NetworkManager;
 import org.bioshock.physics.Collisions;
+import org.bioshock.rendering.RenderManager;
 import org.bioshock.rendering.renderers.PlayerSpriteRenderer;
 import org.bioshock.rendering.renderers.components.PlayerRendererC;
 import org.bioshock.utils.GlobalConstants;
@@ -28,7 +30,8 @@ import javafx.scene.shape.Rectangle;
 public class Hider extends SquareEntity implements Collisions {
     private boolean dead = false;
     private Sprite currentSprite;
-    private PlayerAnimations playerAnimations;
+    private HiderAnimations hiderAnimations;
+    boolean playedSfx = false;
 
     public Hider(Point3D p, NetworkC com, Size s, int r, Color c) {
         super(p, com, new PlayerRendererC(), s, r, c);
@@ -40,7 +43,10 @@ public class Hider extends SquareEntity implements Collisions {
 
     protected void tick(double timeDelta) {
         movement.tick(timeDelta);
-        if (!dead) setAnimation();
+        if (!dead) {
+            setAnimation();
+            setWalkingSfx();
+        }
     }
 
     @Override
@@ -56,11 +62,9 @@ public class Hider extends SquareEntity implements Collisions {
         /* Seeker */
         SeekerAI seeker = EntityManager.getSeeker();
 
-        /* Walls of two nearest rooms */
-        Set<Entity> walls = new HashSet<>();
-        Room[] rooms = getCurrentRooms();
-        walls.addAll(rooms[0].getWalls());
-        walls.addAll(rooms[1].getWalls());
+        /* Walls of room */
+        List<TexRectEntity> walls = new ArrayList<>(4);
+        find4ClosestRooms().forEach(room -> walls.addAll(room.getWalls()));
 
         Set<Entity> collisionCandidates = new HashSet<>();
         collisionCandidates.addAll(otherPlayers);
@@ -68,6 +72,7 @@ public class Hider extends SquareEntity implements Collisions {
         collisionCandidates.addAll(walls);
 
         collisions.retainAll(collisionCandidates);
+        collisions.forEach(collision -> collision.getRendererC().setColour(Color.RED));
 
         if (!collisions.isEmpty()) {
             movement.moveBack(collisions);
@@ -75,11 +80,11 @@ public class Hider extends SquareEntity implements Collisions {
     }
 
     public void initAnimations() {
-        playerAnimations = new PlayerAnimations(
+        hiderAnimations = new HiderAnimations(
             this,
             GlobalConstants.PLAYER_SCALE
         );
-        currentSprite = playerAnimations.getPlayerIdleSprite();
+        currentSprite = hiderAnimations.getPlayerIdleSprite();
     }
 
     private void setCurrentSprite(Sprite s) {
@@ -96,11 +101,13 @@ public class Hider extends SquareEntity implements Collisions {
             if (App.isNetworked()) NetworkManager.kill(this);
 
             hitbox = new Rectangle();
+
+            RenderManager.setClip(false);
         }
 
         dead = d;
 
-        setCurrentSprite(playerAnimations.getPlayerDying());
+        setCurrentSprite(hiderAnimations.getPlayerDying());
     }
 
     public void setAnimation() {
@@ -109,17 +116,37 @@ public class Hider extends SquareEntity implements Collisions {
         int x = (int) translation.getX();
         int y = (int) translation.getY();
 
-        Sprite animation = playerAnimations.getPlayerIdleSprite();
+        Sprite animation = hiderAnimations.getPlayerIdleSprite();
 
-        if (x > 0) animation = playerAnimations.getMoveRightSprite();
+        if (x > 0) animation = hiderAnimations.getMoveRightSprite();
 
-        else if (x < 0) animation = playerAnimations.getMoveLeftSprite();
+        else if (x < 0) animation = hiderAnimations.getMoveLeftSprite();
 
-        else if (y > 0) animation = playerAnimations.getMoveDownSprite();
+        else if (y > 0) animation = hiderAnimations.getMoveDownSprite();
 
-        else if (y < 0) animation = playerAnimations.getMoveUpSprite();
+        else if (y < 0) animation = hiderAnimations.getMoveUpSprite();
 
         setCurrentSprite(animation);
+    }
+
+    public void setWalkingSfx() {
+        Point2D translation = movement.getDirection();
+
+        int x = (int) translation.getX();
+        int y = (int) translation.getY();
+
+
+        if (x != 0 || y != 0) {
+            if (!playedSfx) {
+                AudioManager.playWalkingSfx();
+                playedSfx = true;
+            }
+        }
+        else {
+            AudioManager.stopWalkingSfx();
+            playedSfx = false;
+        }
+
     }
 
     public boolean isDead() {
@@ -130,7 +157,12 @@ public class Hider extends SquareEntity implements Collisions {
     public Rectangle getRenderArea() {
         Point2D centre = getCentre();
         double radius = getRadius();
-        return new Rectangle(centre.getX() - radius, centre.getY() - radius, radius * 2, radius * 2);
+        return new Rectangle(
+            centre.getX() - radius,
+            centre.getY() - radius,
+            radius * 2,
+            radius * 2
+        );
     }
 
     public Sprite getCurrentSprite() {

@@ -19,4 +19,7 @@ public class GlobalStrings {
     public static final String MUSIC_TEXT = "Music";
     public static final String SFX_TEXT = "SFX";
     public static final String IN_DEVELOPMENT_TEXT = "In Development...";
+    public static final String LANGUAGE_TEXT = "Language";
+    public static final String ROMANIAN_BUTTON_TEXT = "Romanian";
+    public static final String ENGLISH_BUTTON_TEXT = "English";
 }

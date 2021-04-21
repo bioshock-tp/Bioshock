@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.bioshock.engine.core.FrameRate;
 import org.bioshock.entities.Entity;
 import org.bioshock.entities.EntityManager;
 import org.bioshock.entities.players.Hider;
@@ -50,6 +49,7 @@ public final class RenderManager {
         // renders each entity
         entities.stream().filter(Entity::isEnabled).forEach(entity -> {
             if (
+                entity.isAlwaysRender() ||
                 intersects(entity.getRenderArea(), screen)
             ) {
                 try {
@@ -156,10 +156,6 @@ public final class RenderManager {
         cameraPos.add(0, y);
     }
 
-    public static void updateScreenSize() {
-        FrameRate.updatePosition();
-    }
-
     public static void setCameraPos(Point2D cameraPos) {
         RenderManager.cameraPos = cameraPos;
     }
@@ -192,7 +188,7 @@ public final class RenderManager {
         return scale;
     }
 
-    public static boolean isClip() {
+    public static boolean clips() {
         return clip;
     }
 

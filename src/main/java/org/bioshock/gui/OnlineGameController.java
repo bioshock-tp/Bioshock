@@ -1,19 +1,22 @@
 package org.bioshock.gui;
 
-import javafx.scene.control.Label;
-import org.bioshock.main.App;
-import org.bioshock.scenes.LoadingScreen;
-
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-import org.bioshock.utils.GlobalStrings;
+import org.bioshock.main.App;
+import org.bioshock.scenes.LoadingScreen;
+
+import java.util.prefs.Preferences;
 
 public class OnlineGameController {
     public Button backButton;
     public Button launchButton;
     public Label developmentLabel;
+    public Label nameLabel;
+    public TextField nameField;
 
     @FXML
     private void switchToMainView() {
@@ -26,13 +29,20 @@ public class OnlineGameController {
     }
 
     public void initialize() {
-        launchButton.setText(GlobalStrings.LAUNCH_BUTTON_TEXT);
-        backButton.setText(GlobalStrings.BACK_NEW_GAME_BUTTON_TEXT);
-        developmentLabel.setText(GlobalStrings.ONLINE_BUTTON_TEXT + " " + GlobalStrings.IN_DEVELOPMENT_TEXT);
+        launchButton.setText(App.getBundle().getString("LAUNCH_BUTTON_TEXT"));
+        backButton.setText(App.getBundle().getString("BACK_NEW_GAME_BUTTON_TEXT"));
+        developmentLabel.setText(App.getBundle().getString("ONLINE_BUTTON_TEXT") + " " + App.getBundle().getString("IN_DEVELOPMENT_TEXT"));
+        nameLabel.setText(App.getBundle().getString("PLAYER_NAME_TEXT") + ":");
+        Preferences prefs = Preferences.userNodeForPackage(SettingsController.class);
+        nameField.setText(prefs.get("playerName", App.getBundle().getString("DEFAULT_PLAYER_NAME_TEXT")));
     }
 
     public void launchGame(ActionEvent actionEvent) {
+        Preferences prefs = Preferences.userNodeForPackage(SettingsController.class);
+        String playerName = nameField.getText();
+        prefs.put("playerName", playerName);
+        // TODO: Add code to handle player name here
         Stage stage = (Stage) launchButton.getScene().getWindow();
-        App.startGame(stage, new LoadingScreen(true, GlobalStrings.ONLINE_LOADING_TEXT), true);
+        App.startGame(stage, new LoadingScreen(true, App.getBundle().getString("ONLINE_LOADING_TEXT")), true);
     }
 }

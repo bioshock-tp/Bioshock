@@ -2,7 +2,6 @@ package org.bioshock.engine.core;
 
 import org.bioshock.engine.input.InputManager;
 import org.bioshock.main.App;
-import org.bioshock.rendering.RenderManager;
 import org.bioshock.scenes.GameScene;
 import org.bioshock.scenes.SceneManager;
 
@@ -21,20 +20,12 @@ public class WindowManager {
 
     public static void initialise(Stage stage) {
         window = stage;
-        window.setTitle(App.NAME);
+        window.setTitle(App.getNAME());
         window.setFullScreen(INITFULLSCREEN);
         window.setMaximized(INITMAXIMISED);
 
         window.setFullScreenExitHint("");
         window.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
-
-        window.widthProperty().addListener((obs, oldVal, newVal) ->
-            RenderManager.updateScreenSize()
-        );
-
-        window.heightProperty().addListener((obs, oldVal, newVal) ->
-            RenderManager.updateScreenSize()
-        );
 
         InputManager.onPress(
             KeyCode.F11, WindowManager::toggleFullScreen

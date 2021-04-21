@@ -2,6 +2,7 @@ package org.bioshock.components;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
@@ -39,10 +40,6 @@ public class PathfindingC<T extends GraphNode, S> {
         this.unitWidth = unitWidth;
     }
 
-    public void setGraph(Graph<T, S> newGraph) {
-        this.graph = newGraph;
-    }
-    public Graph<T, S> getGraph() { return graph; }
 
     /**
      *
@@ -63,34 +60,32 @@ public class PathfindingC<T extends GraphNode, S> {
         T avoidNode,
         T preferredRoom
     ) {
+        T current = startNode;
         List<Point2D> pathToFollow = new ArrayList<>();
-        List<T> nodePath = new ArrayList<>();
-        List<T> possibleMoves = new ArrayList<>();
-        List<T> adjacents;
-        T destination;
-        T current;
-        int r;
-
-        current = startNode;
-        destination = current;
         if (graph.getNodes().size() == 1) {
             App.logger.error("can't make a path when only one node in graph");
             pathToFollow.add(current.getLocation());
             return pathToFollow;
         }
 
+        T destination;
         if (endNode == null) {
-            while (destination == current) {
-                r = rand.nextInt(graph.getNodes().size());
-                destination = graph.getNodes().get(r);
-            }
+            Iterator<T> iterator = graph.getNodes().iterator();
+            while (
+                (destination = iterator.next()) == current
+                && iterator.hasNext()
+            );
+
+            if (destination == current) App.logger.error("Not enough nodes");
         }
         else {
             destination = endNode;
         }
-
+        // int i = 0;
+        List<T> nodePath = new ArrayList<>();
+        List<T> possibleMoves = new ArrayList<>();
         while (current != destination) {
-            adjacents = graph.getConnectedNodes(current);
+            List<T> adjacents = graph.getConnectedNodes(current);
             for (T node : adjacents) {
                 if (!nodePath.contains(node)) {
                     possibleMoves.add(node);
@@ -111,7 +106,7 @@ public class PathfindingC<T extends GraphNode, S> {
                     current = preferredRoom;
                 }
                 else {
-                    r = rand.nextInt(possibleMoves.size());
+                    int r = rand.nextInt(possibleMoves.size());
                     current = possibleMoves.get(r);
                 }
             }
@@ -123,21 +118,53 @@ public class PathfindingC<T extends GraphNode, S> {
             pathToFollow.add(current.getLocation());
 
             possibleMoves.clear();
+
+            // if (++i == 1e6) {
+            //     break;
+            // }
         }
 
         return pathToFollow;
     }
 
-    public List<Point2D> createRandomPath(Point2D pos, Point2D end, T avoidRoom, T preferredRoom) {
-        return createRandomPath(findNearestNode(pos), findNearestNode(end), avoidRoom, preferredRoom);
+    public List<Point2D> createRandomPath(
+        Point2D pos,
+        Point2D end,
+        T avoidRoom,
+        T preferredRoom
+    ) {
+        return createRandomPath(
+            findNearestNode(pos),
+            findNearestNode(end),
+            avoidRoom,
+            preferredRoom
+        );
     }
 
-    public List<Point2D> createRandomPath(Point2D pos, T avoidRoom, T preferredRoom) {
-        return createRandomPath(findNearestNode(pos), null, avoidRoom, preferredRoom);
+    public List<Point2D> createRandomPath(
+        Point2D pos,
+        T avoidRoom,
+        T preferredRoom
+    ) {
+        return createRandomPath(
+            findNearestNode(pos),
+            null,
+            avoidRoom,
+            preferredRoom
+        );
     }
 
-    public List<Point2D> createRandomPath(T start, T avoidRoom, T preferredRoom) {
-        return createRandomPath(start, null, avoidRoom, preferredRoom);
+    public List<Point2D> createRandomPath(
+        T start,
+        T avoidRoom,
+        T preferredRoom
+    ) {
+        return createRandomPath(
+            start,
+            null,
+            avoidRoom,
+            preferredRoom
+        );
     }
 
     /**
@@ -151,7 +178,7 @@ public class PathfindingC<T extends GraphNode, S> {
      */
     public List<Point2D> createBestPath(T startNode, T endNode) {
         List<Point2D> pathToFollow = new ArrayList<>();
-        Graph<T, S> copyGraph = graph.makeCopy();
+        Graph<T, S> copyGraph = new Graph<>(graph);
         List<T> neighbours;
         List<T> openList = new ArrayList<>();
         List<T> closedList = new ArrayList<>();
@@ -159,16 +186,18 @@ public class PathfindingC<T extends GraphNode, S> {
         T currentNode;
 
         if (endNode == null) {
-            int r = rand.nextInt(copyGraph.getNodes().size());
+            Iterator<T> iterator = copyGraph.getNodes().iterator();
             do {
-                endNode = copyGraph.getNodes().get(r);
+                endNode = iterator.next();
             }
-            while (!endNode.equals(startNode));
+            while (!endNode.equals(startNode) && iterator.hasNext());
+
+            if (endNode.equals(startNode)) App.logger.error("Not enough nodes");
         }
 
         openList.add(startNode);
 
-        while (openList.isEmpty()) {
+        while (!openList.isEmpty()) {
             currentNode = findSmallestCost(openList);
             openList.remove(currentNode);
             closedList.add(currentNode);
@@ -180,13 +209,22 @@ public class PathfindingC<T extends GraphNode, S> {
 
             neighbours = copyGraph.getConnectedNodes(currentNode);
 
-            for(T neighbour: neighbours) {
-                if (!(closedList.contains(neighbour) || neighbour.getIsObject())) {
-                    int newCostToNeighbour = currentNode.getGCost() + findCost(currentNode, neighbour);
-                    if (newCostToNeighbour < neighbour.getGCost() || !openList.contains(neighbour)) {
+            for (T neighbour: neighbours) {
+                if (
+                    !(closedList.contains(neighbour)
+                    || neighbour.isObject())
+                ) {
+                    int newCostToNeighbour = currentNode.getGCost()
+                        + findCost(currentNode, neighbour);
+                    if (
+                        newCostToNeighbour < neighbour.getGCost()
+                        || !openList.contains(neighbour)
+                    ) {
                         neighbour.setGCost(newCostToNeighbour);
                         neighbour.setHCost(findCost(neighbour, endNode));
-                        neighbour.setFCost(neighbour.getGCost() + neighbour.getHCost());
+                        neighbour.setFCost(
+                            neighbour.getGCost() + neighbour.getHCost()
+                        );
 
                         neighbour.setParent(currentNode);
 
@@ -196,9 +234,7 @@ public class PathfindingC<T extends GraphNode, S> {
                     }
                 }
             }
-
         }
-        App.logger.debug("Path created is {}", pathToFollow);
 
         return pathToFollow;
     }
@@ -215,6 +251,7 @@ public class PathfindingC<T extends GraphNode, S> {
         return createBestPath(findNearestNode(pos), findNearestNode(end));
     }
 
+
     /**
      *
      * Will follow the chain of parents to create a path from the start node to
@@ -225,7 +262,6 @@ public class PathfindingC<T extends GraphNode, S> {
      * @return a list of Point2D that contain the locations of each node in the
      * path
      */
-
     private List<Point2D> tracePath(T startNode, T endNode) {
         List<Point2D> path = new ArrayList<>();
         GraphNode currentNode = endNode;
@@ -253,7 +289,11 @@ public class PathfindingC<T extends GraphNode, S> {
         Point2D currentNodeLocation = currentNode.getLocation();
         Point2D endNodeLocation = endNode.getLocation();
 
-        return (int) Math.round(endNodeLocation.subtract(currentNodeLocation).magnitude());
+        return (int) Math.round(
+            endNodeLocation
+                .subtract(currentNodeLocation)
+                .magnitude()
+        );
     }
 
 
@@ -282,6 +322,7 @@ public class PathfindingC<T extends GraphNode, S> {
         return smallestNode;
     }
 
+
     /**
      *
      * Will find the node that a point is closest to
@@ -297,4 +338,10 @@ public class PathfindingC<T extends GraphNode, S> {
 
         return current[i][j];
     }
+
+    public void setGraph(Graph<T, S> newGraph) {
+        this.graph = newGraph;
+    }
+
+    public Graph<T, S> getGraph() { return graph; }
 }

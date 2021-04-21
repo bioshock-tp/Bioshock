@@ -1,14 +1,14 @@
 package org.bioshock.utils;
 
-import static org.bioshock.entities.map.utils.RoomType.*;
-
 import org.bioshock.entities.map.utils.RoomType;
 
-public final class GlobalConstants {
-    public static final double PLAYER_WIDTH = 18;
-    public static final double PLAYER_HEIGHT = 21;
+import static org.bioshock.entities.map.utils.RoomType.NO_ROOM;
+import static org.bioshock.entities.map.utils.RoomType.SINGLE_ROOM;
 
-    public static final int PLAYER_SCALE = 3;
+public final class GlobalConstants {
+    public static final double PLAYER_WIDTH = 36;
+    public static final double PLAYER_HEIGHT = 42;
+    public static final double PLAYER_SCALE = 1.6;
 
     public static final double PLAYER_ANIMATION_SPEED = 0.15;
 

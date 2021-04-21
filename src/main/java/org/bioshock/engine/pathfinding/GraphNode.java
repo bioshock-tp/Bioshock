@@ -5,8 +5,8 @@ import javafx.geometry.Point2D;
 /**
  *
  * A class to hold all the data needed for A* algorithm.
- * All objects that will need to be used for pathfinding should extend this class
- * (e.g. Room)
+ * All objects that will need to be used for pathfinding should extend this
+ * class (e.g. Room)
  *
  * @author Kian Wells
  */
@@ -57,7 +57,7 @@ public class GraphNode {
         return isVisited;
     }
 
-    public boolean getIsObject() {
+    public boolean isObject() {
         return isObject;
     }
 

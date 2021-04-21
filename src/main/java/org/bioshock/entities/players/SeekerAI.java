@@ -5,6 +5,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import org.bioshock.animations.SeekerAnimations;
+import org.bioshock.animations.Sprite;
+import org.bioshock.animations.SwingAnimations;
+import org.bioshock.audio.AudioManager;
 import org.bioshock.components.NetworkC;
 import org.bioshock.components.PathfindingC;
 import org.bioshock.engine.core.WindowManager;
@@ -16,6 +20,7 @@ import org.bioshock.entities.SquareEntity;
 import org.bioshock.entities.map.Room;
 import org.bioshock.entities.map.TexRectEntity;
 import org.bioshock.entities.map.utils.ConnType;
+import org.bioshock.main.App;
 import org.bioshock.physics.Collisions;
 import org.bioshock.physics.Movement;
 import org.bioshock.rendering.renderers.SeekerRenderer;
@@ -58,6 +63,12 @@ public class SeekerAI extends SquareEntity implements Collisions {
     private Point2D currentTargetLocation;
     private Point2D lastSeenPosition;
 
+    private Sprite currentSprite;
+
+    private Sprite currentSwingAnimation;
+    private SeekerAnimations seekerAnimations;
+    private SwingAnimations swingAnimations;
+
     private static final double TIME_BETWEEN_SWINGS = 1.0;
     private static final double TIME_SWINGING = 1.0;
 
@@ -66,6 +77,8 @@ public class SeekerAI extends SquareEntity implements Collisions {
 
     private boolean isActive = false;
     private boolean isSearching = false;
+
+    private boolean wooshSoundPlayed = false;
 
 
     /**
@@ -103,22 +116,28 @@ public class SeekerAI extends SquareEntity implements Collisions {
     }
 
 
-    @Override
     protected void tick(double timeDelta) {
         timeBetweenSwings += timeDelta;
-        if (getIsActive()) {
+
+        if (isActive()) {
             timeSwinging += timeDelta;
         }
+
         doActions();
         setSwatterPos();
         setSwatterRot();
+
+        setAnimation();
+        setSwingAnimation();
+
+        movement.tick(timeDelta);
     }
 
 
     @Override
     public void collisionTick(Set<Entity> collisions) {
         /* Walls of current room */
-        List<TexRectEntity> walls = this.getCurrentRoom().getWalls();
+        List<TexRectEntity> walls = this.findCurrentRoom().getWalls();
 
         collisions.retainAll(walls);
 
@@ -137,7 +156,7 @@ public class SeekerAI extends SquareEntity implements Collisions {
         EntityManager.getPlayers().forEach(entity -> {
             if (
                 EntityManager.isManaged(this, entity)
-                && getIsActive()
+                && isActive()
                 && !entity.isDead()
                 && intersects(entity, "swatter")
             ) {
@@ -151,8 +170,16 @@ public class SeekerAI extends SquareEntity implements Collisions {
             ) {
                 if (timeBetweenSwings >= TIME_BETWEEN_SWINGS) {
                     setActive(true);
+
+                    if (!wooshSoundPlayed) {
+                        AudioManager.playWooshSfx();
+                        wooshSoundPlayed = true;
+                        playSwingAnimation();
+                    }
+
                     if (timeSwinging >= TIME_SWINGING) {
                         setActive(false);
+                        wooshSoundPlayed = false;
                         timeSwinging = 0;
                         timeBetweenSwings = 0;
                     }
@@ -176,6 +203,25 @@ public class SeekerAI extends SquareEntity implements Collisions {
             setActive(false);
             search();
         }
+    }
+
+    public void initAnimations() {
+        seekerAnimations = new SeekerAnimations(
+            this,
+            GlobalConstants.PLAYER_SCALE
+        );
+        currentSprite = seekerAnimations.getPlayerIdleSprite();
+        swingAnimations = new SwingAnimations(
+            this,
+            ((GlobalConstants.PLAYER_SCALE * 3) / 4)
+        );
+        currentSwingAnimation = swingAnimations.getTopRightIdle();
+    }
+
+    private void playSwingAnimation() {
+        Sprite animation = swingAnimations.getTopRightSwing();
+
+        setCurrentSwingAnimation(animation);
     }
 
     /**
@@ -302,7 +348,10 @@ public class SeekerAI extends SquareEntity implements Collisions {
         }
         else {
             // continue searching
-            movement.moveTo(currentTargetLocation.subtract(new Point2D(getWidth() / 2, getHeight() / 2)));
+            movement.moveTo(currentTargetLocation.subtract(new Point2D(
+                getWidth() / 2,
+                getHeight() / 2
+            )));
 
             double absX = Math.abs(currentTargetLocation.getX() - getWidth() / 2 - getX());
             double absY = Math.abs(currentTargetLocation.getY() - getHeight() / 2 - getY());
@@ -312,6 +361,87 @@ public class SeekerAI extends SquareEntity implements Collisions {
             }
         }
 
+    }
+
+    private void updateRoom(Entity entity) {
+        Room newRoom = entity.findCurrentRoom();
+        if (!newRoom.equals(currRoom)) {
+            prevRoom = currRoom;
+            currRoom = newRoom;
+        }
+    }
+
+    public void setActive(boolean b) { isActive = b; }
+
+    public void setSearch(boolean b) { isSearching = b; }
+
+    public void setSwatterRange(double range) {
+        swatterHitbox.setRadiusX(range);
+        swatterHitbox.setRadiusY(range);
+    }
+
+    public void setSwatterPos() {
+        swatterHitbox.setCenterX(getCentre().getX());
+        swatterHitbox.setCenterY(getCentre().getY());
+    }
+
+    public void setSwatterRot() {
+        double r = Movement.getFacingRotate(
+            target.getPosition().subtract(getPosition())
+        );
+        swatterHitbox.setStartAngle(30 + r);
+    }
+
+    private void setCurrentSprite(Sprite s) {
+        if (s != null) {
+            currentSprite = s;
+        } else {
+            App.logger.debug("Sprite is missing!");
+        }
+    }
+
+    public void setCurrentSwingAnimation(Sprite s) {
+        if (s != null) {
+            currentSwingAnimation = s;
+        } else {
+            App.logger.debug("Sprite is missing!");
+        }
+    }
+
+    public void setAnimation() {
+        Point2D translation = currentTargetLocation.subtract(getCentre());
+
+        int x = (int) translation.getX();
+        int y = (int) translation.getY();
+        Sprite animation = seekerAnimations.getPlayerIdleSprite();
+
+        if (x > 0) animation = seekerAnimations.getMoveRightSprite();
+
+        else if (x < 0) animation = seekerAnimations.getMoveLeftSprite();
+
+        else if (y > 0) animation = seekerAnimations.getMoveDownSprite();
+
+        else if (y < 0) animation = seekerAnimations.getMoveUpSprite();
+
+        setCurrentSprite(animation);
+    }
+
+    public void setSwingAnimation() {
+        Point2D translation = currentTargetLocation.subtract(getCentre());
+
+        int x = (int) translation.getX();
+        int y = (int) translation.getY();
+        Sprite animation = swingAnimations.getTopRightIdle();
+
+        if (x > 0) animation = swingAnimations.getTopRightIdle();
+
+        else if (x < 0) animation = swingAnimations.getTopLeftIdle();
+
+        else if (y > 0) animation = swingAnimations.getBottomRightIdle();
+
+        else if (y < 0) animation = swingAnimations.getBottomLeftIdle();
+
+        setCurrentSwingAnimation(animation);
     }
 
     private Room getPreferred() {
@@ -355,41 +485,19 @@ public class SeekerAI extends SquareEntity implements Collisions {
         return finalRoom;
     }
 
-    private void updateRoom(Entity entity) {
-        Room newRoom = entity.getCurrentRoom();
-        if (!newRoom.equals(currRoom)) {
-            prevRoom = currRoom;
-            currRoom = newRoom;
-            nodePathfinding.setGraph(currRoom.getTraversableGraph());
-        }
+    public Sprite getCurrentSprite() {
+        return currentSprite;
     }
 
-    public void setActive(boolean b) { isActive = b; }
-
-    public void setSearch(boolean b) {isSearching = b;}
-
-    public void setSwatterRange(double range) {
-        swatterHitbox.setRadiusX(range);
-        swatterHitbox.setRadiusY(range);
-    }
-
-    public void setSwatterPos() {
-        swatterHitbox.setCenterX(getCentre().getX());
-        swatterHitbox.setCenterY(getCentre().getY());
-    }
-
-    public void setSwatterRot() {
-        double r = Movement.getFacingRotate(
-                target.getPosition().subtract(getPosition())
-        );
-        swatterHitbox.setStartAngle(30 + r);
+    public Sprite getCurrentSwingAnimation() {
+        return currentSwingAnimation;
     }
 
     public Arc getSwatterHitbox() { return swatterHitbox; }
 
     public SquareEntity getTarget() { return target; }
 
-    public boolean getIsActive() { return isActive; }
+    public boolean isActive() { return isActive; }
 
     @Override
     public Rectangle getRenderArea() {

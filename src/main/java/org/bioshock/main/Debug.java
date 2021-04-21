@@ -20,7 +20,7 @@ public class Debug extends App {
 
         App.setPlayerCount(1);
 		WindowManager.initialise(stage);
-        startGame(stage, new MainGame(), false);
+        startGame(stage, new MainGame(0), false);
 
         stage.show();
 	}

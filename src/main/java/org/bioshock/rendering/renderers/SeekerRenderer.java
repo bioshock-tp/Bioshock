@@ -5,11 +5,15 @@ import static org.bioshock.rendering.RenderManager.getRenWidth;
 import static org.bioshock.rendering.RenderManager.getRenX;
 import static org.bioshock.rendering.RenderManager.getRenY;
 
+import org.bioshock.animations.AnimationPlayer;
 import org.bioshock.entities.players.SeekerAI;
 import org.bioshock.rendering.RenderManager;
 
+import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Arc;
+import javafx.scene.text.Font;
 import javafx.scene.transform.Rotate;
 
 public class SeekerRenderer implements Renderer {
@@ -24,11 +28,12 @@ public class SeekerRenderer implements Renderer {
         double height = seeker.getHeight();
         double radius = seeker.getRadius();
         Arc swatter = seeker.getSwatterHitbox();
-        boolean isActive = seeker.getIsActive();
+        boolean isActive = seeker.isActive();
 
         gc.save();
-
         RenderManager.clipToFOV(gc);
+
+
         Rotate r = seeker.getRotate();
         gc.setTransform(
             r.getMxx(), r.getMyx(), r.getMxy(),
@@ -53,6 +58,7 @@ public class SeekerRenderer implements Renderer {
 
 
 
+
         gc.setLineWidth(10);
         gc.setStroke(seeker.getRendererC().getColour());
 
@@ -68,7 +74,28 @@ public class SeekerRenderer implements Renderer {
                 swatter.getType()
             );
 
+
+
         }
+        // Handles animations
+        AnimationPlayer.playAnimation(
+            ent.getCurrentSprite(),
+            new Point2D(
+                getRenX(x),
+                getRenY(y)
+            )
+        );
+        AnimationPlayer.playAnimation(
+            ent.getCurrentSwingAnimation(),
+            new Point2D(
+                getRenX(x),
+                getRenY(y)
+            )
+        );
+
+        gc.setFill(Color.BLACK);
+        gc.setFont(new Font(getRenHeight(25)));
+        gc.fillText("Seeker(AI)", getRenX(x-width), getRenY(y-5), getRenWidth(width*3));
 
         gc.restore();
     }
