@@ -228,7 +228,7 @@ public class SeekerAI extends SquareEntity {
                             && intersects(entity, "fov")                           
                             && checkLineOfSight(entity)
             ) {
-                if(timeBetweenSwings >= TIME_BETWEEN_SWINGS){
+                if(timeBetweenSwings >= TIME_BETWEEN_SWINGS && checkInSwingDistance(entity)){
                     setActive(true);
                     if(!wooshSoundPlayed){
                         AudioManager.playWooshSfx();
@@ -256,6 +256,10 @@ public class SeekerAI extends SquareEntity {
         	setActive(false);
         	search();
         }
+    }
+
+    private boolean checkInSwingDistance(SquareEntity entity) {
+        return entity.getCentre().subtract(this.getCentre()).magnitude() <= this.getRadius() / 2;
     }
 
     /**
