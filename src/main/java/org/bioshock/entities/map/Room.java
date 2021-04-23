@@ -626,7 +626,6 @@ public class Room extends GraphNode {
                     ));
 
                     traversableNodes[i][j] = null;
-                    floorSpace[i][j] = false;
                 }
 
                 if (
