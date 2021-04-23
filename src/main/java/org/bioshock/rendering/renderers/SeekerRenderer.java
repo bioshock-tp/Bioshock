@@ -5,6 +5,7 @@ import static org.bioshock.rendering.RenderManager.getRenWidth;
 import static org.bioshock.rendering.RenderManager.getRenX;
 import static org.bioshock.rendering.RenderManager.getRenY;
 
+import javafx.scene.effect.ColorAdjust;
 import org.bioshock.animations.AnimationPlayer;
 import org.bioshock.animations.Sprite;
 import org.bioshock.animations.SwingAnimations;
@@ -38,13 +39,19 @@ public class SeekerRenderer implements Renderer {
             r.getMxx(), r.getMyx(), r.getMxy(),
             r.getMyy(), r.getTx(), r.getTy()
         );
-        gc.setFill(seeker.getRendererC().getColour());
+        ColorAdjust ca = new ColorAdjust(0,0,0,0);
+        if(seeker.getMovement().getSpeed() == 0){
+            ca.setHue(Color.BLUE.getHue());
+            ca.setContrast(-0.9);
+        }
+        gc.setEffect(ca);
+        /*gc.setFill(seeker.getRendererC().getColour());
         gc.fillRect(
             getRenX(x),
             getRenY(y),
             getRenWidth(width),
             getRenHeight(height)
-        );
+        );*/
         gc.setLineWidth(getRenWidth(10));
         gc.setStroke(seeker.getRendererC().getColour());
 
