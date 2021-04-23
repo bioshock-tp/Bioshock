@@ -217,7 +217,7 @@ public class Graph<T extends GraphNode, S> {
 
     /***
      * gets a new Graph which only contains nodes you can
-     * traverse to and from the provided node
+     * traverse to from the provided node
      * @param node the node all other nodes will be connected to
      * @param dc a deep copy function on the type T that returns a
      * new object with all the same values of the given object
@@ -230,21 +230,8 @@ public class Graph<T extends GraphNode, S> {
          * list of nodes reachable from the given node
          */
         List<T> reachableNodes = getIndirectlyConnectedNodes(node);
-        /***
-         * list of nodes which you can reach from the given node and can
-         * traverse to the given node i.e. if there was a one directional edge
-         * from A->B but not from B->A B wouldn't be in the list
-         */
-        ArrayList<T> bidirectionalNodes = new ArrayList<>();
 
-        for(T testNode: reachableNodes) {
-            //if you can reach node from the testNode add to bidirectionalNodes
-            if (getIndirectlyConnectedNodes(testNode).contains(node)) {
-                bidirectionalNodes.add(testNode);
-            }
-        }
-
-        return getTrimmedGraph(bidirectionalNodes);
+        return getTrimmedGraph(reachableNodes);
     }
 
 

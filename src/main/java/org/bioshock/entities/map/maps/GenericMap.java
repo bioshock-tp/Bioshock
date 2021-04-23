@@ -15,7 +15,6 @@ import org.bioshock.entities.map.TraversableEdgeGenerator;
 import org.bioshock.entities.map.Wall;
 import org.bioshock.entities.map.utils.ConnType;
 import org.bioshock.entities.map.utils.RoomType;
-import org.bioshock.main.App;
 import org.bioshock.utils.ArrayUtils;
 import org.bioshock.utils.Direction;
 import org.bioshock.utils.Size;
@@ -60,6 +59,8 @@ public class GenericMap implements Map {
         RoomType[][] roomTypes,
         long seed
     ) {
+        
+        long startNano = System.nanoTime();
         //stores the rooms in a map
         Room[][] rooms;
 
@@ -110,7 +111,6 @@ public class GenericMap implements Map {
             }
         }
 
-//        App.logger.debug("Before Combine Every room");
         // for every room try to combine the room
         for (int i = 0; i < roomTypes.length; i++) {
             for (int j = 0; j < roomTypes[0].length; j++) {
@@ -118,7 +118,6 @@ public class GenericMap implements Map {
             }
         }
 
-//        App.logger.debug("After Combine Every room");
         /*
          * generate the room graph from the room array and then get the largest
          * connected subgraph so its the largest possible random map

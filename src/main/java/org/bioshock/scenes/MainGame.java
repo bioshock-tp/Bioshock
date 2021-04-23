@@ -137,7 +137,7 @@ public class MainGame extends GameScene {
                 new Size(9, 11),
                 new Size(3, 5),
                 Color.SADDLEBROWN,
-                new Size(3, 3),
+                new Size(5, 5),
                 null,
                 seed
             );
