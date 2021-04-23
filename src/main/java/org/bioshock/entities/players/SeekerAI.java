@@ -170,6 +170,7 @@ public class SeekerAI extends SquareEntity implements Collisions {
 
         Hider firstPlayer = EntityManager.getPlayers().get(0);
         boolean masterPlayer = firstPlayer == EntityManager.getCurrentPlayer();
+        colorChanged = false;
 
         EntityManager.getPlayers().forEach(entity -> {
             if (

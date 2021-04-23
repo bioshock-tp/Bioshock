@@ -14,7 +14,7 @@ import org.bioshock.scenes.SceneManager;
 public final class EntityManager {
     private static List<Entity> entities = new ArrayList<>();
     private static List<Hider> players = new ArrayList<>(App.playerCount());
-    private static SeekerAI seeker;
+    private static List<SeekerAI> seekers = new ArrayList<>();
 
     private EntityManager() {}
 
@@ -34,7 +34,10 @@ public final class EntityManager {
 
         joinAll(threads);
 
-        if (seeker != null) seeker.safeTick(timeDelta);
+        for (SeekerAI seeker: seekers) {
+            if (seeker != null) seeker.safeTick(timeDelta);
+        }
+        
     }
 
     private static void joinAll(Thread[] threads) {
@@ -55,7 +58,7 @@ public final class EntityManager {
 
         entities.add(ent);
         if (ent instanceof Hider) players.add((Hider) ent);
-        if (ent instanceof SeekerAI) seeker = (SeekerAI) ent;
+        if (ent instanceof SeekerAI) seekers.add((SeekerAI) ent);
     }
 
     public static void registerAll(Entity... toAdd) {
@@ -67,7 +70,7 @@ public final class EntityManager {
 
         entities.remove(ent);
         players.remove(ent);
-        if (ent == seeker) seeker = null;
+        if (ent == seekers) seekers = null;
     }
 
     public static void unregisterAll() {
@@ -75,7 +78,7 @@ public final class EntityManager {
 
         entities.clear();
         players.clear();
-        seeker = null;
+        seekers = null;
     }
 
     public static void unregisterAll(Entity... toRemove) {
@@ -95,8 +98,8 @@ public final class EntityManager {
         return entities;
     }
 
-    public static SeekerAI getSeeker() {
-        return seeker;
+    public static List<SeekerAI> getSeeker() {
+        return seekers;
     }
 
     public static List<Hider> getPlayers() {

@@ -48,8 +48,8 @@ public class Hider extends SquareEntity implements Collisions {
     }
 
     protected void tick(double timeDelta) {
-        movement.tick(timeDelta);
         if (!dead) {
+            movement.tick(timeDelta);
             setAnimation();
             setWalkingSfx();
             powerUpManager.tick(timeDelta);
@@ -68,7 +68,7 @@ public class Hider extends SquareEntity implements Collisions {
         otherPlayers.remove(EntityManager.getCurrentPlayer());
 
         /* Seeker */
-        SeekerAI seeker = EntityManager.getSeeker();
+        List<SeekerAI> seekers = EntityManager.getSeeker();
 
         /* Walls of room */
         List<Wall> walls = new ArrayList<>(4);
@@ -76,7 +76,7 @@ public class Hider extends SquareEntity implements Collisions {
 
         Set<Entity> collisionCandidates = new HashSet<>();
         collisionCandidates.addAll(otherPlayers);
-        collisionCandidates.add(seeker);
+        collisionCandidates.addAll(seekers);
         collisionCandidates.addAll(walls);
 
         collisions.retainAll(collisionCandidates);

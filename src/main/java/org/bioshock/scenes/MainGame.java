@@ -1,5 +1,6 @@
 package org.bioshock.scenes;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -61,6 +62,9 @@ public class MainGame extends GameScene {
     private LabelEntity textChat;
 
     private LabelEntity chatLabel;
+    private List<Room> playersNotSpawnedIn = new ArrayList<>();
+
+    Random rand;
 
     public MainGame() {
         super();
@@ -179,30 +183,34 @@ public class MainGame extends GameScene {
         }
     }
 
-    private void initSeeker() {
+    private void initSeekers(int numSeekers) {
         List<Room> rooms = SceneManager.getMap().getRooms();
+        
+        for(int i=0;i<numSeekers;i++) {
+            Room roomToSpawn = playersNotSpawnedIn.get(rand.nextInt(playersNotSpawnedIn.size()));
+            playersNotSpawnedIn.remove(roomToSpawn);
+            
+            double x = roomToSpawn.getRoomCenter().getX();
+            double y = roomToSpawn.getRoomCenter().getY();
+            SeekerAI seeker = new SeekerAI(
+                new Point3D(
+                    x - (double) GlobalConstants.UNIT_WIDTH / 2,
+                    y - (double) GlobalConstants.UNIT_HEIGHT / 2,
+                    0.25
+                ),
+                new NetworkC(true),
+                new Size(GlobalConstants.UNIT_WIDTH, GlobalConstants.UNIT_HEIGHT),
+                300,
+                Color.INDIANRED
+            );
 
-        double x = rooms.get(rooms.size() / 2).getRoomCenter().getX();
-        double y = rooms.get(rooms.size() / 2).getRoomCenter().getY();
-        SeekerAI seeker = new SeekerAI(
-            new Point3D(
-                x - (double) GlobalConstants.UNIT_WIDTH / 2,
-                y - (double) GlobalConstants.UNIT_HEIGHT / 2,
-                0.25
-            ),
-            new NetworkC(true),
-            new Size(GlobalConstants.UNIT_WIDTH, GlobalConstants.UNIT_HEIGHT),
-            300,
-            Color.INDIANRED
-        );
-
-        seeker.initAnimations();
-        EntityManager.register(seeker);
-        children.add(seeker);
+            seeker.initAnimations();
+            EntityManager.register(seeker);
+            children.add(seeker);
+        }
     }
 
     private void initItems(long seed) {
-        Random rand = new Random(seed);
         children.add(new Burger(rand.nextLong()));
         children.add(new Dessert(rand.nextLong()));
         children.add(new Donut(rand.nextLong()));
@@ -262,26 +270,30 @@ public class MainGame extends GameScene {
 
     @Override
     public void initScene(long seed) {
+        
+        rand = new Random(seed);
         initMap(seed);
 
-        initSeeker();
-
         List<Room> rooms = SceneManager.getMap().getRooms();
+        playersNotSpawnedIn.addAll(rooms);
 
         List<Hider> hiders = EntityManager.getPlayers();
 
         for (int i = 0; i < App.playerCount(); i++) {
-            int roomNumber = i % rooms.size();
-            if (roomNumber >= rooms.size() / 2) roomNumber++;
+            Room roomToSpawn = playersNotSpawnedIn.get(rand.nextInt(playersNotSpawnedIn.size()));
+            playersNotSpawnedIn.remove(roomToSpawn);
 
-            double x = rooms.get(roomNumber % rooms.size()).getRoomCenter().getX();
-            double y = rooms.get(roomNumber % rooms.size()).getRoomCenter().getY();
+            double x = roomToSpawn.getRoomCenter().getX();
+            double y = roomToSpawn.getRoomCenter().getY();
+            playersNotSpawnedIn.remove(roomToSpawn);
 
             hiders.get(i).setPosition(
                 x - (double) GlobalConstants.UNIT_WIDTH / 2,
                 y - (double) GlobalConstants.UNIT_HEIGHT / 2
             );
         }
+
+        initSeekers(2);
 
         initItems(seed);
 
@@ -308,10 +320,10 @@ public class MainGame extends GameScene {
         if (!losing) {
             runningTime += timeDelta;
 
-            if (runningTime >= ENDTIME) {
-                SceneManager.setScene(new WinScreen());
-                return;
-            }
+//            if (runningTime >= ENDTIME) {
+//                SceneManager.setScene(new WinScreen());
+//                return;
+//            }
 
             if (
                 !EntityManager.getPlayers().isEmpty()
@@ -352,6 +364,7 @@ public class MainGame extends GameScene {
 
     public void collectFood() {
         if (++collectedFood == FOOD_TO_WIN) {
+            NetworkManager.tick();
             SceneManager.setScene(new WinScreen());
         }
     }

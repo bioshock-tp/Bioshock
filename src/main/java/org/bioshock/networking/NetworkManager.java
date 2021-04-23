@@ -32,8 +32,8 @@ public class NetworkManager {
     private static String myName;
     private static Hider me;
     private static Hider masterHider;
-    private static SeekerAI seeker;
-
+    
+    private static List<SeekerAI> seekers = new ArrayList<>(App.playerCount());
     private static List<Hider> playerList = new ArrayList<>(App.playerCount());
     private static Map<String, Hider> loadedPlayers = new HashMap<>(
         App.playerCount()
@@ -105,7 +105,7 @@ public class NetworkManager {
 
                 me.getMovement().initMovement();
                 playerList.forEach(Hider::initAnimations);
-                seeker.initAnimations();
+                seekers.forEach(SeekerAI::initAnimations);
 
                 App.logger.info("Networking initialised");
 
@@ -121,9 +121,15 @@ public class NetworkManager {
         int x = (int) me.getX();
         int y = (int) me.getY();
 
-        Point2D aiPos = seeker.getPosition();
-        int aiX = (int) aiPos.getX();
-        int aiY = (int) aiPos.getY();
+        int[][] aiCoords = new int[seekers.size()][2];
+        for(int i=0;i<seekers.size();i++) {
+            Point2D seekerPos = seekers.get(i).getPosition();
+            aiCoords[i][0] = (int) seekerPos.getX();
+            aiCoords[i][1] = (int) seekerPos.getY();
+        }
+//        Point2D aiPos = seekers.getPosition();
+//        int aiX = (int) aiPos.getX();
+//        int aiY = (int) aiPos.getY();
 
         String message = "";
 
@@ -132,7 +138,7 @@ public class NetworkManager {
             messageList.poll();
         }
 
-        Message.ClientInput input = new Message.ClientInput(x, y, aiX, aiY, message);
+        Message.ClientInput input = new Message.ClientInput(x, y, aiCoords, message);
 
         return new Message(-1, myID, myName, input, me.isDead());
     }
@@ -169,11 +175,14 @@ public class NetworkManager {
 
             updateDirection(input, messageFrom);
 
-        if (messageFrom == masterHider) {
-                seeker.getMovement().moveTo(
-                    input.aiX,
-                    input.aiY
-                );
+            if (messageFrom == masterHider) {
+                for(int i=0;i<seekers.size();i++) {
+                    seekers.get(i).getMovement().moveTo(
+                        input.aiCoords[i][0],
+                        input.aiCoords[i][1]
+                    );
+                }
+                
             }
 
             messageFrom.getMovement().moveTo(
@@ -216,7 +225,7 @@ public class NetworkManager {
             playerList.add((Hider) entity);
         }
         else if (entity instanceof SeekerAI) {
-            seeker = (SeekerAI) entity;
+            seekers.add((SeekerAI) entity);
         }
         else {
             App.logger.error("Tried to register non player entity {}", entity);
@@ -231,7 +240,7 @@ public class NetworkManager {
         playerList.remove(entity);
         loadedPlayers.remove(entity.getID());
 
-        if (entity == seeker) seeker = null;
+        if (entity == seekers) seekers = null;
     }
 
     public static void unregisterAll(Collection<Entity> entities) {

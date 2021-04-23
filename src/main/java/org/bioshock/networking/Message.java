@@ -43,8 +43,7 @@ public class Message implements Serializable {
         final int x;
         final int y;
 
-        final int aiX;
-        final int aiY;
+        final int[][] aiCoords;
 
         final String message;
 
@@ -55,54 +54,53 @@ public class Message implements Serializable {
          * @param aiX Coordinate X of AI
          * @param aiY Coordinate Y of AI
          */
-        ClientInput(int x, int y, int aiX, int aiY, String message) {
+        ClientInput(int x, int y, int[][] aiCoords, String message) {
             this.x = x;
             this.y = y;
 
-            this.aiX = aiX;
-            this.aiY = aiY;
+            this.aiCoords = aiCoords; 
 
             this.message = message;
         }
 
         @Override
         public String toString() {
-            return String.format("ClientInput{x=%d, y=%d, aiX=%f, aiY=%f}", x, y, aiX, aiY);
+            return String.format("ClientInput{x=%d, y=%d, aiCoords=%S}", x, y, aiCoords.toString());
         }
 
-        @Override
-        public int hashCode() {
-            final int prime = 31;
-            int result = 1;
-            long temp;
-            temp = Double.doubleToLongBits(aiX);
-            result = prime * result + (int) (temp ^ (temp >>> 32));
-            temp = Double.doubleToLongBits(aiY);
-            result = prime * result + (int) (temp ^ (temp >>> 32));
-            result = prime * result + x;
-            result = prime * result + y;
-            return result;
-        }
+//        @Override
+//        public int hashCode() {
+//            final int prime = 31;
+//            int result = 1;
+//            long temp;
+//            temp = Double.doubleToLongBits(aiX);
+//            result = prime * result + (int) (temp ^ (temp >>> 32));
+//            temp = Double.doubleToLongBits(aiY);
+//            result = prime * result + (int) (temp ^ (temp >>> 32));
+//            result = prime * result + x;
+//            result = prime * result + y;
+//            return result;
+//        }
 
-        @Override
-        public boolean equals(Object obj) {
-            if (this == obj)
-                return true;
-            if (obj == null)
-                return false;
-            if (getClass() != obj.getClass())
-                return false;
-
-            ClientInput other = (ClientInput) obj;
-            if (Double.doubleToLongBits(aiX) != Double.doubleToLongBits(other.aiX))
-                return false;
-            if (Double.doubleToLongBits(aiY) != Double.doubleToLongBits(other.aiY))
-                return false;
-            if (x != other.x)
-                return false;
-
-            return y != other.y;
-        }
+//        @Override
+//        public boolean equals(Object obj) {
+//            if (this == obj)
+//                return true;
+//            if (obj == null)
+//                return false;
+//            if (getClass() != obj.getClass())
+//                return false;
+//
+//            ClientInput other = (ClientInput) obj;
+//            if (Double.doubleToLongBits(aiX) != Double.doubleToLongBits(other.aiX))
+//                return false;
+//            if (Double.doubleToLongBits(aiY) != Double.doubleToLongBits(other.aiY))
+//                return false;
+//            if (x != other.x)
+//                return false;
+//
+//            return y != other.y;
+//        }
     }
 
     static Message inLobby(int playerNumber, String uuid, String name) {

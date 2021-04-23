@@ -17,18 +17,17 @@ public class FreezePower extends PowerUp {
     }
 
     public SeekerAI findNearestSeeker(){
-        SeekerAI nearest = EntityManager.getSeeker();
+        SeekerAI nearest = EntityManager.getSeeker().get(0);
 
         double shortest = WindowManager.getWindowWidth() * WindowManager.getWindowHeight();
         double temp;
 
-        for(Entity s : EntityManager.getEntities()){
-            if(s instanceof SeekerAI){
-                temp = ((SeekerAI) s).getCentre().subtract(entity.getCentre()).magnitude();
-                if(temp < shortest){
-                    shortest = temp;
-                    nearest = (SeekerAI) s;
-                }
+        for(SeekerAI s : EntityManager.getSeeker()){
+            temp = ((SeekerAI) s).getCentre().subtract(entity.getCentre()).magnitude();
+            if(temp < shortest){
+                shortest = temp;
+                nearest = (SeekerAI) s;
+            
             }
         }
 
