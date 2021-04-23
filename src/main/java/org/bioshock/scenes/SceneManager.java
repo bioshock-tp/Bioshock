@@ -16,6 +16,7 @@ public final class SceneManager {
     private static boolean inGame = false;
     private static boolean initialised = false;
     private static Map gameMap;
+    private static long seed;
 
     private SceneManager() {}
 
@@ -37,7 +38,7 @@ public final class SceneManager {
 
         stage.setScene(currentScene);
 
-        currentScene.initScene();
+        currentScene.initScene(seed);
 	}
 
     public static void setInLobby(boolean b) {
@@ -50,6 +51,10 @@ public final class SceneManager {
 
     public static void setMap(Map map) {
         gameMap = map;
+    }
+
+    public static void setSeed(long newSeed) {
+        seed = newSeed;
     }
 
 	public static GameScene getScene() {
@@ -84,4 +89,5 @@ public final class SceneManager {
     public static Map getMap() {
         return gameMap;
     }
+
 }

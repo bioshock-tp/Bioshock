@@ -110,6 +110,9 @@ public class Movement {
     }
 
     public void setSpeed(double newSpeed) {
+        xDirection = newSpeed * Math.abs(xDirection);
+        yDirection = newSpeed * Math.abs(yDirection);
+
         speed = newSpeed;
     }
 

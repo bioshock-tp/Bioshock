@@ -18,7 +18,7 @@ import org.bioshock.entities.Entity;
 import org.bioshock.entities.EntityManager;
 import org.bioshock.entities.SquareEntity;
 import org.bioshock.entities.map.Room;
-import org.bioshock.entities.map.TexRectEntity;
+import org.bioshock.entities.map.Wall;
 import org.bioshock.entities.map.utils.ConnType;
 import org.bioshock.main.App;
 import org.bioshock.physics.Collisions;
@@ -43,15 +43,18 @@ import javafx.util.Pair;
 
 public class SeekerAI extends SquareEntity implements Collisions {
     private Hider target;
-    private final Arc swatterHitbox;
-    private final Graph<Room, Pair<Direction, ConnType>> roomGraph = SceneManager.getMap().getRoomGraph();
-    private PathfindingC<Room, Pair<Direction, ConnType>> roomPathfinding = new PathfindingC<>(
+    private Arc swatterHitbox;
+    private final Graph<Room, Pair<Direction, ConnType>> roomGraph =
+        SceneManager.getMap().getRoomGraph();
+    private PathfindingC<Room, Pair<Direction, ConnType>> roomPathfinding =
+    new PathfindingC<>(
         roomGraph,
         SceneManager.getMap().getRoomArray(),
         SceneManager.getMap().getRoomArray()[0][0].getTotalSize().getWidth(),
         SceneManager.getMap().getRoomArray()[0][0].getTotalSize().getHeight()
     );
-    private PathfindingC<GraphNode, Pair<Direction, Double>> nodePathfinding = new PathfindingC<>(
+    private PathfindingC<GraphNode, Pair<Direction, Double>> nodePathfinding =
+    new PathfindingC<>(
         SceneManager.getMap().getTraversableGraph(),
         SceneManager.getMap().getTraversableArray(),
         GlobalConstants.UNIT_WIDTH,
@@ -78,12 +81,13 @@ public class SeekerAI extends SquareEntity implements Collisions {
     private boolean isActive = false;
     private boolean isSearching = false;
 
+    private boolean colorChanged = false;
+
     private boolean wooshSoundPlayed = false;
 
 
     /**
      *
-     * Constructor
      *
      * @param p The location to spawn at
      * @param com The network component
@@ -92,10 +96,8 @@ public class SeekerAI extends SquareEntity implements Collisions {
      * @param c Colour of seeker
      * @param e The initial player to follow
      */
-    public SeekerAI(Point3D p, NetworkC com, Size s, int r, Color c, Hider e) {
+    public SeekerAI(Point3D p, NetworkC com, Size s, int r, Color c) {
         super(p, com, new SimpleRendererC(), s, r, c);
-
-        target = e;
 
         movement.setSpeed(movement.getSpeed() / 2);
 
@@ -113,6 +115,19 @@ public class SeekerAI extends SquareEntity implements Collisions {
         prevRoom = currRoom;
 
         currentTargetLocation = new Point2D(getCentre().getX(), getCentre().getY());
+    }
+
+    public void initAnimations() {
+        seekerAnimations = new SeekerAnimations(
+            this,
+            GlobalConstants.PLAYER_SCALE
+        );
+        currentSprite = seekerAnimations.getPlayerIdleSprite();
+        swingAnimations = new SwingAnimations(
+            this,
+            1.5
+        );
+        currentSwingAnimation = SwingAnimations.getIdle();
     }
 
 
@@ -137,7 +152,7 @@ public class SeekerAI extends SquareEntity implements Collisions {
     @Override
     public void collisionTick(Set<Entity> collisions) {
         /* Walls of current room */
-        List<TexRectEntity> walls = this.findCurrentRoom().getWalls();
+        List<Wall> walls = this.findCurrentRoom().getWalls();
 
         collisions.retainAll(walls);
 
@@ -150,6 +165,9 @@ public class SeekerAI extends SquareEntity implements Collisions {
      */
     private void doActions() {
         setSearch(true);
+
+        if (target == null) target = EntityManager.getCurrentPlayer();
+
         Hider firstPlayer = EntityManager.getPlayers().get(0);
         boolean masterPlayer = firstPlayer == EntityManager.getCurrentPlayer();
 
@@ -162,22 +180,26 @@ public class SeekerAI extends SquareEntity implements Collisions {
             ) {
                 entity.setDead(true);
             }
+
             if (
                 EntityManager.isManaged(this, entity)
                 && !entity.isDead()
+                && !entity.isInvisible()
                 && intersects(entity, "fov")
                 && checkLineOfSight(entity)
             ) {
-                if (timeBetweenSwings >= TIME_BETWEEN_SWINGS) {
+                if (
+                    timeBetweenSwings >= TIME_BETWEEN_SWINGS
+                    && checkInSwingDistance(entity)
+                ) {
                     setActive(true);
 
-                    if (!wooshSoundPlayed) {
+                    if (!wooshSoundPlayed){
                         AudioManager.playWooshSfx();
                         wooshSoundPlayed = true;
-                        playSwingAnimation();
                     }
 
-                    if (timeSwinging >= TIME_SWINGING) {
+                    if (timeSwinging >= TIME_SWINGING){
                         setActive(false);
                         wooshSoundPlayed = false;
                         timeSwinging = 0;
@@ -185,17 +207,14 @@ public class SeekerAI extends SquareEntity implements Collisions {
                     }
                 }
 
+                rendererC.setColour(Color.ORANGE);
+                colorChanged = true;
                 target = entity;
                 if (masterPlayer) chasePlayer(target);
             }
         });
 
-        if (EntityManager.getPlayers().stream().anyMatch(entity ->
-            EntityManager.isManaged(this, entity)
-            && !entity.isDead()
-            && intersects(entity, "fov")
-            && checkLineOfSight(entity)
-        )) {
+        if (!colorChanged) {
             rendererC.setColour(Color.INDIANRED);
         }
 
@@ -205,23 +224,8 @@ public class SeekerAI extends SquareEntity implements Collisions {
         }
     }
 
-    public void initAnimations() {
-        seekerAnimations = new SeekerAnimations(
-            this,
-            GlobalConstants.PLAYER_SCALE
-        );
-        currentSprite = seekerAnimations.getPlayerIdleSprite();
-        swingAnimations = new SwingAnimations(
-            this,
-            ((GlobalConstants.PLAYER_SCALE * 3) / 4)
-        );
-        currentSwingAnimation = swingAnimations.getTopRightIdle();
-    }
-
-    private void playSwingAnimation() {
-        Sprite animation = swingAnimations.getTopRightSwing();
-
-        setCurrentSwingAnimation(animation);
+    private boolean checkInSwingDistance(SquareEntity entity) {
+        return entity.getCentre().subtract(this.getCentre()).magnitude() <= this.getRadius() / 2;
     }
 
     /**
@@ -285,15 +289,18 @@ public class SeekerAI extends SquareEntity implements Collisions {
         roomsToCheck.add(entity.findCurrentRoom());
 
         for (Room room : roomsToCheck) {
-            for (TexRectEntity wall : room.getWalls()) {
+            for (Wall wall : room.getWalls()) {
                 wallHitbox = new Rectangle(
                     wall.getX(),
                     wall.getY(),
                     wall.getWidth(),
                     wall.getHeight()
                 );
+
                 wallHitbox.getTransforms().add(wall.getRotate());
+
                 Shape intersect = Shape.intersect(line, wallHitbox);
+
                 if (intersect.getBoundsInLocal().getWidth() != -1) {
                     return false;
                 }
@@ -309,18 +316,21 @@ public class SeekerAI extends SquareEntity implements Collisions {
      *
      * @param entity the entity to chase
      */
-    private void chasePlayer(Entity entity) {
+    private void chasePlayer(SquareEntity entity) {
         setSearch(false);
+
         path.clear();
-        lastSeenPosition = new Point2D(entity.getX(), entity.getY());
-        path = nodePathfinding.createBestPath(
-            this.getCentre(),
-            lastSeenPosition
-        );
+
+        lastSeenPosition = new Point2D(entity.getCentre().getX(), entity.getCentre().getY());
+
+        path = nodePathfinding.createBestPath(this.getCentre(), lastSeenPosition);
+
+        path.add(lastSeenPosition);
 
         if (!path.isEmpty()) {
             currentTargetLocation = path.remove(0);
         }
+
         search();
     }
 
@@ -346,12 +356,13 @@ public class SeekerAI extends SquareEntity implements Collisions {
 
             currentTargetLocation = path.remove(0);
         }
-        else {
+        else{
             // continue searching
-            movement.moveTo(currentTargetLocation.subtract(new Point2D(
-                getWidth() / 2,
-                getHeight() / 2
-            )));
+            movement.moveTo(
+                currentTargetLocation.subtract(
+                    new Point2D(getWidth() / 2, getHeight() / 2)
+                )
+            );
 
             double absX = Math.abs(currentTargetLocation.getX() - getWidth() / 2 - getX());
             double absY = Math.abs(currentTargetLocation.getY() - getHeight() / 2 - getY());
@@ -368,6 +379,22 @@ public class SeekerAI extends SquareEntity implements Collisions {
         if (!newRoom.equals(currRoom)) {
             prevRoom = currRoom;
             currRoom = newRoom;
+        }
+    }
+
+    private void setCurrentSprite(Sprite s) {
+        if (s != null) {
+            currentSprite = s;
+        } else {
+            App.logger.debug("Sprite is missing!");
+        }
+    }
+
+    public void setCurrentSwingAnimation(Sprite s) {
+        if (s != null) {
+            currentSwingAnimation = s;
+        } else {
+            App.logger.debug("Sprite is missing!");
         }
     }
 
@@ -392,22 +419,6 @@ public class SeekerAI extends SquareEntity implements Collisions {
         swatterHitbox.setStartAngle(30 + r);
     }
 
-    private void setCurrentSprite(Sprite s) {
-        if (s != null) {
-            currentSprite = s;
-        } else {
-            App.logger.debug("Sprite is missing!");
-        }
-    }
-
-    public void setCurrentSwingAnimation(Sprite s) {
-        if (s != null) {
-            currentSwingAnimation = s;
-        } else {
-            App.logger.debug("Sprite is missing!");
-        }
-    }
-
     public void setAnimation() {
         Point2D translation = currentTargetLocation.subtract(getCentre());
 
@@ -427,22 +438,31 @@ public class SeekerAI extends SquareEntity implements Collisions {
     }
 
     public void setSwingAnimation() {
-        Point2D translation = currentTargetLocation.subtract(getCentre());
+        Sprite animation = SwingAnimations.getIdle();
 
-        int x = (int) translation.getX();
-        int y = (int) translation.getY();
-        Sprite animation = swingAnimations.getTopRightIdle();
+        if (wooshSoundPlayed && !target.isDead()) {
+            Point2D translation = currentTargetLocation.subtract(getCentre());
 
-        if (x > 0) animation = swingAnimations.getTopRightIdle();
+            int x = (int) translation.getX();
+            int y = (int) translation.getY();
 
-        else if (x < 0) animation = swingAnimations.getTopLeftIdle();
-
-        else if (y > 0) animation = swingAnimations.getBottomRightIdle();
-
-        else if (y < 0) animation = swingAnimations.getBottomLeftIdle();
+            if (x >= 0 && y >= 0) {
+                animation = SwingAnimations.getBottomRightSwing();
+            }
+            else if (x >= 0) {
+                animation = SwingAnimations.getTopRightSwing();
+            }
+            else if (y >= 0) {
+                animation = SwingAnimations.getBottomLeftSwing();
+            }
+            else {
+                animation = SwingAnimations.getTopLeftSwing();
+            }
+        }
 
         setCurrentSwingAnimation(animation);
     }
+
 
     private Room getPreferred() {
         if (lastSeenPosition == null) {

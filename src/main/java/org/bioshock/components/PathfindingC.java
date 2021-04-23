@@ -68,20 +68,22 @@ public class PathfindingC<T extends GraphNode, S> {
             return pathToFollow;
         }
 
-        T destination;
+        T destination = current;
         if (endNode == null) {
             Iterator<T> iterator = graph.getNodes().iterator();
             while (
-                (destination = iterator.next()) == current
-                && iterator.hasNext()
+                iterator.hasNext()
+                && (
+                    (destination = iterator.next()) == current
+                    || destination == avoidNode
+                )
             );
 
             if (destination == current) App.logger.error("Not enough nodes");
-        }
-        else {
+        } else {
             destination = endNode;
         }
-        // int i = 0;
+
         List<T> nodePath = new ArrayList<>();
         List<T> possibleMoves = new ArrayList<>();
         while (current != destination) {
@@ -118,10 +120,6 @@ public class PathfindingC<T extends GraphNode, S> {
             pathToFollow.add(current.getLocation());
 
             possibleMoves.clear();
-
-            // if (++i == 1e6) {
-            //     break;
-            // }
         }
 
         return pathToFollow;
@@ -190,7 +188,7 @@ public class PathfindingC<T extends GraphNode, S> {
             do {
                 endNode = iterator.next();
             }
-            while (!endNode.equals(startNode) && iterator.hasNext());
+            while (iterator.hasNext() && !endNode.equals(startNode));
 
             if (endNode.equals(startNode)) App.logger.error("Not enough nodes");
         }

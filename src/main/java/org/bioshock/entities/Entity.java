@@ -1,8 +1,6 @@
 package org.bioshock.entities;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 
@@ -54,30 +52,6 @@ public abstract class Entity {
     }
 
     protected abstract void tick(double timeDelta);
-
-    /**
-     *
-     * Finds the closest room to the given {@code Point2D}, using the given
-     * list of rooms
-     * @param point the coordinates to find the closest room to
-     * @param rooms the list of in-game rooms
-     * @return The room that is closest to the given point
-     */
-    private static Room roomOf(Point2D point, List<Room> rooms) {
-        return Collections.min(rooms, Comparator.comparing(room ->
-            room.getRoomCenter().subtract(point).magnitude()
-        ));
-    }
-
-    /**
-     *
-     * Finds the closest room to the given {@code Point2D}
-     * @param point the coordinates to find the closest room to
-     * @return The room that is closest to the given point
-     */
-    protected static Room roomOf(Point2D point) {
-        return roomOf(point, SceneManager.getMap().getRooms());
-    }
 
     public final void safeTick(double timeDelta) {
         if (enabled) {

@@ -20,17 +20,21 @@ public class LoadingScreen extends GameScene {
 
         VBox verticalBox = new VBox();
         verticalBox.setAlignment(Pos.CENTER);
-		Label buzzLabel = new Label(App.getBundle().getString("BUZZ_TEXT"));
+
+        Label buzzLabel = new Label(App.getBundle().getString("BUZZ_TEXT"));
         buzzLabel.setTextFill(Color.WHITE);
+
         Label killLabel = new Label(App.getBundle().getString("KILL_TEXT"));
         killLabel.setTextFill(Color.web("0xC50909"));
+
         TextFlow titleFlow = new TextFlow(buzzLabel, killLabel);
         titleFlow.setStyle("-fx-font-family: \"Helvetica\"; -fx-font-size: 72px; -fx-font-weight: bold; -fx-text-alignment: center;");
+
         Label infoLabel = new Label(loadingText);
         infoLabel.setStyle("-fx-font-family: \"Helvetica\"; -fx-font-size: 36px; -fx-text-alignment: center;");
         infoLabel.setTextFill(Color.WHITE);
+
         verticalBox.getChildren().addAll(titleFlow, infoLabel);
-//        titleFlow.setTextAlignment(Pos.CENTER);
 
         getPane().getChildren().add(verticalBox);
 
@@ -58,7 +62,7 @@ public class LoadingScreen extends GameScene {
         if (isNetworked) {
             fadeOut.setOnFinished(e -> SceneManager.setScene(new Lobby()));
         } else {
-            fadeOut.setOnFinished(e -> SceneManager.setScene(new MainGame(0)));
+            fadeOut.setOnFinished(e -> SceneManager.setScene(new MainGame()));
         }
 	}
 }

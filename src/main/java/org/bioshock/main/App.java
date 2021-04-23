@@ -28,7 +28,7 @@ import java.util.ResourceBundle;
 public class App extends Application {
     public static final Logger logger = LogManager.getLogger(App.class);
 
-    private static String name = null;
+    private static String name;
     private static int playerCount = 2;
     private static Scene fxmlScene;
     private static boolean networked;
@@ -72,19 +72,6 @@ public class App extends Application {
 
             if (!networked) {
                 App.setPlayerCount(1);
-
-                InputManager.onPress(KeyCode.R, () -> {
-                    App.logger.debug("Resetting Scene...");
-                    try {
-                        GameScene scene = SceneManager.getScene();
-                        scene.destroy();
-                        Class<? extends GameScene> sceCl = scene.getClass();
-                        GameScene nSce = sceCl.getDeclaredConstructor().newInstance();
-                        SceneManager.setScene(nSce);
-                    } catch (Exception e) {
-                        App.logger.error("Error whilst changing scene: ", e);
-                    }
-                });
             }
 
             new GameLoop().start();
@@ -141,11 +128,11 @@ public class App extends Application {
         return bundle;
     }
 
-    public static String getNAME() {
+    public static String getName() {
         return name;
     }
 
-    public static void setNAME(String name) {
+    public static void setName(String name) {
         App.name = name;
     }
 

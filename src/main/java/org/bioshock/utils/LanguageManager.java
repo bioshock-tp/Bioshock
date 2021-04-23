@@ -22,7 +22,7 @@ public class LanguageManager {
             default:
                 loadLang("en");
         }
-        App.setNAME(App.getBundle().getString("BUZZ_TEXT") + App.getBundle().getString("KILL_TEXT"));
+        App.setName(App.getBundle().getString("BUZZ_TEXT") + App.getBundle().getString("KILL_TEXT"));
     }
 
     public static void loadLang(String lang) {

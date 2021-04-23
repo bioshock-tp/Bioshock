@@ -11,16 +11,20 @@ import javafx.scene.paint.Color;
 
 public class Lobby extends GameScene {
     private Label playerCountLabel = new Label("0/" + App.playerCount());
+    private MainGame mainGame;
 
     public Lobby() {
-		super();
+        super();
 
-		setCursor(Cursor.HAND);
-		setBackground(new Background(new BackgroundFill(
+        setCursor(Cursor.HAND);
+        setBackground(new Background(new BackgroundFill(
             Color.LIGHTGRAY,
             null,
             null
         )));
+
+
+        mainGame = new MainGame();
 
         Label waitingText = new Label("Waiting for players...");
 
@@ -29,10 +33,10 @@ public class Lobby extends GameScene {
         getPane().getChildren().add(waitingText);
 
         getPane().getChildren().add(playerCountLabel);
-	}
+    }
 
     @Override
-    public void initScene() {
+    public void initScene(long seed) {
         SceneManager.setInLobby(true);
 
         if (App.isNetworked()) {
@@ -48,7 +52,7 @@ public class Lobby extends GameScene {
         ));
 
         if (NetworkManager.playerCount() == App.playerCount()) {
-            SceneManager.setScene(new MainGame(NetworkManager.getSeed()));
+            SceneManager.setScene(mainGame);
         }
     }
 }

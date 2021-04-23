@@ -11,8 +11,8 @@ import org.bioshock.engine.pathfinding.Graph;
 import org.bioshock.engine.pathfinding.GraphNode;
 import org.bioshock.entities.map.Room;
 import org.bioshock.entities.map.RoomEdgeGenerator;
-import org.bioshock.entities.map.TexRectEntity;
 import org.bioshock.entities.map.TraversableEdgeGenerator;
+import org.bioshock.entities.map.Wall;
 import org.bioshock.entities.map.utils.ConnType;
 import org.bioshock.entities.map.utils.RoomType;
 import org.bioshock.utils.ArrayUtils;
@@ -52,7 +52,7 @@ public class GenericMap implements Map {
      */
     public GenericMap(
         Point3D newPos,
-        double wallWidth,
+        int wallWidth,
         Size newRoomSize,
         Size coriSize,
         Color c,
@@ -252,7 +252,7 @@ public class GenericMap implements Map {
 
     private void initRooms(long seed) {
         int i = 0;
-        for(Room r : orderedRoomList) {
+        for (Room r : orderedRoomList) {
             r.init(roomGraph.getEdgesInfo(r), null, seed + i);
             i++;
         }
@@ -270,8 +270,8 @@ public class GenericMap implements Map {
      *
      * @return all the walls that make up a map
      */
-    public List<TexRectEntity> getWalls() {
-        List<TexRectEntity> walls = new ArrayList<>();
+    public List<Wall> getWalls() {
+        List<Wall> walls = new ArrayList<>();
         for (Room r : roomGraph.getNodes()) {
             walls.addAll(r.getWalls());
         }

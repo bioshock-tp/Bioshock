@@ -20,7 +20,7 @@ public class WindowManager {
 
     public static void initialise(Stage stage) {
         window = stage;
-        window.setTitle(App.getNAME());
+        window.setTitle(App.getName());
         window.setFullScreen(INITFULLSCREEN);
         window.setMaximized(INITMAXIMISED);
 

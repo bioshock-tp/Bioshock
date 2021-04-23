@@ -20,6 +20,8 @@ public abstract class SquareEntity extends Entity {
     protected Size size;
     protected Circle fov;
 
+    protected boolean invisible = false;
+
     protected SquareEntity(
         Point3D p,
         NetworkC nCom,
@@ -60,6 +62,8 @@ public abstract class SquareEntity extends Entity {
         this.size = size;
     }
 
+    public void setInvisible(boolean invisible) { this.invisible = invisible; }
+
     public Point getCentre() {
         return new Point(getX() + getWidth() / 2, getY() + getHeight() / 2);
     }
@@ -87,4 +91,6 @@ public abstract class SquareEntity extends Entity {
     public Movement getMovement() {
         return movement;
     }
+
+    public boolean isInvisible() { return invisible; }
 }

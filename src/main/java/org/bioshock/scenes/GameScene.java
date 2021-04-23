@@ -78,11 +78,14 @@ public abstract class GameScene extends Scene {
      * {@link org.bioshock.scenes.SceneManager#setScene(GameScene)
      * SceneManager.setScene(GameScene)}
      */
-    public void initScene() {
+    public void initScene(long seed) {
         registerEntities();
         renderEntities();
     }
 
+    public void renderTick(double timeDelta) {}
+
+    public void logicTick(double timeDelta) {}
 
     /**
      * Registers the scene's {@link #children} to the
@@ -129,10 +132,6 @@ public abstract class GameScene extends Scene {
         );
     }
 
-    public void renderTick(double timeDelta) {}
-
-    public void logicTick(double timeDelta) {}
-
 
     /**
      * Sets the background of the scene
@@ -162,8 +161,7 @@ public abstract class GameScene extends Scene {
     }
 
 
-
-     public static Size getGameScreen() {
+    public static Size getGameScreen() {
         return gameScreen;
     }
 

@@ -1,14 +1,15 @@
 package org.bioshock.animations;
 
-import javafx.geometry.Point2D;
-import javafx.scene.canvas.Canvas;
-import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.image.Image;
 import org.bioshock.engine.core.GameLoop;
 import org.bioshock.rendering.RenderManager;
 import org.bioshock.scenes.SceneManager;
 import org.bioshock.utils.ImageUtils;
 import org.bioshock.utils.Size;
+
+import javafx.geometry.Point2D;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.Image;
 
 public class AnimationPlayer {
     private static final String IMAGE_PATH =
@@ -21,7 +22,11 @@ public class AnimationPlayer {
 
     private AnimationPlayer() {}
 
-    public static void playAnimation(Sprite sprite, Point2D position) {
+    public static void playAnimation(
+        Sprite sprite,
+        Point2D position,
+        Size renderSize
+    ) {
         double time = GameLoop.getCurrentGameTime();
         Canvas canvas = SceneManager.getCanvas();
         GraphicsContext gc = canvas.getGraphicsContext2D();
@@ -31,8 +36,7 @@ public class AnimationPlayer {
                 sprite.getSpriteImages(),
                 sprite.getPlaySpeed(),
                 position,
-                sprite.getSize().getWidth() * sprite.getScale(),
-                sprite.getSize().getHeight() * sprite.getScale()
+                renderSize
             );
         }
 
@@ -45,9 +49,9 @@ public class AnimationPlayer {
                 sprite.getNumberOfFrames(),
                 position,
                 sprite.getSize(),
-                sprite.getScale(),
                 sprite.isReversePlay(),
-                sprite.getPlaySpeed()
+                sprite.getPlaySpeed(),
+                renderSize
             );
         }
     }
@@ -56,8 +60,7 @@ public class AnimationPlayer {
         Image[] imgs,
         double speed,
         Point2D position,
-        double w,
-        double h
+        Size renderSize
     ) {
         double time = GameLoop.getCurrentGameTime();
         Canvas canvas = SceneManager.getCanvas();
@@ -68,8 +71,8 @@ public class AnimationPlayer {
             imgs[index],
             position.getX(),
             position.getY(),
-            RenderManager.getRenWidth(w),
-            RenderManager.getRenHeight(h)
+            RenderManager.getRenWidth(renderSize.getWidth()),
+            RenderManager.getRenHeight(renderSize.getHeight())
         );
     }
 
@@ -81,9 +84,9 @@ public class AnimationPlayer {
         int numberOfFrames,
         Point2D position,
         Size size,
-        double scale,
         boolean reversePlay,
-        double playSpeed
+        double playSpeed,
+        Size renderSize
     ) {
         double speed = playSpeed >= 0 ? playSpeed : 0.3;
 
@@ -117,8 +120,8 @@ public class AnimationPlayer {
             size.getHeight(),
             position.getX(),
             position.getY(),
-            RenderManager.getRenWidth(size.getWidth() * scale),
-            RenderManager.getRenHeight(size.getHeight() * scale)
+            RenderManager.getRenWidth(renderSize.getWidth()),
+            RenderManager.getRenHeight(renderSize.getHeight())
         );
     }
 

@@ -34,6 +34,7 @@ public abstract class AudioSettings {
      */
     @Getter protected double volume = 1.0;
 
+
     /**
      * Creates a deep copy of this object.
      *
@@ -41,6 +42,7 @@ public abstract class AudioSettings {
      *          A deep copy of this object.
      */
     public abstract AudioSettings deepCopy();
+
 
     /**
      * Sets the cycle count to a value of the range [-1, Integer.MAX_VALUE].
@@ -57,7 +59,6 @@ public abstract class AudioSettings {
     public int getCycleCount() {
         return cycleCount;
     }
-
 
 
     /**
@@ -80,6 +81,7 @@ public abstract class AudioSettings {
         return volume;
     }
 
+
     /**
      * Sets the volume to a value of the range [0, 1].
      *
@@ -95,5 +97,4 @@ public abstract class AudioSettings {
             this.volume = volume;
         }
     }
-
 }

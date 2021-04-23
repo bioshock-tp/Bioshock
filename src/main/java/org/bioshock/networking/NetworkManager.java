@@ -1,18 +1,27 @@
 package org.bioshock.networking;
 
-import javafx.application.Platform;
-import javafx.concurrent.Task;
-import javafx.geometry.Point2D;
-import javafx.scene.input.KeyCode;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.EnumMap;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
 import org.bioshock.entities.Entity;
 import org.bioshock.entities.SquareEntity;
 import org.bioshock.entities.players.Hider;
 import org.bioshock.entities.players.SeekerAI;
 import org.bioshock.main.App;
 import org.bioshock.networking.Message.ClientInput;
+import org.bioshock.scenes.MainGame;
 import org.bioshock.scenes.SceneManager;
 
-import java.util.*;
+import javafx.application.Platform;
+import javafx.concurrent.Task;
+import javafx.geometry.Point2D;
+import javafx.scene.input.KeyCode;
 
 public class NetworkManager {
     private static Map<KeyCode, Boolean> keyPressed = new EnumMap<>(
@@ -20,19 +29,19 @@ public class NetworkManager {
     );
 
     private static String myID = UUID.randomUUID().toString();
+    private static String myName;
     private static Hider me;
     private static Hider masterHider;
     private static SeekerAI seeker;
-    private static long seed = 0;
-
-    public static long getSeed() {
-        return seed;
-    }
 
     private static List<Hider> playerList = new ArrayList<>(App.playerCount());
     private static Map<String, Hider> loadedPlayers = new HashMap<>(
         App.playerCount()
     );
+
+    private static Map<Hider, String> playerNames = new HashMap<>();
+
+    private static LinkedList<String> messageList = new LinkedList<>();
 
     private static Client client = new Client();
     private static Object awaitingPlayerLock = new Object();
@@ -52,11 +61,13 @@ public class NetworkManager {
                     App.logger.info("Connecting to web socket...");
                     client.connectBlocking();
                     App.logger.info("Connected to web socket");
-
                 } catch (InterruptedException e) {
                     App.logger.error(e);
                     Thread.currentThread().interrupt();
                 }
+
+                myName = client.getPlayerName();
+                client.send(Integer.toString(App.playerCount()));
 
                 /* Wait until players join then add them to loadedPlayers */
                 while (loadedPlayers.size() < App.playerCount()) {
@@ -74,13 +85,19 @@ public class NetworkManager {
                     Message message = client.getInitialMessages().remove();
 
                     Hider hider = playerList.get(message.playerNumber - 1);
+
                     hider.setID(message.uuid);
+
+                    hider.setName(message.name);
+
                     loadedPlayers.putIfAbsent(message.uuid, hider);
+                    playerNames.putIfAbsent(hider, message.name);
 
                     Platform.runLater(() ->
                         SceneManager.getLobby().updatePlayerCount()
                     );
                 }
+
 
                 masterHider = playerList.get(0);
 
@@ -100,6 +117,7 @@ public class NetworkManager {
     }
 
     private static Message pollInputs() {
+
         int x = (int) me.getX();
         int y = (int) me.getY();
 
@@ -107,20 +125,26 @@ public class NetworkManager {
         int aiX = (int) aiPos.getX();
         int aiY = (int) aiPos.getY();
 
-        Message.ClientInput input = new Message.ClientInput(x, y, aiX, aiY);
+        String message = "";
 
-        return new Message(-1, myID, input, me.isDead());
+        if (!messageList.isEmpty() && !me.isDead()) {
+            message = messageList.getFirst();
+            messageList.poll();
+        }
+
+        Message.ClientInput input = new Message.ClientInput(x, y, aiX, aiY, message);
+
+        return new Message(-1, myID, myName, input, me.isDead());
     }
 
     public static void tick() {
-        if (me != null) {
-            client.send(Message.serialise(pollInputs()));
-        }
+        if (me != null) client.send(Message.serialise(pollInputs()));
 
         try {
             client.getMutex().acquire();
         } catch(InterruptedException e) {
             App.logger.error(e);
+            client.getMutex().release();
             Thread.currentThread().interrupt();
         }
 
@@ -128,30 +152,53 @@ public class NetworkManager {
         while ((message = client.getMessageQ().poll()) != null) {
             /* The hider the message came from */
             Hider messageFrom = loadedPlayers.get(message.uuid);
-            if (messageFrom == me) continue;
 
             ClientInput input = message.input;
 
-            if (input == null) {
-                if (message.dead) messageFrom.setDead(true);
-            } else {
-                updateDirection(input, messageFrom);
+            if (input == null && message.dead) messageFrom.setDead(true);
 
-                if (messageFrom == masterHider) {
-                    seeker.getMovement().moveTo(
-                        input.aiX,
-                        input.aiY
-                    );
-                }
+            if (
+                input != null
+                && input.message != null
+                && !input.message.isEmpty()
+            ) {
+                sendChat(message);
+            }
 
-                messageFrom.getMovement().moveTo(
-                    input.x,
-                    input.y
+            if (messageFrom == me || input == null) continue;
+
+            updateDirection(input, messageFrom);
+
+        if (messageFrom == masterHider) {
+                seeker.getMovement().moveTo(
+                    input.aiX,
+                    input.aiY
                 );
             }
+
+            messageFrom.getMovement().moveTo(
+                input.x,
+                input.y
+            );
         }
 
         client.getMutex().release();
+    }
+
+    private static void sendChat(Message message) {
+        Hider messageFrom = loadedPlayers.get(message.uuid);
+        ClientInput input = message.input;
+
+        if (messageFrom == me) {
+            ((MainGame) SceneManager.getScene()).appendStringToChat(
+                "Me: " + input.message
+            );
+            return;
+        }
+
+        ((MainGame) SceneManager.getScene()).appendStringToChat(
+            message.name + ": " + input.message
+        );
     }
 
     private static void updateDirection(ClientInput input, Hider messageFrom) {
@@ -192,10 +239,21 @@ public class NetworkManager {
     }
 
     public static void kill(Hider hider) {
-        App.logger.debug("killing");
         client.send(Message.serialise(
-            new Message(-1, hider.getID(), null, true)
+            new Message(
+                -1,
+                hider.getID(),
+                playerNames.get(hider),
+                null,
+                true
+            )
         ));
+    }
+
+    public static void addMessage(String message) {
+        if (!message.isEmpty()) {
+            messageList.add(message);
+        }
     }
 
     public static void setKeysPressed(KeyCode key, boolean pressed) {
@@ -220,5 +278,9 @@ public class NetworkManager {
 
     public static Map<String, Hider> getLoadedPlayers() {
         return loadedPlayers;
+    }
+
+    public static Map<Hider, String> getPlayerNames() {
+        return playerNames;
     }
 }

@@ -1,9 +1,10 @@
 package org.bioshock.animations;
 
-import javafx.geometry.Point2D;
 import org.bioshock.entities.Entity;
 import org.bioshock.utils.GlobalConstants;
 import org.bioshock.utils.Size;
+
+import javafx.geometry.Point2D;
 
 public class SeekerAnimations implements PlayerAnimation {
 
@@ -96,7 +97,7 @@ public class SeekerAnimations implements PlayerAnimation {
             1,
             scale,
             false,
-            GlobalConstants.PLAYER_ANIMATION_SPEED
+            GlobalConstants.PLAYER_ANIMATION_SPEED * 2
         );
     }
 

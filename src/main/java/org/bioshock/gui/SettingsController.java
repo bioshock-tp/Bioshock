@@ -22,7 +22,7 @@ public class SettingsController extends App {
     private static final String ENGLISH = "en";
 
     /**
-     *
+     * String for corresponding language
      */
     private static final String ROMANIAN = "ro";
 

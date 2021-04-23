@@ -1,11 +1,14 @@
 package org.bioshock.rendering.renderers;
 
 import static org.bioshock.rendering.RenderManager.getRenHeight;
-import static org.bioshock.rendering.RenderManager.getRenWidth;
+import static org.bioshock.rendering.RenderManager.getRenHeightUnzoomed;
+import static org.bioshock.rendering.RenderManager.getRenWidthUnzoomed;
 
 import org.bioshock.entities.LabelEntity;
+import org.bioshock.main.App;
 
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.text.Font;
 
 public class LabelRenderer implements Renderer {
     private LabelRenderer() {}
@@ -14,36 +17,49 @@ public class LabelRenderer implements Renderer {
         GraphicsContext gc,
         E label
     ) {
-        if (label.isDisplayed()) {
-            gc.save();
-            gc.setFont(label.getFont());
-            gc.setFill(label.getColour());
+        try {
+            if (label.isDisplayed()) {
+                gc.save();
+                gc.setFont(label.getFont());
+                gc.setFill(label.getRendererC().getColour());
 
-            String textToDisplay = label.getString();
-            int charsPerLine = label.getCharsPerLine();
+                String textToDisplay = label.getString();
+                String[] lines = textToDisplay.split("\\r?\\n");
 
-            for (int i = 0; i * charsPerLine < textToDisplay.length(); i++) {
-                int endIndex = (i + 1) * charsPerLine;
+                int charsPerLine = label.getCharsPerLine();
 
-                if (endIndex > textToDisplay.length()) {
-                    endIndex = textToDisplay.length();
+                for (int i = 0; i < lines.length; i++) {
+                    String line = lines[i];
+                    
+                    if (line.isEmpty()) continue;
+
+                    line = line.stripLeading();
+
+                    for (int j = 0; j * charsPerLine < line.length(); j++) {
+                        gc.setFont(new Font(
+                            getRenHeight(label.getFont().getSize())
+                        ));
+
+                        int endIndex = (j + 1) * charsPerLine > line.length() ? line.length() : (j + 1) * charsPerLine;
+                        gc.fillText(
+                            line.substring(
+                                j * charsPerLine,
+                                endIndex
+                            ),
+                            getRenWidthUnzoomed(label.getX()),
+                            getRenHeightUnzoomed(
+                                label.getY()
+                                    + i * (label.getFont().getSize()
+                                    + label.getLineSpacing())
+                            )
+                        );
+                    }
                 }
 
-                gc.fillText(
-                    textToDisplay.substring(
-                        i * charsPerLine,
-                        endIndex
-                    ),
-                    getRenWidth(label.getX()),
-                    getRenHeight(
-                        label.getY() + i * (
-                            label.getFont().getSize() + label.getLineSpacing()
-                        )
-                    )
-                );
+                gc.restore();
             }
-
-            gc.restore();
+        } catch (Exception e) {
+            App.logger.debug("Error in Label Renderer: ", e);
         }
     }
 }

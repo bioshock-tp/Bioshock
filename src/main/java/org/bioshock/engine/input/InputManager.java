@@ -5,10 +5,13 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 
+import org.bioshock.engine.core.ChatManager;
 import org.bioshock.entities.EntityManager;
 import org.bioshock.entities.LabelEntity;
 import org.bioshock.main.App;
+import org.bioshock.networking.NetworkManager;
 import org.bioshock.rendering.RenderManager;
+import org.bioshock.scenes.MainGame;
 import org.bioshock.scenes.SceneManager;
 
 import javafx.geometry.Point3D;
@@ -17,11 +20,13 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 
 public class InputManager {
-    private static Map<KeyCode, Runnable> keyPresses =
-        new EnumMap<>(KeyCode.class);
+    private static Map<KeyCode, Runnable> keyPresses = new EnumMap<>(
+        KeyCode.class
+    );
 
-    private static Map<KeyCode, Runnable> keyReleases =
-        new EnumMap<>(KeyCode.class);
+    private static Map<KeyCode, Runnable> keyReleases = new EnumMap<>(
+        KeyCode.class
+    );
 
     private static boolean debug = false;
 
@@ -134,14 +139,35 @@ public class InputManager {
     public static void changeScene() {
         SceneManager.getScene().setOnKeyPressed(e -> {
             Runnable runnable;
-            if ((runnable = keyPresses.get(e.getCode())) != null) {
+            if (SceneManager.inGame() && ChatManager.isInChat()) {
+                if (e.getCode() == KeyCode.ENTER) {
+                    NetworkManager.addMessage(ChatManager.popText());
+                }
+
+                else if (e.getCode() == KeyCode.BACK_SPACE) {
+                    ChatManager.backSpace();
+                }
+
+                else {
+                    App.logger.debug("Char to append: {}", e.getCharacter());
+                    ChatManager.append(e.getCharacter());
+                }
+            }
+
+            else if (SceneManager.inGame() && e.getCode() == KeyCode.ENTER) {
+                ChatManager.setInChat(true);
+                ((MainGame) SceneManager.getScene()).setChatVisibility(ChatManager.isInChat());
+            }
+
+            else if ((runnable = keyPresses.get(e.getCode())) != null) {
                 runnable.run();
             }
         });
 
         SceneManager.getScene().setOnKeyReleased(e -> {
             Runnable runnable;
-            if ((runnable = keyReleases.get(e.getCode())) != null) {
+            if ((runnable = keyReleases.get(e.getCode())) != null
+                    && !ChatManager.isInChat()) {
                 runnable.run();
             }
         });

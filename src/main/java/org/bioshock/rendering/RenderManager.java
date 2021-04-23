@@ -1,8 +1,8 @@
 package org.bioshock.rendering;
 
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -25,7 +25,8 @@ public final class RenderManager {
 
     private static List<Entity> entities = new ArrayList<>();
     private static Point2D cameraPos = new Point2D(0, 0);
-    private static Point2D scale = new Point2D(1.0, 1.0);
+    private static Point2D scale = new Point2D(1, 1);
+    private static double zoom = 1;
     private static double padding = 1;
 
 
@@ -44,7 +45,12 @@ public final class RenderManager {
         // clear the entire canvas
         gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
 		Size screenSize = GameScene.getGameScreen();
-        Rectangle screen = new Rectangle(cameraPos.getX(), cameraPos.getY(), screenSize.getWidth(), screenSize.getHeight());
+        Rectangle screen = new Rectangle(
+            cameraPos.getX(),
+            cameraPos.getY(),
+            screenSize.getWidth() / zoom,
+            screenSize.getHeight() / zoom
+        );
 
         // renders each entity
         entities.stream().filter(Entity::isEnabled).forEach(entity -> {
@@ -53,8 +59,12 @@ public final class RenderManager {
                 intersects(entity.getRenderArea(), screen)
             ) {
                 try {
-                    Method rend = entity.getRenderer().getDeclaredMethods()[0];
-                    rend.invoke(null, gc, entity);
+                    Arrays.asList(entity.getRenderer().getDeclaredMethods())
+                        .stream()
+                        .filter(method -> method.getName().equals("render"))
+                        .findFirst()
+                        .get()
+                        .invoke(null, gc, entity);
                 } catch (
                     InvocationTargetException
                     | IllegalAccessException
@@ -169,7 +179,11 @@ public final class RenderManager {
     }
 
     public static double getRenWidth(double w) {
-        return w * scale.getX() + padding;
+        return w * scale.getX() * zoom + padding;
+    }
+
+    public static double getRenWidthUnzoomed(double w) {
+    	return w * scale.getX() + padding;
     }
 
     public static double getRenX(double x) {
@@ -177,7 +191,11 @@ public final class RenderManager {
     }
 
     public static double getRenHeight(double h) {
-        return h * scale.getY() + padding;
+        return h * scale.getY() * zoom + padding;
+    }
+
+    public static double getRenHeightUnzoomed(double h) {
+    	return h * scale.getY() + padding;
     }
 
     public static double getRenY(double y) {
@@ -195,4 +213,12 @@ public final class RenderManager {
     public static void setClip(boolean clip) {
         RenderManager.clip = clip;
     }
+
+	public static double getZoom() {
+		return zoom;
+	}
+
+	public static void setZoom(double zoom) {
+		RenderManager.zoom = zoom;
+	}
 }
