@@ -15,8 +15,6 @@ import org.bioshock.entities.items.food.Donut;
 import org.bioshock.entities.items.food.HotDog;
 import org.bioshock.entities.items.food.Pizza;
 import org.bioshock.entities.items.powerup_items.FreezeItem;
-import org.bioshock.entities.items.powerup_items.InvisibilityItem;
-import org.bioshock.entities.items.powerup_items.SpeedItem;
 import org.bioshock.entities.map.Room;
 import org.bioshock.entities.map.RoomEntity;
 import org.bioshock.entities.map.Wall;
@@ -187,8 +185,6 @@ public class MainGame extends GameScene {
     }
 
     private void initSeekers(int numSeekers) {
-        List<Room> rooms = SceneManager.getMap().getRooms();
-        
         for(int i=0;i<numSeekers;i++) {
             Room roomToSpawn = playersNotSpawnedIn.get(rand.nextInt(playersNotSpawnedIn.size()));
             playersNotSpawnedIn.remove(roomToSpawn);

@@ -5,10 +5,6 @@ import static org.bioshock.rendering.RenderManager.getRenWidth;
 import static org.bioshock.rendering.RenderManager.getRenX;
 import static org.bioshock.rendering.RenderManager.getRenY;
 
-import javafx.scene.effect.Blend;
-import javafx.scene.effect.BlendMode;
-import javafx.scene.effect.ColorAdjust;
-import javafx.scene.effect.ColorInput;
 import org.bioshock.animations.AnimationPlayer;
 import org.bioshock.entities.EntityManager;
 import org.bioshock.entities.SquareEntity;
@@ -17,11 +13,11 @@ import org.bioshock.rendering.RenderManager;
 
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.effect.ColorAdjust;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
 import javafx.scene.transform.Rotate;
-import org.checkerframework.checker.units.qual.C;
 
 public class PlayerSpriteRenderer implements Renderer {
     private PlayerSpriteRenderer() {}
