@@ -5,5 +5,5 @@ public class Pizza extends Food {
         "/org/bioshock/images/food/pizza.png"
     ).getPath();
 
-    public Pizza() { super(PATH); }
+    public Pizza(long seed) { super(PATH, seed); }
 }

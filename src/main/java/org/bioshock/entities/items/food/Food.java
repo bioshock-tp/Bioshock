@@ -6,6 +6,7 @@ import java.util.Random;
 import java.util.Set;
 
 import org.bioshock.components.NetworkC;
+import org.bioshock.engine.pathfinding.GraphNode;
 import org.bioshock.entities.Entity;
 import org.bioshock.entities.items.Item;
 import org.bioshock.entities.map.Room;
@@ -20,7 +21,7 @@ import javafx.geometry.Point3D;
 public abstract class Food extends Item {
     private static final int Z = 10;
     private static final int SIZE = 50;
-    private static final Random random = new Random();
+    private static Random random = new Random();
 
     private static Set<Room> roomsWithFood = new HashSet<>();
 
@@ -28,9 +29,9 @@ public abstract class Food extends Item {
      * Creates a room in a random room in a random location
      * @param path Path to this entities image file
      */
-    protected Food(String path) {
+    protected Food(String path, long seed) {
         super(
-            spawn(),
+            spawn(seed),
             new Size(SIZE, SIZE),
             new NetworkC(true),
             path
@@ -43,12 +44,14 @@ public abstract class Food extends Item {
      * Gets random location in a random {@code Room}
      * @return A random {@code Point3D} in a random {@code Room}
      */
-    private static Point3D spawn() {
+    private static Point3D spawn(long seed) {
+        random = new Random(seed);
+        
         List<Room> rooms = SceneManager.getMap().getRooms();
 
         Room room;
         do {
-            int roomIndex = random.nextInt(rooms.size() - 1);
+            int roomIndex = random.nextInt(rooms.size());
 
             room = rooms.get(roomIndex);
 
@@ -58,22 +61,17 @@ public abstract class Food extends Item {
             }
         } while (roomsWithFood.contains(room));
 
-        Size bounds = room.getRoomSize();
-
-        int maxXOffset = (int) bounds.getWidth() / 2 - SIZE;
-        int minXOffset = -maxXOffset;
-        int xOffset = random.nextInt(maxXOffset - minXOffset) + minXOffset;
-
-        int maxYOffset = (int) bounds.getHeight() / 2 - SIZE;
-        int minYOffset = -maxYOffset;
-        int yOffset = random.nextInt(maxYOffset - minYOffset) + minYOffset;
-
-        Point2D centre = room.getRoomCenter();
-
-        int x = (int) centre.getX() + xOffset;
-        int y = (int) centre.getY() + yOffset;
+        GraphNode[][] traversable = room.getTraversableArray();
+        int i, j;
+        do {
+            i = random.nextInt(traversable.length);
+            j = random.nextInt(traversable[0].length);
+        } while (traversable[i][j] == null);
 
         roomsWithFood.add(room);
+        Point2D foodCentre = traversable[i][j].getLocation();
+        double x = foodCentre.getX()-SIZE/2;
+        double y = foodCentre.getY()-SIZE/2;
 
         return new Point3D(x, y, Z);
     }

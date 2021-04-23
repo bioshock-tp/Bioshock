@@ -5,5 +5,5 @@ public class HotDog extends Food {
         "/org/bioshock/images/food/hot_dog.png"
     ).getPath();
 
-    public HotDog() { super(PATH); }
+    public HotDog(long seed) { super(PATH, seed); }
 }

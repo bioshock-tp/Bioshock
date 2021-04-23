@@ -5,5 +5,5 @@ public class Burger extends Food {
         "/org/bioshock/images/food/burger.png"
     ).getPath();
 
-    public Burger() { super(PATH); }
+    public Burger(long seed) { super(PATH, seed); }
 }

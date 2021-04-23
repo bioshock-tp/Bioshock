@@ -1,6 +1,7 @@
 package org.bioshock.scenes;
 
 import java.util.List;
+import java.util.Random;
 
 import org.bioshock.components.NetworkC;
 import org.bioshock.engine.core.FrameRate;
@@ -200,12 +201,13 @@ public class MainGame extends GameScene {
         children.add(seeker);
     }
 
-    private void initItems() {
-        children.add(new Burger());
-        children.add(new Dessert());
-        children.add(new Donut());
-        children.add(new HotDog());
-        children.add(new Pizza());
+    private void initItems(long seed) {
+        Random rand = new Random(seed);
+        children.add(new Burger(rand.nextLong()));
+        children.add(new Dessert(rand.nextLong()));
+        children.add(new Donut(rand.nextLong()));
+        children.add(new HotDog(rand.nextLong()));
+        children.add(new Pizza(rand.nextLong()));
     }
 
     private void initTimer() {
@@ -281,7 +283,7 @@ public class MainGame extends GameScene {
             );
         }
 
-        initItems();
+        initItems(seed);
 
         renderEntities();
 
