@@ -207,11 +207,11 @@ public class MainGame extends GameScene {
         children.add(new Burger());
         children.add(new Dessert());
         children.add(new Donut());
-        //children.add(new HotDog());
-        //children.add(new Pizza());
+        children.add(new HotDog());
+        children.add(new Pizza());
         children.add(new FreezeItem());
-        children.add(new SpeedItem());
-        children.add(new InvisibilityItem());
+        //children.add(new SpeedItem());
+        //children.add(new InvisibilityItem());
     }
 
     private void initTimer() {
