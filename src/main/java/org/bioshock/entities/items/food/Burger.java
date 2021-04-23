@@ -13,12 +13,4 @@ public class Burger extends Food {
     //Invisible powerup
 
     public Burger() { super(PATH); }
-
-    @Override
-    protected void apply(Entity entity){
-        if(entity instanceof Hider){
-            ((Hider) entity).getPowerUpManager().getInvisiblePower().start();
-        }
-        ((MainGame) SceneManager.getScene()).collectFood();
-    }
 }

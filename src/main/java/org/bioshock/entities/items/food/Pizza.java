@@ -13,12 +13,4 @@ public class Pizza extends Food {
     //Pizza will give you speed boost
 
     public Pizza() { super(PATH); }
-
-    @Override
-    protected void apply(Entity entity){
-        if(entity instanceof Hider){
-            ((Hider) entity).getPowerUpManager().getSpeedPower().start();
-        }
-        ((MainGame) SceneManager.getScene()).collectFood();
-    }
 }

@@ -12,6 +12,9 @@ import org.bioshock.entities.items.food.Dessert;
 import org.bioshock.entities.items.food.Donut;
 import org.bioshock.entities.items.food.HotDog;
 import org.bioshock.entities.items.food.Pizza;
+import org.bioshock.entities.items.powerup_items.FreezeItem;
+import org.bioshock.entities.items.powerup_items.InvisibilityItem;
+import org.bioshock.entities.items.powerup_items.SpeedItem;
 import org.bioshock.entities.map.Room;
 import org.bioshock.entities.map.RoomEntity;
 import org.bioshock.entities.map.Wall;
@@ -204,8 +207,11 @@ public class MainGame extends GameScene {
         children.add(new Burger());
         children.add(new Dessert());
         children.add(new Donut());
-        children.add(new HotDog());
-        children.add(new Pizza());
+        //children.add(new HotDog());
+        //children.add(new Pizza());
+        children.add(new FreezeItem());
+        children.add(new SpeedItem());
+        children.add(new InvisibilityItem());
     }
 
     private void initTimer() {

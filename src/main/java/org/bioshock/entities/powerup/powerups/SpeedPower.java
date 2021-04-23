@@ -5,7 +5,7 @@ import org.bioshock.entities.powerup.PowerUp;
 
 public class SpeedPower extends PowerUp {
 
-    double newspeed = 15;
+    double newspeed = 12;
     double oldSpeed;
 
     public SpeedPower(SquareEntity entity, double duration){
