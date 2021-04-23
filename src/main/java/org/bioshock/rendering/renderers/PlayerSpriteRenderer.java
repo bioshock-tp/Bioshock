@@ -5,6 +5,10 @@ import static org.bioshock.rendering.RenderManager.getRenWidth;
 import static org.bioshock.rendering.RenderManager.getRenX;
 import static org.bioshock.rendering.RenderManager.getRenY;
 
+import javafx.scene.effect.Blend;
+import javafx.scene.effect.BlendMode;
+import javafx.scene.effect.ColorAdjust;
+import javafx.scene.effect.ColorInput;
 import org.bioshock.animations.AnimationPlayer;
 import org.bioshock.entities.EntityManager;
 import org.bioshock.entities.SquareEntity;
@@ -17,6 +21,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
 import javafx.scene.transform.Rotate;
+import org.checkerframework.checker.units.qual.C;
 
 public class PlayerSpriteRenderer implements Renderer {
     private PlayerSpriteRenderer() {}
@@ -70,6 +75,21 @@ public class PlayerSpriteRenderer implements Renderer {
             r.getMxx(), r.getMyx(), r.getMxy(),
             r.getMyy(), r.getTx(), r.getTy()
         );
+
+        ColorAdjust ca = new ColorAdjust(0,0, 0,0);
+        if(((Hider) player).getPowerUpManager().getSpeedPower().getActive()){
+            ca.setHue(0.15);
+            ca.setContrast(0.2);
+        }
+        if (((Hider) player).getPowerUpManager().getFreezePower().getActive()) {
+            ca.setHue(Color.BLUE.getHue());
+            ca.setContrast(0);
+        }
+        if(((Hider) player).getPowerUpManager().getInvisiblePower().getActive()){
+            ca.setBrightness(-0.5);
+            ca.setContrast(0);
+        }
+        gc.setEffect(ca);
         gc.setFill(player.getRendererC().getColour());
 
         gc.setLineWidth(10);

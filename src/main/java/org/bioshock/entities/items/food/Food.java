@@ -49,16 +49,15 @@ public abstract class Food extends Item {
         
         List<Room> rooms = SceneManager.getMap().getRooms();
 
-        Room room;
+        Room room = null;
         do {
-            int roomIndex = random.nextInt(rooms.size());
-
-            room = rooms.get(roomIndex);
-
             if (roomsWithFood.size() == rooms.size()) {
                 App.logger.error("Too many food items being created");
                 break;
             }
+            int roomIndex = random.nextInt(rooms.size());
+
+            room = rooms.get(roomIndex);
         } while (roomsWithFood.contains(room));
 
         GraphNode[][] traversable = room.getTraversableArray();

@@ -14,6 +14,9 @@ import org.bioshock.entities.items.food.Dessert;
 import org.bioshock.entities.items.food.Donut;
 import org.bioshock.entities.items.food.HotDog;
 import org.bioshock.entities.items.food.Pizza;
+import org.bioshock.entities.items.powerup_items.FreezeItem;
+import org.bioshock.entities.items.powerup_items.InvisibilityItem;
+import org.bioshock.entities.items.powerup_items.SpeedItem;
 import org.bioshock.entities.map.Room;
 import org.bioshock.entities.map.RoomEntity;
 import org.bioshock.entities.map.Wall;
@@ -136,7 +139,7 @@ public class MainGame extends GameScene {
                 new Size(9, 11),
                 new Size(3, 5),
                 Color.SADDLEBROWN,
-                new Size(3, 3),
+                new Size(5, 7),
                 null,
                 seed
             );
@@ -210,12 +213,15 @@ public class MainGame extends GameScene {
         }
     }
 
-    private void initItems(long seed) {
+    private void initItems() {
         children.add(new Burger(rand.nextLong()));
         children.add(new Dessert(rand.nextLong()));
         children.add(new Donut(rand.nextLong()));
         children.add(new HotDog(rand.nextLong()));
         children.add(new Pizza(rand.nextLong()));
+		children.add(new FreezeItem(rand.nextLong()));
+        //children.add(new SpeedItem(rand.nextLong()));
+        //children.add(new InvisibilityItem(rand.nextLong()));
     }
 
     private void initTimer() {
@@ -295,7 +301,7 @@ public class MainGame extends GameScene {
 
         initSeekers(2);
 
-        initItems(seed);
+        initItems();
 
         renderEntities();
 
