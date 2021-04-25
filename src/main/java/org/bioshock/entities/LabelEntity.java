@@ -11,7 +11,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 
-public class LabelEntity extends Entity{
+public class LabelEntity extends Entity {
     private String label;
 
     private Font font;

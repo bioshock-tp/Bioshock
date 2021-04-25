@@ -125,8 +125,8 @@ public class Hider extends SquareEntity implements Collisions {
     public void setAnimation() {
         Point2D translation = movement.getDirection();
 
-        int x = (int) translation.getX();
-        int y = (int) translation.getY();
+        double x = translation.getX();
+        double y = translation.getY();
 
         Sprite animation = hiderAnimations.getPlayerIdleSprite();
 

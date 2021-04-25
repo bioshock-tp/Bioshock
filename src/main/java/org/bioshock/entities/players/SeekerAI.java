@@ -81,8 +81,6 @@ public class SeekerAI extends SquareEntity implements Collisions {
     private boolean isActive = false;
     private boolean isSearching = false;
 
-    private boolean colorChanged = false;
-
     private boolean wooshSoundPlayed = false;
 
 
@@ -170,7 +168,6 @@ public class SeekerAI extends SquareEntity implements Collisions {
 
         Hider firstPlayer = EntityManager.getPlayers().get(0);
         boolean masterPlayer = firstPlayer == EntityManager.getCurrentPlayer();
-        colorChanged = false;
 
         EntityManager.getPlayers().forEach(entity -> {
             if (
@@ -209,13 +206,20 @@ public class SeekerAI extends SquareEntity implements Collisions {
                 }
 
                 rendererC.setColour(Color.ORANGE);
-                colorChanged = true;
                 target = entity;
                 if (masterPlayer) chasePlayer(target);
             }
         });
 
-        if (!colorChanged) {
+        if (
+            EntityManager.getPlayers().stream().noneMatch(entity ->
+                EntityManager.isManaged(this, entity)
+                && !entity.isDead()
+                && !entity.isInvisible()
+                && intersects(entity, "fov")
+                && checkLineOfSight(entity)
+            )
+        ) {
             rendererC.setColour(Color.INDIANRED);
         }
 

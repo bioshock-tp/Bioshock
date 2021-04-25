@@ -8,7 +8,6 @@ public class ChatManager {
     private static boolean inChat = false;
     private static StringBuilder currentText = new StringBuilder("Type: ");
     private static boolean sendMessage = false;
-    private static String textToSend;
 
     public static boolean isSendMessage() {
         return sendMessage;
@@ -18,11 +17,7 @@ public class ChatManager {
         ChatManager.sendMessage = sendMessage;
     }
 
-    public static String getTextToSend() {
-        return textToSend;
-    }
-
-    public static boolean isInChat() {
+    public static boolean inChat() {
         return inChat;
     }
 
@@ -42,7 +37,7 @@ public class ChatManager {
     }
 
     public static String popText() {
-        textToSend = currentText.delete(0, 6).toString();
+        String textToSend = currentText.delete(0, 6).toString();
         App.logger.debug("Text to Send: {}", textToSend);
         sendMessage = true;
         currentText.setLength(0);

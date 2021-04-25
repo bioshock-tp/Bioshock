@@ -29,11 +29,8 @@ public abstract class Entity {
     protected RendererC rendererC;
     protected boolean alwaysRender = false;
 
-    public boolean isAlwaysRender() {
-        return alwaysRender;
-    }
-
     protected boolean enabled = true;
+
 
     protected Class<? extends Renderer> renderer;
 
@@ -60,11 +57,13 @@ public abstract class Entity {
     }
 
     public boolean intersects(Entity entity) {
-        if (entity == this) return false;
+        return entity != this && intersects(entity.getHitbox());
+    }
 
+    public boolean intersects(Shape shape) {
         Shape intersects = Shape.intersect(
             this.getHitbox(),
-            entity.getHitbox()
+            shape
         );
 
         return (intersects.getBoundsInLocal().getWidth() != -1);
@@ -101,6 +100,10 @@ public abstract class Entity {
         setPosition(point.getX(), point.getY());
     }
 
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
     public void setRenderC(RendererC renderC) {
         this.rendererC = renderC;
     }
@@ -122,7 +125,8 @@ public abstract class Entity {
             position.getX(),
             position.getY(),
             hitbox.getWidth(),
-            hitbox.getHeight());
+            hitbox.getHeight()
+        );
     }
 
     public Point getPosition() {
@@ -157,6 +161,9 @@ public abstract class Entity {
         return networkC;
     }
 
+    public boolean alwaysRender() {
+        return alwaysRender;
+    }
 
     /**
      *

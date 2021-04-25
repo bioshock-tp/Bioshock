@@ -139,9 +139,10 @@ public class InputManager {
     public static void changeScene() {
         SceneManager.getScene().setOnKeyPressed(e -> {
             Runnable runnable;
-            if (SceneManager.inGame() && ChatManager.isInChat()) {
+            if (SceneManager.inGame() && ChatManager.inChat()) {
                 if (e.getCode() == KeyCode.ENTER) {
                     NetworkManager.addMessage(ChatManager.popText());
+                    ChatManager.setInChat(false);
                 }
 
                 else if (e.getCode() == KeyCode.BACK_SPACE) {
@@ -156,7 +157,9 @@ public class InputManager {
 
             else if (SceneManager.inGame() && e.getCode() == KeyCode.ENTER) {
                 ChatManager.setInChat(true);
-                ((MainGame) SceneManager.getScene()).setChatVisibility(ChatManager.isInChat());
+                ((MainGame) SceneManager.getScene()).setChatVisibility(
+                    ChatManager.inChat()
+                );
             }
 
             else if ((runnable = keyPresses.get(e.getCode())) != null) {
@@ -166,8 +169,10 @@ public class InputManager {
 
         SceneManager.getScene().setOnKeyReleased(e -> {
             Runnable runnable;
-            if ((runnable = keyReleases.get(e.getCode())) != null
-                    && !ChatManager.isInChat()) {
+            if (
+                (runnable = keyReleases.get(e.getCode())) != null
+                && !ChatManager.inChat()
+            ) {
                 runnable.run();
             }
         });

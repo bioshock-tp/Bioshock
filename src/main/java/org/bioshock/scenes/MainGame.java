@@ -112,6 +112,8 @@ public class MainGame extends GameScene {
     private void initEntities() {
         initHiders();
 
+        children.add(FrameRate.getLabel());
+
         initCounter();
 
         initChat();
@@ -146,7 +148,6 @@ public class MainGame extends GameScene {
             ));
         }
     }
-
 
     private void initCounter() {
         counter = new LabelEntity(
@@ -187,8 +188,6 @@ public class MainGame extends GameScene {
         chatLabel.setDisplay(false);
 
         children.add(chatLabel);
-
-        children.add(FrameRate.getLabel());
 
 		textChat = new LabelEntity(
             new Point3D(
