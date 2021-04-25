@@ -43,12 +43,15 @@ public class GenericMap implements Map {
 
     /***
      * Generate a new generic map
-     * @param newPos the top left position of the map (even if there is no room in the top left position)
-     * @param wallWidth the width of the walls that make up the map (in terms of units)
+     * @param newPos the top left position of the map (even if there is no room
+     * in the top left position)
+     * @param wallWidth the width of the walls that make up the map (in terms
+     * of units)
      * @param newRoomSize the size of the internal room (in terms of units)
      * @param coriSize the size of all corridors (in terms of units)
      * @param c the colour of the map
-     * @param roomTypes the 2d array which the map is going to be generated from
+     * @param roomTypes the 2d array which the map is going to be generated
+     * from
      */
     public GenericMap(
         Point3D newPos,
@@ -59,8 +62,7 @@ public class GenericMap implements Map {
         RoomType[][] roomTypes,
         long seed
     ) {
-        
-        long startNano = System.nanoTime();
+
         //stores the rooms in a map
         Room[][] rooms;
 
@@ -126,11 +128,17 @@ public class GenericMap implements Map {
             new Graph<>(rooms, new RoomEdgeGenerator());
         roomGraph = graph.getLargestConnectedSubgraph();
 
-        // Store all the rooms that are in the room graph in the ordered list and in an array
+        /*
+         * Store all the rooms that are in the room graph in the ordered list
+         * and in an array
+         */
         roomArray = new Room[rooms.length][rooms[0].length];
-        for(int i = 0;i<rooms.length;i++) {
-            for(int j = 0;j<rooms[0].length;j++) {
-                if(rooms[i][j] != null && roomGraph.getNodes().contains(rooms[i][j])) {
+        for (int i = 0; i < rooms.length; i++) {
+            for (int j = 0; j < rooms[0].length; j++) {
+                if (
+                    rooms[i][j] != null
+                    && roomGraph.getNodes().contains(rooms[i][j])
+                ) {
                     orderedRoomList.add(rooms[i][j]);
                     roomArray[i][j] = rooms[i][j];
                 }
@@ -140,13 +148,16 @@ public class GenericMap implements Map {
         // initialize every room
         initRooms(seed);
 
-        // generate a traversable array to represent all traversable locations in the map
+        /*
+         * generate a traversable array to represent all traversable locations
+         * in the map
+         */
         traversableArray = new GraphNode
             [rooms.length * tRoomHeightUnits]
             [rooms[0].length * tRoomWidthUnits];
 
         for (int i = 0; i < rooms.length; i++) {
-            for (int j = 0;j<rooms[0].length; j++) {
+            for (int j = 0; j < rooms[0].length; j++) {
                 if (
                     rooms[i][j] != null
                     && roomGraph.getNodes().contains(rooms[i][j])
@@ -170,7 +181,10 @@ public class GenericMap implements Map {
     }
 
     private boolean tryToCombineRooms(Room[][] rooms, int i, int j) {
-        return square2(rooms, i, j) || vert2(rooms, i, j) || hori2(rooms, i, j);
+        return
+            square2(rooms, i, j)
+            || vert2(rooms, i, j)
+            || hori2(rooms, i, j);
     }
 
     private boolean vert2(Room[][] rooms, int i, int j) {
@@ -199,17 +213,27 @@ public class GenericMap implements Map {
         return biggerRoom(rooms, positions);
     }
 
-    private boolean biggerRoom(Room[][] rooms, List<Pair<Integer, Integer>> positions) {
-        List<Pair<Room, Pair<Integer, Integer>>> roomAndPoses = new ArrayList<>();
+    private boolean biggerRoom(
+        Room[][] rooms,
+        List<Pair<Integer, Integer>> positions
+    ) {
+        List<Pair<Room, Pair<Integer, Integer>>> roomAndPoses =
+            new ArrayList<>();
 
-        for(Pair<Integer, Integer> coord: positions) {
-            //if any position in the potential big room is null the the big room can't be constructed
+        for (Pair<Integer, Integer> coord : positions) {
+            /*
+             * if any position in the potential big room is null the the big
+             * room can't be constructed
+             */
             Room r = safeGet(rooms, coord.getKey(), coord.getValue());
             if (r == null) {
                 return false;
             }
-            //if any room is already a part of a big room a new big room can't be constructed
-            if(!r.getOpenlyConnectedRooms().isEmpty()) {
+            /*
+             * if any room is already a part of a big room a new big room can't
+             * be constructed
+             */
+            if (!r.getOpenlyConnectedRooms().isEmpty()) {
                 return false;
             }
 
@@ -228,12 +252,16 @@ public class GenericMap implements Map {
     }
 
     /***
-     * returns true if the two points are adjacent false if they are not or the same point
+     * returns true if the two points are adjacent false if they are not or the
+     * same point
      * @param coord1
      * @param coord2
      * @return
      */
-    private boolean adjacent(Pair<Integer, Integer> coord1, Pair<Integer, Integer> coord2) {
+    private boolean adjacent(
+        Pair<Integer, Integer> coord1,
+        Pair<Integer, Integer> coord2
+    ) {
         return (
             (
                 (
@@ -253,10 +281,9 @@ public class GenericMap implements Map {
     }
 
     private void initRooms(long seed) {
-        int i = 0;
-        for (Room r : orderedRoomList) {
-            r.init(roomGraph.getEdgesInfo(r), null, seed + i);
-            i++;
+        for (int i = 0; i < orderedRoomList.size(); i++) {
+            Room room = orderedRoomList.get(i);
+            room.init(roomGraph.getEdgesInfo(room), null, seed + i);
         }
     }
 

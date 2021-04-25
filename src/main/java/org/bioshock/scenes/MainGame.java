@@ -51,12 +51,14 @@ public class MainGame extends GameScene {
      */
     private static final int FOOD_TO_WIN = 5;
 
+    private int collectedFood = 0;
+
+    private LabelEntity counter;
+
     private boolean cameraLock = true;
     private double runningTime = 0;
     private boolean losing = false;
     private double timeLosing = 0;
-
-    private int collectedFood = 0;
 
     private LabelEntity timer;
 
@@ -65,7 +67,7 @@ public class MainGame extends GameScene {
     private LabelEntity chatLabel;
     private List<Room> playersNotSpawnedIn = new ArrayList<>();
 
-    Random rand;
+    private Random rand;
 
     public MainGame() {
         super();
@@ -110,11 +112,148 @@ public class MainGame extends GameScene {
     private void initEntities() {
         initHiders();
 
-        initTimer();
+        initCounter();
 
         initChat();
 
         registerEntities();
+    }
+
+    private void initHiders() {
+        /* Players must render in exact order, do not play with z values */
+        Hider hider = new Hider(
+            new Point3D(0, 0, 0.5),
+            new NetworkC(true),
+            new Size(
+                (double) GlobalConstants.UNIT_WIDTH - PADDING,
+                (double) GlobalConstants.UNIT_HEIGHT - PADDING
+            ),
+            300,
+            Color.PINK
+        );
+        children.add(hider);
+
+        for (int i = 1; i < App.playerCount(); i++) {
+            children.add(new Hider(
+                new Point3D(GameScene.getGameScreen().getWidth() * i, 0, i),
+                new NetworkC(true),
+                new Size(
+                    (double) GlobalConstants.UNIT_WIDTH - PADDING,
+                    (double) GlobalConstants.UNIT_HEIGHT - PADDING
+                ),
+                300,
+                Color.PINK
+            ));
+        }
+    }
+
+
+    private void initCounter() {
+        counter = new LabelEntity(
+            new Point3D(GameScene.getGameScreen().getWidth() / 2, 50, 100),
+            String.format("%d/%d", collectedFood, FOOD_TO_WIN),
+            new Font("arial", 20),
+            50,
+            Color.BLACK
+        );
+
+        children.add(counter);
+    }
+
+    private void initTimer() {
+        timer = new LabelEntity(
+            new Point3D(GameScene.getGameScreen().getWidth() / 2, 50, 100),
+            "mm:ss.ms",
+            new Font("arial", 20),
+            50,
+            Color.BLACK
+        );
+
+        children.add(timer);
+    }
+
+    private void initChat() {
+        /*
+         * Full screen is capable of up to 40 rows of messages.
+         * Keep only the last 20 messages always
+         */
+        chatLabel = new LabelEntity(
+            new Point3D(10, 70, 1000),
+            new Font(20),
+            100,
+            Color.BLACK
+        );
+
+        chatLabel.setDisplay(false);
+
+        children.add(chatLabel);
+
+        children.add(FrameRate.getLabel());
+
+		textChat = new LabelEntity(
+            new Point3D(
+                10,
+                GameScene.getGameScreen().getHeight() / 2
+                    + GameScene.getGameScreen().getHeight() / 15,
+                1000
+            ),
+            new Font(20),
+            86,
+            Color.BLACK
+        );
+
+        textChat.setDisplay(false);
+
+        children.add(textChat);
+    }
+
+
+    @Override
+    public void initScene(long seed) {
+
+        rand = new Random(seed);
+        initMap(seed);
+
+        List<Room> rooms = SceneManager.getMap().getRooms();
+        playersNotSpawnedIn.addAll(rooms);
+
+        List<Hider> hiders = EntityManager.getPlayers();
+
+        for (int i = 0; i < App.playerCount(); i++) {
+            Room roomToSpawn = playersNotSpawnedIn.get(
+                rand.nextInt(playersNotSpawnedIn.size())
+            );
+            playersNotSpawnedIn.remove(roomToSpawn);
+
+            double x = roomToSpawn.getRoomCenter().getX();
+            double y = roomToSpawn.getRoomCenter().getY();
+            playersNotSpawnedIn.remove(roomToSpawn);
+
+            hiders.get(i).setPosition(
+                x - (double) GlobalConstants.UNIT_WIDTH / 2,
+                y - (double) GlobalConstants.UNIT_HEIGHT / 2
+            );
+        }
+
+        initSeekers(2);
+
+        initItems();
+
+        renderEntities();
+
+        SceneManager.setInLobby(false);
+        SceneManager.setInGame(true);
+
+        if (App.isNetworked()) {
+            synchronized(NetworkManager.getPlayerJoinLock()) {
+                NetworkManager.getPlayerJoinLock().notifyAll();
+            }
+            App.logger.debug("Notified networking thread");
+        } else {
+            assert(App.playerCount() == 1);
+            EntityManager.getPlayers().get(0).getMovement().initMovement();
+            EntityManager.getPlayers().get(0).initAnimations();
+        }
     }
 
     private void initMap(long seed) {
@@ -156,39 +295,13 @@ public class MainGame extends GameScene {
         }
     }
 
-    private void initHiders() {
-        /* Players must render in exact order, do not play with z values */
-        Hider hider = new Hider(
-            new Point3D(0, 0, 0.5),
-            new NetworkC(true),
-            new Size(
-                (double) GlobalConstants.UNIT_WIDTH - PADDING,
-                (double) GlobalConstants.UNIT_HEIGHT - PADDING
-            ),
-            300,
-            Color.PINK
-        );
-        children.add(hider);
-
-        for (int i = 1; i < App.playerCount(); i++) {
-            children.add(new Hider(
-                new Point3D(GameScene.getGameScreen().getWidth() * i, 0, i),
-                new NetworkC(true),
-                new Size(
-                    (double) GlobalConstants.UNIT_WIDTH - PADDING,
-                    (double) GlobalConstants.UNIT_HEIGHT - PADDING
-                ),
-                300,
-                Color.PINK
-            ));
-        }
-    }
-
     private void initSeekers(int numSeekers) {
-        for(int i=0;i<numSeekers;i++) {
-            Room roomToSpawn = playersNotSpawnedIn.get(rand.nextInt(playersNotSpawnedIn.size()));
+        for (int i = 0; i < numSeekers; i++) {
+            Room roomToSpawn = playersNotSpawnedIn.get(
+                rand.nextInt(playersNotSpawnedIn.size())
+            );
             playersNotSpawnedIn.remove(roomToSpawn);
-            
+
             double x = roomToSpawn.getRoomCenter().getX();
             double y = roomToSpawn.getRoomCenter().getY();
             SeekerAI seeker = new SeekerAI(
@@ -198,7 +311,10 @@ public class MainGame extends GameScene {
                     0.25
                 ),
                 new NetworkC(true),
-                new Size(GlobalConstants.UNIT_WIDTH, GlobalConstants.UNIT_HEIGHT),
+                new Size(
+                    GlobalConstants.UNIT_WIDTH,
+                    GlobalConstants.UNIT_HEIGHT
+                ),
                 300,
                 Color.INDIANRED
             );
@@ -216,116 +332,12 @@ public class MainGame extends GameScene {
         children.add(new HotDog(rand.nextLong()));
         children.add(new Pizza(rand.nextLong()));
 		children.add(new FreezeItem(rand.nextLong()));
-        //children.add(new SpeedItem(rand.nextLong()));
-        //children.add(new InvisibilityItem(rand.nextLong()));
     }
-
-    private void initTimer() {
-        timer = new LabelEntity(
-            new Point3D(GameScene.getGameScreen().getWidth() / 2, 50, 100),
-            "mm:ss.ms",
-            new Font("arial", 20),
-            50,
-            Color.BLACK
-        );
-
-        children.add(timer);
-
-
-    }
-
-    private void initChat() {
-        /*
-         * Full screen is capable of up to 40 rows of messages.
-         * Keep only the last 20 messages always
-         */
-        chatLabel = new LabelEntity(
-            new Point3D(10, 70, 1000),
-            new Font(20),
-            100,
-            Color.BLACK
-        );
-
-        chatLabel.setDisplay(false);
-
-        children.add(chatLabel);
-
-        children.add(FrameRate.getLabel());
-
-		textChat = new LabelEntity(
-            new Point3D(
-                10,
-                GameScene.getGameScreen().getHeight() / 2
-                    + GameScene.getGameScreen().getHeight() / 15,
-                1000
-            ),
-            new Font(20),
-            86,
-            Color.BLACK
-        );
-
-        textChat.setDisplay(false);
-
-        children.add(textChat);
-    }
-
-
-    @Override
-    public void initScene(long seed) {
-        
-        rand = new Random(seed);
-        initMap(seed);
-
-        List<Room> rooms = SceneManager.getMap().getRooms();
-        playersNotSpawnedIn.addAll(rooms);
-
-        List<Hider> hiders = EntityManager.getPlayers();
-
-        for (int i = 0; i < App.playerCount(); i++) {
-            Room roomToSpawn = playersNotSpawnedIn.get(rand.nextInt(playersNotSpawnedIn.size()));
-            playersNotSpawnedIn.remove(roomToSpawn);
-
-            double x = roomToSpawn.getRoomCenter().getX();
-            double y = roomToSpawn.getRoomCenter().getY();
-            playersNotSpawnedIn.remove(roomToSpawn);
-
-            hiders.get(i).setPosition(
-                x - (double) GlobalConstants.UNIT_WIDTH / 2,
-                y - (double) GlobalConstants.UNIT_HEIGHT / 2
-            );
-        }
-
-        initSeekers(2);
-
-        initItems();
-
-        renderEntities();
-
-        SceneManager.setInLobby(false);
-        SceneManager.setInGame(true);
-
-        if (App.isNetworked()) {
-            synchronized(NetworkManager.getPlayerJoinLock()) {
-                NetworkManager.getPlayerJoinLock().notifyAll();
-            }
-            App.logger.debug("Notified networking thread");
-        } else {
-            assert(App.playerCount() == 1);
-            EntityManager.getPlayers().get(0).getMovement().initMovement();
-            EntityManager.getPlayers().get(0).initAnimations();
-        }
-    }
-
 
     @Override
     public void logicTick(double timeDelta) {
         if (!losing) {
             runningTime += timeDelta;
-
-//            if (runningTime >= ENDTIME) {
-//                SceneManager.setScene(new WinScreen());
-//                return;
-//            }
 
             if (
                 !EntityManager.getPlayers().isEmpty()
@@ -354,14 +366,6 @@ public class MainGame extends GameScene {
                 )
             );
         }
-
-        double timeLeft = ENDTIME - runningTime;
-        int numMins = (int) timeLeft / 60;
-        timer.setLabel(String.format(
-            "%d:%.2f",
-            numMins,
-            timeLeft - numMins * 60
-        ));
     }
 
     public void collectFood() {
@@ -369,6 +373,8 @@ public class MainGame extends GameScene {
             NetworkManager.tick();
             SceneManager.setScene(new WinScreen());
         }
+
+        counter.setLabel(String.format("%d/%d", collectedFood, FOOD_TO_WIN));
     }
 
     public void appendStringToChat(String string) {

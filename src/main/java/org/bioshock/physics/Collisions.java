@@ -66,7 +66,7 @@ public interface Collisions {
 
     /**
      * A method defined by each {@code Entity} that handles collisions
-     * @param collisions A {@code Set} of entities this {@code} Entity collided
+     * @param collisions A {@code Set} of entities this {@code Entity} collided
      * with within this game tick
      */
     public void collisionTick(Set<Entity> collisions);
