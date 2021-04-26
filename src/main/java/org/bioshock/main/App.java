@@ -1,12 +1,12 @@
 package org.bioshock.main;
 
-import javafx.application.Application;
-import javafx.application.Platform;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.input.KeyCode;
-import javafx.stage.Stage;
+import java.io.IOException;
+import java.net.URL;
+import java.util.Arrays;
+import java.util.Locale;
+import java.util.Objects;
+import java.util.ResourceBundle;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bioshock.audio.AudioManager;
@@ -14,16 +14,18 @@ import org.bioshock.engine.core.GameLoop;
 import org.bioshock.engine.core.WindowManager;
 import org.bioshock.engine.input.InputManager;
 import org.bioshock.gui.MainController;
+import org.bioshock.rendering.RenderManager;
 import org.bioshock.scenes.GameScene;
 import org.bioshock.scenes.SceneManager;
 import org.bioshock.utils.LanguageManager;
 
-import java.io.IOException;
-import java.net.URL;
-import java.util.Arrays;
-import java.util.Locale;
-import java.util.Objects;
-import java.util.ResourceBundle;
+import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.input.KeyCode;
+import javafx.stage.Stage;
 
 public class App extends Application {
     public static final Logger logger = LogManager.getLogger(App.class);
@@ -66,9 +68,6 @@ public class App extends Application {
 
             SceneManager.initialise(primaryStage, initScene);
             InputManager.initialise();
-            InputManager.onPress(KeyCode.C, () ->
-                App.logger.debug(SceneManager.getScene())
-            );
 
             if (!networked) {
                 App.setPlayerCount(1);
@@ -82,6 +81,16 @@ public class App extends Application {
                 Arrays.toString(e.getStackTrace()).replace(',', '\n')
             ); /* Necessary as GUI invocation overwrites exceptions */
         }
+    }
+
+    public static void win() {
+        RenderManager.endGame();
+        RenderManager.displayText("You Win!");
+    }
+
+    public static void lose() {
+        RenderManager.endGame();
+        RenderManager.displayText("You Lose!");
     }
 
     public static void setFXMLRoot(String fxml) {

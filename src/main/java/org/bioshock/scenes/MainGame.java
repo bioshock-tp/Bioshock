@@ -348,7 +348,7 @@ public class MainGame extends GameScene {
         else {
             timeLosing += timeDelta;
             if (timeLosing >= LOSEDELAY) {
-                SceneManager.setScene(new LoseScreen());
+                App.lose();
             }
         }
     }
@@ -370,7 +370,7 @@ public class MainGame extends GameScene {
     public void collectFood() {
         if (++collectedFood == FOOD_TO_WIN) {
             NetworkManager.tick();
-            SceneManager.setScene(new WinScreen());
+            App.win();
         }
 
         counter.setLabel(String.format("%d/%d", collectedFood, FOOD_TO_WIN));

@@ -1,5 +1,6 @@
 package org.bioshock.rendering;
 
+
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -10,17 +11,33 @@ import org.bioshock.entities.Entity;
 import org.bioshock.entities.EntityManager;
 import org.bioshock.entities.players.Hider;
 import org.bioshock.main.App;
+import org.bioshock.physics.Movement;
 import org.bioshock.scenes.GameScene;
 import org.bioshock.scenes.SceneManager;
 import org.bioshock.utils.Size;
 
+import javafx.animation.FadeTransition;
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Label;
+import javafx.scene.effect.GaussianBlur;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
+import javafx.scene.text.Font;
+import javafx.util.Duration;
+
+
 
 public final class RenderManager {
+    /**
+     *
+     */
+    private static final int BLUR_LENGTH = 3000;
+
     private static boolean clip = true;
 
     private static List<Entity> entities = new ArrayList<>();
@@ -44,7 +61,7 @@ public final class RenderManager {
 
         // clear the entire canvas
         gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
-		Size screenSize = GameScene.getGameScreen();
+        Size screenSize = GameScene.getGameScreen();
         Rectangle screen = new Rectangle(
             cameraPos.getX(),
             cameraPos.getY(),
@@ -183,7 +200,7 @@ public final class RenderManager {
     }
 
     public static double getRenWidthUnzoomed(double w) {
-    	return w * scale.getX() + padding;
+        return w * scale.getX() + padding;
     }
 
     public static double getRenX(double x) {
@@ -195,7 +212,7 @@ public final class RenderManager {
     }
 
     public static double getRenHeightUnzoomed(double h) {
-    	return h * scale.getY() + padding;
+        return h * scale.getY() + padding;
     }
 
     public static double getRenY(double y) {
@@ -214,11 +231,66 @@ public final class RenderManager {
         RenderManager.clip = clip;
     }
 
-	public static double getZoom() {
-		return zoom;
-	}
+    public static double getZoom() {
+        return zoom;
+    }
 
-	public static void setZoom(double zoom) {
-		RenderManager.zoom = zoom;
-	}
+    public static void setZoom(double zoom) {
+        RenderManager.zoom = zoom;
+    }
+
+
+    /**
+     * Blurs the canvas and slows the player
+     */
+    public static void endGame() {
+        RenderManager.setClip(false);
+
+        GaussianBlur blur = new GaussianBlur(0);
+        SceneManager.getCanvas().setEffect(blur);
+        Timeline blurTimeline = new Timeline();
+        KeyValue keyValue = new KeyValue(blur.radiusProperty(), 10);
+        KeyFrame keyFrame = new KeyFrame(Duration.millis(1500), keyValue);
+        blurTimeline.getKeyFrames().add(keyFrame);
+        blurTimeline.play();
+
+        Timeline slowTimeline = new Timeline();
+        Movement movement = EntityManager.getCurrentPlayer().getMovement();
+        double slowFactor = movement.getSpeed() / BLUR_LENGTH;
+        KeyFrame slowFrame = new KeyFrame(Duration.millis(1), e ->
+            movement.setSpeed(movement.getSpeed() - slowFactor)
+        );
+
+        slowTimeline.getKeyFrames().add(slowFrame);
+        slowTimeline.setCycleCount(BLUR_LENGTH);
+        slowTimeline.setOnFinished(e -> movement.setSpeed(0));
+        slowTimeline.play();
+    }
+
+
+    /**
+     * Displays a string in large text across the centre of the screen
+     * @param string Text to display
+     */
+    public static void displayText(String string) {
+        Label label = new Label(string);
+
+        label.setFont(new Font(100));
+        label.setLayoutX(
+            GameScene.getGameScreen().getWidth() / 2 - label.getWidth()
+        );
+        label.setLayoutX(
+            GameScene.getGameScreen().getHeight() / 2 - label.getHeight()
+        );
+
+        FadeTransition fadeTransition = new FadeTransition(
+            Duration.millis(BLUR_LENGTH),
+            label
+        );
+        fadeTransition.setFromValue(0);
+        fadeTransition.setToValue(1);
+        fadeTransition.play();
+
+        SceneManager.getPane().getChildren().add(label);
+    }
 }
