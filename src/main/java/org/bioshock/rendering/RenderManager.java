@@ -6,10 +6,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.bioshock.entities.Entity;
 import org.bioshock.entities.EntityManager;
 import org.bioshock.entities.players.Hider;
+import org.bioshock.entities.players.SeekerAI;
 import org.bioshock.main.App;
 import org.bioshock.physics.Movement;
 import org.bioshock.scenes.GameScene;
@@ -31,7 +33,6 @@ import javafx.scene.text.Font;
 import javafx.util.Duration;
 
 
-
 public final class RenderManager {
     /**
      *
@@ -45,6 +46,8 @@ public final class RenderManager {
     private static Point2D scale = new Point2D(1, 1);
     private static double zoom = 1;
     private static double padding = 1;
+
+    private static Label label;
 
 
     private RenderManager() {}
@@ -133,6 +136,7 @@ public final class RenderManager {
         entities.forEach(RenderManager::register);
     }
 
+
     /**
      * Unregisters an entity from the RenderManager
      * @param entity Entity to remove
@@ -144,6 +148,103 @@ public final class RenderManager {
 
     public static void unregisterAll(Collection<Entity> entities) {
         entities.forEach(RenderManager::unregister);
+    }
+
+
+    /**
+     * Blurs the canvas and slows the player
+     */
+    public static void endGame() {
+        RenderManager.setClip(false);
+
+        GaussianBlur blur = new GaussianBlur(0);
+        SceneManager.getCanvas().setEffect(blur);
+        Timeline blurTimeline = new Timeline();
+        KeyValue keyValue = new KeyValue(blur.radiusProperty(), 10);
+        KeyFrame keyFrame = new KeyFrame(Duration.millis(BLUR_LENGTH), keyValue);
+        blurTimeline.getKeyFrames().add(keyFrame);
+        blurTimeline.play();
+
+        Timeline slowTimeline = new Timeline();
+
+        List<Movement> movements = EntityManager.getPlayers().stream()
+            .map(Hider::getMovement)
+            .collect(Collectors.toCollection(ArrayList::new));
+
+        movements.addAll(EntityManager.getSeekers().stream()
+            .map(SeekerAI::getMovement)
+            .collect(Collectors.toList()));
+
+        KeyFrame slowFrame = new KeyFrame(Duration.millis(1), e -> movements.forEach(movement -> {
+            double slowFactor = movement.getSpeed() / BLUR_LENGTH;
+            movement.setSpeed(movement.getSpeed() - slowFactor);
+        }));
+
+        slowTimeline.getKeyFrames().add(slowFrame);
+        slowTimeline.setCycleCount(BLUR_LENGTH);
+        slowTimeline.setOnFinished(e ->
+            movements.forEach(movement -> movement.setSpeed(0))
+        );
+        slowTimeline.play();
+    }
+
+
+    /**
+     * Displays a string in large text across the centre of the screen
+     * (with fade in effect)
+     * @param string Text to display
+     */
+    public static void displayText(String string) {
+        if (label != null) SceneManager.getPane().getChildren().remove(label);
+
+        label = new Label(string);
+
+        label.setFont(new Font(100));
+        label.setLayoutX(
+            GameScene.getGameScreen().getWidth() / 2 - label.getWidth()
+        );
+        label.setLayoutX(
+            GameScene.getGameScreen().getHeight() / 2 - label.getHeight()
+        );
+
+        FadeTransition fadeTransition = new FadeTransition(
+            Duration.millis(BLUR_LENGTH),
+            label
+        );
+        fadeTransition.setFromValue(0);
+        fadeTransition.setToValue(1);
+
+        SceneManager.getPane().getChildren().add(label);
+
+        fadeTransition.play();
+    }
+
+    /**
+     * Displays a string in large text across the centre of the screen
+     * @param string Text to display
+     */
+    public static void initLabel(String string) {
+        if (label != null) SceneManager.getPane().getChildren().remove(label);
+
+        label = new Label(string);
+
+        label.setFont(new Font(100));
+        label.setLayoutX(
+            GameScene.getGameScreen().getWidth() / 2 - label.getWidth()
+        );
+        label.setLayoutX(
+            GameScene.getGameScreen().getHeight() / 2 - label.getHeight()
+        );
+
+        SceneManager.getPane().getChildren().add(label);
+    }
+
+
+    /**
+     * Removes label (if exists) from screen
+     */
+    public static void displayText() {
+        if (label != null) SceneManager.getPane().getChildren().remove(label);
     }
 
 
@@ -239,58 +340,7 @@ public final class RenderManager {
         RenderManager.zoom = zoom;
     }
 
-
-    /**
-     * Blurs the canvas and slows the player
-     */
-    public static void endGame() {
-        RenderManager.setClip(false);
-
-        GaussianBlur blur = new GaussianBlur(0);
-        SceneManager.getCanvas().setEffect(blur);
-        Timeline blurTimeline = new Timeline();
-        KeyValue keyValue = new KeyValue(blur.radiusProperty(), 10);
-        KeyFrame keyFrame = new KeyFrame(Duration.millis(1500), keyValue);
-        blurTimeline.getKeyFrames().add(keyFrame);
-        blurTimeline.play();
-
-        Timeline slowTimeline = new Timeline();
-        Movement movement = EntityManager.getCurrentPlayer().getMovement();
-        double slowFactor = movement.getSpeed() / BLUR_LENGTH;
-        KeyFrame slowFrame = new KeyFrame(Duration.millis(1), e ->
-            movement.setSpeed(movement.getSpeed() - slowFactor)
-        );
-
-        slowTimeline.getKeyFrames().add(slowFrame);
-        slowTimeline.setCycleCount(BLUR_LENGTH);
-        slowTimeline.setOnFinished(e -> movement.setSpeed(0));
-        slowTimeline.play();
-    }
-
-
-    /**
-     * Displays a string in large text across the centre of the screen
-     * @param string Text to display
-     */
-    public static void displayText(String string) {
-        Label label = new Label(string);
-
-        label.setFont(new Font(100));
-        label.setLayoutX(
-            GameScene.getGameScreen().getWidth() / 2 - label.getWidth()
-        );
-        label.setLayoutX(
-            GameScene.getGameScreen().getHeight() / 2 - label.getHeight()
-        );
-
-        FadeTransition fadeTransition = new FadeTransition(
-            Duration.millis(BLUR_LENGTH),
-            label
-        );
-        fadeTransition.setFromValue(0);
-        fadeTransition.setToValue(1);
-        fadeTransition.play();
-
-        SceneManager.getPane().getChildren().add(label);
+    public static Label getLabel() {
+        return label;
     }
 }

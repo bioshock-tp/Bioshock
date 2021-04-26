@@ -29,22 +29,32 @@ import org.bioshock.rendering.RenderManager;
 import org.bioshock.utils.GlobalConstants;
 import org.bioshock.utils.Size;
 
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
 import javafx.geometry.Point2D;
 import javafx.geometry.Point3D;
 import javafx.scene.Cursor;
+import javafx.scene.control.Label;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import javafx.util.Duration;
 
 public class MainGame extends GameScene {
+    /**
+     * Number of seekers to spawn
+     */
+    private static final int SEEKER_COUNT = 2;
+
     /**
      *
      */
     private static final int PADDING = 10;
     private static final double ENDTIME = 2 * 60f + 3;
-    private static final double LOSEDELAY = 5;
+    private static final double LOSEDELAY = 0;
 
     /**
      * Number of food items to be collected to win
@@ -58,6 +68,7 @@ public class MainGame extends GameScene {
     private boolean cameraLock = true;
     private double runningTime = 0;
     private boolean losing = false;
+    private boolean lost;
     private double timeLosing = 0;
 
     private LabelEntity timer;
@@ -209,7 +220,6 @@ public class MainGame extends GameScene {
 
     @Override
     public void initScene(long seed) {
-
         rand = new Random(seed);
         initMap(seed);
 
@@ -234,11 +244,11 @@ public class MainGame extends GameScene {
             );
         }
 
-        initSeekers(2);
-
         initItems();
 
         renderEntities();
+
+        startCountdown();
 
         SceneManager.setInLobby(false);
         SceneManager.setInGame(true);
@@ -294,6 +304,51 @@ public class MainGame extends GameScene {
         }
     }
 
+
+    private void startCountdown() {
+        RenderManager.initLabel("10");
+
+        Label label = RenderManager.getLabel();
+        label.setOpacity(0.5);
+        label.setFont(new Font(400));
+        label.setStyle("-fx-font-weight: bold");
+        label.setLayoutX(
+            GameScene.getGameScreen().getWidth() / 2 - label.getWidth()
+        );
+        label.setLayoutX(
+            GameScene.getGameScreen().getHeight() / 2 - label.getHeight()
+        );
+
+        Timeline timeline = new Timeline();
+
+        for (int i = 0; i < 10; i++) {
+            timeline.getKeyFrames().add(new KeyFrame(
+                Duration.seconds(i + 1f),
+                new KeyValue(
+                    RenderManager.getLabel().textProperty(),
+                    Integer.toString(9 - i)
+                )
+            ));
+        }
+
+        timeline.setOnFinished(e -> {
+            RenderManager.displayText();
+            initSeekers(SEEKER_COUNT);
+            label.setOpacity(1);
+            label.setOpacity(0.5);
+            label.setFont(new Font(150));
+            label.setStyle("-fx-font-weight: normal");
+            label.setLayoutX(
+                GameScene.getGameScreen().getWidth() / 2 - label.getWidth()
+            );
+            label.setLayoutX(
+                GameScene.getGameScreen().getHeight() / 2 - label.getHeight()
+            );
+        });
+
+        timeline.play();
+    }
+
     private void initSeekers(int numSeekers) {
         for (int i = 0; i < numSeekers; i++) {
             Room roomToSpawn = playersNotSpawnedIn.get(
@@ -320,7 +375,7 @@ public class MainGame extends GameScene {
 
             seeker.initAnimations();
             EntityManager.register(seeker);
-            children.add(seeker);
+            RenderManager.register(seeker);
         }
     }
 
@@ -345,9 +400,10 @@ public class MainGame extends GameScene {
                 losing = true;
             }
         }
-        else {
+        else if (!lost) {
             timeLosing += timeDelta;
             if (timeLosing >= LOSEDELAY) {
+                lost = true;
                 App.lose();
             }
         }

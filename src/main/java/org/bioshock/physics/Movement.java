@@ -124,7 +124,7 @@ public class Movement {
             yDirection = -newSpeed;
         }
 
-        speed = speed > 0.05 ? newSpeed : 0;
+        speed = newSpeed > 0.05 ? newSpeed : 0;
     }
 
     public Point getDirection() {
