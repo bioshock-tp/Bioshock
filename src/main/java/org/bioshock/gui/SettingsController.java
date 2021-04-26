@@ -6,6 +6,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.Slider;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import org.bioshock.audio.AudioManager;
 import org.bioshock.audio.controllers.AudioController;
 import org.bioshock.audio.controllers.EffectController;
@@ -13,6 +15,7 @@ import org.bioshock.audio.settings.EffectSettings;
 import org.bioshock.main.App;
 import org.bioshock.utils.LanguageManager;
 
+import java.util.Objects;
 import java.util.prefs.Preferences;
 
 public class SettingsController extends App {
@@ -93,6 +96,12 @@ public class SettingsController extends App {
         initialiseLanguageSettings();
         initialiseAudioSettings();
         initialiseLabels();
+
+        Image backImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("arrow.png")));
+        ImageView backImageView = new ImageView(backImage);
+        backImageView.setPreserveRatio(true);
+        backImageView.setFitWidth(17);
+        backButton.setGraphic(backImageView);
     }
 
     private void initialiseLanguageSettings() {
