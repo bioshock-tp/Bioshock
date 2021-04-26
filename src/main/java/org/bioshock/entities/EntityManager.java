@@ -37,7 +37,7 @@ public final class EntityManager {
         for (SeekerAI seeker: seekers) {
             if (seeker != null) seeker.safeTick(timeDelta);
         }
-        
+
     }
 
     private static void joinAll(Thread[] threads) {
@@ -98,7 +98,7 @@ public final class EntityManager {
         return entities;
     }
 
-    public static List<SeekerAI> getSeeker() {
+    public static List<SeekerAI> getSeekers() {
         return seekers;
     }
 

@@ -68,7 +68,7 @@ public class Hider extends SquareEntity implements Collisions {
         otherPlayers.remove(EntityManager.getCurrentPlayer());
 
         /* Seeker */
-        List<SeekerAI> seekers = EntityManager.getSeeker();
+        List<SeekerAI> seekers = EntityManager.getSeekers();
 
         /* Walls of room */
         List<Wall> walls = new ArrayList<>(4);

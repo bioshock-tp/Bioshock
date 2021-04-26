@@ -5,7 +5,6 @@ import java.util.Set;
 import org.bioshock.engine.input.InputManager;
 import org.bioshock.entities.Entity;
 import org.bioshock.entities.EntityManager;
-import org.bioshock.main.App;
 import org.bioshock.utils.Point;
 
 import javafx.geometry.Point2D;
