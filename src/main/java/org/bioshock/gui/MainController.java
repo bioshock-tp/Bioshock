@@ -40,19 +40,19 @@ public class MainController {
         quitButton.setText(App.getBundle().getString("QUIT_GAME_BUTTON_TEXT"));
         settingsButton.setText(App.getBundle().getString("SETTINGS_BUTTON_TEXT"));
 
-        Image gearImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("gear.png")));
+        Image gearImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("icons/gear.png")));
         ImageView gearImageView = new ImageView(gearImage);
         gearImageView.setPreserveRatio(true);
         gearImageView.setFitWidth(18);
         settingsButton.setGraphic(gearImageView);
 
-        Image quitImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("door.png")));
+        Image quitImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("icons/door.png")));
         ImageView quitImageView = new ImageView(quitImage);
         quitImageView.setPreserveRatio(true);
         quitImageView.setFitWidth(18);
         quitButton.setGraphic(quitImageView);
 
-        Image gameImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("gamepad.png")));
+        Image gameImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("icons/gamepad.png")));
         ImageView gameImageView = new ImageView(gameImage);
         gameImageView.setPreserveRatio(true);
         gameImageView.setFitWidth(18);

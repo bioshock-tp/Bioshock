@@ -12,14 +12,44 @@ import javafx.geometry.Point2D;
  */
 public class GraphNode{
 
+    /**
+     * The (Euclidean distance) heuristic cost of the node (Used in A*)
+     */
     private int hCost;
+
+    /**
+     * The cost from the start node along the current path taken (Used in A*)
+     */
     private int gCost;
+
+    /**
+     * gCost + hCost (used in A*)
+     */
     private int fCost;
+
+    /**
+     * The real world location of the node
+     */
     private Point2D location;
+
+    /**
+     * The parent node used in A*
+     */
     private GraphNode parent;
+
+    /**
+     * Used for A*, true if visited by the algorithm, false otherwise
+     */
     private boolean isVisited;
+
+    /**
+     * Used to determine if the node is traversable (i.e. not a wall), ture if non traversable, false otherwise
+     */
     private boolean isObject;
 
+    /**
+     * Creates a GraphNode and initialises all costs to be the max value for A* pathfinding
+     */
     public GraphNode() {
         this.hCost = Integer.MAX_VALUE;
         this.fCost = Integer.MAX_VALUE;

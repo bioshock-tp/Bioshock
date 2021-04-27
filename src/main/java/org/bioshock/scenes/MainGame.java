@@ -15,6 +15,8 @@ import org.bioshock.entities.items.food.Donut;
 import org.bioshock.entities.items.food.HotDog;
 import org.bioshock.entities.items.food.Pizza;
 import org.bioshock.entities.items.powerup_items.FreezeItem;
+import org.bioshock.entities.items.powerup_items.InvisibilityItem;
+import org.bioshock.entities.items.powerup_items.SpeedItem;
 import org.bioshock.entities.map.Room;
 import org.bioshock.entities.map.RoomEntity;
 import org.bioshock.entities.map.Wall;
@@ -369,7 +371,7 @@ public class MainGame extends GameScene {
                     GlobalConstants.UNIT_WIDTH,
                     GlobalConstants.UNIT_HEIGHT
                 ),
-                300,
+                520,
                 Color.INDIANRED
             );
 
@@ -386,6 +388,8 @@ public class MainGame extends GameScene {
         children.add(new HotDog(rand.nextLong()));
         children.add(new Pizza(rand.nextLong()));
 		children.add(new FreezeItem(rand.nextLong()));
+		children.add(new InvisibilityItem(rand.nextLong()));
+		children.add(new SpeedItem(rand.nextLong()));
     }
 
     @Override

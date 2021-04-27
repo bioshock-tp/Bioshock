@@ -9,13 +9,24 @@ import org.bioshock.entities.powerup.PowerUp;
 
 public class FreezePower extends PowerUp {
 
+    /**
+     * The nearest seeker to the entity
+     */
     SeekerAI nearestSeeker;
+
+    /**
+     * The unchanged speed of the nearest seeker
+     */
     double oldSpeed;
 
     public FreezePower(SquareEntity entity, double duration) {
         super(entity, duration);
     }
 
+    /**
+     * Finds the nearest seeker using the entity manager
+     * @return the nearest seeker
+     */
     public SeekerAI findNearestSeeker() {
         return EntityManager.getSeekers().stream()
             .min(Comparator.comparing(seeker ->
@@ -24,7 +35,9 @@ public class FreezePower extends PowerUp {
             .orElse(EntityManager.getSeekers().iterator().next());
     }
 
-
+    /**
+     * Stores the nearest seekers old speed and sets its speed to 0
+     */
     @Override
     protected void action() {
         nearestSeeker = findNearestSeeker();
@@ -32,6 +45,9 @@ public class FreezePower extends PowerUp {
         nearestSeeker.getMovement().setSpeed(0);
     }
 
+    /**
+     * Returns the nearest seekers speed back to the original value
+     */
     @Override
     protected void revert() {
         nearestSeeker.getMovement().setSpeed(oldSpeed);

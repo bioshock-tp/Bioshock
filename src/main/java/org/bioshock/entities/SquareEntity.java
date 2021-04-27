@@ -20,6 +20,9 @@ public abstract class SquareEntity extends Entity {
     protected Size size;
     protected Circle fov;
 
+    /**
+     * If set to true this entity will not be chased by a seeker
+     */
     protected boolean invisible = false;
 
     protected SquareEntity(

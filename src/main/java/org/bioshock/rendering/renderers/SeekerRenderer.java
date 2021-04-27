@@ -20,6 +20,9 @@ public class SeekerRenderer implements Renderer {
     public static <E extends SeekerAI> void render(GraphicsContext gc, E ent) {
         SeekerAI seeker = ent;
 
+        /**
+         * get the needed values for rendering
+         */
         double x = seeker.getX();
         double y = seeker.getY();
         double width = seeker.getWidth();
@@ -28,30 +31,35 @@ public class SeekerRenderer implements Renderer {
         boolean isActive = seeker.isActive();
 
         gc.save();
+
         RenderManager.clipToFOV(gc);
 
+        /**
+         * Rotates the rendered image of the seeker
+         */
         Rotate r = seeker.getRotate();
         gc.setTransform(
             r.getMxx(), r.getMyx(), r.getMxy(),
             r.getMyy(), r.getTx(), r.getTy()
         );
+
+        /**
+         * Will change the colour of the seeker if it has speed 0 (if frozen)
+         */
         ColorAdjust ca = new ColorAdjust(0,0,0,0);
         if(seeker.getMovement().getSpeed() == 0){
             ca.setHue(Color.BLUE.getHue());
             ca.setContrast(-0.9);
         }
         gc.setEffect(ca);
-        /*gc.setFill(seeker.getRendererC().getColour());
-        gc.fillRect(
-            getRenX(x),
-            getRenY(y),
-            getRenWidth(width),
-            getRenHeight(height)
-        );*/
+
         gc.setLineWidth(getRenWidth(10));
         gc.setStroke(seeker.getRendererC().getColour());
 
-        gc.strokeOval(
+        /**
+         * Draws the seeker field of view
+         */
+        /*gc.strokeOval(
             getRenX(x - radius + width / 2),
             getRenY(y - radius + height / 2),
             getRenWidth(radius * 2),
@@ -59,8 +67,11 @@ public class SeekerRenderer implements Renderer {
         );
 
         gc.setLineWidth(10);
-        gc.setStroke(seeker.getRendererC().getColour());
+        gc.setStroke(seeker.getRendererC().getColour());*/
 
+        /**
+         * Does the swing animations if it is active
+         */
         if (isActive) {
             // Handles swing animation
             Sprite currentSwingAnimation = ent.getCurrentSwingAnimation();

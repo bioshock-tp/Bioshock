@@ -23,10 +23,28 @@ import javafx.geometry.Point2D;
  * @param <S> The type of the edges in a graph
  */
 public class PathfindingC<T extends GraphNode, S> {
+
+    /**
+     * The graph that stores the nodes and connections to work with
+     */
     private Graph<T, S> graph;
+
     private Random rand = new Random();
+
+    /**
+     * The width of each node in the graph
+     */
     private double unitWidth;
+
+    /**
+     * The height of each node in the graph
+     */
     private double unitHeight;
+
+    /**
+     * A 2D array containing all of the nodes in a grid structure
+     * Used to find the nearest node quickly
+     */
     private T[][] nodeArray;
 
     public PathfindingC(
@@ -51,14 +69,14 @@ public class PathfindingC<T extends GraphNode, S> {
      * @param endNode the node to end on (null for a random endpoint)
      * @param avoidNode a node to avoid such as the previous room (null does
      * not avoid a room)
-     * @param preferredRoom the room that is the preferred first step
+     * @param preferredNode the room that is the preferred first step
      * @return the list of nodes that form the path
      */
     public List<Point2D> createRandomPath(
         T startNode,
         T endNode,
         T avoidNode,
-        T preferredRoom
+        T preferredNode
     ) {
         T current = startNode;
         List<Point2D> pathToFollow = new ArrayList<>();
@@ -104,8 +122,8 @@ public class PathfindingC<T extends GraphNode, S> {
             }
 
             if (!possibleMoves.isEmpty()) {
-                if (possibleMoves.contains(preferredRoom)) {
-                    current = preferredRoom;
+                if (possibleMoves.contains(preferredNode)) {
+                    current = preferredNode;
                 }
                 else {
                     int r = rand.nextInt(possibleMoves.size());
@@ -125,43 +143,24 @@ public class PathfindingC<T extends GraphNode, S> {
         return pathToFollow;
     }
 
-    public List<Point2D> createRandomPath(
-        Point2D pos,
-        Point2D end,
-        T avoidRoom,
-        T preferredRoom
-    ) {
-        return createRandomPath(
-            findNearestNode(pos),
-            findNearestNode(end),
-            avoidRoom,
-            preferredRoom
-        );
-    }
-
+    /**
+     * Calls the createRandomPath function with null as the end node
+     * and the nearest node to pos as a start node
+     * @param pos starting position
+     * @param avoidRoom the room to avoid
+     * @param preferredNode the next preferred node
+     * @return the list of positions of the nodes in the path
+     */
     public List<Point2D> createRandomPath(
         Point2D pos,
         T avoidRoom,
-        T preferredRoom
+        T preferredNode
     ) {
         return createRandomPath(
             findNearestNode(pos),
             null,
             avoidRoom,
-            preferredRoom
-        );
-    }
-
-    public List<Point2D> createRandomPath(
-        T start,
-        T avoidRoom,
-        T preferredRoom
-    ) {
-        return createRandomPath(
-            start,
-            null,
-            avoidRoom,
-            preferredRoom
+            preferredNode
         );
     }
 
@@ -169,7 +168,7 @@ public class PathfindingC<T extends GraphNode, S> {
      *
      * Will find the best path from the start to the end
      * using A* algorithm
-     *
+     * Euclidean distance from start to end is used as a heuristic
      * @param startNode the node to start from
      * @param endNode the node to finish on
      * @return the list of nodes that form the path
@@ -237,14 +236,12 @@ public class PathfindingC<T extends GraphNode, S> {
         return pathToFollow;
     }
 
-    public List<Point2D> createBestPath(T startNode) {
-        return createBestPath(startNode, null);
-    }
-
-    public List<Point2D> createBestPath(Point2D pos) {
-        return createBestPath(findNearestNode(pos), null);
-    }
-
+    /**
+     * Calls the createBestPath method but uses the nodes closest to the given positions
+     * @param pos the position that should be close to the start node
+     * @param end the position that should be close to the end node
+     * @return the list of positions of the nodes in the best path
+     */
     public List<Point2D> createBestPath(Point2D pos, Point2D end) {
         return createBestPath(findNearestNode(pos), findNearestNode(end));
     }

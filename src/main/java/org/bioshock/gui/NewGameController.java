@@ -37,19 +37,19 @@ public class NewGameController {
         onlineGameButton.setText(App.getBundle().getString("ONLINE_BUTTON_TEXT"));
         backButton.setText(App.getBundle().getString("BACK_MAIN_MENU_BUTTON_TEXT"));
 
-        Image localGameImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("single_user.png")));
+        Image localGameImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("icons/single_user.png")));
         ImageView localGameImageView = new ImageView(localGameImage);
         localGameImageView.setPreserveRatio(true);
         localGameImageView.setFitWidth(16);
         localGameButton.setGraphic(localGameImageView);
 
-        Image onlineGameImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("multi_users.png")));
+        Image onlineGameImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("icons/multi_users.png")));
         ImageView onlineGameImageView = new ImageView(onlineGameImage);
         onlineGameImageView.setPreserveRatio(true);
         onlineGameImageView.setFitWidth(23);
         onlineGameButton.setGraphic(onlineGameImageView);
 
-        Image backImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("arrow.png")));
+        Image backImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("icons/arrow.png")));
         ImageView backImageView = new ImageView(backImage);
         backImageView.setPreserveRatio(true);
         backImageView.setFitWidth(17);
