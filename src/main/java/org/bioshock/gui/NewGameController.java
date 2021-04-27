@@ -29,6 +29,9 @@ public class NewGameController {
         App.setFXMLRoot("online_game");
     }
 
+    /**
+     * Initialise the new game menu.
+     */
     public void initialize() {
         localGameButton.setText(App.getBundle().getString("SINGLE_PLAYER_BUTTON_TEXT"));
         onlineGameButton.setText(App.getBundle().getString("ONLINE_BUTTON_TEXT"));
