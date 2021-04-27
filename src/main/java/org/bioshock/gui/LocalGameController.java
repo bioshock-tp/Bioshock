@@ -35,13 +35,13 @@ public class LocalGameController {
         backButton.setText(App.getBundle().getString("BACK_NEW_GAME_BUTTON_TEXT"));
         developmentLabel.setText(App.getBundle().getString("SINGLE_PLAYER_BUTTON_TEXT") + " " + App.getBundle().getString("IN_DEVELOPMENT_TEXT"));
 
-        Image backImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("arrow.png")));
+        Image backImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("icons/arrow.png")));
         ImageView backImageView = new ImageView(backImage);
         backImageView.setPreserveRatio(true);
         backImageView.setFitWidth(17);
         backButton.setGraphic(backImageView);
 
-        Image launchImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("rocket.png")));
+        Image launchImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("icons/rocket.png")));
         ImageView launchImageView = new ImageView(launchImage);
         launchImageView.setPreserveRatio(true);
         launchImageView.setFitWidth(18);

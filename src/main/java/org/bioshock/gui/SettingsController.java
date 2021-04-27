@@ -97,7 +97,7 @@ public class SettingsController extends App {
         initialiseAudioSettings();
         initialiseLabels();
 
-        Image backImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("arrow.png")));
+        Image backImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("icons/arrow.png")));
         ImageView backImageView = new ImageView(backImage);
         backImageView.setPreserveRatio(true);
         backImageView.setFitWidth(17);
