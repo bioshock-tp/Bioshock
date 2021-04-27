@@ -7,17 +7,18 @@ import org.bioshock.utils.Size;
 import javafx.geometry.Point2D;
 
 public class SwingAnimations {
+
     static Sprite topRightSwing;
     static Sprite topLeftSwing;
     static Sprite bottomRightSwing;
     static Sprite bottomLeftSwing;
     static Sprite idle;
 
-    Sprite topRightIdle;
-    Sprite topLeftIdle;
-    Sprite bottomRightIdle;
-    Sprite bottomLeftIdle;
-
+    /**
+     * Creates the swing animations for the seeker.
+     * @param entity Entity to animate.
+     * @param scale Scale of the animation to play.
+     */
     public SwingAnimations(Entity entity, double scale) {
         topRightSwing = new Sprite(
             entity,
@@ -33,19 +34,6 @@ public class SwingAnimations {
             GlobalConstants.PLAYER_ANIMATION_SPEED / 1.5
         );
 
-        topRightIdle = new Sprite(
-            entity,
-            new Point2D(422, 188),
-            new Size(
-                84,
-                84
-            ),
-            96,
-            1,
-            scale,
-            true,
-            GlobalConstants.PLAYER_ANIMATION_SPEED / 1.5
-        );
 
         topLeftSwing = new Sprite(
             entity,
@@ -56,20 +44,6 @@ public class SwingAnimations {
             ),
             96,
             5,
-            scale,
-            true,
-            GlobalConstants.PLAYER_ANIMATION_SPEED / 1.5
-        );
-
-        topLeftIdle = new Sprite(
-            entity,
-            new Point2D(422, 284),
-            new Size(
-                84,
-                84
-            ),
-            96,
-            1,
             scale,
             true,
             GlobalConstants.PLAYER_ANIMATION_SPEED / 1.5
@@ -89,20 +63,6 @@ public class SwingAnimations {
             GlobalConstants.PLAYER_ANIMATION_SPEED / 1.5
         );
 
-        bottomRightIdle = new Sprite(
-            entity,
-            new Point2D(422, 380),
-            new Size(
-                84,
-                84
-            ),
-            96,
-            1,
-            scale,
-            true,
-            GlobalConstants.PLAYER_ANIMATION_SPEED / 1.5
-        );
-
         bottomLeftSwing = new Sprite(
             entity,
             new Point2D(422, 476),
@@ -112,20 +72,6 @@ public class SwingAnimations {
             ),
             96,
             5,
-            scale,
-            true,
-            GlobalConstants.PLAYER_ANIMATION_SPEED / 1.5
-        );
-
-        bottomLeftIdle = new Sprite(
-            entity,
-            new Point2D(422, 476),
-            new Size(
-                84,
-                84
-            ),
-            96,
-            1,
             scale,
             true,
             GlobalConstants.PLAYER_ANIMATION_SPEED / 1.5
@@ -166,19 +112,4 @@ public class SwingAnimations {
         return idle;
     }
 
-    public Sprite getTopRightIdle() {
-        return topRightIdle;
-    }
-
-    public Sprite getTopLeftIdle() {
-        return topLeftIdle;
-    }
-
-    public Sprite getBottomRightIdle() {
-        return bottomRightIdle;
-    }
-
-    public Sprite getBottomLeftIdle() {
-        return bottomLeftIdle;
-    }
 }

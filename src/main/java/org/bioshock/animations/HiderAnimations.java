@@ -15,6 +15,11 @@ public class HiderAnimations implements PlayerAnimation {
     Sprite idle;
     Sprite die;
 
+    /**
+     * Creates the animations for the hider.
+     * @param entity Entity to animate.
+     * @param scale Scale of the animation to play.
+     */
     public HiderAnimations(Entity entity, int scale) {
         moveDown = new Sprite(
             entity,

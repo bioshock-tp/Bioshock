@@ -1,22 +1,18 @@
 package org.bioshock.rendering.renderers;
 
-import static org.bioshock.rendering.RenderManager.getRenHeight;
-import static org.bioshock.rendering.RenderManager.getRenWidth;
-import static org.bioshock.rendering.RenderManager.getRenX;
-import static org.bioshock.rendering.RenderManager.getRenY;
-
+import javafx.geometry.Point2D;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.effect.ColorAdjust;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.transform.Rotate;
 import org.bioshock.animations.AnimationPlayer;
 import org.bioshock.animations.Sprite;
 import org.bioshock.animations.SwingAnimations;
 import org.bioshock.entities.players.SeekerAI;
 import org.bioshock.rendering.RenderManager;
 
-import javafx.geometry.Point2D;
-import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
-import javafx.scene.transform.Rotate;
+import static org.bioshock.rendering.RenderManager.*;
 
 public class SeekerRenderer implements Renderer {
     private SeekerRenderer() {}
@@ -97,7 +93,14 @@ public class SeekerRenderer implements Renderer {
         gc.restore();
     }
 
-    public static Point2D calcSwingPosition(
+    /**
+     * Calculates where to place swing animation based on the current animation and position of the seeker.
+     * @param swingAnimation The current swing animation.
+     * @param x The x position of the seeker.
+     * @param y The y position of the seeker.
+     * @return The position of where to render the swing animation.
+     */
+    private static Point2D calcSwingPosition(
         Sprite swingAnimation,
         double x,
         double y

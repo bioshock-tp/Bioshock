@@ -18,6 +18,9 @@ public class AudioManager {
     private static EffectController wooshEffectController;
     private static EffectSettings wooshEffectSettings;
 
+    /**
+     * Initialises all of the audio controllers in the game.
+     */
     public static void initialiseAudioControllers() {
         bgMusicController = AudioController.loadMusicController(
             "background-music"

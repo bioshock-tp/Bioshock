@@ -12,6 +12,8 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 
 public class AnimationPlayer {
+
+    /** Path of the sprite image file. */
     private static final String IMAGE_PATH =
         "src/main/resources/org/bioshock/images/sprites_without_border.png";
 
@@ -22,6 +24,12 @@ public class AnimationPlayer {
 
     private AnimationPlayer() {}
 
+    /**
+     * Plays the selected animation for the current sprite, given its position and size.
+     * @param sprite Sprite to perform the animation on.
+     * @param position Co-ordinates of where to render the animation.
+     * @param renderSize Size of the animation to render.
+     */
     public static void playAnimation(
         Sprite sprite,
         Point2D position,
@@ -56,6 +64,13 @@ public class AnimationPlayer {
         }
     }
 
+    /**
+     * Plays the animation for the given images and animation settings.
+     * @param imgs List of images to play in the animation.
+     * @param speed Speed of the animation playback.
+     * @param position Co-ordinates of where to render the animation.
+     * @param renderSize Size of the animation to render.
+     */
     private static void playAnimation(
         Image[] imgs,
         double speed,
@@ -76,6 +91,19 @@ public class AnimationPlayer {
         );
     }
 
+    /**
+     * Renders the animation to the graphics context.
+     * @param gc The graphics context to render to.
+     * @param time Current game time.
+     * @param actualSize Actual size of the image on the sprite sheet.
+     * @param startingPoint Position of where to place the animation.
+     * @param numberOfFrames Number of frames in the animation.
+     * @param position Co-ordinates of where to render the animation.
+     * @param size Size of the frames in the animation.
+     * @param reversePlay Plays the animation in reverse.
+     * @param playSpeed Speed of the animation playback.
+     * @param renderSize Size of the animation to render.
+     */
     private static void playAnimation(
         GraphicsContext gc,
         double time,
@@ -131,7 +159,4 @@ public class AnimationPlayer {
         return (int) (time % (totalFrames * speed) / speed);
     }
 
-    public static Image getSpriteSheet() {
-        return img;
-    }
 }
