@@ -20,11 +20,7 @@ public class OnlineGameController {
     public Label developmentLabel;
     public Label nameLabel;
     public TextField nameField;
-
-    @FXML
-    private void switchToMainView() {
-        App.setFXMLRoot("main");
-    }
+    public Label errorLabel;
 
     @FXML
     public void switchToNewGameView(ActionEvent actionEvent) {
@@ -39,13 +35,13 @@ public class OnlineGameController {
         Preferences prefs = Preferences.userNodeForPackage(SettingsController.class);
         nameField.setText(prefs.get("playerName", App.getBundle().getString("DEFAULT_PLAYER_NAME_TEXT")));
 
-        Image backImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("arrow.png")));
+        Image backImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("icons/arrow.png")));
         ImageView backImageView = new ImageView(backImage);
         backImageView.setPreserveRatio(true);
         backImageView.setFitWidth(17);
         backButton.setGraphic(backImageView);
 
-        Image launchImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("rocket.png")));
+        Image launchImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("icons/rocket.png")));
         ImageView launchImageView = new ImageView(launchImage);
         launchImageView.setPreserveRatio(true);
         launchImageView.setFitWidth(18);
@@ -55,9 +51,15 @@ public class OnlineGameController {
     public void launchGame(ActionEvent actionEvent) {
         Preferences prefs = Preferences.userNodeForPackage(SettingsController.class);
         String playerName = nameField.getText();
-        prefs.put("playerName", playerName);
-        // TODO: Add code to handle player name here
-        Stage stage = (Stage) launchButton.getScene().getWindow();
-        App.startGame(stage, new LoadingScreen(true, App.getBundle().getString("ONLINE_LOADING_TEXT")), true);
+        if (playerName.length() > 0 && playerName.length() <= 16) {
+            prefs.put("playerName", playerName);
+            Stage stage = (Stage) launchButton.getScene().getWindow();
+            App.startGame(stage, new LoadingScreen(true, App.getBundle().getString("ONLINE_LOADING_TEXT")), true);
+        }
+        else {
+            errorLabel.setStyle("-fx-text-fill:red");
+            errorLabel.setVisible(true);
+            errorLabel.setText(App.getBundle().getString("NAME_VALIDATION_ERROR_TEXT"));
+        }
     }
 }
