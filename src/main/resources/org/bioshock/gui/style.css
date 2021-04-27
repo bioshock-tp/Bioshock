@@ -1,12 +1,12 @@
 .gui-button {
-    -fx-padding: 8 15 15 15;
+    -fx-padding: 10 18 15 18;
     -fx-background-insets: 0,0 0 3 0, 0 0 4 0, 0 0 5 0;
     -fx-background-radius: 8;
     /*-fx-background-color:*/
         /*linear-gradient(from 0% 93% to 0% 100%, #d55114 0%, #c24a12 100%);*/
     -fx-effect: dropshadow( gaussian , rgba(0,0,0,0.75) , 4,0,0,1 );
     -fx-font-weight: bold;
-    -fx-font-size: 1.6em;
+    -fx-font-size: 1.9em;
 }
 .gui-button:hover {
     /*-fx-background-color: */
