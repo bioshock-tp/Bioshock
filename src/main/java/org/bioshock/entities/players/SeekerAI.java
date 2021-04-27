@@ -42,10 +42,26 @@ import javafx.scene.shape.Shape;
 import javafx.util.Pair;
 
 public class SeekerAI extends SquareEntity implements Collisions {
+
+    /**
+     * The current target for the seeker to follow
+     */
     private Hider target;
+
+    /**
+     * The arc shaped hitbox that will act as the weapon
+     */
     private Arc swatterHitbox;
+
+    /**
+     * The graph of rooms in the map
+     */
     private final Graph<Room, Pair<Direction, ConnType>> roomGraph =
         SceneManager.getMap().getRoomGraph();
+
+    /**
+     * A pathfinding component that is initialised with the room graph for pathfinding from room to room
+     */
     private PathfindingC<Room, Pair<Direction, ConnType>> roomPathfinding =
     new PathfindingC<>(
         roomGraph,
@@ -53,6 +69,10 @@ public class SeekerAI extends SquareEntity implements Collisions {
         SceneManager.getMap().getRoomArray()[0][0].getTotalSize().getWidth(),
         SceneManager.getMap().getRoomArray()[0][0].getTotalSize().getHeight()
     );
+
+    /**
+     * A pathfinding component that is initialised with the complete node map for pathfinding between obstacles and within rooms
+     */
     private PathfindingC<GraphNode, Pair<Direction, Double>> nodePathfinding =
     new PathfindingC<>(
         SceneManager.getMap().getTraversableGraph(),
@@ -60,27 +80,70 @@ public class SeekerAI extends SquareEntity implements Collisions {
         GlobalConstants.UNIT_WIDTH,
         GlobalConstants.UNIT_HEIGHT
     );
+
+    /**
+     * Will contain the path that the seeker should follow
+     */
     private List<Point2D> path = new ArrayList<>();
+
+    /**
+     * Contains the current room
+     */
     private Room currRoom;
+
+    /**
+     * Contains the previous room to be used as a room to avoid when pathfinding
+     */
     private Room prevRoom;
+
+    /**
+     * The location that the seeker is currently trying to move towards
+     */
     private Point2D currentTargetLocation;
+
+    /**
+     * The last seen position of the target
+     */
     private Point2D lastSeenPosition;
 
+    /**
+     * The current sprite displayed
+     */
     private Sprite currentSprite;
 
     private Sprite currentSwingAnimation;
     private SeekerAnimations seekerAnimations;
     private SwingAnimations swingAnimations;
 
+    /**
+     * The time in seconds that should elapse between the seeker attacks
+     */
     private static final double TIME_BETWEEN_SWINGS = 1.0;
+
+    /**
+     * The time in seconds that should elapse between the seeker starting an attack and finishing it
+     */
     private static final double TIME_SWINGING = 1.0;
 
+    /**
+     * Doubles used to count until the next action is needed
+     */
     private double timeBetweenSwings = 0;
     private double timeSwinging = 0;
 
+    /**
+     * True if the seeker is attacking, false otherwise
+     */
     private boolean isActive = false;
+
+    /**
+     * True of the seeker is searching, false otherwise
+     */
     private boolean isSearching = false;
 
+    /**
+     * True if the woosh sound has been played after an attack, used to stop it repeating
+     */
     private boolean wooshSoundPlayed = false;
 
 
@@ -92,12 +155,11 @@ public class SeekerAI extends SquareEntity implements Collisions {
      * @param s The width and height of the seeker
      * @param r Radius of fov
      * @param c Colour of seeker
-     * @param e The initial player to follow
      */
     public SeekerAI(Point3D p, NetworkC com, Size s, int r, Color c) {
         super(p, com, new SimpleRendererC(), s, r, c);
 
-        movement.setSpeed(movement.getSpeed() / 2);
+        movement.setSpeed(movement.getSpeed() / 1.5);
 
         renderer = SeekerRenderer.class;
 
@@ -128,7 +190,10 @@ public class SeekerAI extends SquareEntity implements Collisions {
         currentSwingAnimation = SwingAnimations.getIdle();
     }
 
-
+    /**
+     * Calls the methods needed every frame
+     * @param timeDelta the time since the last frame
+     */
     protected void tick(double timeDelta) {
         timeBetweenSwings += timeDelta;
 
@@ -160,6 +225,7 @@ public class SeekerAI extends SquareEntity implements Collisions {
 
     /***
      * The main behaviour tree for the seeker
+     * Calls different methods depending on the game state
      */
     private void doActions() {
         setSearch(true);
@@ -229,6 +295,12 @@ public class SeekerAI extends SquareEntity implements Collisions {
         }
     }
 
+    /**
+     * Checks to see if the entity is within half of the vision radius
+     * This is when the seeker should swing
+     * @param entity the entity to check the location of
+     * @return true if it is within range, false otherwise
+     */
     private boolean checkInSwingDistance(SquareEntity entity) {
         return entity.getCentre().subtract(this.getCentre()).magnitude() <= this.getRadius() / 2;
     }
@@ -342,6 +414,7 @@ public class SeekerAI extends SquareEntity implements Collisions {
 
     /**
      * Contains the behaviour tree for patrolling the map
+     * Will move towards the target location and pop a new location off the path stack
      */
     public void search() {
         updateRoom(this);
@@ -379,6 +452,10 @@ public class SeekerAI extends SquareEntity implements Collisions {
 
     }
 
+    /**
+     * Checks if the room has changed and if yes, update the current and previous room
+     * @param entity the entity to update the room of
+     */
     private void updateRoom(Entity entity) {
         Room newRoom = entity.findCurrentRoom();
         if (!newRoom.equals(currRoom)) {
@@ -387,6 +464,10 @@ public class SeekerAI extends SquareEntity implements Collisions {
         }
     }
 
+    /**
+     * Sets current sprite to sprite s
+     * @param s the sprite to change to
+     */
     private void setCurrentSprite(Sprite s) {
         if (s != null) {
             currentSprite = s;
@@ -395,6 +476,10 @@ public class SeekerAI extends SquareEntity implements Collisions {
         }
     }
 
+    /**
+     * Changes the current swing animation to sprite s
+     * @param s the sprite to change to
+     */
     public void setCurrentSwingAnimation(Sprite s) {
         if (s != null) {
             currentSwingAnimation = s;
@@ -403,20 +488,17 @@ public class SeekerAI extends SquareEntity implements Collisions {
         }
     }
 
-    public void setActive(boolean b) { isActive = b; }
-
-    public void setSearch(boolean b) { isSearching = b; }
-
-    public void setSwatterRange(double range) {
-        swatterHitbox.setRadiusX(range);
-        swatterHitbox.setRadiusY(range);
-    }
-
+    /**
+     * Will update the position of the arc hitbox to the seekers new centre
+     */
     public void setSwatterPos() {
         swatterHitbox.setCenterX(getCentre().getX());
         swatterHitbox.setCenterY(getCentre().getY());
     }
 
+    /**
+     * Will set the rotation of the arc hitbox so that it faces the target
+     */
     public void setSwatterRot() {
         double r = Movement.getFacingRotate(
             target.getPosition().subtract(getPosition())
@@ -468,7 +550,11 @@ public class SeekerAI extends SquareEntity implements Collisions {
         setCurrentSwingAnimation(animation);
     }
 
-
+    /**
+     * Will use the last seen position to estimate which room should be checked next
+     * The closest room to the last seen position will be returned
+     * @return the closest room to the last seen position, or null if last seen position is null
+     */
     private Room getPreferred() {
         if (lastSeenPosition == null) {
             return null;
@@ -510,18 +596,43 @@ public class SeekerAI extends SquareEntity implements Collisions {
         return finalRoom;
     }
 
+    /**
+     * @param b the value to set isActive to
+     */
+    public void setActive(boolean b) { isActive = b; }
+
+    /**
+     * @param b the value to set isSearching to
+     */
+    public void setSearch(boolean b) { isSearching = b; }
+
+    /**
+     * @return the current sprite
+     */
     public Sprite getCurrentSprite() {
         return currentSprite;
     }
 
+    /**
+     * @return the current swing animation
+     */
     public Sprite getCurrentSwingAnimation() {
         return currentSwingAnimation;
     }
 
+    /**
+     * @return the swatter hitbox
+     */
     public Arc getSwatterHitbox() { return swatterHitbox; }
 
+    /**
+     * @return the current target
+     */
     public SquareEntity getTarget() { return target; }
 
+    /**
+     * @return the value of isActive
+     */
     public boolean isActive() { return isActive; }
 
     @Override

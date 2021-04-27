@@ -288,8 +288,6 @@ public class Graph<T extends GraphNode, S> {
      * gets a graph that only contains the given nodes and only has
      * connections to nodes in the trimmed graph
      * @param nodes the list of all nodes to contained in the trimmed graph
-     * @param dc a deep copy function on the type T that returns a
-     * new object with all the same values of the given object
      *
      * if this is null it doesn't do a deep copy
      * @return a deep copy of of the new trimmed graph
