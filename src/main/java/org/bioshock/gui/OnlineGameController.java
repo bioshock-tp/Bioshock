@@ -20,6 +20,7 @@ public class OnlineGameController {
     public Label developmentLabel;
     public Label nameLabel;
     public TextField nameField;
+    public Label errorLabel;
 
     @FXML
     private void switchToMainView() {
@@ -60,6 +61,11 @@ public class OnlineGameController {
             // TODO: Add code to handle player name here
             Stage stage = (Stage) launchButton.getScene().getWindow();
             App.startGame(stage, new LoadingScreen(true, App.getBundle().getString("ONLINE_LOADING_TEXT")), true);
+        }
+        else {
+            errorLabel.setDisable(true);
+            errorLabel.setVisible(true);
+            errorLabel.setText(App.getBundle().getString("NAME_VALIDATION_ERROR_TEXT"));
         }
     }
 }

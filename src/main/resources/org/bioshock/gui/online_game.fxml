@@ -21,10 +21,14 @@
     </padding>
     
     <Label fx:id="developmentLabel"  styleClass="p"/>
-    <HBox spacing="10" alignment="CENTER">
-        <Label fx:id="nameLabel"  styleClass="p"/>
-        <TextField fx:id="nameField"/>
-    </HBox>
+    <VBox alignment="CENTER">
+        <HBox spacing="10" alignment="CENTER">
+            <Label fx:id="nameLabel"  styleClass="p"/>
+            <TextField fx:id="nameField"/>
+        </HBox>
+        <Label fx:id="errorLabel" styleClass="p" visible="false"/>
+    </VBox>
+
     <Button fx:id="launchButton" onAction="#launchGame" styleClass="gui-button"/>
     <Button fx:id="backButton" onAction="#switchToNewGameView" styleClass="gui-button"/>
 </VBox>
