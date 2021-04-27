@@ -15,7 +15,7 @@ public class AnimationPlayer {
 
     /** Path of the sprite image file. */
     private static final String IMAGE_PATH =
-        "src/main/resources/org/bioshock/images/sprites.png";
+        "src/main/resources/org/bioshock/images/spritesheet.png";
 
     private static Image img;
     static {

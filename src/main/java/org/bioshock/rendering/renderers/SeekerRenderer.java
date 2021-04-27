@@ -105,9 +105,9 @@ public class SeekerRenderer implements Renderer {
         double x,
         double y
     ) {
-        int rightXOffset = 12;
-        int topYOffset = 70;
-        int leftXOffset = 80;
+        int rightXOffset = 38;
+        int topYOffset = 56;
+        int leftXOffset = 70;
 
 
         if (swingAnimation == SwingAnimations.getTopRightSwing()) {
