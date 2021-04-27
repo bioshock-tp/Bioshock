@@ -1,7 +1,7 @@
 package org.bioshock.entities.items;
 
-import java.util.Set;
-
+import javafx.geometry.Point3D;
+import org.bioshock.audio.AudioManager;
 import org.bioshock.components.NetworkC;
 import org.bioshock.entities.Entity;
 import org.bioshock.entities.EntityManager;
@@ -9,7 +9,7 @@ import org.bioshock.entities.ImageEntity;
 import org.bioshock.physics.Collisions;
 import org.bioshock.utils.Size;
 
-import javafx.geometry.Point3D;
+import java.util.Set;
 
 public abstract class Item extends ImageEntity implements Collisions {
 
@@ -53,6 +53,7 @@ public abstract class Item extends ImageEntity implements Collisions {
     public void collisionTick(Set<Entity> collisions) {
         collisions.forEach(collision -> {
             if (EntityManager.getPlayers().contains(collision)) {
+                AudioManager.playPlinkSfx();
                 collect(collision);
             }
         });

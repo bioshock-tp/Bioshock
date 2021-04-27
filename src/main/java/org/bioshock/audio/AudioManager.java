@@ -17,7 +17,14 @@ public class AudioManager {
     private static EffectSettings walkingEffectSettings;
     private static EffectController wooshEffectController;
     private static EffectSettings wooshEffectSettings;
+    private static EffectController plinkEffectController;
+    private static EffectSettings plinkEffectSettings;
+    private static EffectController freezeEffectController;
+    private static EffectSettings freezeEffectSettings;
 
+    /**
+     * Initialises all of the audio controllers in the game.
+     */
     public static void initialiseAudioControllers() {
         bgMusicController = AudioController.loadMusicController(
             "background-music"
@@ -31,6 +38,14 @@ public class AudioManager {
             "woosh"
         );
         wooshEffectSettings = new EffectSettings();
+        plinkEffectController = AudioController.loadEffectController(
+            "plink"
+        );
+        plinkEffectSettings = new EffectSettings();
+        freezeEffectController = AudioController.loadEffectController(
+            "freeze"
+        );
+        freezeEffectSettings = new EffectSettings();
     }
 
     /**
@@ -94,6 +109,34 @@ public class AudioManager {
             wooshEffectSettings.setVolume(volume);
             wooshEffectSettings.setCycleCount(1);
             wooshEffectController.play(wooshEffectSettings);
+        }
+    }
+
+    /**
+     * PLays plink sound.
+     */
+    public static void playPlinkSfx() {
+        Preferences prefs = Preferences.userNodeForPackage(SettingsController.class);
+
+        if (prefs.getBoolean("sfxOn", true)) {
+            double volume = prefs.getDouble("sfxVolume", 1.0);
+            plinkEffectSettings.setVolume(volume);
+            plinkEffectSettings.setCycleCount(1);
+            plinkEffectController.play(plinkEffectSettings);
+        }
+    }
+
+    /**
+     * PLays freeze sound.
+     */
+    public static void playFreezeSfx() {
+        Preferences prefs = Preferences.userNodeForPackage(SettingsController.class);
+
+        if (prefs.getBoolean("sfxOn", true)) {
+            double volume = prefs.getDouble("sfxVolume", 1.0);
+            freezeEffectSettings.setVolume(volume);
+            freezeEffectSettings.setCycleCount(1);
+            freezeEffectController.play(freezeEffectSettings);
         }
     }
 

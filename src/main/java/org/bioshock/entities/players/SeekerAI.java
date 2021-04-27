@@ -1,10 +1,11 @@
 package org.bioshock.entities.players;
 
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-
+import javafx.geometry.Point2D;
+import javafx.geometry.Point3D;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.*;
+import javafx.util.Pair;
 import org.bioshock.animations.SeekerAnimations;
 import org.bioshock.animations.Sprite;
 import org.bioshock.animations.SwingAnimations;
@@ -30,16 +31,9 @@ import org.bioshock.utils.Direction;
 import org.bioshock.utils.GlobalConstants;
 import org.bioshock.utils.Size;
 
-import javafx.geometry.Point2D;
-import javafx.geometry.Point3D;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Arc;
-import javafx.scene.shape.ArcType;
-import javafx.scene.shape.Circle;
-import javafx.scene.shape.Line;
-import javafx.scene.shape.Rectangle;
-import javafx.scene.shape.Shape;
-import javafx.util.Pair;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 public class SeekerAI extends SquareEntity implements Collisions {
 
@@ -177,6 +171,9 @@ public class SeekerAI extends SquareEntity implements Collisions {
         currentTargetLocation = new Point2D(getCentre().getX(), getCentre().getY());
     }
 
+    /**
+     * Initialises animations by setting their scale and default states.
+     */
     public void initAnimations() {
         seekerAnimations = new SeekerAnimations(
             this,
@@ -506,6 +503,9 @@ public class SeekerAI extends SquareEntity implements Collisions {
         swatterHitbox.setStartAngle(30 + r);
     }
 
+    /**
+     * Sets animation of the seeker based on the movement towards the current target location.
+     */
     public void setAnimation() {
         Point2D translation = currentTargetLocation.subtract(getCentre());
 
@@ -524,6 +524,9 @@ public class SeekerAI extends SquareEntity implements Collisions {
         setCurrentSprite(animation);
     }
 
+    /**
+     * Sets the swing animation of the seeker based on where the hider is.
+     */
     public void setSwingAnimation() {
         Sprite animation = SwingAnimations.getIdle();
 

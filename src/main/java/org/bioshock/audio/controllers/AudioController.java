@@ -3,9 +3,7 @@ package org.bioshock.audio.controllers;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import javafx.application.Platform;
-import lombok.NonNull;
 import org.bioshock.main.App;
-import org.checkerframework.checker.nullness.qual.Nullable;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -17,14 +15,13 @@ import java.nio.file.Paths;
 import java.time.Duration;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class AudioController {
 
-    /**
-     *
-     */
-    private static final String AUDIOJSONPATH =
+    /** Path of the audio JSON file. */
+    private static final String AUDIO_JSON_PATH =
         "src/main/resources/org/bioshock/audio/audio-data.json";
 
     /** A mapping of effect names to URIs. */
@@ -53,10 +50,6 @@ public class AudioController {
         /*
          * Prevents the JavaFX runtime from shutting down when all of the
          * JFXPanels are closed.
-         *
-         * If we allow it to shut down, then the GameAudio class won't be able
-         * to make use of the Media and MediaPlayer JavaFX classes. The program
-         * will just throw NPEs when you try to create new MediaPlayers.
          */
         Platform.setImplicitExit(false);
     }
@@ -70,7 +63,7 @@ public class AudioController {
      *
      */
     public static void initialise() {
-        Path jsonPath = Paths.get(AUDIOJSONPATH);
+        Path jsonPath = Paths.get(AUDIO_JSON_PATH);
         effectUris.clear();
         musicUris.clear();
 
@@ -128,7 +121,7 @@ public class AudioController {
                 case "jar":
                     try {
                         nioPath = Paths.get(
-                            AudioController.class.getResource(pathObject).toURI()
+                            Objects.requireNonNull(AudioController.class.getResource(pathObject)).toURI()
                         );
                     } catch (final URISyntaxException e) {
                         App.logger.error(
@@ -174,7 +167,7 @@ public class AudioController {
      * cache, or a cached instance of the effect.
      */
     public static EffectController loadEffectController(
-        final @NonNull String name
+        final String name
     ) {
         if (name.isEmpty()) {
             try {
@@ -184,7 +177,7 @@ public class AudioController {
             }
         }
 
-        @Nullable EffectController effect = effectCache.getIfPresent(name);
+        EffectController effect = effectCache.getIfPresent(name);
         if (effect != null) {
 //            App.logger.debug("Loaded Effect: {}", name);
 
@@ -208,7 +201,7 @@ public class AudioController {
      * or a cached instance of the music.
      */
     public static MusicController loadMusicController(
-        final @NonNull String name
+        final String name
     ) {
         if (name.isEmpty()) {
             App.logger.error(
@@ -216,7 +209,7 @@ public class AudioController {
             );
         }
 
-        @Nullable MusicController music = musicCache.getIfPresent(name);
+        MusicController music = musicCache.getIfPresent(name);
         if (music != null) {
             App.logger.debug("Loaded MusicController: {}", name);
 

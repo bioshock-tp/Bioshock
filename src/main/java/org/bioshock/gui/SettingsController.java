@@ -91,6 +91,9 @@ public class SettingsController extends App {
         App.setFXMLRoot("main");
     }
 
+    /**
+     * Initialise the settings menu.
+     */
     @FXML
     public void initialize() {
         initialiseLanguageSettings();
@@ -156,28 +159,40 @@ public class SettingsController extends App {
         });
     }
 
+    /**
+     * Turns background music on.
+     */
     @FXML
-    public void toggleMusicOn(ActionEvent actionEvent) {
+    public void toggleMusicOn() {
         AudioManager.playBackgroundMusic(getPrefs().getDouble(MUSIC_VOLUME, 1.0));
         getPrefs().putBoolean(MUSIC_ON, true);
     }
 
+    /**
+     * Turns background music off.
+     */
     @FXML
-    public void toggleMusicOff(ActionEvent actionEvent) {
+    public void toggleMusicOff() {
         AudioManager.stopBackgroundMusic();
         getPrefs().putBoolean(MUSIC_ON, false);
     }
 
+    /**
+     * Turns sound effects on.
+     */
     @FXML
-    public void toggleSfxOn(ActionEvent actionEvent) {
+    public void toggleSfxOn() {
         final EffectSettings settings = new EffectSettings();
         settings.setVolume(getPrefs().getDouble(SFX_VOLUME, 1.0));
         getSfxController().play(settings);
         getPrefs().putBoolean(SFX_ON, true);
     }
 
+    /**
+     * Turns sound effects off.
+     */
     @FXML
-    public void toggleSfxOff(ActionEvent actionEvent) {
+    public void toggleSfxOff() {
         getSfxController().stop();
         getPrefs().putBoolean(SFX_ON, false);
     }
@@ -190,12 +205,18 @@ public class SettingsController extends App {
         return AudioController.loadEffectController("enabled");
     }
 
-    public void setLanguageEn(ActionEvent actionEvent) {
+    /**
+     * Sets the game language to English.
+     */
+    public void setLanguageEn() {
         LanguageManager.loadLang(ENGLISH);
         initialiseLabels();
         getPrefs().put(LANGUAGE, ENGLISH);
     }
 
+    /**
+     * Sets the game language to Romanian.
+     */
     public void setLanguageRo(ActionEvent actionEvent) {
         LanguageManager.loadLang(ROMANIAN);
         initialiseLabels();

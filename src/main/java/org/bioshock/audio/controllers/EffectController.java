@@ -1,12 +1,10 @@
 package org.bioshock.audio.controllers;
 
-import java.nio.file.Path;
-
-import org.bioshock.audio.settings.EffectSettings;
-
 import javafx.application.Platform;
 import javafx.scene.media.AudioClip;
-import lombok.NonNull;
+import org.bioshock.audio.settings.EffectSettings;
+
+import java.nio.file.Path;
 
 public class EffectController {
     /** The audio clip used to play the effect file. */
@@ -17,7 +15,7 @@ public class EffectController {
      *
      * @param path The path of the effect file.
      */
-    public EffectController(final @NonNull Path path) {
+    public EffectController(final Path path) {
         clip = new AudioClip(path.toUri().toString());
     }
 
