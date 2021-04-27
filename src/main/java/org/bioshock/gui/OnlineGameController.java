@@ -23,11 +23,6 @@ public class OnlineGameController {
     public Label errorLabel;
 
     @FXML
-    private void switchToMainView() {
-        App.setFXMLRoot("main");
-    }
-
-    @FXML
     public void switchToNewGameView(ActionEvent actionEvent) {
         App.setFXMLRoot("new_game");
     }
@@ -58,7 +53,6 @@ public class OnlineGameController {
         String playerName = nameField.getText();
         if (playerName.length() > 0 && playerName.length() <= 16) {
             prefs.put("playerName", playerName);
-            // TODO: Add code to handle player name here
             Stage stage = (Stage) launchButton.getScene().getWindow();
             App.startGame(stage, new LoadingScreen(true, App.getBundle().getString("ONLINE_LOADING_TEXT")), true);
         }
