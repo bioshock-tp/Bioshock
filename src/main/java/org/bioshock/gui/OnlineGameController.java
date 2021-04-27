@@ -63,7 +63,7 @@ public class OnlineGameController {
             App.startGame(stage, new LoadingScreen(true, App.getBundle().getString("ONLINE_LOADING_TEXT")), true);
         }
         else {
-            errorLabel.setDisable(true);
+            errorLabel.setStyle("-fx-text-fill:red");
             errorLabel.setVisible(true);
             errorLabel.setText(App.getBundle().getString("NAME_VALIDATION_ERROR_TEXT"));
         }
