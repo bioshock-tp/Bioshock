@@ -175,7 +175,7 @@ public class NetworkManager {
 
             updateDirection(input, messageFrom);
 
-            if (messageFrom == masterHider) {
+            if (messageFrom == masterHider && input.aiCoords != null) {
                 for(int i=0;i<seekers.size();i++) {
                     seekers.get(i).getMovement().moveTo(
                         input.aiCoords[i][0],
