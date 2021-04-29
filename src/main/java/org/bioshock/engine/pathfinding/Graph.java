@@ -40,15 +40,26 @@ public class Graph<T extends GraphNode, S> {
      */
     public Graph() {}
 
+    /**
+     * constructs a graph based of the given node array using the 
+     * edge generator to generate the edges between the 8 adjacent nodes
+     * 
+     * Note the given graph won't necessarily be connected 
+     * @param nodes2D The array of nodes to be put into the graph
+     * @param eg The edge generator that gives the rules about what 
+     * edges between adjacent nodes should be
+     */
     public Graph(T[][] nodes2D, EdgeGenerator<T, S> eg) {
         for (T[] nodes: nodes2D) {
             for (T node: nodes) {
+            	//if the node isn't null add the node to the graph
                 if (node != null) {
-                    addNode(node);
+                	addNode(node);
                 }
             }
         }
 
+        //add all edges between all 8 adjacent nodes in the array
         for (int i = 0; i < nodes2D.length; i++) {
             for (int j = 0; j < nodes2D[0].length; j++) {
                 if (nodes2D[i][j] != null) {
@@ -180,6 +191,11 @@ public class Graph<T extends GraphNode, S> {
         return nodes;
     }
 
+    /**
+     * 
+     * @param node
+     * @return the edge info for all edges leaving the given node
+     */
     public List<S> getEdgesInfo(T node) {
         List<S> edgesInfo = new ArrayList<>();
         nodeMap.get(node).forEach(pair -> edgesInfo.add(pair.getValue()));
