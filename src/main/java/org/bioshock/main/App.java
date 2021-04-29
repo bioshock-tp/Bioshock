@@ -1,12 +1,11 @@
 package org.bioshock.main;
 
-import java.io.IOException;
-import java.net.URL;
-import java.util.Arrays;
-import java.util.Locale;
-import java.util.Objects;
-import java.util.ResourceBundle;
-
+import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bioshock.audio.AudioManager;
@@ -19,12 +18,12 @@ import org.bioshock.scenes.GameScene;
 import org.bioshock.scenes.SceneManager;
 import org.bioshock.utils.LanguageManager;
 
-import javafx.application.Application;
-import javafx.application.Platform;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.stage.Stage;
+import java.io.IOException;
+import java.net.URL;
+import java.util.Arrays;
+import java.util.Locale;
+import java.util.Objects;
+import java.util.ResourceBundle;
 
 public class App extends Application {
     public static final Logger logger = LogManager.getLogger(App.class);
@@ -84,11 +83,13 @@ public class App extends Application {
 
     public static void win() {
         RenderManager.endGame();
+        AudioManager.playWinSfx();
         RenderManager.displayText("You Win!");
     }
 
     public static void lose() {
         RenderManager.endGame();
+        AudioManager.playLoseSfx();
         RenderManager.displayText("You Lose!");
     }
 
