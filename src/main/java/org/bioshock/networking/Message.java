@@ -29,13 +29,20 @@ public class Message implements Serializable {
      * @param input A ClientInput object containing states of player and AI
      * @param dead True if sending player is dead
      */
-    Message(int playerNumber, String uuid, String name, ClientInput input, boolean dead) {
+    Message(
+        int playerNumber,
+        String uuid,
+        String name,
+        ClientInput input,
+        boolean dead
+    ) {
         this.playerNumber = playerNumber;
         this.name = name;
         this.uuid = uuid;
         this.input = input;
         this.dead = dead;
     }
+
 
     static class ClientInput implements Serializable {
         private static final long serialVersionUID = 1L;
@@ -58,56 +65,30 @@ public class Message implements Serializable {
             this.x = x;
             this.y = y;
 
-            this.aiCoords = aiCoords; 
+            this.aiCoords = aiCoords;
 
             this.message = message;
         }
 
         @Override
         public String toString() {
-            return String.format("ClientInput{x=%d, y=%d, aiCoords=%S}", x, y, aiCoords.toString());
+            return String.format(
+                "ClientInput{x=%d, y=%d, aiCoordinates=%s, message=%s}",
+                x, y, aiCoords, message
+            );
         }
-
-//        @Override
-//        public int hashCode() {
-//            final int prime = 31;
-//            int result = 1;
-//            long temp;
-//            temp = Double.doubleToLongBits(aiX);
-//            result = prime * result + (int) (temp ^ (temp >>> 32));
-//            temp = Double.doubleToLongBits(aiY);
-//            result = prime * result + (int) (temp ^ (temp >>> 32));
-//            result = prime * result + x;
-//            result = prime * result + y;
-//            return result;
-//        }
-
-//        @Override
-//        public boolean equals(Object obj) {
-//            if (this == obj)
-//                return true;
-//            if (obj == null)
-//                return false;
-//            if (getClass() != obj.getClass())
-//                return false;
-//
-//            ClientInput other = (ClientInput) obj;
-//            if (Double.doubleToLongBits(aiX) != Double.doubleToLongBits(other.aiX))
-//                return false;
-//            if (Double.doubleToLongBits(aiY) != Double.doubleToLongBits(other.aiY))
-//                return false;
-//            if (x != other.x)
-//                return false;
-//
-//            return y != other.y;
-//        }
     }
 
     static Message inLobby(int playerNumber, String uuid, String name) {
         return new Message(playerNumber, uuid, name, null, false);
     }
 
-    static Message sendInputState(String uuid, String name, ClientInput input, boolean dead) {
+    static Message sendInputState(
+        String uuid,
+        String name,
+        ClientInput input,
+        boolean dead
+    ) {
         return new Message(-1, uuid, name, input, dead);
     }
 
@@ -146,6 +127,7 @@ public class Message implements Serializable {
         return message;
     }
 
+
     @Override
     public String toString() {
         return String.format(
@@ -157,15 +139,19 @@ public class Message implements Serializable {
         );
     }
 
+
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((uuid == null) ? 0 : uuid.hashCode());
+        result = prime * result + (dead ? 1231 : 1237);
         result = prime * result + ((input == null) ? 0 : input.hashCode());
+        result = prime * result + ((name == null) ? 0 : name.hashCode());
         result = prime * result + playerNumber;
+        result = prime * result + ((uuid == null) ? 0 : uuid.hashCode());
         return result;
     }
+
 
     @Override
     public boolean equals(Object obj) {
@@ -176,16 +162,25 @@ public class Message implements Serializable {
         if (getClass() != obj.getClass())
             return false;
         Message other = (Message) obj;
-        if (uuid == null) {
-            if (other.uuid != null)
-                return false;
-        } else if (!uuid.equals(other.uuid))
+        if (dead != other.dead)
             return false;
         if (input == null) {
             if (other.input != null)
                 return false;
         } else if (!input.equals(other.input))
             return false;
-        return (playerNumber != other.playerNumber);
+        if (name == null) {
+            if (other.name != null)
+                return false;
+        } else if (!name.equals(other.name))
+            return false;
+        if (playerNumber != other.playerNumber)
+            return false;
+        if (uuid == null) {
+            if (other.uuid != null)
+                return false;
+        } else if (!uuid.equals(other.uuid))
+            return false;
+        return true;
     }
 }

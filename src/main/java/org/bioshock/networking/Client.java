@@ -15,14 +15,13 @@ import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
 
 public class Client extends WebSocketClient {
-    private static final String DEFURI = "ws://51.15.109.210:8029/";
+    private static final String DEF_URI = "ws://51.15.109.210:8029/";
 
     private int playerNumber;
 
     private Semaphore mutex = new Semaphore(1);
     private Queue<Message> initialMessages = new ArrayDeque<>();
     private Queue<Message> messageQueue = new ArrayDeque<>();
-    private boolean connected = false;
     private boolean initMessage = true;
     private String playerName;
 
@@ -31,7 +30,7 @@ public class Client extends WebSocketClient {
     }
 
     public Client() {
-        this(DEFURI);
+        this(DEF_URI);
     }
 
     public Client(String uri) {
@@ -149,9 +148,9 @@ public class Client extends WebSocketClient {
         }
     }
 
-    public boolean haveInitMessage() {return initMessage;}
+    public boolean haveInitMessage() { return initMessage; }
 
-    public String getPlayerName() {return playerName;}
+    public String getPlayerName() { return playerName; }
 
     public Queue<Message> getInitialMessages() {
         return initialMessages;
@@ -163,9 +162,5 @@ public class Client extends WebSocketClient {
 
     public Semaphore getMutex() {
         return mutex;
-    }
-
-    public boolean isConnected() {
-        return connected;
     }
 }

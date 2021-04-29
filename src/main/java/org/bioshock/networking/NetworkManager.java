@@ -1,12 +1,12 @@
 package org.bioshock.networking;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.EnumMap;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Queue;
 import java.util.UUID;
 
 import org.bioshock.entities.Entity;
@@ -21,19 +21,15 @@ import org.bioshock.scenes.SceneManager;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.geometry.Point2D;
-import javafx.scene.input.KeyCode;
 
 public class NetworkManager {
-    private static Map<KeyCode, Boolean> keyPressed = new EnumMap<>(
-        KeyCode.class
-    );
 
     private static String myID = UUID.randomUUID().toString();
     private static String myName;
     private static Hider me;
     private static Hider masterHider;
-    
-    private static List<SeekerAI> seekers = new ArrayList<>(App.playerCount());
+
+    private static List<SeekerAI> seekers = new ArrayList<>();
     private static List<Hider> playerList = new ArrayList<>(App.playerCount());
     private static Map<String, Hider> loadedPlayers = new HashMap<>(
         App.playerCount()
@@ -41,7 +37,7 @@ public class NetworkManager {
 
     private static Map<Hider, String> playerNames = new HashMap<>();
 
-    private static LinkedList<String> messageList = new LinkedList<>();
+    private static Queue<String> chatMessageList = new ArrayDeque<>();
 
     private static Client client = new Client();
     private static Object awaitingPlayerLock = new Object();
@@ -49,11 +45,6 @@ public class NetworkManager {
     private NetworkManager() {}
 
     public static void initialise() {
-        keyPressed.put(KeyCode.W, false);
-        keyPressed.put(KeyCode.A, false);
-        keyPressed.put(KeyCode.S, false);
-        keyPressed.put(KeyCode.D, false);
-
         Thread initThread = new Thread(new Task<>() {
             @Override
             protected Object call() {
@@ -98,12 +89,12 @@ public class NetworkManager {
                     );
                 }
 
-
                 masterHider = playerList.get(0);
 
                 me = loadedPlayers.get(myID);
 
                 me.getMovement().initMovement();
+
                 playerList.forEach(Hider::initAnimations);
                 seekers.forEach(SeekerAI::initAnimations);
 
@@ -117,28 +108,29 @@ public class NetworkManager {
     }
 
     private static Message pollInputs() {
-
         int x = (int) me.getX();
         int y = (int) me.getY();
 
         int[][] aiCoords = new int[seekers.size()][2];
-        for(int i=0;i<seekers.size();i++) {
+        for (int i = 0; i < seekers.size(); i++) {
             Point2D seekerPos = seekers.get(i).getPosition();
             aiCoords[i][0] = (int) seekerPos.getX();
             aiCoords[i][1] = (int) seekerPos.getY();
         }
-//        Point2D aiPos = seekers.getPosition();
-//        int aiX = (int) aiPos.getX();
-//        int aiY = (int) aiPos.getY();
 
         String message = "";
 
-        if (!messageList.isEmpty() && !me.isDead()) {
-            message = messageList.getFirst();
-            messageList.poll();
+        if (!chatMessageList.isEmpty() && !me.isDead()) {
+            message = chatMessageList.peek();
+            chatMessageList.poll();
         }
 
-        Message.ClientInput input = new Message.ClientInput(x, y, aiCoords, message);
+        Message.ClientInput input = new Message.ClientInput(
+            x,
+            y,
+            aiCoords,
+            message
+        );
 
         return new Message(-1, myID, myName, input, me.isDead());
     }
@@ -175,14 +167,17 @@ public class NetworkManager {
 
             updateDirection(input, messageFrom);
 
-            if (messageFrom == masterHider && input.aiCoords != null && input.aiCoords.length == seekers.size()) {
-                for(int i=0;i<seekers.size();i++) {
+            if (
+                messageFrom == masterHider
+                && input.aiCoords != null
+                && input.aiCoords.length == seekers.size()
+            ) {
+                for(int i = 0; i < seekers.size(); i++) {
                     seekers.get(i).getMovement().moveTo(
                         input.aiCoords[i][0],
                         input.aiCoords[i][1]
                     );
                 }
-                
             }
 
             messageFrom.getMovement().moveTo(
@@ -261,12 +256,8 @@ public class NetworkManager {
 
     public static void addMessage(String message) {
         if (!message.isEmpty()) {
-            messageList.add(message);
+            chatMessageList.add(message);
         }
-    }
-
-    public static void setKeysPressed(KeyCode key, boolean pressed) {
-        keyPressed.replace(key, pressed);
     }
 
     public static int playerCount() {
@@ -283,13 +274,5 @@ public class NetworkManager {
 
     public static Object getPlayerJoinLock() {
         return awaitingPlayerLock;
-    }
-
-    public static Map<String, Hider> getLoadedPlayers() {
-        return loadedPlayers;
-    }
-
-    public static Map<Hider, String> getPlayerNames() {
-        return playerNames;
     }
 }
