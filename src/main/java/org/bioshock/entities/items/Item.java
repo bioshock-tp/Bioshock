@@ -1,7 +1,6 @@
 package org.bioshock.entities.items;
 
 import javafx.geometry.Point3D;
-import org.bioshock.audio.AudioManager;
 import org.bioshock.components.NetworkC;
 import org.bioshock.entities.Entity;
 import org.bioshock.entities.EntityManager;
@@ -45,6 +44,7 @@ public abstract class Item extends ImageEntity implements Collisions {
     public void collect(Entity entity) {
         if (!enabled) return;
         apply(entity);
+        playCollectSound();
         destroy();
     }
 
@@ -53,7 +53,6 @@ public abstract class Item extends ImageEntity implements Collisions {
     public void collisionTick(Set<Entity> collisions) {
         collisions.forEach(collision -> {
             if (EntityManager.getPlayers().contains(collision)) {
-                AudioManager.playPlinkSfx();
                 collect(collision);
             }
         });
@@ -64,4 +63,9 @@ public abstract class Item extends ImageEntity implements Collisions {
     public String toString() {
         return getClass().getSimpleName();
     }
+
+    /**
+     * The sound effect to play when collecting this item
+     */
+    protected abstract void playCollectSound();
 }
