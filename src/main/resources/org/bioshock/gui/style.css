@@ -1,14 +1,30 @@
+@font-face {
+    src: url('Minercraftory.ttf');
+}
+
 .gui-button {
     -fx-padding: 10 18 15 18;
     -fx-background-insets: 0,0 0 3 0, 0 0 4 0, 0 0 5 0;
-    -fx-background-radius: 8;
-    /*-fx-background-color:*/
+    -fx-background-radius: 10;
+    -fx-background-color: #f1f1f1;
         /*linear-gradient(from 0% 93% to 0% 100%, #d55114 0%, #c24a12 100%);*/
-    -fx-effect: dropshadow( gaussian , rgba(0,0,0,0.75) , 4,0,0,1 );
+    /*-fx-effect: dropshadow( gaussian , rgba(0,0,0,0.75) , 4,0,0,1 );*/
     -fx-font-weight: bold;
-    -fx-font-size: 1.9em;
+    -fx-font-size: 2em;
+    -fx-font-family: "Ubuntu";
+}
+
+.gui-button:focused {
+    -fx-border-radius: 10;
+    -fx-border-width: 3;
+    -fx-border-color: #C50909;
+    /*-fx-background-color: gray;*/
+    /*-fx-background-color: */
+    /*linear-gradient(from 0% 93% to 0% 100%, #d64f14 0%, #d75116 100%);*/
 }
 .gui-button:hover {
+    -fx-background-color: #e3e3e3;
+    /*-fx-background-color: gray;*/
     /*-fx-background-color: */
         /*linear-gradient(from 0% 93% to 0% 100%, #d64f14 0%, #d75116 100%);*/
 }
@@ -16,19 +32,37 @@
     -fx-padding: 10 15 13 15;
     -fx-background-insets: 2 0 0 0,2 0 3 0, 2 0 4 0, 2 0 5 0;
 }
-.gui-radio-button {
+.gui-radio-button{
+    -fx-font-size: 1.8em;
+}
+
+.gui-radio-button .radio{
     /*-fx-padding: 8 15 15 15;*/
-    -fx-background-insets: 0,0 0 3 0, 0 0 4 0, 0 0 5 0;
-    -fx-background-radius: 8;
+    /*-fx-background-insets: 0,0 0 3 0, 0 0 4 0, 0 0 5 0;*/
+    /*-fx-background-radius: 8;*/
     /*-fx-background-color:*/
     /*linear-gradient(from 0% 93% to 0% 100%, #d55114 0%, #c24a12 100%);*/
     /*-fx-effect: dropshadow( gaussian , rgba(0,0,0,0.75) , 4,0,0,1 );*/
     /*-fx-font-weight: bold;*/
-    -fx-font-size: 1.6em;
+    -fx-control-inner-background: black!important;
+    -fx-background-color: #f1f1f1!important;
 }
 
+.gui-radio-button:selected .radio{
+    -fx-background-color: #C50909!important;
+}
+
+.gui-radio-button:selected .radio .dot{
+    -fx-background-color: white;
+}
+
+.volSlider{-fx-control-inner-background: black!important;}
+
+.volSlider .thumb{-fx-background-color: #C50909!important;}
+
 .p {
-    -fx-font-size: 1.6em;
+    -fx-font-family: "Ubuntu";
+    -fx-font-size: 1.8em;
 }
 
 .background {
@@ -36,16 +70,15 @@
 }
 
 .paragraph {
-    -fx-font-family: "Helvetica";
-    -fx-font-size: 72px;
+    -fx-font-family: "Minercraftory";
+    -fx-font-size: 80px;
+    -fx-font-weight: bold;
 }
 
 .buzzSpan {
     -fx-fill: black;
-    -fx-font-weight: bold;
 }
 
 .killSpan {
     -fx-fill: #C50909;
-    -fx-font-weight: bold;
 }
