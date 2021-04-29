@@ -13,10 +13,19 @@ import org.bioshock.main.App;
 public class Message implements Serializable {
     private static final long serialVersionUID = 1L;
 
+    /** The number of the player within the lobby */
     int playerNumber;
+
+    /** The unique ID of the player */
     String uuid;
+
+    /** The player's chosen name */
     String name;
+
+    /** The current state of the player */
     ClientInput input;
+
+    /** True if the player is dead */
     boolean dead;
 
     private Message() {}
@@ -26,6 +35,7 @@ public class Message implements Serializable {
      * @param playerNumber Should be -1 outside of lobby, otherwise should be
      * position of player in join queue
      * @param uuid Unique ID of player sending message
+     * @param name Name of player
      * @param input A ClientInput object containing states of player and AI
      * @param dead True if sending player is dead
      */
@@ -47,19 +57,24 @@ public class Message implements Serializable {
     static class ClientInput implements Serializable {
         private static final long serialVersionUID = 1L;
 
+        /** x coordinate of player */
         final int x;
+
+        /** y coordinate of player */
         final int y;
 
+        /** Coordinates of seeker(s) */
         final int[][] aiCoords;
 
+        /** Chat message */
         final String message;
 
         /**
-         * Information to send in message containing player POS / DIR
-         * @param x Coordinate X of player
-         * @param y Coordinate Y of player
-         * @param aiX Coordinate X of AI
-         * @param aiY Coordinate Y of AI
+         * Information to send in message containing player position
+         * @param x coordinate of player
+         * @param y coordinate of player
+         * @param aiCoords coordinates of seekers}
+         * @param message Chat message
          */
         ClientInput(int x, int y, int[][] aiCoords, String message) {
             this.x = x;
@@ -79,10 +94,28 @@ public class Message implements Serializable {
         }
     }
 
+
+    /**
+     * Returns a message to send when a player joins a lobby
+     * @param playerNumber The players number within the lobby
+     * @param uuid of the player
+     * @param name of the player
+     * @return A message used within the lobby of a networked game
+     */
     static Message inLobby(int playerNumber, String uuid, String name) {
         return new Message(playerNumber, uuid, name, null, false);
     }
 
+
+    /**
+     * Returns a message to send every game tick to the server containing
+     * information of the associated player
+     * @param uuid of the player
+     * @param name of the player
+     * @param input A {@link ClientInput} from the player
+     * @param dead true if the player is dead
+     * @return
+     */
     static Message sendInputState(
         String uuid,
         String name,
@@ -92,6 +125,12 @@ public class Message implements Serializable {
         return new Message(-1, uuid, name, input, dead);
     }
 
+
+    /**
+     * Serialises a message object
+     * @param message to serialise
+     * @return The serialised object
+     */
     public static String serialise(Message message) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try (ObjectOutputStream oos = new ObjectOutputStream(baos)) {
@@ -112,6 +151,12 @@ public class Message implements Serializable {
         return Base64.getEncoder().encodeToString(baos.toByteArray());
     }
 
+
+    /**
+     * De-serialises a message object
+     * @param string to de-serialise
+     * @return The {@link Message} object
+     */
     public static Message deserialise(String string) {
         byte[] data = Base64.getDecoder().decode(string);
         ByteArrayInputStream bais = new ByteArrayInputStream(data);

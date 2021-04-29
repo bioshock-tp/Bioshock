@@ -14,6 +14,7 @@ import javafx.scene.shape.Rectangle;
 
 public abstract class ImageEntity extends Entity {
 
+    /** This {@code Entity Entity's} image to render */
     protected Image image;
 
     /**
@@ -56,10 +57,20 @@ public abstract class ImageEntity extends Entity {
     }
 
 
+    /** Returns this {@link Entity Entity's} {@link Image} object */
     public Image getImage() {
         return image;
     }
 
+
+    /**
+     * For this {@link Entity} does the following:
+     * <ul>
+     *  <li>Removes it's hitbox</li>
+     *  <li>Disables it</li>
+     *  <li>Stops rendering it</li>
+     * </ul>
+     */
     public void destroy() {
         hitbox = new Rectangle();
         enabled = false;

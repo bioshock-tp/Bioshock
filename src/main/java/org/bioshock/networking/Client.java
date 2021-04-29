@@ -15,28 +15,59 @@ import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
 
 public class Client extends WebSocketClient {
+    /** URI of the game's server */
     private static final String DEF_URI = "ws://51.15.109.210:8029/";
 
+    /** The players number within a lobby */
     private int playerNumber;
 
     private Semaphore mutex = new Semaphore(1);
+
+    /** Messages received within a lobby */
     private Queue<Message> initialMessages = new ArrayDeque<>();
+
+    /** Messages received during gameplay */
     private Queue<Message> messageQueue = new ArrayDeque<>();
+
+    /** True if waiting for initial message */
     private boolean initMessage = true;
+
+    /** Chosen name of player */
     private String playerName;
 
+
+    /**
+     * Creates a {@code Client} with a custom URI
+     * @param serverURI URI of server to connect to
+     */
     private Client(URI serverURI) {
         super(serverURI);
     }
 
+
+    /** Creates a {@code Client} using the default URI */
     public Client() {
         this(DEF_URI);
     }
 
+
+    /**
+     * Creates a {@code Client} with a custom URI string
+     * @param uri A string containing the URI of the server to connect to
+     * @see URI
+     */
     public Client(String uri) {
         this(getURI(uri));
     }
 
+
+    /**
+     * Creates a URI object from a string
+     * @param uri A string containing the URI of the server to connect to
+     * @return A URI object If the string has valid syntax, otherwise
+     * {@code null}
+     * @see URI
+     */
     private static URI getURI(String uri) {
         try {
             return new URI(uri);
@@ -47,6 +78,7 @@ public class Client extends WebSocketClient {
         }
     }
 
+
     @Override
     public void onOpen(ServerHandshake handshakedata) {
 
@@ -54,6 +86,7 @@ public class Client extends WebSocketClient {
         Preferences prefs = Preferences.userNodeForPackage(SettingsController.class);
         playerName = prefs.get("playerName", App.getBundle().getString("DEFAULT_PLAYER_NAME_TEXT"));
     }
+
 
     @Override
     public void onMessage(String string) {
@@ -114,11 +147,13 @@ public class Client extends WebSocketClient {
         }
     }
 
+
     @Override
     public void onMessage(ByteBuffer message) {
         App.logger.debug("received ByteBuffer");
         onMessage(message.toString());
     }
+
 
     @Override
     public void onError(Exception ex) {
@@ -132,6 +167,7 @@ public class Client extends WebSocketClient {
         }
 
     }
+
 
     @Override
     public void onClose(int code, String reason, boolean remote) {
@@ -148,18 +184,39 @@ public class Client extends WebSocketClient {
         }
     }
 
+
+    /**
+     * @return True if waiting for initial message
+     */
     public boolean haveInitMessage() { return initMessage; }
 
+
+    /**
+     * @return Chosen name of player
+     */
     public String getPlayerName() { return playerName; }
 
+
+    /**
+     * @return Messages received within a lobby
+     */
     public Queue<Message> getInitialMessages() {
         return initialMessages;
     }
 
+
+    /**
+     * @return Messages received during gameplay
+     * @see #getMutex()
+     */
     public Queue<Message> getMessageQ() {
         return messageQueue;
     }
 
+
+    /**
+     * @return A semaphore for accessing {@link #messageQueue}
+     */
     public Semaphore getMutex() {
         return mutex;
     }

@@ -24,26 +24,55 @@ import javafx.geometry.Point2D;
 
 public class NetworkManager {
 
+    /** ID of local player */
     private static String myID = UUID.randomUUID().toString();
+
+    /** Name of local player */
     private static String myName;
+
+    /** Local player */
     private static Hider me;
+
+    /** Player which sends information of seekers */
     private static Hider masterHider;
 
+    /** List of seekers in game */
     private static List<SeekerAI> seekers = new ArrayList<>();
+
+    /** List of players in game */
     private static List<Hider> playerList = new ArrayList<>(App.playerCount());
+
+    /** Maps UUID to player that is loaded into game */
     private static Map<String, Hider> loadedPlayers = new HashMap<>(
         App.playerCount()
     );
 
+
+    /** Maps {@link Hider} to its chosen name */
     private static Map<Hider, String> playerNames = new HashMap<>();
 
+    /** A queue of messages sent in chat */
     private static Queue<String> chatMessageList = new ArrayDeque<>();
 
+    /** A client using default URI */
     private static Client client = new Client();
+
+    /**
+     * A lock used whilst waiting for an appropriate number of players to join
+     * the lobby
+     */
     private static Object awaitingPlayerLock = new Object();
 
+
+    /** NetworkManager is a static class */
     private NetworkManager() {}
 
+
+    /**
+     * Creates a new thread that connects to game server and awaits joining
+     * players
+     * @see Client#DEF_URI
+     */
     public static void initialise() {
         Thread initThread = new Thread(new Task<>() {
             @Override
@@ -107,6 +136,11 @@ public class NetworkManager {
         initThread.start();
     }
 
+
+    /**
+     * Gathers information to send to the server about the local player
+     * @return The {@link Message} to send to the server
+     */
     private static Message pollInputs() {
         int x = (int) me.getX();
         int y = (int) me.getY();
@@ -135,6 +169,16 @@ public class NetworkManager {
         return new Message(-1, myID, myName, input, me.isDead());
     }
 
+
+    /**
+     * Called every game tick, does the following:
+     * <ul>
+     *  <li>Sends information about local player</li>
+     *  <li>Updates non-local player's positions and animations</li>
+     *  <li>Updates whether non-local player's are dead</li>
+     *  <li>Updates the chat</li>
+     * </ul>
+     */
     public static void tick() {
         if (me != null) client.send(Message.serialise(pollInputs()));
 
@@ -189,6 +233,11 @@ public class NetworkManager {
         client.getMutex().release();
     }
 
+
+    /**
+     * Updates chat
+     * @param message The message to add to chat
+     */
     private static void sendChat(Message message) {
         Hider messageFrom = loadedPlayers.get(message.uuid);
         ClientInput input = message.input;
@@ -205,6 +254,15 @@ public class NetworkManager {
         );
     }
 
+
+    /**
+     * Updates the
+     * {@link org.bioshock.physics.Movement#direction Movement.direction}
+     * of each {@link Entity}
+     * @param input Information about the player
+     * @param messageFrom The player to update
+     * @see Message.ClientInput
+     */
     private static void updateDirection(ClientInput input, Hider messageFrom) {
         int dispX = (int) (input.x - messageFrom.getX());
         if (dispX != 0) dispX = dispX / Math.abs(dispX);
@@ -215,6 +273,11 @@ public class NetworkManager {
         messageFrom.getMovement().direction(dispX, dispY);
     }
 
+
+    /**
+     * Adds {@link Entity} to appropriate {@link Collection Collections(s)}
+     * @param entity To add to {@link Collection Collections(s)}
+     */
     public static void register(SquareEntity entity) {
         if (entity instanceof Hider) {
             playerList.add((Hider) entity);
@@ -227,10 +290,22 @@ public class NetworkManager {
         }
     }
 
+
+    /**
+     * Adds {@link Entity Entities} to appropriate
+     * {@link Collection Collections(s)}
+     * @param entities To add to {@link Collection Collections(s)}
+     */
     public static void registerAll(Collection<SquareEntity> entities) {
         entities.forEach(NetworkManager::register);
     }
 
+
+    /**
+     * Removes {@link Entity} from appropriate
+     * {@link Collection Collections(s)}
+     * @param entities To remove from {@link Collection Collections(s)}
+     */
     public static void unregister(Entity entity) {
         playerList.remove(entity);
         loadedPlayers.remove(entity.getID());
@@ -238,10 +313,21 @@ public class NetworkManager {
         if (entity == seekers) seekers = null;
     }
 
+
+    /**
+     * Removes {@link Entity Entities} from appropriate
+     * {@link Collection Collections(s)}
+     * @param entities To remove from {@link Collection Collections(s)}
+     */
     public static void unregisterAll(Collection<Entity> entities) {
        entities.forEach(NetworkManager::unregister);
     }
 
+
+    /**
+     * Sends a message to server specifying which player has been killed
+     * @param hider The player that has been killed
+     */
     public static void kill(Hider hider) {
         client.send(Message.serialise(
             new Message(
@@ -254,24 +340,46 @@ public class NetworkManager {
         ));
     }
 
+
+    /**
+     * Adds a message to {@link #chatMessageList}
+     * @param message To be added to {@link #chatMessageList}
+     */
     public static void addMessage(String message) {
         if (!message.isEmpty()) {
             chatMessageList.add(message);
         }
     }
 
+
+    /**
+     * @return The number of players loaded correctly in lobby
+     */
     public static int playerCount() {
         return loadedPlayers.size();
     }
 
+
+    /**
+     * @return The local player's {@link Hider}
+     */
     public static Hider me() {
         return me;
     }
 
+
+    /**
+     * @return ID of local player
+     */
     public static String getMyID() {
         return myID;
     }
 
+
+    /**
+     * @return The lock used whilst waiting for an appropriate number of
+     * players to join the lobby
+     */
     public static Object getPlayerJoinLock() {
         return awaitingPlayerLock;
     }
