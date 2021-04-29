@@ -34,5 +34,29 @@
     "name": "freeze",
     "path": "src/main/resources/org/bioshock/audio/freeze.wav",
     "filesystem": "local"
+  },
+  {
+    "type": "effect",
+    "name": "ghost",
+    "path": "src/main/resources/org/bioshock/audio/ghost.wav",
+    "filesystem": "local"
+  },
+  {
+    "type": "effect",
+    "name": "fastAir",
+    "path": "src/main/resources/org/bioshock/audio/fastAir.wav",
+    "filesystem": "local"
+  },
+  {
+    "type": "effect",
+    "name": "win",
+    "path": "src/main/resources/org/bioshock/audio/win.wav",
+    "filesystem": "local"
+  },
+  {
+    "type": "effect",
+    "name": "lose",
+    "path": "src/main/resources/org/bioshock/audio/lose.wav",
+    "filesystem": "local"
   }
 ]
