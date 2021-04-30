@@ -32,7 +32,7 @@
          <Label fx:id="musicLabel" styleClass="p" style="-fx-font-weight: 700"/>
          <HBox spacing="10" alignment="CENTER">
             <Label fx:id="musicVolumeLabel" styleClass="p"/>
-            <Slider fx:id="musicVolumeSlider" blockIncrement="0.1" max="1.0"/>
+            <Slider fx:id="musicVolumeSlider" styleClass="volSlider" blockIncrement="0.1" max="1.0"/>
          </HBox>
 
          <HBox spacing="20" alignment="CENTER">
@@ -44,10 +44,10 @@
          <Label fx:id="sfxLabel" styleClass="p" style="-fx-font-weight: 700"/>
          <HBox spacing="10" alignment="CENTER">
             <Label fx:id="sfxVolumeLabel" styleClass="p"/>
-            <Slider fx:id="sfxVolumeSlider" blockIncrement="0.1" max="1.0"/>
+            <Slider fx:id="sfxVolumeSlider" styleClass="volSlider" blockIncrement="0.1" max="1.0"/>
          </HBox>
 
-         <HBox spacing="20" alignment="CENTER">
+         <HBox spacing="20" styleClass="volSlider" alignment="CENTER">
             <RadioButton fx:id="sfxOnRadioButton" toggleGroup="$sfxToggleGroup" onAction="#toggleSfxOn" styleClass="gui-radio-button"/>
             <RadioButton fx:id="sfxOffRadioButton" toggleGroup="$sfxToggleGroup" onAction="#toggleSfxOff" styleClass="gui-radio-button"/>
          </HBox>

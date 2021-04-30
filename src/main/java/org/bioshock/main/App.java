@@ -16,6 +16,7 @@ import org.bioshock.gui.MainController;
 import org.bioshock.rendering.RenderManager;
 import org.bioshock.scenes.GameScene;
 import org.bioshock.scenes.SceneManager;
+import org.bioshock.utils.FontManager;
 import org.bioshock.utils.LanguageManager;
 
 import java.io.IOException;
@@ -48,6 +49,7 @@ public class App extends Application {
 
         AudioManager.initialiseBackgroundAudio();
         LanguageManager.initialiseLanguageSettings();
+        FontManager.loadFonts();
 
         WindowManager.initialise(stage);
         initFXMLScene();
