@@ -7,9 +7,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.stage.Stage;
 import org.bioshock.main.App;
-import org.bioshock.scenes.LoadingScreen;
 
 import java.util.Objects;
 import java.util.prefs.Preferences;
@@ -56,8 +54,10 @@ public class OnlineGameController {
         String playerName = nameField.getText();
         if (playerName.length() > 0 && playerName.length() <= 16) {
             prefs.put("playerName", playerName);
-            Stage stage = (Stage) launchButton.getScene().getWindow();
-            App.startGame(stage, new LoadingScreen(true, App.getBundle().getString("ONLINE_LOADING_TEXT")), true);
+
+            App.setFXMLRoot("lobby");
+//            Stage stage = (Stage) launchButton.getScene().getWindow();
+//            App.startGame(stage, new LoadingScreen(true, App.getBundle().getString("ONLINE_LOADING_TEXT")), true);
         }
         else {
             errorLabel.setStyle("-fx-text-fill:red");

@@ -1,27 +1,20 @@
 package org.bioshock.networking;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.EnumMap;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-
+import javafx.application.Platform;
+import javafx.concurrent.Task;
+import javafx.geometry.Point2D;
+import javafx.scene.input.KeyCode;
 import org.bioshock.entities.Entity;
 import org.bioshock.entities.SquareEntity;
 import org.bioshock.entities.players.Hider;
 import org.bioshock.entities.players.SeekerAI;
+import org.bioshock.gui.LobbyController;
 import org.bioshock.main.App;
 import org.bioshock.networking.Message.ClientInput;
 import org.bioshock.scenes.MainGame;
 import org.bioshock.scenes.SceneManager;
 
-import javafx.application.Platform;
-import javafx.concurrent.Task;
-import javafx.geometry.Point2D;
-import javafx.scene.input.KeyCode;
+import java.util.*;
 
 public class NetworkManager {
     private static Map<KeyCode, Boolean> keyPressed = new EnumMap<>(
@@ -48,7 +41,7 @@ public class NetworkManager {
 
     private NetworkManager() {}
 
-    public static void initialise() {
+    public static void initialise(LobbyController lobbyController) {
         keyPressed.put(KeyCode.W, false);
         keyPressed.put(KeyCode.A, false);
         keyPressed.put(KeyCode.S, false);
@@ -58,57 +51,59 @@ public class NetworkManager {
             @Override
             protected Object call() {
                 try {
-                    App.logger.info("Connecting to web socket...");
-                    client.connectBlocking();
-                    App.logger.info("Connected to web socket");
-                } catch (InterruptedException e) {
-                    App.logger.error(e);
-                    Thread.currentThread().interrupt();
-                }
-
-                myName = client.getPlayerName();
-                client.send(Integer.toString(App.playerCount()));
-
-                /* Wait until players join then add them to loadedPlayers */
-                while (loadedPlayers.size() < App.playerCount()) {
-                    synchronized(awaitingPlayerLock) {
-                        while (client.getInitialMessages().isEmpty()) {
-                            try {
-                                awaitingPlayerLock.wait();
-                            } catch (InterruptedException e) {
-                                App.logger.error(e);
-                                Thread.currentThread().interrupt();
-                            }
-                        }
+                    try {
+                        App.logger.info("Connecting to web socket...");
+                        client.connectBlocking();
+                        App.logger.info("Connected to web socket");
+                    } catch (InterruptedException e) {
+                        App.logger.error(e);
+                        Thread.currentThread().interrupt();
                     }
 
-                    Message message = client.getInitialMessages().remove();
+                    myName = client.getPlayerName();
+                    client.send(Integer.toString(App.playerCount()));
 
-                    Hider hider = playerList.get(message.playerNumber - 1);
+                    /* Wait until players join then add them to loadedPlayers */
+                    while (loadedPlayers.size() < App.playerCount()) {
+                        synchronized (awaitingPlayerLock) {
+                            while (client.getInitialMessages().isEmpty()) {
+                                try {
+                                    awaitingPlayerLock.wait();
+                                } catch (InterruptedException e) {
+                                    App.logger.error(e);
+                                    Thread.currentThread().interrupt();
+                                }
+                            }
+                        }
 
-                    hider.setID(message.uuid);
+                        Message message = client.getInitialMessages().remove();
 
-                    hider.setName(message.name);
+                        Hider hider = playerList.get(message.playerNumber - 1);
 
-                    loadedPlayers.putIfAbsent(message.uuid, hider);
-                    playerNames.putIfAbsent(hider, message.name);
+                        hider.setID(message.uuid);
 
-                    Platform.runLater(() ->
-                        SceneManager.getLobby().updatePlayerCount()
-                    );
+                        hider.setName(message.name);
+
+                        loadedPlayers.putIfAbsent(message.uuid, hider);
+                        playerNames.putIfAbsent(hider, message.name);
+
+                        Platform.runLater(lobbyController::updatePlayerCount);
+                    }
+
+
+                    masterHider = playerList.get(0);
+
+                    me = loadedPlayers.get(myID);
+
+                    me.getMovement().initMovement();
+                    playerList.forEach(Hider::initAnimations);
+                    seekers.forEach(SeekerAI::initAnimations);
+
+                    App.logger.info("Networking initialised");
                 }
-
-
-                masterHider = playerList.get(0);
-
-                me = loadedPlayers.get(myID);
-
-                me.getMovement().initMovement();
-                playerList.forEach(Hider::initAnimations);
-                seekers.forEach(SeekerAI::initAnimations);
-
-                App.logger.info("Networking initialised");
-
+                catch (Exception e) {
+                    App.logger.error(e);
+                }
                 return null;
             }
         });

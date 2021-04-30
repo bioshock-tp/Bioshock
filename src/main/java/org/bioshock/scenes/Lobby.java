@@ -39,9 +39,9 @@ public class Lobby extends GameScene {
     public void initScene(long seed) {
         SceneManager.setInLobby(true);
 
-        if (App.isNetworked()) {
-            NetworkManager.initialise();
-        }
+//        if (App.isNetworked()) {
+//            NetworkManager.initialise(this);
+//        }
     }
 
     public void updatePlayerCount() {

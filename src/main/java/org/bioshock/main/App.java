@@ -2,6 +2,7 @@ package org.bioshock.main;
 
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.concurrent.Task;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -15,6 +16,7 @@ import org.bioshock.engine.input.InputManager;
 import org.bioshock.gui.MainController;
 import org.bioshock.rendering.RenderManager;
 import org.bioshock.scenes.GameScene;
+import org.bioshock.scenes.MainGame;
 import org.bioshock.scenes.SceneManager;
 import org.bioshock.utils.FontManager;
 import org.bioshock.utils.LanguageManager;
@@ -35,6 +37,8 @@ public class App extends Application {
     private static boolean networked;
     private static ResourceBundle bundle;
     private static Locale locale;
+    private static Thread mainGameThread;
+    private static MainGame mainGame;
 
     @Override
     public void start(Stage stage) {
@@ -53,6 +57,15 @@ public class App extends Application {
 
         WindowManager.initialise(stage);
         initFXMLScene();
+        mainGameThread = new Thread(new Task<>() {
+            @Override
+            protected MainGame call() throws Exception {
+                mainGame = new MainGame();
+                return mainGame;
+            }
+        });
+        mainGameThread.start();
+
 
         stage.setScene(fxmlScene);
         stage.show();
@@ -123,6 +136,16 @@ public class App extends Application {
 
     public static boolean isNetworked() {
         return networked;
+    }
+
+    public static MainGame getMainGame() {
+        try {
+            mainGameThread.join();
+        } catch (InterruptedException e) {
+            App.logger.error(e);
+            Thread.currentThread().interrupt();
+        }
+        return mainGame;
     }
 
     public static void setBundle(ResourceBundle bundle) {
