@@ -20,18 +20,29 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 
 public class InputManager {
+
+    /** Maps a key press to it's desired action */
     private static Map<KeyCode, Runnable> keyPresses = new EnumMap<>(
         KeyCode.class
     );
 
+    /** Maps a key release to it's desired action */
     private static Map<KeyCode, Runnable> keyReleases = new EnumMap<>(
         KeyCode.class
     );
 
+    /** When true, will use debugging features */
     private static boolean debug = false;
 
+
+    /** InputManager is a static class */
     private InputManager() {}
 
+
+    /**
+     * Calls {@link #changeScene()}
+     * @see #changeScene()
+     */
 	public static void initialise() {
         initDebugPress();
 		changeScene();
@@ -122,6 +133,7 @@ public class InputManager {
         });
     }
 
+
     /**
      * Runs {@code target} before running {@code toApp}
      * @param target The {@link Runnable} to run first
@@ -136,6 +148,8 @@ public class InputManager {
         };
     }
 
+
+    /** Adds adds the event listeners to the current scene */
     public static void changeScene() {
         SceneManager.getScene().setOnKeyPressed(e -> {
             Runnable runnable;
@@ -178,6 +192,14 @@ public class InputManager {
         });
     }
 
+
+    /**
+     * Adds a key listener to the specified {@code KeyCode}. Runs the
+     * {@code Runnable} when the associated key is pressed
+     * @param keyCode The key pressed that should call {@code #runnable}
+     * @param runnable A functional interface to run when the specified key is
+     * pressed
+     */
 	public static void onPress(KeyCode keyCode, Runnable runnable) {
         if (keyPresses.putIfAbsent(keyCode, runnable) != null) {
             App.logger.error(
@@ -187,6 +209,14 @@ public class InputManager {
         }
 	}
 
+
+    /**
+     * Adds a key listener to the specified {@code KeyCode}. Runs
+     * {@code runnable} when the associated key is released
+     * @param keyCode The key pressed that should call {@code runnable}
+     * @param runnable A functional interface to run when the specified key is
+     * released
+     */
     public static void onRelease(KeyCode keyCode, Runnable runnable) {
         if (keyReleases.putIfAbsent(keyCode, runnable) != null) {
             App.logger.error(
@@ -196,11 +226,25 @@ public class InputManager {
         }
 	}
 
+
+    /**
+     * Stops running the mapped {@link Runnable} (if any) when
+     * {@link KeyCode KeyCode(s)} key is pressed
+     * @param keyCode The {@code KeyCode} of the key to ignore
+     * {@link KeyCode KeyCode(s)} of
+     */
     public static void removeKeyListener(KeyCode keyCode) {
         keyPresses.remove(keyCode);
         keyReleases.remove(keyCode);
 	}
 
+
+    /**
+     * Stops running the mapped {@link Runnable Runnable(s)} when any of the
+     * {@link KeyCode KeyCode(s)} key is pressed
+     * @param keyCodes The {@link KeyCode KeyCode(s)} of the key(s) to ignore
+     * {@link javafx.scene.input.KeyEvent KeyEvent(s)} of
+     */
     public static void removeKeyListeners(KeyCode... keyCodes) {
         Arrays.asList(keyCodes).forEach(InputManager::removeKeyListener);
 	}
