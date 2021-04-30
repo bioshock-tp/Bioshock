@@ -13,6 +13,12 @@ import javafx.scene.canvas.GraphicsContext;
 public class WallRenderer implements Renderer {
     private WallRenderer() {}
 
+    /**
+     * Method to render the given wall
+     * @param <E>
+     * @param gc The graphics context to render the wall on
+     * @param wall The wall to render
+     */
     public static <E extends Wall> void render(
         GraphicsContext gc,
         E wall
@@ -25,7 +31,8 @@ public class WallRenderer implements Renderer {
 
         gc.save();
         int horizontalMultiplier = wall.isHorizontal() ? 1 : 0;
-
+        
+        //Draw the complete images
         for (int i = 0; i < wall.getNumImages(); i++) {
             gc.drawImage(
                 wall.getImage(),
@@ -35,8 +42,12 @@ public class WallRenderer implements Renderer {
                 getRenHeight(imageHeight)
             );
         }
+        //If it needs a cropped image draw the cropped image
         if (wall.needsCroppedImage()) {
-            if (wall.isHorizontal()) {
+            //This draws the image stretched as it looks better to have the texture 
+            //stretched but line up properly with the adjacent texture rather than 
+            //cropping the image and not having it line up properly
+            if (wall.isHorizontal()) {                
                 gc.drawImage(
                     wall.getImage(),
                     getRenX(

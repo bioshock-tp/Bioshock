@@ -6,10 +6,16 @@ import org.bioshock.main.App;
 
 import javafx.geometry.Point2D;
 
+/**
+ * 
+ * A mutable version of the class Point 2D
+ *
+ */
 public class Point extends Point2D {
     private Field xField;
     private Field yField;
 
+    
     public Point(double x, double y) {
         super(x, y);
         try {

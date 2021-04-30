@@ -21,10 +21,13 @@ public class RandomMap implements Map {
      * the map created in the randomMap
      */
     GenericMap map;
+    /**
+     * The default probability of a room being spawned at a given location
+     */
     private double roomProb = 0.8;
 
     /***
-     * Generate a new generic map
+     * Generate a new random map
      * @param newPos the top left position of the map (even if there is no room
      * in the top left position)
      * @param wallWidth the width of the walls that make up the map
@@ -33,7 +36,7 @@ public class RandomMap implements Map {
      * @param colour the colour of the map
      * @param maxMapSize the size of the array that the random array will be
      * generated in
-     * @param roomProb the probability of a room occurring at a given position
+     * @param roomProbObj the probability of a room occurring at a given position
      * if null the default probability will be used
      * @param seed the seed to be used for random generation if seed is
      * null a non-seeded random generator will be used

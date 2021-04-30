@@ -32,25 +32,21 @@ public class Room extends GraphNode {
      *  (in terms of units)
      */
     private Size totalSize;
-
     /***
      * Stores the internal room size
      * (in terms of units)
      */
     private Size roomSize;
-
     /***
      * Stores a list of all the walls that make up the room
      */
     private List<Wall> walls = new ArrayList<>();
-
+    //TODO
     private List<Pair<Point2D, Direction>> corridorPoints = new ArrayList<>();
-
     /***
      * Stores the position of the top left of the room
      */
     private Point3D pos;
-
     /**
      * the wall width (in terms of units)
      */
@@ -59,56 +55,56 @@ public class Room extends GraphNode {
      * the corridor size of all exits (in terms of units)
      */
     private Size coriSize;
-
     /**
      * the colour of the walls in the room
      */
     private Color colour;
-
     /**
      * the probability of a wall being spawned at any given location
      */
     private double wallProb = 0.25;
-
     /**
      * a graph representing which positions are traversable in the room
      */
     private Graph<GraphNode, Pair<Direction, Double>> traversableGraph;
-
     /**
      * the node representing the centre of the room in the traversable graph and array
      */
     private GraphNode centreNode;
-
     /**
      * an array representing which positions are traversable in the room
      */
     GraphNode[][] traversableArray;
-
+    /**
+     * Stores the Rooms type (currently not useful as every room will be a SINGLE_ROOM
+     * But useful for expandability purposes
+     */
     private RoomType roomType = RoomType.SINGLE_ROOM;
-
     /**
      * a list of rooms that it is openly connected to
      * i.e. all adjacent rooms which are part of the same big room
      */
     private List<Room> openlyConnectedRooms = new ArrayList<>();
-
     /**
      * Stores the connection type for each direction
      */
     EnumMap<Direction, ConnType> connections = new EnumMap<>(Direction.class);
-
     /**
      * an array representing where there is floor space
      * and where floor should be rendered
      */
     boolean[][] floorSpace;
-
+    /**
+     * The random number generator used to generate the room
+     */
     private Random rand = new Random();
-
 
     /***
      * Generates a room with the position being the top left of the room
+     * 
+     * This is the first step in room generation so as to allow to have the room object for 
+     * referencing purposes
+     * 
      * @param newPos the position of the top left of the room
      * @param wallWidth the width of the walls that make up the room (in terms
      * of units)
@@ -124,6 +120,7 @@ public class Room extends GraphNode {
         Color c
     ) {
         super();
+        //Initialise members
         this.pos = newPos;
         this.wallWidth = wallWidth;
         this.roomSize = newRoomSize;
@@ -140,12 +137,21 @@ public class Room extends GraphNode {
         connections.put(Direction.EAST, ConnType.NO_EXIT);
         connections.put(Direction.WEST, ConnType.NO_EXIT);
 
+        //Set its GraphNode location
         setLocation(new Point2D(
             getRoomCenter().getX(),
             getRoomCenter().getY()
         ));
     }
 
+    /**
+     * The second stage in generating a room and spawns objects randomly in the room 
+     * based off the seed making sure there's a clear path between the centre of each room
+     * @param edges A list of edges leaving the room you are generating which represent what 
+     * the type of sides there are in each direction
+     * @param wallProbObj The probability between 0 and 1 of an object being spawned in a arbitrary position
+     * @param seed The seed of the random generator used to generate where objects spawn in the room
+     */
     public void init(
         List<Pair<Direction, ConnType>> edges,
         Double wallProbObj,
@@ -179,9 +185,11 @@ public class Room extends GraphNode {
         init(edges, locationsToSpawn);
     }
 
-
-    /***
-     *
+    /**
+     * The second stage in generating a room and spawns objects in the room based off the
+     * locationsToSpawn array making sure there's a clear path between the centre of each room
+     * @param edges
+     * @param locationsToSpawn
      */
     private void init(
         List<Pair<Direction, ConnType>> edges,
@@ -196,7 +204,7 @@ public class Room extends GraphNode {
         boolean[][] traversable = new boolean
             [(int) totalSize.getHeight()]
             [(int) totalSize.getWidth()];
-
+        
         ArrayUtils.fill2DArray(traversable, true);
 
         //Add the sides relevant for the connection type in each direction
@@ -440,7 +448,6 @@ public class Room extends GraphNode {
                 0
             );
         }
-
         if (
             connections.get(Direction.WEST) == ConnType.SUB_ROOM
             && connections.get(Direction.SOUTH) != ConnType.SUB_ROOM
@@ -530,6 +537,7 @@ public class Room extends GraphNode {
             [traversable.length]
             [traversable[0].length];
 
+        //The node represents the centre of each traversable location
         for (int i = 0; i < traversableNodes.length; i++) {
             for (int j = 0; j < traversableNodes[0].length; j++) {
                 if (traversable[i][j]) {
@@ -581,7 +589,7 @@ public class Room extends GraphNode {
         floorSpace = new boolean[traversable.length][traversable[0].length];
 
         /*
-         * iterate through locations to spawn and then spawn walls in in the
+         * iterate through locations to spawn and then spawn objects in in the
          * location if:
          *     it want's to be spawned there,
          *     it can be spawned there,
@@ -617,6 +625,7 @@ public class Room extends GraphNode {
                         new NetworkC(false),
                         new Size(UNIT_WIDTH, UNIT_HEIGHT),
                         colour.invert(),
+                        //Make the object randomly be one of the possible options
                         GlobalConstants.IN_ROOM_OBJECTS.get(
                             rand.nextInt(
                                 GlobalConstants.IN_ROOM_OBJECTS.size()
@@ -625,13 +634,7 @@ public class Room extends GraphNode {
                         1
                     ));
 
-                    traversableNodes[i][j] = null;
-                }
-
-                if (
-                    !traversableGraph.getNodes()
-                        .contains(traversableNodes[i][j])
-                ) {
+                    //Make the location you spawned in an object non traversable by making the corresponding node null
                     traversableNodes[i][j] = null;
                 }
             }
@@ -648,12 +651,13 @@ public class Room extends GraphNode {
         traversableGraph = graph.getConnectedSubgraph(centreNode);
     }
 
-
 	/***
      * add a corner at the given position and put it in traversable
-     * @param traversable
-     * @param relX
-     * @param relY
+     * @param traversable The traversable array to copy the corner into
+     * @param relX The relative X position in the traversable array to spawn the corner in 
+     * @param relY The relative Y position in the traversable array to spawn the corner in
+     * 
+     * Where the X and Y position represent the top left of the corner
      */
     private void corner(
 		boolean[][] traversable,
@@ -688,7 +692,6 @@ public class Room extends GraphNode {
             relX
         );
     }
-
 
     /***
      * Adds a top side depending on the connection type
@@ -764,7 +767,6 @@ public class Room extends GraphNode {
         return wallsAndArray.getValue();
     }
 
-
     /***
      * Adds a bottom side depending on the connection type
      * @param wallWidth
@@ -837,7 +839,6 @@ public class Room extends GraphNode {
 
         return wallsAndArray.getValue();
     }
-
 
     /***
      * Adds a left side depending on the connection type
@@ -914,7 +915,6 @@ public class Room extends GraphNode {
         return wallsAndArray.getValue();
     }
 
-
     /***
      * Adds a left side depending on the connection type
      * @param wallWidth
@@ -989,7 +989,6 @@ public class Room extends GraphNode {
         return wallsAndArray.getValue();
     }
 
-
     /***
      *
      * @return an uninitialised deep copy of the current room
@@ -1005,7 +1004,6 @@ public class Room extends GraphNode {
         );
     }
 
-
     /***
      * sets the Z value of all the walls in the room to the newZ
      * @param newZ
@@ -1016,10 +1014,13 @@ public class Room extends GraphNode {
         }
     }
 
+    /**
+     * Set the roomType of the room
+     * @param roomType
+     */
     public void setRoomType(RoomType roomType) {
         this.roomType = roomType;
     }
-
 
     /***
      *
@@ -1028,7 +1029,6 @@ public class Room extends GraphNode {
     public List<Wall> getWalls() {
         return walls;
     }
-
 
     /***
      *
@@ -1041,7 +1041,6 @@ public class Room extends GraphNode {
         );
     }
 
-
     /***
      *
      * @return size of the internal room
@@ -1053,14 +1052,12 @@ public class Room extends GraphNode {
         );
     }
 
-
     /**
      * @return the position of the top left of this room
      */
     public Point2D getPosition() {
         return new Point2D(pos.getX(), pos.getY());
     }
-
 
     /***
      *
@@ -1069,7 +1066,6 @@ public class Room extends GraphNode {
     public double getZ() {
         return pos.getZ();
     }
-
 
     /***
      *
@@ -1082,7 +1078,6 @@ public class Room extends GraphNode {
         );
     }
 
-
     /***
      *
      * @return a list of rooms that the current room is openly connected to
@@ -1092,30 +1087,53 @@ public class Room extends GraphNode {
 		return openlyConnectedRooms;
 	}
 
+	/**
+	 * 
+	 * TODO
+	 */
     public List<Pair<Point2D, Direction>> getCorridorPoints() {
         return corridorPoints;
     }
 
+    /**
+     * 
+     * @return the RoomType of the room
+     */
     public RoomType getRoomType() {
         return roomType;
     }
 
+    /**
+     * 
+     * @return The GraphNode in the Centre of the room
+     */
     public GraphNode getCentreNode() {
         return centreNode;
     }
 
+    /**
+     * 
+     * @return The traversable array that makes up the room
+     */
     public GraphNode[][] getTraversableArray() {
         return traversableArray;
     }
 
+    /**
+     * 
+     * @return The traversable graph that makes up the room
+     */
     public Graph<GraphNode, Pair<Direction, Double>> getTraversableGraph() {
 		return traversableGraph;
 	}
 
+    /**
+     * 
+     * @return the connections from this room in each direction NSEW
+     */
     public Map<Direction, ConnType> getConnections() {
         return connections;
     }
-
 
     /**
      *
@@ -1128,7 +1146,6 @@ public class Room extends GraphNode {
         return wallWidth;
     }
 
-
     /**
      *
      * @return the corridor size (in terms of units)
@@ -1140,10 +1157,14 @@ public class Room extends GraphNode {
         return coriSize;
     }
 
+    /**
+     * 
+     * @return The floor space array 
+     * Used to work out where to render floor beneath objects
+     */
     public boolean[][] getFloorSpace() {
         return floorSpace;
     }
-
 
     @Override
     public String toString() {

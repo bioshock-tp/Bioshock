@@ -16,6 +16,12 @@ import javafx.scene.canvas.GraphicsContext;
 public class RoomRenderer implements Renderer {
     private RoomRenderer() {}
 
+    /**
+     * Method to render the given roomEntity
+     * @param <E>
+     * @param gc The graphics context to render the roomEntity on
+     * @param roomEntity The roomEntity to render
+     */
     public static <E extends RoomEntity> void render(
         GraphicsContext gc,
         E roomEntity
@@ -25,6 +31,7 @@ public class RoomRenderer implements Renderer {
 
         gc.save();
 
+        //At every floor location render the floor image
         for (int i = 0; i < floorSpace.length; i++) {
             for (int j = 0; j < floorSpace[i].length; j++) {
                 if (floorSpace[i][j]) {

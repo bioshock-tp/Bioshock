@@ -47,5 +47,9 @@ public interface Map {
 	 */
 	public Graph<GraphNode, Pair<Direction, Double>> getTraversableGraph();
 
+	/**
+	 * 
+	 * @return an array representing the traversable locations in the map
+	 */
     public GraphNode[][] getTraversableArray();
 }

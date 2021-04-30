@@ -7,6 +7,13 @@ import org.bioshock.scenes.MainGame;
 
 import javafx.stage.Stage;
 
+/**
+ * 
+ * A debug version of app that launches the game directly into
+ * a SinglePlayer(AI) version of the game without needing to use
+ * the GUI
+ *
+ */
 public class Debug extends App {
     @Override
     public void start(Stage stage) {

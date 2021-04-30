@@ -191,6 +191,7 @@ public class Client extends WebSocketClient {
     public boolean haveInitMessage() { return initMessage; }
 
 
+    
     /**
      * @return Chosen name of player
      */

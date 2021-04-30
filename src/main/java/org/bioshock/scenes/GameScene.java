@@ -83,8 +83,16 @@ public abstract class GameScene extends Scene {
         renderEntities();
     }
 
+    /**
+     * Render tick method that can be overrided if the scene needs it
+     * @param timeDelta currently only takes 0 as it isn't utilised
+     */
     public void renderTick(double timeDelta) {}
 
+    /**
+     * Logic tick method that can be overrided if the scene needs it
+     * @param timeDelta the time for a logic tick in seconds
+     */
     public void logicTick(double timeDelta) {}
 
     /**
@@ -125,6 +133,9 @@ public abstract class GameScene extends Scene {
         children.forEach(RenderManager::unregister);
     }
 
+    /**
+     * Scales the canvas to the current Window Width
+     */
     public void scaleCanvas() {
         RenderManager.setScale(new Point2D(
             WindowManager.getWindowWidth() / gameScreen.getWidth(),
@@ -160,7 +171,10 @@ public abstract class GameScene extends Scene {
         return canvas;
     }
 
-
+    /**
+     * 
+     * @return The size of the game screen
+     */
     public static Size getGameScreen() {
         return gameScreen;
     }

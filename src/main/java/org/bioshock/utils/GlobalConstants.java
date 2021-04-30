@@ -11,24 +11,48 @@ import org.bioshock.entities.map.utils.RoomType;
 
 import javafx.scene.image.Image;
 
+/**
+ * 
+ * A class to store constants shared across the App 
+ *
+ */
 public final class GlobalConstants {
+    /**
+     * TODO
+     */
     public static final double PLAYER_WIDTH = 36;
+    /**
+     * TODO
+     */
     public static final double PLAYER_HEIGHT = 42;
+    /**
+     * TODO
+     */
     public static final double PLAYER_SCALE = 1.6;
+    /**
+     * TODO
+     */
     public static final double PLAYER_ANIMATION_SPEED = 0.15;
 
-    public static final RoomType A = NO_ROOM;
-    public static final RoomType B = SINGLE_ROOM;
+    //Used to make hand typing arrays faster but is less readable
+    private static final RoomType A = NO_ROOM;
+    private static final RoomType B = SINGLE_ROOM;
 
+    /**
+     * A three by three map of rooms
+     */
     public static final RoomType[][] THREE_SQUARED_MAP = {
         {NO_ROOM, SINGLE_ROOM, SINGLE_ROOM, SINGLE_ROOM},
 		{NO_ROOM, SINGLE_ROOM, SINGLE_ROOM, SINGLE_ROOM},
 		{NO_ROOM, SINGLE_ROOM, SINGLE_ROOM, SINGLE_ROOM}
     };
 
-    public static final int  UNIT_WIDTH = 59;
-    public static final int  UNIT_HEIGHT = 66;
+    public static final int UNIT_WIDTH = 59;
+    public static final int UNIT_HEIGHT = 66;
 
+    /**
+     * A basic test map
+     */
     public static final RoomType[][] TEST_MAP = {
         {B,B,B,B,A,B},
         {B,A,A,B,B,B},
@@ -37,17 +61,28 @@ public final class GlobalConstants {
         {B,A,B,B,A,B}
     };
 
+    /**
+     * A simple map for debugging purposes
+     */
     public static final RoomType[][] SIMPLE_MAP = {
         {B,A},
         {B,B}
     };
 
+    /**
+     * A map made up of one room
+     */
     public static final RoomType[][] SINGELTON_MAP = {{B}};
 
+    /**
+     * The relative path for a floor tile
+     */
     private static final String FLOOR_PATH = GlobalConstants.class.getResource(
         "/org/bioshock/images/floors/tile_71.png"
     ).getPath();
-
+    /**
+     * The loaded floor image
+     */
     public static final Image FLOOR_IMAGE = new Image(
         new File(FLOOR_PATH).toURI().toString(),
         UNIT_WIDTH,
@@ -56,11 +91,13 @@ public final class GlobalConstants {
         true
     );
 
+    /*
+     * The following is a set of image paths and then their loaded image
+     */    
     private static final String BOT_HORI_WALL_PATH =
         GlobalConstants.class.getResource(
             "/org/bioshock/images/walls/botHori.png"
         ).getPath();
-
 
     public static final Image BOT_HORI_WALL_IMAGE = new Image(
         new File(BOT_HORI_WALL_PATH).toURI().toString(),
@@ -75,7 +112,6 @@ public final class GlobalConstants {
             "/org/bioshock/images/walls/botLeftCorner.png"
         ).getPath();
 
-
     public static final Image BOT_LEFT_CORNER_WALL_IMAGE = new Image(
         new File(BOT_LEFT_CORNER_WALL_PATH).toURI().toString(),
         UNIT_WIDTH,
@@ -87,8 +123,6 @@ public final class GlobalConstants {
         GlobalConstants.class.getResource(
             "/org/bioshock/images/walls/botRightCorner.png"
         ).getPath();
-
-
     public static final Image BOT_RIGHT_CORNER_WALL_IMAGE = new Image(
         new File(BOT_RIGHT_CORNER_WALL_PATH).toURI().toString(),
         UNIT_WIDTH,
@@ -101,7 +135,6 @@ public final class GlobalConstants {
         GlobalConstants.class.getResource(
             "/org/bioshock/images/walls/topHori.png"
         ).getPath();
-
     public static final Image TOP_HORI_WALL_IMAGE = new Image(
         new File(TOP_HORI_WALL_PATH).toURI().toString(),
         UNIT_WIDTH,
@@ -114,7 +147,6 @@ public final class GlobalConstants {
         GlobalConstants.class.getResource(
             "/org/bioshock/images/walls/topLeftCorner.png"
         ).getPath();
-
     public static final Image TOP_LEFT_CORNER_WALL_IMAGE = new Image(
         new File(TOP_LEFT_CORNER_WALL_PATH).toURI().toString(),
         UNIT_WIDTH,
@@ -127,7 +159,6 @@ public final class GlobalConstants {
         GlobalConstants.class.getResource(
             "/org/bioshock/images/walls/topRightCorner.png"
         ).getPath();
-
     public static final Image TOP_RIGHT_CORNER_WALL_IMAGE = new Image(
         new File(TOP_RIGHT_CORNER_WALL_PATH).toURI().toString(),
         UNIT_WIDTH,
@@ -140,7 +171,6 @@ public final class GlobalConstants {
         GlobalConstants.class.getResource(
             "/org/bioshock/images/walls/vert.png"
         ).getPath();
-
     public static final Image VERT_WALL_IMAGE = new Image(
         new File(VERT_WALL_PATH).toURI().toString(),
         UNIT_WIDTH,
@@ -153,12 +183,13 @@ public final class GlobalConstants {
         GlobalConstants.class.getResource(
             "/org/bioshock/images/inRoomObjects"
         ).getPath();
-
     private static final File OBJECT_DIRECTORY_FILE = new File(
         OBJECT_DIRECTORY_PATH
     );
 
-
+    /**
+     * A list of all possible images for objects in a room
+     */
     public static final List<Image> IN_ROOM_OBJECTS = new ArrayList<>(
         OBJECT_DIRECTORY_FILE.list().length
     );
@@ -178,5 +209,8 @@ public final class GlobalConstants {
         }
     }
 
+    /**
+     * Private as this is meant to be used as a static class
+     */
     private GlobalConstants() {}
 }
