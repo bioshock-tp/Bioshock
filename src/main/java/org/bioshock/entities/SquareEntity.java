@@ -1,8 +1,8 @@
 package org.bioshock.entities;
 
 import org.bioshock.components.NetworkC;
-import org.bioshock.components.RendererC;
 import org.bioshock.physics.Movement;
+import org.bioshock.rendering.renderers.components.RendererC;
 import org.bioshock.utils.Point;
 import org.bioshock.utils.Size;
 

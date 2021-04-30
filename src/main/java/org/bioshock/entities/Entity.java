@@ -5,9 +5,9 @@ import java.util.List;
 import java.util.UUID;
 
 import org.bioshock.components.NetworkC;
-import org.bioshock.components.RendererC;
 import org.bioshock.entities.map.Room;
 import org.bioshock.rendering.renderers.Renderer;
+import org.bioshock.rendering.renderers.components.RendererC;
 import org.bioshock.scenes.SceneManager;
 import org.bioshock.utils.ArrayUtils;
 import org.bioshock.utils.Point;

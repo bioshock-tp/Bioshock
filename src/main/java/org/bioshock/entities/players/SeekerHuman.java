@@ -1,9 +1,9 @@
 package org.bioshock.entities.players;
 
 import org.bioshock.components.NetworkC;
-import org.bioshock.components.RendererC;
 import org.bioshock.entities.SquareEntity;
 import org.bioshock.rendering.renderers.PlayerSpriteRenderer;
+import org.bioshock.rendering.renderers.components.RendererC;
 import org.bioshock.utils.Size;
 
 import javafx.geometry.Point3D;

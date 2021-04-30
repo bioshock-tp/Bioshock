@@ -1,4 +1,4 @@
-package org.bioshock.components;
+package org.bioshock.rendering.renderers.components;
 
 import javafx.scene.paint.Color;
 
