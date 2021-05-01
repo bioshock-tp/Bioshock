@@ -156,6 +156,7 @@ public final class RenderManager {
 
             int i;
             final int N = entities.size();
+            //if entities have the same Z value insert the new one before the other one
             for (i = 0; currentEntity.getZ() < entity.getZ() && i < N; i++) {
                 currentEntity = entities.get(i);
             }
