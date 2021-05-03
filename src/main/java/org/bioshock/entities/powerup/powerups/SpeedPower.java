@@ -15,7 +15,7 @@ public class SpeedPower extends PowerUp {
      */
     double oldSpeed;
 
-    public SpeedPower(SquareEntity entity, double duration){
+    public SpeedPower(SquareEntity entity, double duration) {
         super(entity, duration);
         oldSpeed = entity.getMovement().getSpeed();
     }

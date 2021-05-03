@@ -43,8 +43,6 @@ public class Sprite {
         boolean leftToRight,
         double playSpeed
     ) {
-        super();
-
         this.actualSize = actualSize;
         this.spriteLocationOnSheet = spriteLocationOnSheet;
         this.numberOfFrames = numberOfFrames;
@@ -74,8 +72,6 @@ public class Sprite {
         boolean leftToRight,
         double playSpeed
     ) {
-        super();
-
         this.actualSize = actualSize;
         this.numberOfFrames = specifications.size();
         this.size = size;

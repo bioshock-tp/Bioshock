@@ -68,7 +68,7 @@ public final class SceneManager {
 
         stage.setScene(currentScene);
 
-        currentScene.initScene(seed);
+        currentScene.initScene();
 	}
 	
 	/**
@@ -103,8 +103,16 @@ public final class SceneManager {
         seed = newSeed;
     }
 
+
     /**
-     * Getter 
+     * @return The seed to be used for map generation
+     */
+    public static long getSeed() {
+        return seed;
+    }
+
+
+    /**
      * @return the current gameScene
      */
 	public static GameScene getScene() {
@@ -127,17 +135,30 @@ public final class SceneManager {
 		return currentScene.getCanvas();
 	}
 
+
 	/**
-	 * Getter
-	 * @return the currentScene and cast it to a Lobby and 
-	 * throw an error if it isn't an instance of Lobby
+	 * @return Lobby if {@link #currentScene} is Lobby, otherwise null
 	 */
     public static Lobby getLobby() {
-        if (!(currentScene instanceof Lobby)) {
-            App.logger.error("Tried to access lobby when not in one");
-            return null;
-        } else {
+        if (currentScene instanceof Lobby) {
             return (Lobby) currentScene;
+        } else {
+            App.logger.error("Tried to get Lobby whilst not in Lobby");
+            return null;
+        }
+    }
+
+
+    /**
+     * @return MainGame if {@link #currentScene} is MainGame, otherwise null
+     */
+    public static MainGame getMainGame() {
+        if (currentScene instanceof MainGame) {
+            return (MainGame) currentScene;
+        }
+        else {
+            App.logger.error("Tried to get MainGame whilst not in MainGame");
+            return null;
         }
     }
 

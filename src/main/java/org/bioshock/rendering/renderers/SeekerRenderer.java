@@ -47,7 +47,7 @@ public class SeekerRenderer implements Renderer {
          * Will change the colour of the seeker if it has speed 0 (if frozen)
          */
         ColorAdjust ca = new ColorAdjust(0,0,0,0);
-        if(seeker.getMovement().getSpeed() == 0){
+        if(seeker.getMovement().getSpeed() == 0) {
             ca.setHue(Color.BLUE.getHue());
             ca.setContrast(-0.9);
         }

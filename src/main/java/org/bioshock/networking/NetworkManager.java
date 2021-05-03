@@ -15,7 +15,6 @@ import org.bioshock.entities.players.Hider;
 import org.bioshock.entities.players.SeekerAI;
 import org.bioshock.main.App;
 import org.bioshock.networking.Message.ClientInput;
-import org.bioshock.scenes.MainGame;
 import org.bioshock.scenes.SceneManager;
 
 import javafx.application.Platform;
@@ -243,13 +242,13 @@ public class NetworkManager {
         ClientInput input = message.input;
 
         if (messageFrom == me) {
-            ((MainGame) SceneManager.getScene()).appendStringToChat(
+            SceneManager.getMainGame().appendStringToChat(
                 "Me: " + input.message
             );
             return;
         }
 
-        ((MainGame) SceneManager.getScene()).appendStringToChat(
+        SceneManager.getMainGame().appendStringToChat(
             message.name + ": " + input.message
         );
     }

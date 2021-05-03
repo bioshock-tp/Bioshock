@@ -11,7 +11,7 @@ public abstract class PowerUp {
     /**
      * The duration of the power up
      */
-    protected double DURATION;
+    protected double duration;
 
     /**
      * the time elapsed since the power up was activated
@@ -23,18 +23,18 @@ public abstract class PowerUp {
      */
     private boolean isActive = false;
 
-    protected PowerUp(SquareEntity entity, double DURATION){
+    protected PowerUp(SquareEntity entity, double duration) {
         this.entity = entity;
-        this.DURATION = DURATION;
+        this.duration = duration;
     }
 
     /**
      * Performs the actions needed every frame
      * @param timeDelta time since last frame
      */
-    public void tick(double timeDelta){
-        if(isActive){
-            if(elapsed > DURATION){
+    public void tick(double timeDelta) {
+        if(isActive) {
+            if(elapsed > duration) {
                 setActive(false);
                 revert();
                 elapsed = 0;
@@ -48,8 +48,8 @@ public abstract class PowerUp {
     /**
      * Starts the power up and calls the action
      */
-    public void start(){
-        if(!isActive){
+    public void start() {
+        if (!isActive) {
             setActive(true);
             action();
         }
@@ -68,16 +68,14 @@ public abstract class PowerUp {
     /**
      * @param b the value to set isActive to
      */
-    protected void setActive(boolean b){
+    protected void setActive(boolean b) {
         isActive = b;
     }
 
     /**
      * @return the value of isActive
      */
-    public boolean getActive(){
+    public boolean isActive() {
         return isActive;
     }
-
-
 }

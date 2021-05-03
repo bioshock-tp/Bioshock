@@ -14,8 +14,6 @@ public class Lobby extends GameScene {
     private MainGame mainGame;
 
     public Lobby() {
-        super();
-
         setCursor(Cursor.HAND);
         setBackground(new Background(new BackgroundFill(
             Color.LIGHTGRAY,
@@ -36,7 +34,7 @@ public class Lobby extends GameScene {
     }
 
     @Override
-    public void initScene(long seed) {
+    public void initScene() {
         SceneManager.setInLobby(true);
 
         if (App.isNetworked()) {

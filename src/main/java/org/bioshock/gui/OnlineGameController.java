@@ -30,6 +30,7 @@ public class OnlineGameController {
     /**
      * Initialise the online game menu.
      */
+    @FXML
     public void initialize() {
         launchButton.setText(App.getBundle().getString("LAUNCH_BUTTON_TEXT"));
         backButton.setText(App.getBundle().getString("BACK_NEW_GAME_BUTTON_TEXT"));

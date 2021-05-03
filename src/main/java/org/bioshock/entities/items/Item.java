@@ -1,14 +1,16 @@
 package org.bioshock.entities.items;
 
-import javafx.geometry.Point3D;
+import java.util.Set;
+
 import org.bioshock.components.NetworkC;
 import org.bioshock.entities.Entity;
 import org.bioshock.entities.EntityManager;
 import org.bioshock.entities.ImageEntity;
+import org.bioshock.entities.players.Hider;
 import org.bioshock.physics.Collisions;
 import org.bioshock.utils.Size;
 
-import java.util.Set;
+import javafx.geometry.Point3D;
 
 public abstract class Item extends ImageEntity implements Collisions {
 
@@ -32,18 +34,18 @@ public abstract class Item extends ImageEntity implements Collisions {
 
     /**
      * The effect of collecting this item
-     * @param entity The {@code Entity} to apply the effect to
+     * @param hider The {@link Hider} to apply the effect to
      */
-    protected abstract void apply(Entity entity);
+    protected abstract void apply(Hider hider);
 
 
     /**
-     * Called when an {@code Entity} walks over this item
+     * Called when an {@link Hider} walks over this item
      * @param entity The entity that collected this item
      */
-    public void collect(Entity entity) {
+    public void collect(Hider hider) {
         if (!enabled) return;
-        apply(entity);
+        apply(hider);
         playCollectSound();
         destroy();
     }
@@ -53,19 +55,20 @@ public abstract class Item extends ImageEntity implements Collisions {
     public void collisionTick(Set<Entity> collisions) {
         collisions.forEach(collision -> {
             if (EntityManager.getPlayers().contains(collision)) {
-                collect(collision);
+                collect((Hider) collision);
             }
         });
     }
+
+
+    /**
+     * The sound effect to play when collecting this item
+     */
+    protected abstract void playCollectSound();
 
 
     @Override
     public String toString() {
         return getClass().getSimpleName();
     }
-
-    /**
-     * The sound effect to play when collecting this item
-     */
-    protected abstract void playCollectSound();
 }

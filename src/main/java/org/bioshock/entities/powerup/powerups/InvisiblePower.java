@@ -5,7 +5,7 @@ import org.bioshock.entities.powerup.PowerUp;
 
 public class InvisiblePower extends PowerUp {
 
-    public InvisiblePower(SquareEntity entity, double duration){
+    public InvisiblePower(SquareEntity entity, double duration) {
         super(entity, duration);
     }
 

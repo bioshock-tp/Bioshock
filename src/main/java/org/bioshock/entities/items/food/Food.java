@@ -1,22 +1,22 @@
 package org.bioshock.entities.items.food;
 
-import javafx.geometry.Point2D;
-import javafx.geometry.Point3D;
-import org.bioshock.audio.AudioManager;
-import org.bioshock.components.NetworkC;
-import org.bioshock.engine.pathfinding.GraphNode;
-import org.bioshock.entities.Entity;
-import org.bioshock.entities.items.Item;
-import org.bioshock.entities.map.Room;
-import org.bioshock.main.App;
-import org.bioshock.scenes.MainGame;
-import org.bioshock.scenes.SceneManager;
-import org.bioshock.utils.Size;
-
 import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
+
+import org.bioshock.audio.AudioManager;
+import org.bioshock.components.NetworkC;
+import org.bioshock.engine.pathfinding.GraphNode;
+import org.bioshock.entities.items.Item;
+import org.bioshock.entities.map.Room;
+import org.bioshock.entities.players.Hider;
+import org.bioshock.main.App;
+import org.bioshock.scenes.SceneManager;
+import org.bioshock.utils.Size;
+
+import javafx.geometry.Point2D;
+import javafx.geometry.Point3D;
 
 public abstract class Food extends Item {
     private static final int Z = 10;
@@ -82,9 +82,10 @@ public abstract class Food extends Item {
 
 
     @Override
-    protected void apply(Entity entity) {
-        ((MainGame) SceneManager.getScene()).collectFood();
+    protected void apply(Hider hider) {
+        SceneManager.getMainGame().collectFood();
     }
+
 
     @Override
     protected void playCollectSound() {

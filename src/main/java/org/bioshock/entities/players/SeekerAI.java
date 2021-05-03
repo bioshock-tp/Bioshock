@@ -255,12 +255,12 @@ public class SeekerAI extends SquareEntity implements Collisions {
                 ) {
                     setActive(true);
 
-                    if (!wooshSoundPlayed){
+                    if (!wooshSoundPlayed) {
                         AudioManager.playWooshSfx();
                         wooshSoundPlayed = true;
                     }
 
-                    if (timeSwinging >= TIME_SWINGING){
+                    if (timeSwinging >= TIME_SWINGING) {
                         setActive(false);
                         wooshSoundPlayed = false;
                         timeSwinging = 0;

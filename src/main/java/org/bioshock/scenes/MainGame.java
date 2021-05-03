@@ -51,7 +51,7 @@ public class MainGame extends GameScene {
      */
     private static final int SEEKER_COUNT = 2;
     /**
-     * How much smaller hiders and seekers are going to be compared to 
+     * How much smaller hiders and seekers are going to be compared to
      * UNIT_WIDTH and UNIT_HEIGHT
      */
     private static final int PADDING = 10;
@@ -89,7 +89,7 @@ public class MainGame extends GameScene {
      */
     private boolean losing = false;
     /**
-     * Boolean representing if you have lost the game 
+     * Boolean representing if you have lost the game
      * i.e. LOSEDELAY amount of time has passed since losing has been set to true
      */
     private boolean lost;
@@ -121,15 +121,13 @@ public class MainGame extends GameScene {
     private Random rand;
 
     public MainGame() {
-        super();
-
         setCursor(Cursor.HAND);
         setBackground(new Background(new BackgroundFill(
             Color.LIGHTGRAY,
             null,
             null
         )));
-        
+
         //Make it so you can toggle the camera lock on and off by pressing Y
         InputManager.onRelease(KeyCode.Y, () ->	cameraLock = !cameraLock);
 
@@ -137,7 +135,7 @@ public class MainGame extends GameScene {
         InputManager.onRelease(KeyCode.C, () ->
             RenderManager.setClip(!RenderManager.clips())
         );
-        
+
         //Make it so if you press the left key the camera moves to the left
         InputManager.onPress(KeyCode.LEFT, () ->
             RenderManager.setCameraPos(
@@ -167,7 +165,7 @@ public class MainGame extends GameScene {
     }
 
     /**
-     * Initialise all entities that don't need the game seed 
+     * Initialise all entities that don't need the game seed
      * or entities that need entities that need the game seed
      */
     private void initEntities() {
@@ -183,7 +181,7 @@ public class MainGame extends GameScene {
     }
 
     /**
-     * Initialise all the hiders but not their positions as the locations won't be 
+     * Initialise all the hiders but not their positions as the locations won't be
      * known as the map hasn't been generated yet
      */
     private void initHiders() {
@@ -213,9 +211,9 @@ public class MainGame extends GameScene {
             ));
         }
     }
-    
+
     /**
-     * Initialize the game counter
+     * Initialise the game counter
      */
     private void initCounter() {
         counter = new LabelEntity(
@@ -228,9 +226,9 @@ public class MainGame extends GameScene {
 
         children.add(counter);
     }
-    
+
     /**
-     * Initialize the game timer
+     * Initialise the game timer
      * (Currently timer isn't used as win condition is now collecting a certain amount of food)
      */
     private void initTimer() {
@@ -244,9 +242,9 @@ public class MainGame extends GameScene {
 
         children.add(timer);
     }
-    
+
     /**
-     * Initialize the chat
+     * Initialise the chat
      */
     private void initChat() {
         /*
@@ -283,15 +281,24 @@ public class MainGame extends GameScene {
 
 
     @Override
-    public void initScene(long seed) {
+    public void initScene() {
+        initScene(SceneManager.getSeed());
+    }
+
+
+    /**
+     * @see #initScene()
+     * @param seed The seed to be used for map generation
+     */
+    private void initScene(long seed) {
         rand = new Random(seed);
         initMap(seed);
-        
+
         List<Room> rooms = SceneManager.getMap().getRooms();
         playersNotSpawnedIn.addAll(rooms);
 
         List<Hider> hiders = EntityManager.getPlayers();
-        
+
         //Set the location of every hider so they're in the centre of a room
         for (int i = 0; i < App.playerCount(); i++) {
             Room roomToSpawn = playersNotSpawnedIn.get(
@@ -324,20 +331,20 @@ public class MainGame extends GameScene {
             }
             App.logger.debug("Notified networking thread");
         } else {
-            //If not networked there should be one player and then initialize 
+            //If not networked there should be one player and then initialise
             //the movement and animations of the player/hider
             assert(App.playerCount() == 1);
             EntityManager.getPlayers().get(0).getMovement().initMovement();
             EntityManager.getPlayers().get(0).initAnimations();
         }
     }
-    
+
     /**
-     * Initialize the map with the given seed
+     * Initialise the map with the given seed
      * @param seed
      */
     private void initMap(long seed) {
-        //Generate a map based off the seed 
+        //Generate a map based off the seed
         //A random one if in local mode and a pre-made one if in online mode
         Map map;
         if (App.isNetworked()) {
@@ -371,7 +378,7 @@ public class MainGame extends GameScene {
         children.addAll(map.getWalls());
 
         List<Room> rooms = map.getRooms();
-        
+
         //For every room in the map put it into a RoomEntity and register that entity
         for (Room room : rooms) {
             RoomEntity roomEntity = new RoomEntity(room);
@@ -381,7 +388,7 @@ public class MainGame extends GameScene {
     }
 
     /**
-     * Start the countdown until the seekers get spawned in 
+     * Start the countdown until the seekers get spawned in
      */
     private void startCountdown() {
         RenderManager.initLabel("10");
@@ -426,11 +433,11 @@ public class MainGame extends GameScene {
 
         timeline.play();
     }
-    
+
     /**
-     * Construct and initialize numSeekers seekers
-     * making the spawn in random rooms but ensuring they aren't spawned 
-     * in the same room as the rooms the hiders were spawned in 
+     * Construct and initialise numSeekers seekers
+     * making the spawn in random rooms but ensuring they aren't spawned
+     * in the same room as the rooms the hiders were spawned in
      * @param numSeekers The number of seekers to construct
      */
     private void initSeekers(int numSeekers) {
@@ -464,7 +471,7 @@ public class MainGame extends GameScene {
     }
 
     /**
-     * Initialize the item
+     * Initialise the item
      */
     private void initItems() {
         children.add(new Burger(rand.nextLong()));

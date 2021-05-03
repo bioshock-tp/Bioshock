@@ -27,7 +27,7 @@ import java.util.Objects;
 import java.util.ResourceBundle;
 
 /**
- * 
+ *
  * The class that starts the game
  *
  */
@@ -82,7 +82,7 @@ public class App extends Application {
         stage.setScene(fxmlScene);
         stage.show();
     }
-    
+
     /**
      * Start the actual game
      * @param primaryStage The main stage in the window
@@ -163,7 +163,7 @@ public class App extends Application {
             return null; /* Prevents no return value warning */
         }
     }
-    
+
     /**
      * Set the player count
      * @param playerCount The new player count
@@ -173,15 +173,15 @@ public class App extends Application {
     }
 
     /**
-     * 
-     * @return The current player count 
+     *
+     * @return The current player count
      */
     public static int playerCount() {
         return playerCount;
     }
 
     /**
-     * 
+     *
      * @return If the game is networked or not
      */
     public static boolean isNetworked() {
@@ -213,7 +213,7 @@ public class App extends Application {
     }
 
     /**
-     * 
+     *
      * @return The name of the Application
      */
     public static String getName() {
@@ -229,7 +229,7 @@ public class App extends Application {
     }
 
     /**
-     * 
+     *
      * @param code The exit code
      */
     public static void exit(int code) {
@@ -243,6 +243,6 @@ public class App extends Application {
      * @param args
      */
     public static void main(String[] args) {
-        launch();
+        launch(args);
     }
 }

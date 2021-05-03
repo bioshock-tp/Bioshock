@@ -149,7 +149,7 @@ public class GenericMap implements Map {
             }
         }
 
-        // initialize every room
+        // initialise every room
         initRooms(seed);
 
         /*
@@ -186,11 +186,11 @@ public class GenericMap implements Map {
             orderedRoomList.get(0).getCentreNode()
         );
     }
-    
+
     /**
      * Attempt to combine single rooms together into larger rooms
      * @param rooms An array of rooms that make up the map
-     * @param i The i position of the room you're trying to combine 
+     * @param i The i position of the room you're trying to combine
      * @param j The j position of the room you're trying to combine
      * @return Whether the room has been combined into a bigger room
      */
@@ -200,11 +200,11 @@ public class GenericMap implements Map {
             || vert2(rooms, i, j)
             || hori2(rooms, i, j);
     }
-    
+
     /**
      * Try to combine rooms into a vertical room made up of 2 rooms
      * @param rooms An array of rooms that make up the map
-     * @param i The i position of the room you're trying to combine 
+     * @param i The i position of the room you're trying to combine
      * @param j The j position of the room you're trying to combine
      * @return Whether the room has been combined into a bigger room
      */
@@ -352,7 +352,7 @@ public class GenericMap implements Map {
     /***
     * @return the room graph representing the map
     */
-   public Graph<Room, Pair<Direction, ConnType>> getRoomGraph(){
+   public Graph<Room, Pair<Direction, ConnType>> getRoomGraph() {
        return roomGraph;
    }
 

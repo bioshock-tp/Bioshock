@@ -31,7 +31,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
 /**
- * 
+ *
  * A class representing a hider
  *
  */
@@ -119,7 +119,7 @@ public class Hider extends SquareEntity implements Collisions {
     }
 
     /**
-     * Initialize the animations of the hider
+     * Initialise the animations of the hider
      */
     public void initAnimations() {
         hiderAnimations = new HiderAnimations(
@@ -133,7 +133,7 @@ public class Hider extends SquareEntity implements Collisions {
      * Set the name of the hider
      * @param hiderName The new name
      */
-    public void setName(String hiderName){
+    public void setName(String hiderName) {
         name = hiderName;
     }
 
@@ -148,7 +148,7 @@ public class Hider extends SquareEntity implements Collisions {
             App.logger.error("Sprite is missing!");
         }
     }
-    
+
     /**
      * Set the hider to be dead or not
      * @param d
@@ -194,7 +194,7 @@ public class Hider extends SquareEntity implements Collisions {
     }
 
     /**
-     * Set the walking sound effect based on how the hider moved compared 
+     * Set the walking sound effect based on how the hider moved compared
      * to the last tick
      */
     public void setWalkingSfx() {
@@ -245,9 +245,9 @@ public class Hider extends SquareEntity implements Collisions {
     public String getName() {
         return name;
     }
-    
+
     /**
-     * 
+     *
      * @return The current sprite
      */
     public Sprite getCurrentSprite() {
@@ -255,7 +255,7 @@ public class Hider extends SquareEntity implements Collisions {
     }
 
     /**
-     * 
+     *
      * @return The powerup manager
      */
     public PowerUpManager getPowerUpManager() { return powerUpManager; }

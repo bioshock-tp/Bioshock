@@ -21,7 +21,7 @@ import javafx.util.Pair;
 
 /**
  * A class representing a generic entity in the game
- * 
+ *
  *
  */
 public abstract class Entity {
@@ -46,7 +46,7 @@ public abstract class Entity {
      */
     protected RendererC rendererC;
     /**
-     * Boolean to represent whether to always render the current 
+     * Boolean to represent whether to always render the current
      * entity or not no matter it's renderArea
      */
     protected boolean alwaysRender = false;
@@ -61,7 +61,7 @@ public abstract class Entity {
 
     /**
      * Basic constructor
-     * @param p the position of the entity 
+     * @param p the position of the entity
      * @param h the hitbox of the entity
      * @param netC the network component of the entity
      * @param renC the renderComponent of the entity
@@ -80,7 +80,7 @@ public abstract class Entity {
 
         rendererC.setZ(p.getZ());
     }
-    
+
     /**
      * The method to update the current entity
      * @param timeDelta the amount of time to update the entity in seconds
@@ -101,7 +101,7 @@ public abstract class Entity {
      * Checks to see if the given entities hitbox intersects the this entities hitbox
      * @param entity
      * @return whether the given entities hitbox intersects the this entities hitbox
-     * 
+     *
      * false if the given entity is this
      */
     public boolean intersects(Entity entity) {
@@ -109,7 +109,7 @@ public abstract class Entity {
     }
 
     /**
-     * Checks to see if the given shape 
+     * Checks to see if the given shape
      * @param shape
      * @return whether the given shape intersects the this entities hitbox
      */
@@ -161,7 +161,7 @@ public abstract class Entity {
         hitbox.setTranslateX(x + hitbox.getWidth() / 2);
         hitbox.setTranslateY(y + hitbox.getHeight() / 2);
     }
-    
+
     /**
      * Sets the current position of the entity
      * @param point the new position of this entity
@@ -193,7 +193,7 @@ public abstract class Entity {
     public void setRenderC(RendererC renderC) {
         this.rendererC = renderC;
     }
-    
+
     /**
      * Sets networkC to the given network component
      * @param component
@@ -211,7 +211,7 @@ public abstract class Entity {
     }
 
     /**
-     * 
+     *
      * @return the Unique ID of this entity
      */
     public String getID() {
@@ -219,10 +219,10 @@ public abstract class Entity {
     }
 
     /**
-     * 
+     *
      * @return the area an entity would effect when rendered
-     * 
-     * this is used to speed up rendering by not attempting 
+     *
+     * this is used to speed up rendering by not attempting
      * to render things that are entirely off screen
      */
     public Rectangle getRenderArea() {
@@ -235,7 +235,7 @@ public abstract class Entity {
     }
 
     /**
-     * 
+     *
      * @return the current position of this entity
      */
     public Point getPosition() {
@@ -243,7 +243,7 @@ public abstract class Entity {
     }
 
     /**
-     * 
+     *
      * @return the current X coordinate
      */
     public double getX() {
@@ -251,7 +251,7 @@ public abstract class Entity {
     }
 
     /**
-     * 
+     *
      * @return the current Y coordinate
      */
     public double getY() {
@@ -259,7 +259,7 @@ public abstract class Entity {
     }
 
     /**
-     * 
+     *
      * @return the current Z coordinate
      */
     public double getZ() {
@@ -267,7 +267,7 @@ public abstract class Entity {
     }
 
     /**
-     * 
+     *
      * @return this entities hitbox
      */
     public Rectangle getHitbox() {
@@ -275,7 +275,7 @@ public abstract class Entity {
     }
 
     /**
-     * 
+     *
      * @return this entities renerer class
      */
     public Class<? extends Renderer> getRenderer() {
@@ -283,7 +283,7 @@ public abstract class Entity {
     }
 
     /**
-     * 
+     *
      * @return this entities render component
      */
     public RendererC getRendererC() {
@@ -291,7 +291,7 @@ public abstract class Entity {
     }
 
     /**
-     * 
+     *
      * @return this entities network component
      */
     public NetworkC getNetworkC() {
@@ -299,7 +299,7 @@ public abstract class Entity {
     }
 
     /**
-     * 
+     *
      * @return whether to always render this entity
      */
     public boolean alwaysRender() {
@@ -387,7 +387,7 @@ public abstract class Entity {
      * if you were in the top left of room y
      * (in this case only two rooms would be in the list)
      */
-    public static List<Room> find4ClosestRooms(Point2D pos){
+    public static List<Room> find4ClosestRooms(Point2D pos) {
         Room[][] current = SceneManager.getMap().getRoomArray();
         Room temp = SceneManager.getMap().getRooms().get(0);
         double tRoomWidth = temp.getTotalSize().getWidth();

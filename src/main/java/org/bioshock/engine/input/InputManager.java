@@ -11,7 +11,6 @@ import org.bioshock.entities.LabelEntity;
 import org.bioshock.main.App;
 import org.bioshock.networking.NetworkManager;
 import org.bioshock.rendering.RenderManager;
-import org.bioshock.scenes.MainGame;
 import org.bioshock.scenes.SceneManager;
 
 import javafx.geometry.Point3D;
@@ -171,7 +170,7 @@ public class InputManager {
 
             else if (SceneManager.inGame() && e.getCode() == KeyCode.ENTER) {
                 ChatManager.setInChat(true);
-                ((MainGame) SceneManager.getScene()).setChatVisibility(
+                SceneManager.getMainGame().setChatVisibility(
                     ChatManager.inChat()
                 );
             }
