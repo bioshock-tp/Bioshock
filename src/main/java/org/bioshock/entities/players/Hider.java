@@ -1,13 +1,9 @@
 package org.bioshock.entities.players;
 
-import static org.bioshock.audio.AudioManager.playWalkingSfx;
-import static org.bioshock.audio.AudioManager.stopWalkingSfx;
-
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
+import javafx.geometry.Point2D;
+import javafx.geometry.Point3D;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 import org.bioshock.animations.HiderAnimations;
 import org.bioshock.animations.Sprite;
 import org.bioshock.components.NetworkC;
@@ -25,10 +21,13 @@ import org.bioshock.rendering.renderers.components.PlayerRendererC;
 import org.bioshock.utils.GlobalConstants;
 import org.bioshock.utils.Size;
 
-import javafx.geometry.Point2D;
-import javafx.geometry.Point3D;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import static org.bioshock.audio.AudioManager.playWalkingSfx;
+import static org.bioshock.audio.AudioManager.stopWalkingSfx;
 
 /**
  * 
@@ -54,7 +53,6 @@ public class Hider extends SquareEntity implements Collisions {
     private HiderAnimations hiderAnimations;
     /**
      * Boolean of if the sound effect has been played or not
-     * TODO
      */
     private boolean playedSfx = false;
     /**
