@@ -120,7 +120,7 @@ public class App extends Application {
     public static void win() {
         RenderManager.endGame();
         AudioManager.playWinSfx();
-        RenderManager.displayText("You Win!");
+        RenderManager.displayText(App.getBundle().getString("WIN_TEXT"));
     }
 
     /**
@@ -129,7 +129,7 @@ public class App extends Application {
     public static void lose() {
         RenderManager.endGame();
         AudioManager.playLoseSfx();
-        RenderManager.displayText("You Lose!");
+        RenderManager.displayText(App.getBundle().getString("LOSE_TEXT"));
     }
 
     /**
