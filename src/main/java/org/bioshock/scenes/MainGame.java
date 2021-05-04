@@ -18,6 +18,7 @@ import org.bioshock.engine.core.FrameRate;
 import org.bioshock.engine.input.InputManager;
 import org.bioshock.entities.EntityManager;
 import org.bioshock.entities.LabelEntity;
+import org.bioshock.entities.TextChat;
 import org.bioshock.entities.items.food.*;
 import org.bioshock.entities.items.powerup_items.FreezeItem;
 import org.bioshock.entities.items.powerup_items.InvisibilityItem;
@@ -100,11 +101,11 @@ public class MainGame extends GameScene {
     /**
      * The label that displays the text you are currently typing
      */
-    private LabelEntity textChat;
+    private static TextChat textChat;
     /**
      * The label that shows the chat that has been sent
      */
-    private LabelEntity chatLabel;
+    private static LabelEntity chatLabel;
     /**
      * A list of rooms that players haven't been spawned in yet
      * Used to make sure seekers aren't spawned in the same room as the hiders
@@ -259,7 +260,7 @@ public class MainGame extends GameScene {
 
         children.add(chatLabel);
 
-		textChat = new LabelEntity(
+		textChat = new TextChat(
             new Point3D(
                 10,
                 GameScene.getGameScreen().getHeight() / 2
@@ -530,7 +531,7 @@ public class MainGame extends GameScene {
      * Sets the chat visibility
      * @param visible Whether the chat is visible or not
      */
-    public void setChatVisibility(boolean visible) {
+    public static void setChatVisibility(boolean visible) {
         chatLabel.setDisplay(visible);
         textChat.setDisplay(visible);
     }

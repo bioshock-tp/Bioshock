@@ -31,6 +31,9 @@ public class InputManager {
         KeyCode.class
     );
 
+    private static final KeyCode enterChat = KeyCode.SHIFT;
+    private static final KeyCode sendMessage = KeyCode.ENTER;
+
     /** When true, will use debugging features */
     private static boolean debug = false;
 
@@ -153,31 +156,33 @@ public class InputManager {
     public static void changeScene() {
         SceneManager.getScene().setOnKeyPressed(e -> {
             Runnable runnable;
-            if (SceneManager.inGame() && ChatManager.inChat()) {
-                if (e.getCode() == KeyCode.ENTER) {
-                    NetworkManager.addMessage(ChatManager.popText());
-                    ChatManager.setInChat(false);
-                }
-
-                else if (e.getCode() == KeyCode.BACK_SPACE) {
-                    ChatManager.backSpace();
-                }
-
-                else {
-                    App.logger.debug("Char to append: {}", e.getCharacter());
-                    ChatManager.append(e.getCharacter());
-                }
+            if(e.getCode() == enterChat) {
+                ChatManager.setInChat(!ChatManager.inChat());
+                MainGame.setChatVisibility(ChatManager.inChat());
             }
-
-            else if (SceneManager.inGame() && e.getCode() == KeyCode.ENTER) {
-                ChatManager.setInChat(true);
-                ((MainGame) SceneManager.getScene()).setChatVisibility(
-                    ChatManager.inChat()
-                );
+            else if(e.getCode() == sendMessage) {
+                NetworkManager.addMessage(ChatManager.popText());
             }
+            else {
+                if ((runnable = keyPresses.get(e.getCode())) != null
+                        && !ChatManager.inChat()) {
+                    runnable.run();
+                }
+                else if (ChatManager.inChat()) {
+                    if(e.getCode() == KeyCode.BACK_SPACE) {
 
-            else if ((runnable = keyPresses.get(e.getCode())) != null) {
-                runnable.run();
+                        if(ChatManager.getStrBuild().length() > 6) {
+                            ChatManager.getStrBuild().setLength(ChatManager.getStrBuild().length() - 1);
+                        }
+                    }
+                    else {
+                        App.logger.debug("Char to append: " + e.getText());
+                        ChatManager.getStrBuild().append(e.getText());
+                        if(ChatManager.getStrBuild().length() > 86) {
+                            ChatManager.getStrBuild().setLength(86);
+                        }
+                    }
+                }
             }
         });
 
