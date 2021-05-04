@@ -15,6 +15,11 @@ public class SeekerAnimations implements PlayerAnimation {
     Sprite idle;
     Sprite die;
 
+    /**
+     * Creates the animations for the seeker.
+     * @param entity Entity to animate.
+     * @param scale Scale of the animation to play.
+     */
     public SeekerAnimations(Entity entity, double scale) {
         moveDown = new Sprite(
             entity,

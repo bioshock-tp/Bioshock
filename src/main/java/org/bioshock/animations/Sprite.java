@@ -10,24 +10,29 @@ import org.bioshock.utils.Size;
 import java.util.List;
 
 public class Sprite {
-    private double playSpeed;
 
+    private double playSpeed;
     private Point2D spriteLocationOnSheet;
     private Size size;
-
     private double scale;
     private int actualSize;
-
     private int numberOfFrames;
-
     private boolean reversePlay;
-
     private Image[] spriteImages;
-
     private boolean hasValidSpriteImages;
-
     private Entity entityReference;
 
+    /**
+     * Creates a new animation sprite.
+     * @param entity Entity the animation is for.
+     * @param spriteLocationOnSheet Co-ordinates of the sprite on the sprite sheet.
+     * @param size Size of the sprite.
+     * @param actualSize Size of the sprite on the sprite sheet.
+     * @param numberOfFrames Number of frames on the sprite sheet.
+     * @param scale Scale of the animation playback.
+     * @param leftToRight Plays animation left to right on sprite sheet.
+     * @param playSpeed Sets the speed of how to play the animation.
+     */
     public Sprite(
         Entity entity,
         Point2D spriteLocationOnSheet,
@@ -50,6 +55,15 @@ public class Sprite {
         this.playSpeed = playSpeed;
     }
 
+    /**
+     * Creates a new animation sprite.
+     * @param entity Entity the animation is for.
+     * @param size Size of the sprite.
+     * @param actualSize Size of the sprite on the sprite sheet.
+     * @param scale Scale of the animation playback.
+     * @param leftToRight Plays animation left to right on sprite sheet.
+     * @param playSpeed Sets the speed of how to play the animation.
+     */
     public Sprite(
         Entity entity,
         Size size,

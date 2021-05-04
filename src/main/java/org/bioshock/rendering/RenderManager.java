@@ -1,23 +1,6 @@
 package org.bioshock.rendering;
 
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import org.bioshock.entities.Entity;
-import org.bioshock.entities.EntityManager;
-import org.bioshock.entities.players.Hider;
-import org.bioshock.entities.players.SeekerAI;
-import org.bioshock.main.App;
-import org.bioshock.physics.Movement;
-import org.bioshock.scenes.GameScene;
-import org.bioshock.scenes.SceneManager;
-import org.bioshock.utils.Size;
-
 import javafx.animation.FadeTransition;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
@@ -29,8 +12,21 @@ import javafx.scene.control.Label;
 import javafx.scene.effect.GaussianBlur;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
-import javafx.scene.text.Font;
 import javafx.util.Duration;
+import org.bioshock.entities.Entity;
+import org.bioshock.entities.EntityManager;
+import org.bioshock.entities.players.Hider;
+import org.bioshock.entities.players.SeekerAI;
+import org.bioshock.gui.MainController;
+import org.bioshock.main.App;
+import org.bioshock.physics.Movement;
+import org.bioshock.scenes.GameScene;
+import org.bioshock.scenes.SceneManager;
+import org.bioshock.utils.Size;
+
+import java.lang.reflect.InvocationTargetException;
+import java.util.*;
+import java.util.stream.Collectors;
 
 
 public final class RenderManager {
@@ -38,18 +34,39 @@ public final class RenderManager {
      *
      */
     private static final int BLUR_LENGTH = 3000;
-
+    /**
+     * Says if entities should be clipped to the FOV of the current player or not
+     */
     private static boolean clip = true;
-
+    /**
+     * A list of entities that want to be rendered
+     */
     private static List<Entity> entities = new ArrayList<>();
+    /**
+     * The position of the camera
+     */
     private static Point2D cameraPos = new Point2D(0, 0);
+    /**
+     * The amount to scale objects drawn on the canvas
+     */
     private static Point2D scale = new Point2D(1, 1);
+    /**
+     * The current zoom on factor
+     */
     private static double zoom = 1;
+    /**
+     * How much bigger to make every rendered object so they join up correctly 
+     * with floating point error
+     */
     private static double padding = 1;
-
+    /**
+     * Label to display text in the centre of the screen
+     */
     private static Label label;
 
-
+    /**
+     * Private as this is meant to be a static class 
+     */
     private RenderManager() {}
 
     /**
@@ -74,11 +91,16 @@ public final class RenderManager {
 
         // renders each entity
         entities.stream().filter(Entity::isEnabled).forEach(entity -> {
+            //Only render entities if the renderArea is somewhere on screen or 
+            //it is set to always render
             if (
                 entity.alwaysRender() ||
                 intersects(entity.getRenderArea(), screen)
             ) {
                 try {
+                    //Invoke render on every entity with their specific renderer
+                    //They don't have their own copy of the renderer so there is only
+                    //one type of each renderer
                     Arrays.asList(entity.getRenderer().getDeclaredMethods())
                         .stream()
                         .filter(method -> method.getName().equals("render"))
@@ -100,6 +122,12 @@ public final class RenderManager {
         });
     }
 
+    /**
+     * 
+     * @param s1
+     * @param s2
+     * @return True if s1 and s2 intersect false if they don't
+     */
     private static boolean intersects(Shape s1, Shape s2) {
         return Shape.intersect(s1, s2).getBoundsInLocal().getWidth() != -1;
     }
@@ -124,6 +152,7 @@ public final class RenderManager {
 
             int i;
             final int N = entities.size();
+            //if entities have the same Z value insert the new one before the other one
             for (i = 0; currentEntity.getZ() < entity.getZ() && i < N; i++) {
                 currentEntity = entities.get(i);
             }
@@ -132,6 +161,10 @@ public final class RenderManager {
         }
     }
 
+    /**
+     * Registers all of the entities in the list
+     * @param entities List of entities to register
+     */
     public static void registerAll(Collection<Entity> entities) {
         entities.forEach(RenderManager::register);
     }
@@ -146,6 +179,10 @@ public final class RenderManager {
         return entities.remove(entity);
     }
 
+    /**
+     * Unregisters every entity in the list
+     * @param entities List of entities to remove
+     */
     public static void unregisterAll(Collection<Entity> entities) {
         entities.forEach(RenderManager::unregister);
     }
@@ -199,7 +236,9 @@ public final class RenderManager {
 
         label = new Label(string);
 
-        label.setFont(new Font(100));
+        SceneManager.getPane().getStylesheets().add(Objects.requireNonNull(MainController.class.getResource("style.css")).toExternalForm());
+
+        label.getStyleClass().add("paragraph");
         label.setLayoutX(
             GameScene.getGameScreen().getWidth() / 2 - label.getWidth()
         );
@@ -228,7 +267,10 @@ public final class RenderManager {
 
         label = new Label(string);
 
-        label.setFont(new Font(100));
+        SceneManager.getPane().getStylesheets().add(Objects.requireNonNull(MainController.class.getResource("style.css")).toExternalForm());
+
+        label.getStyleClass().add("countdown");
+
         label.setLayoutX(
             GameScene.getGameScreen().getWidth() / 2 - label.getWidth()
         );
@@ -276,70 +318,146 @@ public final class RenderManager {
         }
     }
 
+    /**
+     * Moves the x position of the camera by adding x to the current x coordinate of the camera
+     * @param x The amount to add to the x coordinate
+     */
     public static void moveCameraX(double x) {
         cameraPos.add(x, 0);
     }
 
+    /**
+     * Moves the y position of the camera by adding y to the current y coordinate of the camera
+     * @param y The amount to add to the y coordinate
+     */
     public static void moveCameraY(double y) {
         cameraPos.add(0, y);
     }
 
+    /**
+     * Set the new position of the camera
+     * @param cameraPos the new position of the camera
+     */
     public static void setCameraPos(Point2D cameraPos) {
         RenderManager.cameraPos = cameraPos;
     }
 
+    /**
+     * Set the scale of the renderManager
+     * @param scale The new scale
+     */
     public static void setScale(Point2D scale) {
         RenderManager.scale = scale;
     }
 
+    /**
+     * 
+     * @return The current camera position
+     */
     public static Point2D getCameraPos() {
         return cameraPos;
     }
 
+    /**
+     * Used to make all widths look the same no matter the size of the window
+     * @param w the logical width to get the render width of
+     * @return The width to render the given object on the current canvas
+     */
     public static double getRenWidth(double w) {
         return w * scale.getX() * zoom + padding;
     }
 
+    /**
+     * The same as getRenWidth but doesn't apply zoom to the rendering
+     * @param w
+     * @return 
+     */
     public static double getRenWidthUnzoomed(double w) {
         return w * scale.getX() + padding;
     }
 
+    /**
+     * Gets the x coordinate on the canvas something should be rendered at 
+     * based of the logical x coordinate and the position of the camera
+     * @param x The logical x coordinate
+     * @return The x coordinate on the canvas
+     */
     public static double getRenX(double x) {
         return getRenWidth(x - cameraPos.getX());
     }
 
+    /**
+     * Used to make all heights look the same no matter the size of the window
+     * @param h the logical height to get the render height of
+     * @return The height to render the given object on the current canvas
+     */
     public static double getRenHeight(double h) {
         return h * scale.getY() * zoom + padding;
     }
 
+    /**
+     * The same as getRenHeight but doesn't apply zoom to the rendering
+     * @param w
+     * @return 
+     */
     public static double getRenHeightUnzoomed(double h) {
         return h * scale.getY() + padding;
     }
 
+    /**
+     * Gets the y coordinate on the canvas something should be rendered at 
+     * based of the logical y coordinate and the position of the camera
+     * @param y The logical y coordinate
+     * @return The y coordinate on the canvas
+     */
     public static double getRenY(double y) {
         return getRenHeight(y - cameraPos.getY());
     }
 
+    /**
+     * 
+     * @return The current scale
+     */
     public static Point2D getScale() {
         return scale;
     }
 
+    /**
+     * 
+     * @return If clip is turned on or not
+     */
     public static boolean clips() {
         return clip;
     }
 
+    /**
+     * Sets the value of clip
+     * @param clip The new value of clip
+     */
     public static void setClip(boolean clip) {
         RenderManager.clip = clip;
     }
 
+    /**
+     * Gets
+     * @return the current zoom factor
+     */
     public static double getZoom() {
         return zoom;
     }
 
+    /**
+     * Sets the zoom factor
+     * @param zoom The new zoom factor
+     */
     public static void setZoom(double zoom) {
         RenderManager.zoom = zoom;
     }
 
+    /**
+     * 
+     * @return The current label
+     */
     public static Label getLabel() {
         return label;
     }

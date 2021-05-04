@@ -4,7 +4,6 @@ import javafx.application.Platform;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.util.Duration;
-import lombok.NonNull;
 import org.bioshock.audio.settings.MusicSettings;
 import org.bioshock.main.App;
 
@@ -23,7 +22,7 @@ public class MusicController {
      * @param path
      *          The path of the music file.
      */
-    public MusicController(final @NonNull Path path) {
+    public MusicController(final Path path) {
         player = new MediaPlayer(new Media(path.toFile().toURI().toString()));
     }
 

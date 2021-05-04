@@ -1,10 +1,6 @@
 package org.bioshock.audio.settings;
 
-import lombok.Getter;
-
 public abstract class AudioSettings {
-
-
 
     /**
      * The number of times the clip will be played.
@@ -22,7 +18,7 @@ public abstract class AudioSettings {
      * will affect pitch and duration accordingly.
      *
      */
-    @Getter protected double rate = 1.0;
+    protected double rate = 1.0;
 
     /**
      * The relative volume level at which the clip is played.
@@ -32,7 +28,7 @@ public abstract class AudioSettings {
      * Volume is controlled by attenuation, so values below 1.0 will reduce the sound level accordingly.
      *
      */
-    @Getter protected double volume = 1.0;
+    protected double volume = 1.0;
 
 
     /**
@@ -77,6 +73,19 @@ public abstract class AudioSettings {
         }
     }
 
+    /**
+     * Returns the rate of the clip
+     * @return rate
+     *
+     */
+    public double getRate() {
+        return rate;
+    }
+
+    /**
+     * Returns the volume of the clip
+     * @return volume
+     */
     public double getVolume() {
         return volume;
     }

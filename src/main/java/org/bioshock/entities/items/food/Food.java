@@ -1,11 +1,12 @@
 package org.bioshock.entities.items.food;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Random;
-import java.util.Set;
+import javafx.geometry.Point2D;
+import javafx.geometry.Point3D;
+import javafx.util.Pair;
 
+import org.bioshock.audio.AudioManager;
 import org.bioshock.components.NetworkC;
+import org.bioshock.engine.pathfinding.Graph;
 import org.bioshock.engine.pathfinding.GraphNode;
 import org.bioshock.entities.Entity;
 import org.bioshock.entities.items.Item;
@@ -13,10 +14,13 @@ import org.bioshock.entities.map.Room;
 import org.bioshock.main.App;
 import org.bioshock.scenes.MainGame;
 import org.bioshock.scenes.SceneManager;
+import org.bioshock.utils.Direction;
 import org.bioshock.utils.Size;
 
-import javafx.geometry.Point2D;
-import javafx.geometry.Point3D;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Random;
+import java.util.Set;
 
 public abstract class Food extends Item {
     private static final int Z = 10;
@@ -61,19 +65,21 @@ public abstract class Food extends Item {
             room = rooms.get(roomIndex);
         } while (roomsWithFood.contains(room));
 
-        GraphNode[][] traversable = room.getTraversableArray();
+        GraphNode[][] traversableArray = room.getTraversableArray();
+        Set<GraphNode> traversableNodes = room.getTraversableGraph().getNodes();
+        
         int i;
         int j;
 
         do {
-            i = random.nextInt(traversable.length);
-            j = random.nextInt(traversable[0].length);
+            i = random.nextInt(traversableArray.length);
+            j = random.nextInt(traversableArray[0].length);
         }
-        while (traversable[i][j] == null);
+        while (traversableArray[i][j] == null || !traversableNodes.contains(traversableArray[i][j]));
 
         roomsWithFood.add(room);
 
-        Point2D foodCentre = traversable[i][j].getLocation();
+        Point2D foodCentre = traversableArray[i][j].getLocation();
         double x = foodCentre.getX() - SIZE / 2f;
         double y = foodCentre.getY() - SIZE / 2f;
 
@@ -86,7 +92,10 @@ public abstract class Food extends Item {
         ((MainGame) SceneManager.getScene()).collectFood();
     }
 
-
     @Override
+    protected void playCollectSound() {
+        AudioManager.playPlinkSfx();
+    }
+
     protected void tick(double timeDelta) {}
 }

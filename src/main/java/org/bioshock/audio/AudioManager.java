@@ -17,7 +17,17 @@ public class AudioManager {
     private static EffectSettings walkingEffectSettings;
     private static EffectController wooshEffectController;
     private static EffectSettings wooshEffectSettings;
+    private static EffectController plinkEffectController;
+    private static EffectSettings plinkEffectSettings;
+    private static EffectController freezeEffectController;
+    private static EffectController fastAirEffectController;
+    private static EffectController ghostEffectController;
+    private static EffectController winEffectController;
+    private static EffectController loseEffectController;
 
+    /**
+     * Initialises all of the audio controllers in the game.
+     */
     public static void initialiseAudioControllers() {
         bgMusicController = AudioController.loadMusicController(
             "background-music"
@@ -31,6 +41,25 @@ public class AudioManager {
             "woosh"
         );
         wooshEffectSettings = new EffectSettings();
+        plinkEffectController = AudioController.loadEffectController(
+            "plink"
+        );
+        plinkEffectSettings = new EffectSettings();
+        freezeEffectController = AudioController.loadEffectController(
+            "freeze"
+        );
+        ghostEffectController = AudioController.loadEffectController(
+            "ghost"
+        );
+        fastAirEffectController = AudioController.loadEffectController(
+            "fastAir"
+        );
+        winEffectController = AudioController.loadEffectController(
+            "win"
+        );
+        loseEffectController = AudioController.loadEffectController(
+            "lose"
+        );
     }
 
     /**
@@ -94,6 +123,75 @@ public class AudioManager {
             wooshEffectSettings.setVolume(volume);
             wooshEffectSettings.setCycleCount(1);
             wooshEffectController.play(wooshEffectSettings);
+        }
+    }
+
+    /**
+     * PLays plink sound.
+     */
+    public static void playPlinkSfx() {
+        Preferences prefs = Preferences.userNodeForPackage(SettingsController.class);
+
+        if (prefs.getBoolean("sfxOn", true)) {
+            double volume = prefs.getDouble("sfxVolume", 1.0);
+            plinkEffectSettings.setVolume(volume);
+            plinkEffectSettings.setCycleCount(1);
+            plinkEffectController.play(plinkEffectSettings);
+        }
+    }
+
+    /**
+     * PLays freeze sound.
+     */
+    public static void playFreezeSfx() {
+        Preferences prefs = Preferences.userNodeForPackage(SettingsController.class);
+
+        if (prefs.getBoolean("sfxOn", true)) {
+            freezeEffectController.play(plinkEffectSettings);
+        }
+    }
+
+    /**
+     * PLays ghost sound.
+     */
+    public static void playGhostSfx() {
+        Preferences prefs = Preferences.userNodeForPackage(SettingsController.class);
+
+        if (prefs.getBoolean("sfxOn", true)) {
+            ghostEffectController.play(plinkEffectSettings);
+        }
+    }
+
+    /**
+     * PLays fast air sound.
+     */
+    public static void playFastAirSfx() {
+        Preferences prefs = Preferences.userNodeForPackage(SettingsController.class);
+
+        if (prefs.getBoolean("sfxOn", true)) {
+            fastAirEffectController.play(plinkEffectSettings);
+        }
+    }
+
+    /**
+     * PLays win sound.
+     */
+    public static void playWinSfx() {
+        Preferences prefs = Preferences.userNodeForPackage(SettingsController.class);
+
+        if (prefs.getBoolean("sfxOn", true)) {
+            winEffectController.play(plinkEffectSettings);
+        }
+    }
+
+    /**
+     * PLays lose sound.
+     */
+    public static void playLoseSfx() {
+        Preferences prefs = Preferences.userNodeForPackage(SettingsController.class);
+
+        if (prefs.getBoolean("sfxOn", true)) {
+            loseEffectController.play(plinkEffectSettings);
         }
     }
 

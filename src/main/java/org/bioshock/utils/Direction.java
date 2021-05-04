@@ -1,5 +1,10 @@
 package org.bioshock.utils;
 
+/**
+ * 
+ * An ENUM of all 8 compass directions
+ *
+ */
 public enum Direction {
     NORTH,
     NORTH_EAST,

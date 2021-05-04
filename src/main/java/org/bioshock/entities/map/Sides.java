@@ -16,9 +16,21 @@ import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import javafx.util.Pair;
 
+/**
+ * A utility class used to generate the sides of a room 
+ * 
+ *
+ */
 public class Sides {
+    /**
+     * The padding to add to the end of corridors so that they overlap so entities 
+     * can't fit between the gap between rooms
+     */
     private static int padding = 5;
 
+    /**
+     * Private constructor as this is meant to be used as a static class
+     */
     private Sides() {}
 
     /***

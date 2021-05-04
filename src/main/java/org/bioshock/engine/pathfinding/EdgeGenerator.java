@@ -15,9 +15,9 @@ public interface EdgeGenerator<T, S> {
 	/***
 	 * return edge info given a source node a destination node and a
 	 * direction
-	 * @param source
-	 * @param dest
-	 * @param d
+	 * @param source The source node
+	 * @param dest The destination node
+	 * @param d The direction from source to Destination node
 	 * @return The edge info
 	 */
 	public S getEdgeInfo(T source, T dest, Direction d);

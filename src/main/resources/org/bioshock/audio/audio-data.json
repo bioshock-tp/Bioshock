@@ -22,5 +22,41 @@
     "name": "woosh",
     "path": "src/main/resources/org/bioshock/audio/woosh.wav",
     "filesystem": "local"
+  },
+  {
+    "type": "effect",
+    "name": "plink",
+    "path": "src/main/resources/org/bioshock/audio/plink.wav",
+    "filesystem": "local"
+  },
+  {
+    "type": "effect",
+    "name": "freeze",
+    "path": "src/main/resources/org/bioshock/audio/freeze.wav",
+    "filesystem": "local"
+  },
+  {
+    "type": "effect",
+    "name": "ghost",
+    "path": "src/main/resources/org/bioshock/audio/ghost.wav",
+    "filesystem": "local"
+  },
+  {
+    "type": "effect",
+    "name": "fastAir",
+    "path": "src/main/resources/org/bioshock/audio/fastAir.wav",
+    "filesystem": "local"
+  },
+  {
+    "type": "effect",
+    "name": "win",
+    "path": "src/main/resources/org/bioshock/audio/win.wav",
+    "filesystem": "local"
+  },
+  {
+    "type": "effect",
+    "name": "lose",
+    "path": "src/main/resources/org/bioshock/audio/lose.wav",
+    "filesystem": "local"
   }
 ]
