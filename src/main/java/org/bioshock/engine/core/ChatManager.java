@@ -95,7 +95,7 @@ public class ChatManager {
     public static String popText() {
     	//Remove the msgPrompt and then get the rest of the text in currentText
         String textToSend = currentText.delete(0, msgPrompt.length()).toString();
-        System.out.println("Text to Send: " + textToSend);
+
         App.logger.debug("Text to Send: {}", textToSend);
         sendMessage = true;
         //Clear the current text string builder
