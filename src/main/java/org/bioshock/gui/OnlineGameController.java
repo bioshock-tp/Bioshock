@@ -4,6 +4,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.Spinner;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -19,6 +20,8 @@ public class OnlineGameController {
     public Label nameLabel;
     public TextField nameField;
     public Label errorLabel;
+    public Label numPlayersLabel;
+    public Spinner<Integer> numPlayers;
 
     @FXML
     public void switchToNewGameView(ActionEvent actionEvent) {
@@ -35,6 +38,7 @@ public class OnlineGameController {
         nameLabel.setText(App.getBundle().getString("PLAYER_NAME_TEXT") + ":");
         Preferences prefs = Preferences.userNodeForPackage(SettingsController.class);
         nameField.setText(prefs.get("playerName", App.getBundle().getString("DEFAULT_PLAYER_NAME_TEXT")));
+        numPlayersLabel.setText(App.getBundle().getString("NUM_PLAYERS_TEXT"));
 
         Image backImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("icons/arrow.png")));
         ImageView backImageView = new ImageView(backImage);
@@ -54,10 +58,8 @@ public class OnlineGameController {
         String playerName = nameField.getText();
         if (playerName.length() > 0 && playerName.length() <= 16) {
             prefs.put("playerName", playerName);
-
+            App.setPlayerCount(numPlayers.getValue());
             App.setFXMLRoot("lobby");
-//            Stage stage = (Stage) launchButton.getScene().getWindow();
-//            App.startGame(stage, new LoadingScreen(true, App.getBundle().getString("ONLINE_LOADING_TEXT")), true);
         }
         else {
             errorLabel.setStyle("-fx-text-fill:red");

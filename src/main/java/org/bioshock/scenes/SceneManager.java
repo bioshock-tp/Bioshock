@@ -1,13 +1,11 @@
 package org.bioshock.scenes;
 
-import org.bioshock.engine.core.WindowManager;
-import org.bioshock.engine.input.InputManager;
-import org.bioshock.entities.map.maps.Map;
-import org.bioshock.main.App;
-
 import javafx.scene.canvas.Canvas;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
+import org.bioshock.engine.core.WindowManager;
+import org.bioshock.engine.input.InputManager;
+import org.bioshock.entities.map.maps.Map;
 
 public final class SceneManager {
     private static Stage stage;
@@ -17,6 +15,7 @@ public final class SceneManager {
     private static boolean initialised = false;
     private static Map gameMap;
     private static long seed;
+    private static MainGame mainGame;
 
     private SceneManager() {}
 
@@ -69,15 +68,6 @@ public final class SceneManager {
 		return currentScene.getCanvas();
 	}
 
-    public static Lobby getLobby() {
-        if (!(currentScene instanceof Lobby)) {
-            App.logger.error("Tried to access lobby when not in one");
-            return null;
-        } else {
-            return (Lobby) currentScene;
-        }
-    }
-
 	public static boolean inLobby() {
         return inLobby;
 	}
@@ -90,4 +80,11 @@ public final class SceneManager {
         return gameMap;
     }
 
+    public static void setMainGame(MainGame mainGame) {
+        SceneManager.mainGame = mainGame;
+    }
+
+    public static MainGame getMainGame() {
+        return mainGame;
+    }
 }

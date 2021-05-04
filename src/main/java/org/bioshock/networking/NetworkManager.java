@@ -38,6 +38,7 @@ public class NetworkManager {
 
     private static Client client = new Client();
     private static Object awaitingPlayerLock = new Object();
+    private static Thread initThread;
 
     private NetworkManager() {}
 
@@ -47,7 +48,7 @@ public class NetworkManager {
         keyPressed.put(KeyCode.S, false);
         keyPressed.put(KeyCode.D, false);
 
-        Thread initThread = new Thread(new Task<>() {
+        initThread = new Thread(new Task<>() {
             @Override
             protected Object call() {
                 try {
@@ -70,7 +71,6 @@ public class NetworkManager {
                                 try {
                                     awaitingPlayerLock.wait();
                                 } catch (InterruptedException e) {
-                                    App.logger.error(e);
                                     Thread.currentThread().interrupt();
                                 }
                             }
@@ -102,7 +102,11 @@ public class NetworkManager {
                     App.logger.info("Networking initialised");
                 }
                 catch (Exception e) {
-                    App.logger.error(e);
+                    App.logger.error(
+                        "{}\n{}",
+                        e,
+                        Arrays.toString(e.getStackTrace()).replace(',', '\n')
+                    );
                 }
                 return null;
             }
@@ -286,5 +290,14 @@ public class NetworkManager {
 
     public static Map<Hider, String> getPlayerNames() {
         return playerNames;
+    }
+
+    public static void reset() {
+        client.close();
+        client = new Client();
+        loadedPlayers.clear();
+        if (initThread != null) {
+            initThread.stop();
+        }
     }
 }

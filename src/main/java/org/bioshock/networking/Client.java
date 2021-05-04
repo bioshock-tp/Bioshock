@@ -1,5 +1,11 @@
 package org.bioshock.networking;
 
+import org.bioshock.gui.SettingsController;
+import org.bioshock.main.App;
+import org.bioshock.scenes.SceneManager;
+import org.java_websocket.client.WebSocketClient;
+import org.java_websocket.handshake.ServerHandshake;
+
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.ByteBuffer;
@@ -7,12 +13,6 @@ import java.util.ArrayDeque;
 import java.util.Queue;
 import java.util.concurrent.Semaphore;
 import java.util.prefs.Preferences;
-
-import org.bioshock.gui.SettingsController;
-import org.bioshock.main.App;
-import org.bioshock.scenes.SceneManager;
-import org.java_websocket.client.WebSocketClient;
-import org.java_websocket.handshake.ServerHandshake;
 
 public class Client extends WebSocketClient {
     private static final String DEFURI = "ws://51.15.109.210:8029/";
@@ -141,12 +141,6 @@ public class Client extends WebSocketClient {
             code,
             reason
         );
-        try {
-            this.connectBlocking();
-        } catch (InterruptedException e) {
-            App.logger.error(e);
-            Thread.currentThread().interrupt();
-        }
     }
 
     public boolean haveInitMessage() {return initMessage;}

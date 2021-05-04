@@ -8,6 +8,9 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 import org.bioshock.main.App;
+import org.bioshock.scenes.LoadingScreen;
+import org.bioshock.scenes.MainGame;
+import org.bioshock.scenes.SceneManager;
 
 import java.util.Objects;
 
@@ -52,7 +55,7 @@ public class LocalGameController {
 
     public void launchGame(ActionEvent actionEvent) {
         Stage stage = (Stage) launchButton.getScene().getWindow();
-        //App.startGame(stage, new LoadingScreen(false, App.getBundle().getString("SINGLE_PLAYER_LOADING_TEXT")), false);
-        App.startGame(stage, App.getMainGame(), false);
+        SceneManager.setMainGame(new MainGame());
+        App.startGame(stage, new LoadingScreen(App.getBundle().getString("SINGLE_PLAYER_LOADING_TEXT")), false);
     }
 }

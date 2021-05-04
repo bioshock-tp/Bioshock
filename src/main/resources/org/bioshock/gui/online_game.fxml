@@ -8,6 +8,7 @@
 <?import java.net.URL?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.Spinner?>
 <VBox alignment="CENTER" spacing="30.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="org.bioshock.gui.OnlineGameController" styleClass="background">
     <fx:include source="title.fxml"/>
@@ -21,10 +22,14 @@
     </padding>
     
     <Label fx:id="developmentLabel"  styleClass="p"/>
-    <VBox alignment="CENTER">
+    <VBox spacing="20" alignment="CENTER">
         <HBox spacing="10" alignment="CENTER">
             <Label fx:id="nameLabel"  styleClass="p"/>
             <TextField fx:id="nameField"/>
+        </HBox>
+        <HBox spacing="10" alignment="CENTER">
+            <Label fx:id="numPlayersLabel"  styleClass="p"/>
+            <Spinner initialValue="2" max="10" min="2" fx:id="numPlayers"/>
         </HBox>
         <Label fx:id="errorLabel" styleClass="p" visible="false"/>
     </VBox>

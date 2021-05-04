@@ -10,7 +10,9 @@ import javafx.stage.Stage;
 import org.bioshock.main.App;
 import org.bioshock.networking.NetworkManager;
 import org.bioshock.scenes.GameScene;
+import org.bioshock.scenes.LoadingScreen;
 import org.bioshock.scenes.MainGame;
+import org.bioshock.scenes.SceneManager;
 
 import java.util.Objects;
 import java.util.prefs.Preferences;
@@ -21,22 +23,10 @@ public class LobbyController extends GameScene {
     public Label lobbyLabel;
     private MainGame mainGame;
 
-//    public LobbyController() {
-//
-//        initialiseScene();
-//
-//        //Lobby gameLobby = new Lobby();
-//
-//        playerCountLabel.setText("0/" + App.playerCount());
-//
-//        mainGame = new MainGame();
-//
-////        App.setFXMLRoot("lobby");
-//    }
-
     @FXML
     public void switchToNewGameView(ActionEvent actionEvent) {
         App.setFXMLRoot("online_game");
+        NetworkManager.reset();
     }
 
     /**
@@ -44,37 +34,34 @@ public class LobbyController extends GameScene {
      */
     public void initialize() {
         initialiseScene();
-
-        //Lobby gameLobby = new Lobby();
-
         playerCountLabel.setText("0/" + App.playerCount());
 
-//        mainGame = new MainGame();
+        playerCountLabel.textProperty().addListener(e -> App.logger.debug(playerCountLabel.getText()));
 
-//        Stage stage = (Stage) backButton.getScene().getWindow();
-        //App.startGame(stage, new Lobby(), true);
-
-//        SceneManager.setInLobby(true);
+        SceneManager.setMainGame(new MainGame());
 
         NetworkManager.initialise(this);
     }
 
-//    @Override
-//    public void initScene(long seed) {
-//
-//    }
 
     public void updatePlayerCount() {
-        App.logger.debug("updating player count");
-        playerCountLabel.setText(String.format(
-            "%d/%d",
-            NetworkManager.playerCount(), App.playerCount()
-        ));
+        try {
+            App.logger.debug("updating player count");
+            playerCountLabel.setText(String.format(
+                "%d/%d",
+                NetworkManager.playerCount(), App.playerCount()
+            ));
 
-        if (NetworkManager.playerCount() == App.playerCount()) {
-            Stage stage = (Stage) lobbyLabel.getScene().getWindow();
-            App.startGame(stage, App.getMainGame(), true);
+            if (NetworkManager.playerCount() == App.playerCount()) {
+                Stage stage = (Stage) lobbyLabel.getScene().getWindow();
+                App.startGame(stage, new LoadingScreen(App.getBundle().getString("ONLINE_LOADING_TEXT")), true);
+            }
+
         }
+        catch (Exception e) {
+            App.logger.error(e);
+        }
+
     }
 
     private void initialiseScene() {
