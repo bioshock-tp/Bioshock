@@ -1,23 +1,6 @@
 package org.bioshock.rendering;
 
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import org.bioshock.entities.Entity;
-import org.bioshock.entities.EntityManager;
-import org.bioshock.entities.players.Hider;
-import org.bioshock.entities.players.SeekerAI;
-import org.bioshock.main.App;
-import org.bioshock.physics.Movement;
-import org.bioshock.scenes.GameScene;
-import org.bioshock.scenes.SceneManager;
-import org.bioshock.utils.Size;
-
 import javafx.animation.FadeTransition;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
@@ -29,8 +12,21 @@ import javafx.scene.control.Label;
 import javafx.scene.effect.GaussianBlur;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
-import javafx.scene.text.Font;
 import javafx.util.Duration;
+import org.bioshock.entities.Entity;
+import org.bioshock.entities.EntityManager;
+import org.bioshock.entities.players.Hider;
+import org.bioshock.entities.players.SeekerAI;
+import org.bioshock.gui.MainController;
+import org.bioshock.main.App;
+import org.bioshock.physics.Movement;
+import org.bioshock.scenes.GameScene;
+import org.bioshock.scenes.SceneManager;
+import org.bioshock.utils.Size;
+
+import java.lang.reflect.InvocationTargetException;
+import java.util.*;
+import java.util.stream.Collectors;
 
 
 public final class RenderManager {
@@ -240,7 +236,9 @@ public final class RenderManager {
 
         label = new Label(string);
 
-        label.setFont(new Font(100));
+        SceneManager.getPane().getStylesheets().add(Objects.requireNonNull(MainController.class.getResource("style.css")).toExternalForm());
+
+        label.getStyleClass().add("paragraph");
         label.setLayoutX(
             GameScene.getGameScreen().getWidth() / 2 - label.getWidth()
         );
@@ -269,7 +267,10 @@ public final class RenderManager {
 
         label = new Label(string);
 
-        label.setFont(new Font(100));
+        SceneManager.getPane().getStylesheets().add(Objects.requireNonNull(MainController.class.getResource("style.css")).toExternalForm());
+
+        label.getStyleClass().add("countdown");
+
         label.setLayoutX(
             GameScene.getGameScreen().getWidth() / 2 - label.getWidth()
         );

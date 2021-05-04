@@ -1,5 +1,5 @@
 @font-face {
-    src: url('Minercraftory.ttf');
+    src: url('../utils/Minercraftory.ttf');
 }
 
 .gui-button {
@@ -73,6 +73,11 @@
     -fx-font-family: "Minercraftory";
     -fx-font-size: 80px;
     -fx-font-weight: bold;
+}
+
+.countdown {
+    -fx-font-family: "Minercraftory";
+    -fx-font-size: 144px;
 }
 
 .buzzSpan {

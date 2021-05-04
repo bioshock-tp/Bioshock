@@ -1,15 +1,14 @@
 package org.bioshock.utils;
 
-import static org.bioshock.entities.map.utils.RoomType.NO_ROOM;
-import static org.bioshock.entities.map.utils.RoomType.SINGLE_ROOM;
+import javafx.scene.image.Image;
+import org.bioshock.entities.map.utils.RoomType;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bioshock.entities.map.utils.RoomType;
-
-import javafx.scene.image.Image;
+import static org.bioshock.entities.map.utils.RoomType.NO_ROOM;
+import static org.bioshock.entities.map.utils.RoomType.SINGLE_ROOM;
 
 /**
  * 
@@ -18,19 +17,19 @@ import javafx.scene.image.Image;
  */
 public final class GlobalConstants {
     /**
-     * TODO
+     * The width of the player on the sprite sheet
      */
     public static final double PLAYER_WIDTH = 36;
     /**
-     * TODO
+     * The height of the player on the sprite sheet
      */
     public static final double PLAYER_HEIGHT = 42;
     /**
-     * TODO
+     * The scale at which to render the player
      */
     public static final double PLAYER_SCALE = 1.6;
     /**
-     * TODO
+     * The playback speed of the player walking animation
      */
     public static final double PLAYER_ANIMATION_SPEED = 0.15;
 
