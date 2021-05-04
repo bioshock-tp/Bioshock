@@ -233,14 +233,6 @@ public class App extends Application {
     }
 
     /**
-     *
-     * @return The font manager object
-     */
-    public static FontManager getFontManager() {
-        return fontManager;
-    }
-
-    /**
      * 
      * @param code The exit code
      */
