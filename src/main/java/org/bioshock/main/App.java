@@ -60,6 +60,10 @@ public class App extends Application {
      * The user's locale/language
      */
     private static Locale locale;
+    /**
+     * The font manager object
+     */
+    private static FontManager fontManager;
 
     @Override
     public void start(Stage stage) {
@@ -74,7 +78,7 @@ public class App extends Application {
 
         AudioManager.initialiseBackgroundAudio();
         LanguageManager.initialiseLanguageSettings();
-        FontManager.loadFonts();
+        fontManager = new FontManager();
 
         WindowManager.initialise(stage);
         initFXMLScene();
@@ -226,6 +230,14 @@ public class App extends Application {
      */
     public static void setName(String name) {
         App.name = name;
+    }
+
+    /**
+     *
+     * @return The font manager object
+     */
+    public static FontManager getFontManager() {
+        return fontManager;
     }
 
     /**

@@ -1,19 +1,24 @@
 package org.bioshock.scenes;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
+import javafx.geometry.Point2D;
+import javafx.geometry.Point3D;
+import javafx.scene.Cursor;
+import javafx.scene.control.Label;
+import javafx.scene.input.KeyCode;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.util.Duration;
 import org.bioshock.components.NetworkC;
 import org.bioshock.engine.core.FrameRate;
 import org.bioshock.engine.input.InputManager;
 import org.bioshock.entities.EntityManager;
 import org.bioshock.entities.LabelEntity;
-import org.bioshock.entities.items.food.Burger;
-import org.bioshock.entities.items.food.Dessert;
-import org.bioshock.entities.items.food.Donut;
-import org.bioshock.entities.items.food.HotDog;
-import org.bioshock.entities.items.food.Pizza;
+import org.bioshock.entities.items.food.*;
 import org.bioshock.entities.items.powerup_items.FreezeItem;
 import org.bioshock.entities.items.powerup_items.InvisibilityItem;
 import org.bioshock.entities.items.powerup_items.SpeedItem;
@@ -31,19 +36,9 @@ import org.bioshock.rendering.RenderManager;
 import org.bioshock.utils.GlobalConstants;
 import org.bioshock.utils.Size;
 
-import javafx.animation.KeyFrame;
-import javafx.animation.KeyValue;
-import javafx.animation.Timeline;
-import javafx.geometry.Point2D;
-import javafx.geometry.Point3D;
-import javafx.scene.Cursor;
-import javafx.scene.control.Label;
-import javafx.scene.input.KeyCode;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
-import javafx.util.Duration;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 public class MainGame extends GameScene {
     /**
@@ -388,8 +383,6 @@ public class MainGame extends GameScene {
 
         Label label = RenderManager.getLabel();
         label.setOpacity(0.5);
-        label.setFont(new Font(400));
-        label.setStyle("-fx-font-weight: bold");
         label.setLayoutX(
             GameScene.getGameScreen().getWidth() / 2 - label.getWidth()
         );
