@@ -35,6 +35,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * A class to represent the AI Seeker entity
+ * @author Kian Wells - Ben Stein
+ */
 public class SeekerAI extends SquareEntity implements Collisions {
 
     /**
@@ -233,6 +237,7 @@ public class SeekerAI extends SquareEntity implements Collisions {
         boolean masterPlayer = firstPlayer == EntityManager.getCurrentPlayer();
 
         EntityManager.getPlayers().forEach(entity -> {
+            //If the swatter hitbox is active and touches the player
             if (
                 EntityManager.isManaged(this, entity)
                 && isActive()
@@ -242,6 +247,7 @@ public class SeekerAI extends SquareEntity implements Collisions {
                 entity.setDead(true);
             }
 
+            //If the player is within the seeker's fov
             if (
                 EntityManager.isManaged(this, entity)
                 && !entity.isDead()
@@ -273,7 +279,6 @@ public class SeekerAI extends SquareEntity implements Collisions {
                 if (masterPlayer) chasePlayer(target);
             }
         });
-
         if (
             EntityManager.getPlayers().stream().noneMatch(entity ->
                 EntityManager.isManaged(this, entity)
@@ -286,6 +291,7 @@ public class SeekerAI extends SquareEntity implements Collisions {
             rendererC.setColour(Color.INDIANRED);
         }
 
+        //if none of this happens
         if (masterPlayer && isSearching) {
             setActive(false);
             search();

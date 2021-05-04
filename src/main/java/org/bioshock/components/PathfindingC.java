@@ -98,7 +98,8 @@ public class PathfindingC<T extends GraphNode, S> {
             );
 
             if (destination == current) App.logger.error("Not enough nodes");
-        } else {
+        }
+        else {
             destination = endNode;
         }
 
@@ -321,6 +322,7 @@ public class PathfindingC<T extends GraphNode, S> {
     /**
      *
      * Will find the node that a point is closest to
+     * Will always find the one below it
      *
      * @param pos the point to find the closest node to
      * @return the closest node
