@@ -426,12 +426,6 @@ public class MainGame extends GameScene {
         label.setOpacity(0.5);
         label.setFont(new Font(400));
         label.setStyle("-fx-font-weight: bold");
-        label.setLayoutX(
-            GameScene.getGameScreen().getWidth() / 2 - label.getWidth()
-        );
-        label.setLayoutX(
-            GameScene.getGameScreen().getHeight() / 2 - label.getHeight()
-        );
 
         Timeline timeline = new Timeline();
 
@@ -448,16 +442,6 @@ public class MainGame extends GameScene {
         timeline.setOnFinished(e -> {
             RenderManager.displayText();
             initSeekers(SEEKER_COUNT);
-            label.setOpacity(1);
-            label.setOpacity(0.5);
-            label.setFont(new Font(150));
-            label.setStyle("-fx-font-weight: normal");
-            label.setLayoutX(
-                GameScene.getGameScreen().getWidth() / 2 - label.getWidth()
-            );
-            label.setLayoutX(
-                GameScene.getGameScreen().getHeight() / 2 - label.getHeight()
-            );
         });
 
         timeline.play();

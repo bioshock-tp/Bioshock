@@ -39,13 +39,10 @@ public class NetworkManager {
     private static List<SeekerAI> seekers = new ArrayList<>();
 
     /** List of players in game */
-    private static List<Hider> playerList = new ArrayList<>(App.playerCount());
+    private static List<Hider> playerList = new ArrayList<>();
 
     /** Maps UUID to player that is loaded into game */
-    private static Map<String, Hider> loadedPlayers = new HashMap<>(
-        App.playerCount()
-    );
-
+    private static Map<String, Hider> loadedPlayers = new HashMap<>();
 
     /** Maps {@link Hider} to its chosen name */
     private static Map<Hider, String> playerNames = new HashMap<>();
@@ -113,7 +110,7 @@ public class NetworkManager {
                     playerNames.putIfAbsent(hider, message.name);
 
                     Platform.runLater(() ->
-                        SceneManager.getLobby().updatePlayerCount()
+                        SceneManager.getLobby().updatePlayerCount(newCount)
                     );
                 }
 

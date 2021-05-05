@@ -26,7 +26,7 @@ public final class EntityManager {
      *
      * (A sublist of entities)
      */
-    private static List<Hider> players = new ArrayList<>(App.playerCount());
+    private static List<Hider> players = new ArrayList<>();
 
     /**
      * A list of all currently managed seekers
@@ -99,7 +99,8 @@ public final class EntityManager {
      */
     public static void register(Entity entity) {
         if (
-            entity.getNetworkC().isNetworked()
+            App.isNetworked()
+            && entity.getNetworkC().isNetworked()
             && entity instanceof SquareEntity
         ) {
             NetworkManager.register((SquareEntity) entity);

@@ -202,8 +202,10 @@ public final class RenderManager {
         GaussianBlur blur = new GaussianBlur(0);
         SceneManager.getCanvas().setEffect(blur);
         Timeline blurTimeline = new Timeline();
-        KeyValue keyValue = new KeyValue(blur.radiusProperty(), 10);
-        KeyFrame keyFrame = new KeyFrame(Duration.millis(BLUR_LENGTH), keyValue);
+        KeyFrame keyFrame = new KeyFrame(
+            Duration.millis(BLUR_LENGTH),
+            new KeyValue(blur.radiusProperty(), 10)
+        );
         blurTimeline.getKeyFrames().add(keyFrame);
         blurTimeline.play();
 
@@ -211,16 +213,20 @@ public final class RenderManager {
 
         List<Movement> movements = EntityManager.getPlayers().stream()
             .map(Hider::getMovement)
-            .collect(Collectors.toCollection(ArrayList::new));
+            .collect(Collectors.toCollection(ArrayList::new)
+        );
 
         movements.addAll(EntityManager.getSeekers().stream()
             .map(SeekerAI::getMovement)
-            .collect(Collectors.toList()));
+            .collect(Collectors.toList())
+        );
 
-        KeyFrame slowFrame = new KeyFrame(Duration.millis(1), e -> movements.forEach(movement -> {
-            double slowFactor = movement.getSpeed() / BLUR_LENGTH;
-            movement.setSpeed(movement.getSpeed() - slowFactor);
-        }));
+        KeyFrame slowFrame = new KeyFrame(Duration.millis(1), e ->
+            movements.forEach(movement -> {
+                double slowFactor = movement.getSpeed() / BLUR_LENGTH;
+                movement.setSpeed(movement.getSpeed() - slowFactor);
+            })
+        );
 
         slowTimeline.getKeyFrames().add(slowFrame);
         slowTimeline.setCycleCount(BLUR_LENGTH);
@@ -237,17 +243,23 @@ public final class RenderManager {
      * @param string Text to display
      */
     public static void displayText(String string) {
+        displayText(string, () -> {});
+    }
+
+
+    /**
+     * Displays a string in large text across the centre of the screen <p />
+     * Once text is displayed calls callback function
+     * (with fade in effect)
+     * @param string Text to display
+     * @param callback Function to call after text is displayed
+     */
+    public static void displayText(String string, Runnable callback) {
         if (label != null) SceneManager.getPane().getChildren().remove(label);
 
         label = new Label(string);
-
         label.setFont(new Font(100));
-        label.setLayoutX(
-            GameScene.getGameScreen().getWidth() / 2 - label.getWidth()
-        );
-        label.setLayoutX(
-            GameScene.getGameScreen().getHeight() / 2 - label.getHeight()
-        );
+        label.setOpacity(0);
 
         FadeTransition fadeTransition = new FadeTransition(
             Duration.millis(BLUR_LENGTH),
@@ -255,10 +267,11 @@ public final class RenderManager {
         );
         fadeTransition.setFromValue(0);
         fadeTransition.setToValue(1);
-
-        SceneManager.getPane().getChildren().add(label);
+        fadeTransition.setOnFinished(e -> callback.run());
 
         fadeTransition.play();
+
+        SceneManager.getPane().getChildren().add(label);
     }
 
 
@@ -272,12 +285,6 @@ public final class RenderManager {
         label = new Label(string);
 
         label.setFont(new Font(100));
-        label.setLayoutX(
-            GameScene.getGameScreen().getWidth() / 2 - label.getWidth()
-        );
-        label.setLayoutX(
-            GameScene.getGameScreen().getHeight() / 2 - label.getHeight()
-        );
 
         SceneManager.getPane().getChildren().add(label);
     }
