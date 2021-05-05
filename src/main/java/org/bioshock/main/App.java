@@ -27,39 +27,47 @@ import java.util.Objects;
 import java.util.ResourceBundle;
 
 /**
- *
  * The class that starts the game
- *
  */
 public class App extends Application {
+
     /**
      * The logger used across the entire game
      */
     public static final Logger logger = LogManager.getLogger(App.class);
+
     /**
-     * The name of the App
+     * The name of the game
      */
+
     private static String name;
+
     /**
      * The number of players for online play
      */
+
     private static int playerCount = 2;
+
     /**
      * TODO
      */
     private static Scene fxmlScene;
+
     /**
-     * Boolean representing whether the game is networked or not
+     * True if game is networked
      */
     private static boolean networked;
+
     /**
      * TODO
      */
     private static ResourceBundle bundle;
+
     /**
      * TODO
      */
     private static Locale locale;
+
 
     @Override
     public void start(Stage stage) {
@@ -83,11 +91,12 @@ public class App extends Application {
         stage.show();
     }
 
+
     /**
-     * Start the actual game
+     * Initialises more of the game's core managers and starts gameplay
      * @param primaryStage The main stage in the window
-     * @param initScene The initial gameScene for loading the game
-     * @param isNetworked Boolean to represent whether the game is networked or not
+     * @param initScene The initial {@link GameScene} of the game
+     * @param isNetworked True if game is networked
      */
     public static void startGame(
         Stage primaryStage,
@@ -114,6 +123,7 @@ public class App extends Application {
         }
     }
 
+
     /**
      * TODO
      */
@@ -122,6 +132,7 @@ public class App extends Application {
         AudioManager.playWinSfx();
         RenderManager.displayText("You Win!");
     }
+
 
     /**
      * TODO
@@ -132,6 +143,7 @@ public class App extends Application {
         RenderManager.displayText("You Lose!");
     }
 
+
     /**
      * TODO
      * @param fxml
@@ -140,12 +152,14 @@ public class App extends Application {
         fxmlScene.setRoot(loadFXML(fxml));
     }
 
+
     /**
      * TODO
      */
     private static void initFXMLScene() {
         fxmlScene = new Scene(Objects.requireNonNull(loadFXML("main")));
     }
+
 
     /**
      * TODO
@@ -164,29 +178,30 @@ public class App extends Application {
         }
     }
 
+
     /**
-     * Set the player count
      * @param playerCount The new player count
      */
     public static void setPlayerCount(int playerCount) {
         App.playerCount = playerCount;
     }
 
+
     /**
-     *
      * @return The current player count
      */
     public static int playerCount() {
         return playerCount;
     }
 
+
     /**
-     *
-     * @return If the game is networked or not
+     * @return True if game is networked
      */
     public static boolean isNetworked() {
         return networked;
     }
+
 
     /**
      * TODO
@@ -196,6 +211,7 @@ public class App extends Application {
         App.bundle = bundle;
     }
 
+
     /**
      * TODO
      * @param locale
@@ -203,6 +219,7 @@ public class App extends Application {
     public static void setLocale(Locale locale) {
         App.locale = locale;
     }
+
 
     /**
      * TODO
@@ -212,24 +229,25 @@ public class App extends Application {
         return bundle;
     }
 
+
     /**
-     *
-     * @return The name of the Application
+     * @return The name of the game
      */
     public static String getName() {
         return name;
     }
 
+
     /**
-     * Set the name of the Application
-     * @param name The new name
+     * @param name The new name of the game
      */
     public static void setName(String name) {
         App.name = name;
     }
 
+
     /**
-     *
+     * Closes the game
      * @param code The exit code
      */
     public static void exit(int code) {
@@ -237,10 +255,11 @@ public class App extends Application {
         System.exit(code);
     }
 
+
     /**
-     * The main function
-     * Can't be directly called else Java throws an exception
-     * @param args
+     * Calls javafx.launch()<p />
+     * Must be called from an external class
+     * @param args As defined by {@link #launch(String...)}
      */
     public static void main(String[] args) {
         launch(args);

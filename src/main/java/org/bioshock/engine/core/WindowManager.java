@@ -19,18 +19,23 @@ public class WindowManager {
 	 * A boolean to represent whether to start the game in fullscreen or not
 	 */
     private static final boolean INITFULLSCREEN = false;
+
     /**
      * A boolean to represent whether to start the game maximised or not
      */
     private static final boolean INITMAXIMISED = true;
+
     /**
      * The stage the game is running in
      */
     private static Stage window;
+
+
     /**
      * Private as WindowManager is meant to be used as a static class
      */
     private WindowManager() {}
+
 
     /**
      * Initialise the window manager
@@ -80,41 +85,40 @@ public class WindowManager {
         });
     }
 
+
     /**
-     * Changes the window fullscreen state to the opposite of what it is currently
+     * Toggles the window's full screen property
      */
     private static void toggleFullScreen() {
         window.setFullScreen(!window.isFullScreen());
     }
 
-    /**
-     * Sets the window to be fullscreen or not
-     * @param b whether to set the window to fullscreen or not
-     * 		true = make window fullscreen
-     * 		false = make window not fullscreen
-     */
-    public static void setFullScreen(boolean b) {
-        window.setFullScreen(b);
-    }
 
     /**
-     * getter
+     * @param fullscreen true if window should be full screen
+     */
+    public static void setFullScreen(boolean fullscreen) {
+        window.setFullScreen(fullscreen);
+    }
+
+
+    /**
      * @return the current window width
      */
     public static double getWindowWidth() {
         return window.getWidth();
     }
 
+
     /**
-     * getter
      * @return the current window height
      */
     public static double getWindowHeight() {
         return window.getHeight();
     }
 
+
     /**
-     * getter
      * @return the current stage/window
      */
     public static Stage getWindow() {

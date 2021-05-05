@@ -59,7 +59,7 @@ public final class RenderManager {
      */
     private static double zoom = 1;
     /**
-     * How much bigger to make every rendered object so they join up correctly 
+     * How much bigger to make every rendered object so they join up correctly
      * with floating point error
      */
     private static double padding = 1;
@@ -68,10 +68,12 @@ public final class RenderManager {
      */
     private static Label label;
 
+
     /**
-     * Private as this is meant to be a static class 
+     * RenderManger is a static class
      */
     private RenderManager() {}
+
 
     /**
      * A method that attempts to render every entity registered to the
@@ -95,8 +97,8 @@ public final class RenderManager {
 
         // renders each entity
         entities.stream().filter(Entity::isEnabled).forEach(entity -> {
-            //Only render entities if the renderArea is somewhere on screen or 
-            //it is set to always render
+            // Only render entities if the renderArea is somewhere on screen or
+            // it is set to always render
             if (
                 entity.alwaysRender() ||
                 intersects(entity.getRenderArea(), screen)
@@ -126,11 +128,9 @@ public final class RenderManager {
         });
     }
 
+
     /**
-     * 
-     * @param s1
-     * @param s2
-     * @return True if s1 and s2 intersect false if they don't
+     * @return True if s1 and s2 intersect
      */
     private static boolean intersects(Shape s1, Shape s2) {
         return Shape.intersect(s1, s2).getBoundsInLocal().getWidth() != -1;
@@ -139,8 +139,8 @@ public final class RenderManager {
 
     /**
      * Registers an entity to the RenderManager and stores it in ascending
-     * order with regards to it's Z value given in it's render component
-     * @param entity
+     * order with regards to it's Z value
+     * @param entity The entity to register
      */
     public static void register(Entity entity) {
         if (entity.getRendererC() == null) {
@@ -164,6 +164,7 @@ public final class RenderManager {
         }
     }
 
+
     /**
      * Registers all of the entities in the list
      * @param entities List of entities to register
@@ -181,6 +182,7 @@ public final class RenderManager {
     public static boolean unregister(Entity entity) {
         return entities.remove(entity);
     }
+
 
     /**
      * Unregisters every entity in the list
@@ -259,6 +261,7 @@ public final class RenderManager {
         fadeTransition.play();
     }
 
+
     /**
      * Displays a string in large text across the centre of the screen
      * @param string Text to display
@@ -316,21 +319,26 @@ public final class RenderManager {
         }
     }
 
+
     /**
-     * Moves the x position of the camera by adding x to the current x coordinate of the camera
+     * Moves the x position of the camera by adding x to the current x
+     * coordinate of the camera
      * @param x The amount to add to the x coordinate
      */
     public static void moveCameraX(double x) {
         cameraPos.add(x, 0);
     }
 
+
     /**
-     * Moves the y position of the camera by adding y to the current y coordinate of the camera
+     * Moves the y position of the camera by adding y to the current y
+     * coordinate of the camera
      * @param y The amount to add to the y coordinate
      */
     public static void moveCameraY(double y) {
         cameraPos.add(0, y);
     }
+
 
     /**
      * Set the new position of the camera
@@ -340,6 +348,7 @@ public final class RenderManager {
         RenderManager.cameraPos = cameraPos;
     }
 
+
     /**
      * Set the scale of the renderManager
      * @param scale The new scale
@@ -348,13 +357,14 @@ public final class RenderManager {
         RenderManager.scale = scale;
     }
 
+
     /**
-     * 
      * @return The current camera position
      */
     public static Point2D getCameraPos() {
         return cameraPos;
     }
+
 
     /**
      * Used to make all widths look the same no matter the size of the window
@@ -365,17 +375,19 @@ public final class RenderManager {
         return w * scale.getX() * zoom + padding;
     }
 
-    /**
-     * The same as getRenWidth but doesn't apply zoom to the rendering
-     * @param w
-     * @return 
-     */
-    public static double getRenWidthUnzoomed(double w) {
-        return w * scale.getX() + padding;
-    }
 
     /**
-     * Gets the x coordinate on the canvas something should be rendered at 
+     * The same as {@link #getRenWidth(double)} but doesn't apply zoom to the
+     * rendering
+     * @see #getRenWidth(double)
+     */
+    public static double getRenWidthUnzoomed(double width) {
+        return width * scale.getX() + padding;
+    }
+
+
+    /**
+     * Gets the x coordinate on the canvas something should be rendered at
      * based of the logical x coordinate and the position of the camera
      * @param x The logical x coordinate
      * @return The x coordinate on the canvas
@@ -383,6 +395,7 @@ public final class RenderManager {
     public static double getRenX(double x) {
         return getRenWidth(x - cameraPos.getX());
     }
+
 
     /**
      * Used to make all heights look the same no matter the size of the window
@@ -393,17 +406,19 @@ public final class RenderManager {
         return h * scale.getY() * zoom + padding;
     }
 
+
     /**
-     * The same as getRenHeight but doesn't apply zoom to the rendering
-     * @param w
-     * @return 
+     * The same as {@link #getRenHeight(double)} but doesn't apply zoom to the
+     * rendering
+     * @see #getRenHeight(double)
      */
     public static double getRenHeightUnzoomed(double h) {
         return h * scale.getY() + padding;
     }
 
+
     /**
-     * Gets the y coordinate on the canvas something should be rendered at 
+     * Gets the y coordinate on the canvas something should be rendered at
      * based of the logical y coordinate and the position of the camera
      * @param y The logical y coordinate
      * @return The y coordinate on the canvas
@@ -412,48 +427,48 @@ public final class RenderManager {
         return getRenHeight(y - cameraPos.getY());
     }
 
+
     /**
-     * 
      * @return The current scale
      */
     public static Point2D getScale() {
         return scale;
     }
 
+
     /**
-     * 
      * @return If clip is turned on or not
      */
     public static boolean clips() {
         return clip;
     }
 
+
     /**
-     * Sets the value of clip
      * @param clip The new value of clip
      */
     public static void setClip(boolean clip) {
         RenderManager.clip = clip;
     }
 
+
     /**
-     * Gets
      * @return the current zoom factor
      */
     public static double getZoom() {
         return zoom;
     }
 
+
     /**
-     * Sets the zoom factor
      * @param zoom The new zoom factor
      */
     public static void setZoom(double zoom) {
         RenderManager.zoom = zoom;
     }
 
+
     /**
-     * 
      * @return The current label
      */
     public static Label getLabel() {

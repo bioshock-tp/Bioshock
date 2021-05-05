@@ -58,29 +58,30 @@ public class Message implements Serializable {
         private static final long serialVersionUID = 1L;
 
         /** x coordinate of player */
-        final int x;
+        int x;
 
         /** y coordinate of player */
-        final int y;
+        int y;
 
         /** Coordinates of seeker(s) */
-        final int[][] aiCoords;
+        int[][] aiCoords;
 
         /** Chat message */
-        final String message;
+        String message;
+
 
         /**
          * Information to send in message containing player position
          * @param x coordinate of player
          * @param y coordinate of player
-         * @param aiCoords coordinates of seekers}
+         * @param aiCoordinates coordinates of seekers
          * @param message Chat message
          */
-        ClientInput(int x, int y, int[][] aiCoords, String message) {
+        ClientInput(int x, int y, int[][] aiCoordinates, String message) {
             this.x = x;
             this.y = y;
 
-            this.aiCoords = aiCoords;
+            this.aiCoords = aiCoordinates;
 
             this.message = message;
         }

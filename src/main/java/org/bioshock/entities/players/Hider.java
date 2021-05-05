@@ -31,32 +31,34 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
 /**
- *
  * A class representing a hider
- *
  */
 public class Hider extends SquareEntity implements Collisions {
     /**
      * The powerup manager for the hider
      */
     private final PowerUpManager powerUpManager = new PowerUpManager(this);
+
     /**
      * Boolean of whether the hider is dead or alive
      */
     private boolean dead = false;
+
     /**
      * The current sprite for the hider
      */
     private Sprite currentSprite;
+
     /**
      * The Hider animations
      */
     private HiderAnimations hiderAnimations;
+
     /**
-     * Boolean of if the sound effect has been played or not
-     * TODO
+     * True if sound effect has been played
      */
     private boolean playedSfx = false;
+
     /**
      * The name of the Hider
      */
@@ -78,6 +80,7 @@ public class Hider extends SquareEntity implements Collisions {
         initCollision(this);
     }
 
+
     @Override
     protected void tick(double timeDelta) {
         if (!dead) {
@@ -87,6 +90,7 @@ public class Hider extends SquareEntity implements Collisions {
             powerUpManager.tick(timeDelta);
         }
     }
+
 
     @Override
     public void collisionTick(Set<Entity> collisions) {
@@ -98,7 +102,7 @@ public class Hider extends SquareEntity implements Collisions {
         List<Hider> otherPlayers = new ArrayList<>(EntityManager.getPlayers());
         otherPlayers.remove(EntityManager.getCurrentPlayer());
 
-        /* Seeker */
+        /* Seekers */
         List<SeekerAI> seekers = EntityManager.getSeekers();
 
         /* Walls of room */
@@ -118,6 +122,7 @@ public class Hider extends SquareEntity implements Collisions {
         }
     }
 
+
     /**
      * Initialise the animations of the hider
      */
@@ -129,6 +134,7 @@ public class Hider extends SquareEntity implements Collisions {
         currentSprite = hiderAnimations.getPlayerIdleSprite();
     }
 
+
     /**
      * Set the name of the hider
      * @param hiderName The new name
@@ -136,6 +142,7 @@ public class Hider extends SquareEntity implements Collisions {
     public void setName(String hiderName) {
         name = hiderName;
     }
+
 
     /**
      * Set the current sprite
@@ -148,6 +155,7 @@ public class Hider extends SquareEntity implements Collisions {
             App.logger.error("Sprite is missing!");
         }
     }
+
 
     /**
      * Set the hider to be dead or not
@@ -171,6 +179,7 @@ public class Hider extends SquareEntity implements Collisions {
         }
     }
 
+
     /**
      * Set the hiders animation based on how it moved from the last tick
      */
@@ -192,6 +201,7 @@ public class Hider extends SquareEntity implements Collisions {
 
         setCurrentSprite(animation);
     }
+
 
     /**
      * Set the walking sound effect based on how the hider moved compared
@@ -218,8 +228,7 @@ public class Hider extends SquareEntity implements Collisions {
     }
 
     /**
-     * Getter
-     * @return If the hider is dead or not
+     * @return True if hider is dead
      */
     public boolean isDead() {
         return dead;
@@ -238,21 +247,22 @@ public class Hider extends SquareEntity implements Collisions {
         );
     }
 
+
     /**
-     * Getter
      * @return The hiders name
      */
     public String getName() {
         return name;
     }
 
+
     /**
-     *
      * @return The current sprite
      */
     public Sprite getCurrentSprite() {
         return currentSprite;
     }
+
 
     /**
      *

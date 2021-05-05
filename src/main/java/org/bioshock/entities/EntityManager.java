@@ -12,32 +12,35 @@ import org.bioshock.networking.NetworkManager;
 import org.bioshock.scenes.SceneManager;
 
 /**
- * 
- * A class that keeps track of all entities that tick needs to be called on
- * and sorts them into sublists if they are players or seekers *
+ * A class that keeps track of all entities that need to be ticked and sorts
+ * them into sublists if they are players or seekers
  */
 public final class EntityManager {
 	/**
 	 * A list of all currently managed entities
 	 */
     private static List<Entity> entities = new ArrayList<>();
+
     /**
      * A list of all currently managed players/hiders
-     * 
+     *
      * (A sublist of entities)
      */
     private static List<Hider> players = new ArrayList<>(App.playerCount());
+
     /**
      * A list of all currently managed seekers
-     * 
+     *
      * (A sublist of entities)
      */
     private static List<SeekerAI> seekers = new ArrayList<>();
+
 
     /**
      * Private constructor as EntityManager is meant to used as a static class
      */
     private EntityManager() {}
+
 
     /**
      * Method that calls safeTick on every managed entity
@@ -47,18 +50,18 @@ public final class EntityManager {
         entities.forEach(entitiy -> entitiy.safeTick(timeDelta));
     }
 
+
     /**
      * An experimental method that calls tick on hider on a different thread
      * and then calls tick on every seeker
      * @param timeDelta the amount of time to update the entity in seconds
      */
     public static void multiTick(double timeDelta) {
-    	
         Thread[] threads = new Thread[players.size()];
 
         Iterator<Hider> pIter = players.listIterator();
 
-        //Start every thread 
+        // Start every thread
         for (int i = 0; i < players.size(); i++) {
             threads[i] = new Thread(() -> pIter.next().safeTick(timeDelta));
             threads[i].start();
@@ -71,7 +74,8 @@ public final class EntityManager {
         }
 
     }
-    
+
+
     /**
      * Join every thread given in the thread array
      * @param threads the array of threads to join
@@ -87,20 +91,25 @@ public final class EntityManager {
         }
     }
 
+
     /**
-     * register an entity 
+     * register an entity
      * and if it is networked and its a SquareEntity register it to the network manager
-     * @param ent the entity to register
+     * @param entity the entity to register
      */
-    public static void register(Entity ent) {
-        if (ent.getNetworkC().isNetworked() && ent instanceof SquareEntity) {
-            NetworkManager.register((SquareEntity) ent);
+    public static void register(Entity entity) {
+        if (
+            entity.getNetworkC().isNetworked()
+            && entity instanceof SquareEntity
+        ) {
+            NetworkManager.register((SquareEntity) entity);
         }
 
-        entities.add(ent);
-        if (ent instanceof Hider) players.add((Hider) ent);
-        if (ent instanceof SeekerAI) seekers.add((SeekerAI) ent);
+        entities.add(entity);
+        if (entity instanceof Hider) players.add((Hider) entity);
+        if (entity instanceof SeekerAI) seekers.add((SeekerAI) entity);
     }
+
 
     /**
      * registers every entity on the list
@@ -110,16 +119,17 @@ public final class EntityManager {
         Arrays.asList(toAdd).forEach(EntityManager::register);
     }
 
+
     /**
      * Unregisters the entity from the EntityManager and the Network manager
-     * @param ent the entity to unregister
+     * @param entity the entity to unregister
      */
-    public static void unregister(Entity ent) {
-        NetworkManager.unregister(ent);
+    public static void unregister(Entity entity) {
+        NetworkManager.unregister(entity);
 
-        entities.remove(ent);
-        players.remove(ent);
-        if (ent == seekers) seekers = null;
+        entities.remove(entity);
+        players.remove(entity);
+        if (entity == seekers) seekers = null;
     }
 
     /**
@@ -142,22 +152,16 @@ public final class EntityManager {
     }
 
     /**
-     * Checks to see if the given entity and all the entities in the given list
-     * are currently managed
-     * @param entity 
-     * @param toCheck
-     * @return if the given entity and all the entities in the given list
-     * are currently managed
-     * 
-     * If there are no entities in the list it just checks the given entity
+     * @param entities
+     * @return True if the all the entities are currently managed. False if no
+     * entity was provided
      */
-    public static boolean isManaged(Entity entity, Entity... toCheck) {
-        return entities.contains(entity)
-            && entities.containsAll(Arrays.asList(toCheck));
+    public static boolean isManaged(Entity... entities) {
+        return entities.length > 0
+            && EntityManager.entities.containsAll(Arrays.asList(entities));
     }
 
     /**
-     * 
      * @return an array of all managed entities
      */
     public static Entity[] getEntities() {
@@ -165,7 +169,6 @@ public final class EntityManager {
     }
 
     /**
-     * 
      * @return a list of all managed entities
      */
     public static List<Entity> getEntityList() {
@@ -173,7 +176,6 @@ public final class EntityManager {
     }
 
     /**
-     * 
      * @return a list of all managed seekers
      */
     public static List<SeekerAI> getSeekers() {
@@ -181,7 +183,6 @@ public final class EntityManager {
     }
 
     /**
-     * 
      * @return a list of all managed players
      */
     public static List<Hider> getPlayers() {
@@ -189,7 +190,6 @@ public final class EntityManager {
     }
 
     /**
-     * 
      * @return the player controlled by the player on this game
      */
     public static Hider getCurrentPlayer() {

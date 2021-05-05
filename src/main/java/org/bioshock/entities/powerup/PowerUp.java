@@ -28,6 +28,7 @@ public abstract class PowerUp {
         this.duration = duration;
     }
 
+
     /**
      * Performs the actions needed every frame
      * @param timeDelta time since last frame
@@ -45,6 +46,7 @@ public abstract class PowerUp {
         }
     }
 
+
     /**
      * Starts the power up and calls the action
      */
@@ -55,15 +57,18 @@ public abstract class PowerUp {
         }
     }
 
+
     /**
      * The effect of the power up (i.e. increase speed)
      */
     protected abstract void action();
 
+
     /**
      * Reverts the effect of the power up (i.e. set speed back to original speed)
      */
     protected abstract void revert();
+
 
     /**
      * @param b the value to set isActive to
@@ -71,6 +76,7 @@ public abstract class PowerUp {
     protected void setActive(boolean b) {
         isActive = b;
     }
+
 
     /**
      * @return the value of isActive
