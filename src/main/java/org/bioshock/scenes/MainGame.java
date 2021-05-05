@@ -23,6 +23,7 @@ import org.bioshock.entities.items.food.*;
 import org.bioshock.entities.items.powerup_items.FreezeItem;
 import org.bioshock.entities.items.powerup_items.InvisibilityItem;
 import org.bioshock.entities.items.powerup_items.SpeedItem;
+import org.bioshock.entities.items.powerup_items.VentItem;
 import org.bioshock.entities.map.Room;
 import org.bioshock.entities.map.RoomEntity;
 import org.bioshock.entities.map.Wall;
@@ -299,6 +300,9 @@ public class MainGame extends GameScene {
             double y = roomToSpawn.getRoomCenter().getY();
             playersNotSpawnedIn.remove(roomToSpawn);
 
+            hiders.get(i).setInitPositionX(x - (double) GlobalConstants.UNIT_WIDTH / 2);
+            hiders.get(i).setInitPositionY(y - (double) GlobalConstants.UNIT_HEIGHT / 2);
+
             hiders.get(i).setPosition(
                 x - (double) GlobalConstants.UNIT_WIDTH / 2,
                 y - (double) GlobalConstants.UNIT_HEIGHT / 2
@@ -469,6 +473,7 @@ public class MainGame extends GameScene {
 		children.add(new FreezeItem(rand.nextLong()));
 		children.add(new InvisibilityItem(rand.nextLong()));
 		children.add(new SpeedItem(rand.nextLong()));
+		children.add(new VentItem(rand.nextLong()));
     }
 
     @Override

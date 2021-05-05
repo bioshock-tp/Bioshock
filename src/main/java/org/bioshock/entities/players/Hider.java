@@ -35,6 +35,11 @@ import static org.bioshock.audio.AudioManager.stopWalkingSfx;
  *
  */
 public class Hider extends SquareEntity implements Collisions {
+
+    private double initPositionX = 0;
+
+    private double initPositionY = 0;
+
     /**
      * The powerup manager for the hider
      */
@@ -257,4 +262,41 @@ public class Hider extends SquareEntity implements Collisions {
      * @return The powerup manager
      */
     public PowerUpManager getPowerUpManager() { return powerUpManager; }
+
+    /**
+     * Setter
+     * Sets the x coordinate of the position that this hider initially had
+     */
+
+    public void setInitPositionX(double x){
+        initPositionX = x;
+    }
+
+    /**
+     * Setter
+     * Sets the y coordinate of the position that this hider initially had
+     */
+
+    public void setInitPositionY(double y){
+        initPositionY = y;
+    }
+
+    /**
+     * Getter
+     * Gets the x coordinate of the position that this hider initially had
+     */
+
+    public double getInitPositionX(){
+        return  initPositionX;
+    }
+
+    /**
+     * Getter
+     * Gets the y coordinate of the position that this hider initially had
+     */
+
+    public double getInitPositionY(){
+        return initPositionY;
+    }
+
 }
