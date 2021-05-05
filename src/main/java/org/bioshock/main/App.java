@@ -1,11 +1,12 @@
 package org.bioshock.main;
 
-import javafx.application.Application;
-import javafx.application.Platform;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.stage.Stage;
+import java.io.IOException;
+import java.net.URL;
+import java.util.Arrays;
+import java.util.Locale;
+import java.util.Objects;
+import java.util.ResourceBundle;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bioshock.audio.AudioManager;
@@ -19,12 +20,16 @@ import org.bioshock.scenes.SceneManager;
 import org.bioshock.utils.FontManager;
 import org.bioshock.utils.LanguageManager;
 
-import java.io.IOException;
-import java.net.URL;
-import java.util.Arrays;
-import java.util.Locale;
-import java.util.Objects;
-import java.util.ResourceBundle;
+import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Label;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.text.Font;
+import javafx.stage.Stage;
 
 /**
  * The class that starts the game
@@ -123,24 +128,49 @@ public class App extends Application {
         }
     }
 
-
     /**
-     * TODO
+     * <ul>
+     *  <li>Blurs the game and slows entities</li>
+     *  <li>Plays a sound</li>
+     *  <li>Displays "You Win/Lose!"</li>
+     * </ul>
+     * After a key is pressed, the scoreboard will be displayed
+     * @param victory True if game is won
      */
-    public static void win() {
+    public static void end(boolean victory) {
         RenderManager.endGame();
-        AudioManager.playWinSfx();
-        RenderManager.displayText("You Win!");
-    }
+        String textToDisplay;
+        if (victory) {
+            AudioManager.playWinSfx();
+            textToDisplay = "You win!";
+        } else {
+            AudioManager.playLoseSfx();
+            textToDisplay = "You Lose!";
+        }
 
+        Runnable anyKeyContinue = () -> {
+            Label label = new Label("Press Any Key to Continue");
+            label.setFont(new Font(50));
+            label.setTranslateY(
+                GameScene.getGameScreen().getHeight() / 2 - 100
+            );
 
-    /**
-     * TODO
-     */
-    public static void lose() {
-        RenderManager.endGame();
-        AudioManager.playLoseSfx();
-        RenderManager.displayText("You Lose!");
+            SceneManager.getPane().getChildren().add(label);
+
+            InputManager.stop();
+            InputManager.onPress(KeyCode.ESCAPE, () -> App.exit(0));
+
+            SceneManager.getScene().addEventHandler(
+                KeyEvent.KEY_PRESSED,
+                e -> {
+                    RenderManager.displayText();
+                    label.setVisible(false);
+                    SceneManager.getMainGame().showScoreboard(true);
+                }
+            );
+        };
+
+        RenderManager.displayText(textToDisplay, anyKeyContinue);
     }
 
 

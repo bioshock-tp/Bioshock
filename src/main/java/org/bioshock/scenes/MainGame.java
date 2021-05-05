@@ -1,6 +1,7 @@
 package org.bioshock.scenes;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
@@ -34,18 +35,27 @@ import org.bioshock.utils.Size;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
 import javafx.geometry.Point3D;
 import javafx.scene.Cursor;
 import javafx.scene.control.Label;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.util.Duration;
 
 public class MainGame extends GameScene {
+
+
     /**
      * Number of seekers to spawn
      */
@@ -72,10 +82,34 @@ public class MainGame extends GameScene {
      * Number of food items to be collected to win
      */
     private static final int FOOD_TO_WIN = 5;
+
+    /**
+     * Path to the stylesheet
+     */
+    private static final String STYLESHEET_PATH = App.class.getResource(
+        "/org/bioshock/gui/style.css"
+    ).toExternalForm();
+
+    /**
+     * Milliseconds between scoreboard updates
+     */
+    private static final int SCOREBOARD_UPDATE_RATE = 100;
+
     /**
      * The amount of food currently collected
      */
     private int collectedFood = 0;
+
+    /**
+     * Maps each player to their score
+     */
+    private java.util.Map<Hider, IntegerProperty> playerScores;
+
+    /**
+     * Maps each player to the number of power up items they have collected
+     */
+    private java.util.Map<Hider, IntegerProperty> playerPowerUpScore;
+
     /**
      * The counter representing how much food has been collected
      */
@@ -134,6 +168,12 @@ public class MainGame extends GameScene {
      * The random number generator used across the class
      */
     private Random rand;
+
+    /**
+     * Shows the information about how the player is performing
+     */
+    private TableView<Hider> scoreboard;
+
 
     public MainGame() {
         setCursor(Cursor.HAND);
@@ -202,6 +242,8 @@ public class MainGame extends GameScene {
      * be known as the map hasn't been generated yet
      */
     private void initHiders() {
+        List<Hider> players = new ArrayList<>(App.playerCount());
+
         /* Players must render in exact order, do not play with z values */
         Hider hider = new Hider(
             new Point3D(0, 0, 0.5),
@@ -213,10 +255,10 @@ public class MainGame extends GameScene {
             300,
             Color.PINK
         );
-        children.add(hider);
+        players.add(hider);
 
         for (int i = 1; i < App.playerCount(); i++) {
-            children.add(new Hider(
+            players.add(new Hider(
                 new Point3D(GameScene.getGameScreen().getWidth() * i, 0, i),
                 new NetworkC(true),
                 new Size(
@@ -227,6 +269,15 @@ public class MainGame extends GameScene {
                 Color.PINK
             ));
         }
+
+        children.addAll(players);
+
+        playerScores = new HashMap<>(App.playerCount());
+        playerPowerUpScore = new HashMap<>(App.playerCount());
+        players.forEach(player -> {
+            playerScores.put(player, new SimpleIntegerProperty(0));
+            playerPowerUpScore.put(player, new SimpleIntegerProperty(0));
+        });
     }
 
 
@@ -342,6 +393,8 @@ public class MainGame extends GameScene {
         renderEntities();
 
         startCountdown();
+
+        initScoreboard();
 
         SceneManager.setInLobby(false);
         SceneManager.setInGame(true);
@@ -498,6 +551,82 @@ public class MainGame extends GameScene {
 		children.add(new SpeedItem(rand.nextLong()));
     }
 
+
+    /**
+     * Initialises the scoreboard
+     */
+    public void initScoreboard() {
+        if (!(SceneManager.getScene() instanceof MainGame)) {
+            App.logger.error("Could not find MainGame");
+            return;
+        }
+
+        SceneManager.getMainGame().getStylesheets().add(STYLESHEET_PATH);
+
+        scoreboard = new TableView<>();
+        scoreboard.setVisible(false);
+        scoreboard.setSelectionModel(null);
+        scoreboard.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        scoreboard.getStyleClass().add("table-view");
+
+        final String RIGHT_ALLIGN = "-fx-alignment: CENTER-RIGHT;";
+
+        /* Ping */
+        TableColumn<Hider, Integer> ping = new TableColumn<>("Ping");
+        ping.setCellValueFactory(cellData ->
+            NetworkManager.getPingMap().getOrDefault(
+                cellData.getValue(),
+                new SimpleIntegerProperty(0)
+            ).asObject()
+        );
+        ping.setSortable(false);
+        ping.setStyle(RIGHT_ALLIGN);
+
+        /* Player Names */
+        TableColumn<Hider, String> players = new TableColumn<>("Player");
+        players.setCellValueFactory(new PropertyValueFactory<>("name"));
+        players.setSortable(false);
+
+        /* Power Up Score */
+        TableColumn<Hider, Integer> powerUpScore = new TableColumn<>("Power Up Score");
+        powerUpScore.setCellValueFactory(cellData ->
+            playerPowerUpScore.get(cellData.getValue()).asObject()
+        );
+        powerUpScore.setSortable(false);
+        powerUpScore.setStyle(RIGHT_ALLIGN);
+
+        /* Item Score */
+        TableColumn<Hider, Integer> score = new TableColumn<>("Score");
+        score.setCellValueFactory(cellData ->
+            playerScores.get(cellData.getValue()).asObject()
+        );
+        score.setSortable(false);
+        score.setStyle(RIGHT_ALLIGN);
+
+        scoreboard.getColumns().add(ping);
+        scoreboard.getColumns().add(players);
+        scoreboard.getColumns().add(powerUpScore);
+        scoreboard.getColumns().add(score);
+
+        scoreboard.getItems().addAll(EntityManager.getPlayers());
+
+        BorderPane borderPane = new BorderPane(scoreboard);
+        BorderPane.setMargin(scoreboard, new Insets(300, 500, 300, 500));
+        SceneManager.getMainGame().getPane().getChildren().add(borderPane);
+
+        InputManager.onPress(KeyCode.TAB, () -> showScoreboard(true));
+        InputManager.onRelease(KeyCode.TAB, () -> showScoreboard(false));
+    }
+
+
+    /**
+     * @param show True if {@link #scoreboard} should be shown
+     */
+    public void showScoreboard(boolean show) {
+        scoreboard.setVisible(show);
+    }
+
+
     @Override
     public void logicTick(double timeDelta) {
         if (!losing) {
@@ -514,7 +643,7 @@ public class MainGame extends GameScene {
             timeLosing += timeDelta;
             if (timeLosing >= LOSE_DELAY) {
                 lost = true;
-                App.lose();
+                App.end(false);
             }
         }
     }
@@ -538,13 +667,16 @@ public class MainGame extends GameScene {
      * Handles item collection<p />
      * If number of items collected is {@link #FOOD_TO_WIN}, game is won
      */
-    public void collectFood() {
+    public void collectFood(Hider hider) {
         if (++collectedFood == FOOD_TO_WIN) {
             NetworkManager.tick();
-            App.win();
+            App.end(true);
         }
 
         counter.setLabel(String.format("%d/%d", collectedFood, FOOD_TO_WIN));
+
+        IntegerProperty score = playerScores.get(hider);
+        score.set(score.getValue() + 1);
     }
 
 
@@ -563,6 +695,15 @@ public class MainGame extends GameScene {
     public void setChatVisibility(boolean visible) {
         chatLabel.setDisplay(visible);
         textChat.setDisplay(visible);
+    }
+
+
+    /**
+     * @return A map of players to how many power up items they have collected
+     */
+    public void increasePowerUpScore(Hider hider) {
+        IntegerProperty playerScore = playerPowerUpScore.get(hider);
+        playerScore.set(playerScore.get() + 1);
     }
 
 

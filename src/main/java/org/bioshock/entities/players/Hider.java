@@ -62,7 +62,8 @@ public class Hider extends SquareEntity implements Collisions {
     /**
      * The name of the Hider
      */
-    private String name;
+    private String name = "Hider";
+
 
     /**
      * Construct a new Hider

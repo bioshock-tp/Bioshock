@@ -83,7 +83,7 @@ public abstract class Food extends Item {
 
     @Override
     protected void apply(Hider hider) {
-        SceneManager.getMainGame().collectFood();
+        SceneManager.getMainGame().collectFood(hider);
     }
 
 

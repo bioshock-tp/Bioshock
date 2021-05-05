@@ -42,14 +42,14 @@ public class Lobby extends GameScene {
         }
     }
 
-    public void updatePlayerCount() {
+    public void updatePlayerCount(int newCount) {
         App.logger.debug("updating player count");
         playerCountLabel.setText(String.format(
             "%d/%d",
-            NetworkManager.playerCount(), App.playerCount()
+            newCount, App.playerCount()
         ));
 
-        if (NetworkManager.playerCount() == App.playerCount()) {
+        if (newCount == App.playerCount()) {
             SceneManager.setScene(mainGame);
         }
     }

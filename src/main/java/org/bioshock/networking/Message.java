@@ -70,6 +70,10 @@ public class Message implements Serializable {
         String message;
 
 
+        /** The players ping time with the game server */
+        int ping;
+
+
         /**
          * Information to send in message containing player position
          * @param x coordinate of player
@@ -84,6 +88,8 @@ public class Message implements Serializable {
             this.aiCoords = aiCoordinates;
 
             this.message = message;
+
+            this.ping = NetworkManager.getPingMap().get(NetworkManager.me()).get();
         }
 
         @Override

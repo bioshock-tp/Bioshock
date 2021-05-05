@@ -17,11 +17,20 @@ import org.bioshock.main.App;
 import org.bioshock.networking.Message.ClientInput;
 import org.bioshock.scenes.SceneManager;
 
+import javafx.animation.Animation;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.application.Platform;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.concurrent.Task;
 import javafx.geometry.Point2D;
+import javafx.util.Duration;
 
 public class NetworkManager {
+
+    /** Seconds between game server ping time updates */
+    private static final int PING_UPDATE_RATE = 1;
 
     /** ID of local player */
     private static String myID = UUID.randomUUID().toString();
@@ -58,6 +67,15 @@ public class NetworkManager {
      * the lobby
      */
     private static Object awaitingPlayerLock = new Object();
+
+
+    /**
+     * Maps each player to their ping
+     */
+    private static Map<Hider, IntegerProperty> pingMap = new HashMap<>();
+
+    /** Nano Time of previous ping to game server */
+    private static long previousPing;
 
 
     /** NetworkManager is a static class */
@@ -108,6 +126,9 @@ public class NetworkManager {
 
                     loadedPlayers.putIfAbsent(message.uuid, hider);
                     playerNames.putIfAbsent(hider, message.name);
+                    pingMap.putIfAbsent(hider, new SimpleIntegerProperty(0));
+
+                    int newCount = loadedPlayers.size();
 
                     Platform.runLater(() ->
                         SceneManager.getLobby().updatePlayerCount(newCount)
@@ -122,6 +143,13 @@ public class NetworkManager {
 
                 playerList.forEach(Hider::initAnimations);
                 seekers.forEach(SeekerAI::initAnimations);
+
+                Timeline pingTimeline = new Timeline(new KeyFrame(
+                    Duration.seconds(PING_UPDATE_RATE),
+                    e -> NetworkManager.sendPing()
+                ));
+                pingTimeline.setCycleCount(Animation.INDEFINITE);
+                pingTimeline.play();
 
                 App.logger.info("Networking initialised");
 
@@ -206,6 +234,8 @@ public class NetworkManager {
             if (messageFrom == me || input == null) continue;
 
             updateDirection(input, messageFrom);
+
+            NetworkManager.setPing(messageFrom, input.ping);
 
             if (
                 messageFrom == masterHider
@@ -349,6 +379,25 @@ public class NetworkManager {
 
 
     /**
+     * Sends ping to game server
+     */
+    private static void sendPing() {
+        client.sendPing();
+        previousPing = System.nanoTime();
+    }
+
+
+    /**
+     * Updates the players mapped ping time to game server
+     * @param hider
+     * @param ping
+     */
+    public static void setPing(Hider hider, int ping) {
+        pingMap.get(hider).set(ping);
+    }
+
+
+    /**
      * @return The number of players loaded correctly in lobby
      */
     public static int playerCount() {
@@ -378,5 +427,21 @@ public class NetworkManager {
      */
     public static Object getPlayerJoinLock() {
         return awaitingPlayerLock;
+    }
+
+
+    /**
+     * @return A map of players to their ping
+     */
+    public static Map<Hider, IntegerProperty> getPingMap() {
+        return pingMap;
+    }
+
+
+    /**
+     * @return Nano time of previous ping to game server
+     */
+    public static long getPreviousPingTime() {
+        return previousPing;
     }
 }

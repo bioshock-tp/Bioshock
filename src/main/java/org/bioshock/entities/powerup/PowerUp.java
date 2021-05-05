@@ -1,6 +1,8 @@
 package org.bioshock.entities.powerup;
 
 import org.bioshock.entities.SquareEntity;
+import org.bioshock.entities.players.Hider;
+import org.bioshock.scenes.SceneManager;
 
 public abstract class PowerUp {
     /**
@@ -54,6 +56,7 @@ public abstract class PowerUp {
         if (!isActive) {
             setActive(true);
             action();
+            SceneManager.getMainGame().increasePowerUpScore((Hider) entity);
         }
     }
 

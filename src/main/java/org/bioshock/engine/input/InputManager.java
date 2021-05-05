@@ -247,4 +247,13 @@ public class InputManager {
     public static void removeKeyListeners(KeyCode... keyCodes) {
         Arrays.asList(keyCodes).forEach(InputManager::removeKeyListener);
 	}
+
+
+    /**
+     * Stops listening to key presses/releases
+     */
+    public static void stop() {
+        keyPresses.clear();
+        keyReleases.clear();
+    }
 }
