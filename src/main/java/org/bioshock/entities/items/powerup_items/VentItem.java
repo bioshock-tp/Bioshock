@@ -28,4 +28,12 @@ public class VentItem extends Food {
         }
     }
 
+    /**
+     * Plays teleport sound effect
+     */
+    @Override
+    protected void playCollectSound(){
+        AudioManager.playTeleportSfx();
+    }
+
 }
