@@ -11,7 +11,7 @@ public class VentItem extends Food {
      * Path to the image that should be displayed
      */
     private static final String PATH = Food.class.getResource(
-            "/org/bioshock/images/food/vent.png"
+            "/org/bioshock/images/food/teleport.png"
     ).getPath();
 
     public VentItem(long seed) { super(PATH, seed); }
