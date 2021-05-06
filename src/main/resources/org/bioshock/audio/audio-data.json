@@ -49,6 +49,12 @@
   },
   {
     "type": "effect",
+    "name": "teleport",
+    "path": "src/main/resources/org/bioshock/audio/teleport.wav",
+    "filesystem": "local"
+  },
+  {
+    "type": "effect",
     "name": "win",
     "path": "src/main/resources/org/bioshock/audio/win.wav",
     "filesystem": "local"

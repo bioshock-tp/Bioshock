@@ -22,6 +22,7 @@ public class AudioManager {
     private static EffectController freezeEffectController;
     private static EffectController fastAirEffectController;
     private static EffectController ghostEffectController;
+    private static EffectController teleportEffectController;
     private static EffectController winEffectController;
     private static EffectController loseEffectController;
 
@@ -53,6 +54,9 @@ public class AudioManager {
         );
         fastAirEffectController = AudioController.loadEffectController(
             "fastAir"
+        );
+        teleportEffectController = AudioController.loadEffectController(
+            "teleport"
         );
         winEffectController = AudioController.loadEffectController(
             "win"
@@ -174,6 +178,17 @@ public class AudioManager {
     }
 
     /**
+     * PLays teleport sound.
+     */
+    public static void playTeleportSfx() {
+        Preferences prefs = Preferences.userNodeForPackage(SettingsController.class);
+
+        if (prefs.getBoolean("sfxOn", true)) {
+            teleportEffectController.play(plinkEffectSettings);
+        }
+    }
+
+    /**
      * PLays win sound.
      */
     public static void playWinSfx() {
@@ -201,4 +216,6 @@ public class AudioManager {
     public static void stopWooshSfx() {
         wooshEffectController.stop();
     }
+
+
 }
