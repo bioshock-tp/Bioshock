@@ -10,7 +10,7 @@ public class FreezeItem extends Food {
      * Path to the image that should be displayed
      */
     private static final String PATH = Food.class.getResource(
-            "/org/bioshock/images/food/ice_cube.png"
+        "/org/bioshock/images/food/ice_ball.png"
     ).getPath();
 
     public FreezeItem(long seed) { super(PATH, seed); }
