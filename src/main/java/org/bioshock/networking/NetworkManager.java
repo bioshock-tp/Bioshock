@@ -1,9 +1,13 @@
 package org.bioshock.networking;
 
-import javafx.application.Platform;
-import javafx.concurrent.Task;
-import javafx.geometry.Point2D;
-import javafx.scene.input.KeyCode;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
 import org.bioshock.entities.Entity;
 import org.bioshock.entities.SquareEntity;
 import org.bioshock.entities.players.Hider;
@@ -14,13 +18,11 @@ import org.bioshock.networking.Message.ClientInput;
 import org.bioshock.scenes.MainGame;
 import org.bioshock.scenes.SceneManager;
 
-import java.util.*;
+import javafx.application.Platform;
+import javafx.concurrent.Task;
+import javafx.geometry.Point2D;
 
 public class NetworkManager {
-    private static Map<KeyCode, Boolean> keyPressed = new EnumMap<>(
-        KeyCode.class
-    );
-
     private static String myID = UUID.randomUUID().toString();
     private static String myName;
     private static Hider me;
@@ -39,74 +41,68 @@ public class NetworkManager {
     private static Client client = new Client();
     private static Object awaitingPlayerLock = new Object();
     private static Thread initThread;
+    private static Task<Object> task;
 
     private NetworkManager() {}
 
     public static void initialise(LobbyController lobbyController) {
-        initThread = new Thread(new Task<>() {
+        task = new Task<>() {
             @Override
             protected Object call() {
                 try {
-                    try {
-                        App.logger.info("Connecting to web socket...");
-                        client.connectBlocking();
-                        App.logger.info("Connected to web socket");
-                    } catch (InterruptedException e) {
-                        App.logger.error(e);
-                        Thread.currentThread().interrupt();
-                    }
+                    App.logger.info("Connecting to web socket...");
+                    client.connectBlocking();
+                    App.logger.info("Connected to web socket");
+                } catch (InterruptedException e) {
+                    App.logger.error(e);
+                    Thread.currentThread().interrupt();
+                }
 
-                    myName = client.getPlayerName();
-                    client.send(Integer.toString(App.playerCount()));
+                myName = client.getPlayerName();
+                client.send(Integer.toString(App.playerCount()));
 
-                    /* Wait until players join then add them to loadedPlayers */
-                    while (loadedPlayers.size() < App.playerCount()) {
-                        synchronized (awaitingPlayerLock) {
-                            while (client.getInitialMessages().isEmpty()) {
-                                try {
-                                    awaitingPlayerLock.wait();
-                                } catch (InterruptedException e) {
-                                    Thread.currentThread().interrupt();
-                                }
+                /* Wait until players join then add them to loadedPlayers */
+                while (loadedPlayers.size() < App.playerCount()) {
+                    synchronized (awaitingPlayerLock) {
+                        while (client.getInitialMessages().isEmpty()) {
+                            try {
+                                awaitingPlayerLock.wait();
+                            } catch (InterruptedException e) {
+                                Thread.currentThread().interrupt();
                             }
                         }
-
-                        Message message = client.getInitialMessages().remove();
-
-                        Hider hider = playerList.get(message.playerNumber - 1);
-
-                        hider.setID(message.uuid);
-
-                        hider.setName(message.name);
-
-                        loadedPlayers.putIfAbsent(message.uuid, hider);
-                        playerNames.putIfAbsent(hider, message.name);
-
-                        Platform.runLater(lobbyController::updatePlayerCount);
                     }
 
+                    Message message = client.getInitialMessages().remove();
 
-                    masterHider = playerList.get(0);
+                    Hider hider = playerList.get(message.playerNumber - 1);
 
-                    me = loadedPlayers.get(myID);
+                    hider.setID(message.uuid);
 
-                    me.getMovement().initMovement();
-                    playerList.forEach(Hider::initAnimations);
-                    seekers.forEach(SeekerAI::initAnimations);
+                    hider.setName(message.name);
 
-                    App.logger.info("Networking initialised");
-                }
-                catch (Exception e) {
-                    App.logger.error(
-                        "{}\n{}",
-                        e,
-                        Arrays.toString(e.getStackTrace()).replace(',', '\n')
+                    loadedPlayers.putIfAbsent(message.uuid, hider);
+                    playerNames.putIfAbsent(hider, message.name);
+
+                    Platform.runLater(() ->
+                        lobbyController.updatePlayerCount(loadedPlayers.size())
                     );
                 }
+
+                masterHider = playerList.get(0);
+
+                me = loadedPlayers.get(myID);
+
+                me.getMovement().initMovement();
+                playerList.forEach(Hider::initAnimations);
+                seekers.forEach(SeekerAI::initAnimations);
+
+                App.logger.info("Networking initialised");
+
                 return null;
             }
-        });
-
+        };
+        initThread = new Thread(task);
         initThread.start();
     }
 
@@ -286,11 +282,17 @@ public class NetworkManager {
     }
 
     public static void reset() {
+        if (initThread != null) {
+            task.cancel(true);
+
+            // TODO: replace this deprecated call somehow
+            initThread.stop();
+            initThread = null;
+            task = null;
+        }
+
         client.close();
         client = new Client();
         loadedPlayers.clear();
-        if (initThread != null) {
-            initThread.stop();
-        }
     }
 }

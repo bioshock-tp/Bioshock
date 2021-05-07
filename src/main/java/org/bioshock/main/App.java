@@ -30,7 +30,7 @@ public class App extends Application {
     public static final Logger logger = LogManager.getLogger(App.class);
 
     private static String name;
-    private static int playerCount = 2;
+    private static int playerCount = 1;
     private static Scene fxmlScene;
     private static boolean networked;
     private static ResourceBundle bundle;
@@ -68,10 +68,6 @@ public class App extends Application {
 
             SceneManager.initialise(primaryStage, initScene);
             InputManager.initialise();
-
-            if (!networked) {
-                App.setPlayerCount(1);
-            }
 
             new GameLoop().start();
         } catch (Exception e) {

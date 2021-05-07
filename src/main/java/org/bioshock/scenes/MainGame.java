@@ -85,6 +85,8 @@ public class MainGame extends GameScene {
     public MainGame() {
         super();
 
+        EntityManager.unregisterAll();
+
         setCursor(Cursor.HAND);
         setBackground(new Background(new BackgroundFill(
             Color.LIGHTGRAY,

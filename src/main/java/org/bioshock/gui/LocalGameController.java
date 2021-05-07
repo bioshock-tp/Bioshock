@@ -55,6 +55,7 @@ public class LocalGameController {
 
     public void launchGame(ActionEvent actionEvent) {
         Stage stage = (Stage) launchButton.getScene().getWindow();
+        App.setPlayerCount(1);
         SceneManager.setMainGame(new MainGame());
         App.startGame(stage, new LoadingScreen(App.getBundle().getString("SINGLE_PLAYER_LOADING_TEXT")), false);
     }
