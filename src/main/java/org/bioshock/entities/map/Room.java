@@ -101,10 +101,10 @@ public class Room extends GraphNode {
 
     /***
      * Generates a room with the position being the top left of the room
-     * 
-     * This is the first step in room generation so as to allow to have the room object for 
+     *
+     * This is the first step in room generation so as to allow to have the room object for
      * referencing purposes
-     * 
+     *
      * @param newPos the position of the top left of the room
      * @param wallWidth the width of the walls that make up the room (in terms
      * of units)
@@ -119,7 +119,6 @@ public class Room extends GraphNode {
         Size coriSize,
         Color c
     ) {
-        super();
         //Initialise members
         this.pos = newPos;
         this.wallWidth = wallWidth;
@@ -145,9 +144,9 @@ public class Room extends GraphNode {
     }
 
     /**
-     * The second stage in generating a room and spawns objects randomly in the room 
+     * The second stage in generating a room and spawns objects randomly in the room
      * based off the seed making sure there's a clear path between the centre of each room
-     * @param edges A list of edges leaving the room you are generating which represent what 
+     * @param edges A list of edges leaving the room you are generating which represent what
      * the type of sides there are in each direction
      * @param wallProbObj The probability between 0 and 1 of an object being spawned in a arbitrary position
      * @param seed The seed of the random generator used to generate where objects spawn in the room
@@ -204,7 +203,7 @@ public class Room extends GraphNode {
         boolean[][] traversable = new boolean
             [(int) totalSize.getHeight()]
             [(int) totalSize.getWidth()];
-        
+
         ArrayUtils.fill2DArray(traversable, true);
 
         //Add the sides relevant for the connection type in each direction
@@ -654,9 +653,9 @@ public class Room extends GraphNode {
 	/***
      * add a corner at the given position and put it in traversable
      * @param traversable The traversable array to copy the corner into
-     * @param relX The relative X position in the traversable array to spawn the corner in 
+     * @param relX The relative X position in the traversable array to spawn the corner in
      * @param relY The relative Y position in the traversable array to spawn the corner in
-     * 
+     *
      * Where the X and Y position represent the top left of the corner
      */
     private void corner(
@@ -1088,7 +1087,7 @@ public class Room extends GraphNode {
 	}
 
 	/**
-	 * 
+	 *
 	 * TODO
 	 */
     public List<Pair<Point2D, Direction>> getCorridorPoints() {
@@ -1096,7 +1095,7 @@ public class Room extends GraphNode {
     }
 
     /**
-     * 
+     *
      * @return the RoomType of the room
      */
     public RoomType getRoomType() {
@@ -1104,7 +1103,7 @@ public class Room extends GraphNode {
     }
 
     /**
-     * 
+     *
      * @return The GraphNode in the Centre of the room
      */
     public GraphNode getCentreNode() {
@@ -1112,7 +1111,7 @@ public class Room extends GraphNode {
     }
 
     /**
-     * 
+     *
      * @return The traversable array that makes up the room
      */
     public GraphNode[][] getTraversableArray() {
@@ -1120,7 +1119,7 @@ public class Room extends GraphNode {
     }
 
     /**
-     * 
+     *
      * @return The traversable graph that makes up the room
      */
     public Graph<GraphNode, Pair<Direction, Double>> getTraversableGraph() {
@@ -1128,7 +1127,7 @@ public class Room extends GraphNode {
 	}
 
     /**
-     * 
+     *
      * @return the connections from this room in each direction NSEW
      */
     public Map<Direction, ConnType> getConnections() {
@@ -1158,8 +1157,8 @@ public class Room extends GraphNode {
     }
 
     /**
-     * 
-     * @return The floor space array 
+     *
+     * @return The floor space array
      * Used to work out where to render floor beneath objects
      */
     public boolean[][] getFloorSpace() {

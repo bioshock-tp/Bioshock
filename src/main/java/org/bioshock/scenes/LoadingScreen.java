@@ -16,8 +16,6 @@ import org.bioshock.main.App;
 
 public class LoadingScreen extends GameScene {
 	public LoadingScreen (boolean isNetworked, String loadingText) {
-        super();
-
         VBox verticalBox = new VBox();
         verticalBox.setAlignment(Pos.CENTER);
 

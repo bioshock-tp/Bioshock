@@ -11,8 +11,8 @@ import static org.bioshock.entities.map.utils.RoomType.NO_ROOM;
 import static org.bioshock.entities.map.utils.RoomType.SINGLE_ROOM;
 
 /**
- * 
- * A class to store constants shared across the App 
+ *
+ * A class to store constants shared across the App
  *
  */
 public final class GlobalConstants {
@@ -92,7 +92,7 @@ public final class GlobalConstants {
 
     /*
      * The following is a set of image paths and then their loaded image
-     */    
+     */
     private static final String BOT_HORI_WALL_PATH =
         GlobalConstants.class.getResource(
             "/org/bioshock/images/walls/botHori.png"
@@ -207,6 +207,16 @@ public final class GlobalConstants {
             ));
         }
     }
+
+
+    /**
+     * Path to the stylesheet
+     */
+    public static final String STYLESHEET_PATH =
+        GlobalConstants.class.getResource(
+            "/org/bioshock/gui/style.css"
+        ).toExternalForm();
+
 
     /**
      * Private as this is meant to be used as a static class

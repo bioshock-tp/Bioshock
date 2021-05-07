@@ -9,20 +9,29 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.UUID;
 
+import org.bioshock.engine.core.ChatManager;
 import org.bioshock.entities.Entity;
 import org.bioshock.entities.SquareEntity;
 import org.bioshock.entities.players.Hider;
 import org.bioshock.entities.players.SeekerAI;
 import org.bioshock.main.App;
 import org.bioshock.networking.Message.ClientInput;
-import org.bioshock.scenes.MainGame;
 import org.bioshock.scenes.SceneManager;
 
+import javafx.animation.Animation;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.application.Platform;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.concurrent.Task;
 import javafx.geometry.Point2D;
+import javafx.util.Duration;
 
 public class NetworkManager {
+
+    /** Seconds between game server ping time updates */
+    private static final int PING_UPDATE_RATE = 1;
 
     /** ID of local player */
     private static String myID = UUID.randomUUID().toString();
@@ -40,13 +49,10 @@ public class NetworkManager {
     private static List<SeekerAI> seekers = new ArrayList<>();
 
     /** List of players in game */
-    private static List<Hider> playerList = new ArrayList<>(App.playerCount());
+    private static List<Hider> playerList = new ArrayList<>();
 
     /** Maps UUID to player that is loaded into game */
-    private static Map<String, Hider> loadedPlayers = new HashMap<>(
-        App.playerCount()
-    );
-
+    private static Map<String, Hider> loadedPlayers = new HashMap<>();
 
     /** Maps {@link Hider} to its chosen name */
     private static Map<Hider, String> playerNames = new HashMap<>();
@@ -62,6 +68,15 @@ public class NetworkManager {
      * the lobby
      */
     private static Object awaitingPlayerLock = new Object();
+
+
+    /**
+     * Maps each player to their ping
+     */
+    private static Map<Hider, IntegerProperty> pingMap = new HashMap<>();
+
+    /** Nano Time of previous ping to game server */
+    private static long previousPing;
 
 
     /** NetworkManager is a static class */
@@ -112,9 +127,12 @@ public class NetworkManager {
 
                     loadedPlayers.putIfAbsent(message.uuid, hider);
                     playerNames.putIfAbsent(hider, message.name);
+                    pingMap.putIfAbsent(hider, new SimpleIntegerProperty(0));
+
+                    int newCount = loadedPlayers.size();
 
                     Platform.runLater(() ->
-                        SceneManager.getLobby().updatePlayerCount()
+                        SceneManager.getLobby().updatePlayerCount(newCount)
                     );
                 }
 
@@ -126,6 +144,13 @@ public class NetworkManager {
 
                 playerList.forEach(Hider::initAnimations);
                 seekers.forEach(SeekerAI::initAnimations);
+
+                Timeline pingTimeline = new Timeline(new KeyFrame(
+                    Duration.seconds(PING_UPDATE_RATE),
+                    e -> NetworkManager.sendPing()
+                ));
+                pingTimeline.setCycleCount(Animation.INDEFINITE);
+                pingTimeline.play();
 
                 App.logger.info("Networking initialised");
 
@@ -155,8 +180,7 @@ public class NetworkManager {
         String message = "";
 
         if (!chatMessageList.isEmpty() && !me.isDead()) {
-            message = chatMessageList.peek();
-            chatMessageList.poll();
+            message = chatMessageList.poll();
         }
 
         Message.ClientInput input = new Message.ClientInput(
@@ -211,6 +235,8 @@ public class NetworkManager {
 
             updateDirection(input, messageFrom);
 
+            NetworkManager.setPing(messageFrom, input.ping);
+
             if (
                 messageFrom == masterHider
                 && input.aiCoords != null
@@ -239,19 +265,9 @@ public class NetworkManager {
      * @param message The message to add to chat
      */
     private static void sendChat(Message message) {
-        Hider messageFrom = loadedPlayers.get(message.uuid);
         ClientInput input = message.input;
 
-        if (messageFrom == me) {
-            ((MainGame) SceneManager.getScene()).appendStringToChat(
-                "Me: " + input.message
-            );
-            return;
-        }
-
-        ((MainGame) SceneManager.getScene()).appendStringToChat(
-            message.name + ": " + input.message
-        );
+        ChatManager.incomingMessage(input.message);
     }
 
 
@@ -353,6 +369,25 @@ public class NetworkManager {
 
 
     /**
+     * Sends ping to game server
+     */
+    private static void sendPing() {
+        client.sendPing();
+        previousPing = System.nanoTime();
+    }
+
+
+    /**
+     * Updates the players mapped ping time to game server
+     * @param hider
+     * @param ping
+     */
+    public static void setPing(Hider hider, int ping) {
+        pingMap.get(hider).set(ping);
+    }
+
+
+    /**
      * @return The number of players loaded correctly in lobby
      */
     public static int playerCount() {
@@ -382,5 +417,21 @@ public class NetworkManager {
      */
     public static Object getPlayerJoinLock() {
         return awaitingPlayerLock;
+    }
+
+
+    /**
+     * @return A map of players to their ping
+     */
+    public static Map<Hider, IntegerProperty> getPingMap() {
+        return pingMap;
+    }
+
+
+    /**
+     * @return Nano time of previous ping to game server
+     */
+    public static long getPreviousPingTime() {
+        return previousPing;
     }
 }

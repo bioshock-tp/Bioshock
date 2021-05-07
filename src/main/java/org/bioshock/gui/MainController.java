@@ -47,6 +47,7 @@ public class MainController {
     /**
      * Initialise the main menu.
      */
+    @FXML
     public void initialize() {
         newGameButton.setText(App.getBundle().getString("NEW_GAME_BUTTON_TEXT"));
         quitButton.setText(App.getBundle().getString("QUIT_GAME_BUTTON_TEXT"));

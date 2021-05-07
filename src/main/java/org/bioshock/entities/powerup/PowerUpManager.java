@@ -29,6 +29,7 @@ public class PowerUpManager {
     private final TrapPower trapPower;
 
     public PowerUpManager(SquareEntity entity){
+
         freezePower = new FreezePower(entity, 5);
         speedPower = new SpeedPower(entity, 5);
         invisiblePower = new InvisiblePower(entity, 5);
@@ -39,7 +40,7 @@ public class PowerUpManager {
      * Performs the actions needed every frame
      * @param timeDelta time since last frame
      */
-    public void tick(double timeDelta){
+    public void tick(double timeDelta) {
         freezePower.tick(timeDelta);
         speedPower.tick(timeDelta);
         invisiblePower.tick(timeDelta);

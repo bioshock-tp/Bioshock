@@ -1,7 +1,6 @@
 package org.bioshock.entities.items.powerup_items;
 
 import org.bioshock.audio.AudioManager;
-import org.bioshock.entities.Entity;
 import org.bioshock.entities.items.food.Food;
 import org.bioshock.entities.players.Hider;
 
@@ -15,22 +14,15 @@ public class InvisibilityItem extends Food {
 
     public InvisibilityItem(long seed) { super(PATH, seed); }
 
-    /**
-     * Set the item to activate the invisibility power up when collected by a hider
-     * @param entity the entity that has collected
-     */
+
     @Override
-    protected void apply(Entity entity){
-        if(entity instanceof Hider){
-            ((Hider) entity).getPowerUpManager().getInvisiblePower().start();
-        }
+    protected void apply(Hider hider) {
+        hider.getPowerUpManager().getInvisiblePower().start();
     }
 
-    /**
-     * Plays invisible sound effect
-     */
+
     @Override
-    protected void playCollectSound(){
+    protected void playCollectSound() {
         AudioManager.playGhostSfx();
     }
 }

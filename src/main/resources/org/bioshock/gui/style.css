@@ -77,3 +77,41 @@
 .killSpan {
     -fx-fill: #C50909;
 }
+
+
+/* Scoreboard styling */
+.table-view {
+    -fx-font-family: "Minercraftory";
+    -fx-opacity: 0.75;
+    -fx-padding: 0;
+}
+
+.table-view .column-header .label {
+    -fx-font-size: 20;
+    -fx-text-fill: white;
+}
+
+.table-column {
+    -fx-border-width: 2.5;
+    -fx-border-color: #202020;
+}
+
+.table-row-cell {
+    -fx-font-size: 20;
+    -fx-background-color: rgb(240, 116, 68);
+    -fx-cell-size: 40;
+}
+
+.table-view .column-header {
+    -fx-background-color: black;
+}
+
+.table-view .scroll-bar {
+    -fx-min-width: 0;
+    -fx-pref-width: 0;
+    -fx-max-width: 0;
+
+    -fx-min-height: 0;
+    -fx-pref-height: 0;
+    -fx-max-height: 0;
+}

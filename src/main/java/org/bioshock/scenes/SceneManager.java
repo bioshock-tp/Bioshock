@@ -14,32 +14,43 @@ public final class SceneManager {
      * The current stage
      */
     private static Stage stage;
+
     /**
      * The current GameScene
      */
     private static GameScene currentScene;
+
     /**
      * Boolean representing if you are waiting in a lobby or not
      */
     private static boolean inLobby = false;
+
     /**
      * Boolean representing if you are in the game or not
      */
     private static boolean inGame = false;
+
     /**
      * Boolean to track if the game has been initialised or not
      */
     private static boolean initialised = false;
+
     /**
      * The current game map
      */
     private static Map gameMap;
+
     /**
      * The seed used to initialise the game scene
      */
     private static long seed;
 
+
+    /**
+     * SceneManager is a static class
+     */
     private SceneManager() {}
+
 
     /**
      * Initialise the SceneManager
@@ -54,9 +65,9 @@ public final class SceneManager {
         setScene(initialScene);
 	}
 
+
     /**
-     * Set the displayed scene to the given GameScene
-     * @param scene
+     * @param scene The new scene to be used in the game
      */
 	public static void setScene(GameScene scene) {
         if (currentScene != null) currentScene.destroy();
@@ -68,101 +79,121 @@ public final class SceneManager {
 
         stage.setScene(currentScene);
 
-        currentScene.initScene(seed);
+        currentScene.initScene();
 	}
-	
+
+
 	/**
-	 * Set in lobby to the given boolean
-	 * @param b
+	 * @param inLobby True if in lobby
 	 */
-    public static void setInLobby(boolean b) {
-        inLobby = b;
+    public static void setInLobby(boolean inLobby) {
+        SceneManager.inLobby = inLobby;
     }
 
+
     /**
-     * Set in game to the given boolean
-     * @param inGame
+     * @param inGame True if in game
      */
     public static void setInGame(boolean inGame) {
         SceneManager.inGame = inGame;
     }
-    
+
+
     /**
-     * Set the game map to the given gameMap
-     * @param map
+     * @param map The new map of the game
      */
     public static void setMap(Map map) {
         gameMap = map;
     }
 
+
     /**
-     * Set the seed to the given seed
-     * @param newSeed
+     * @param newSeed The new seed used for map generation
      */
     public static void setSeed(long newSeed) {
         seed = newSeed;
     }
 
+
     /**
-     * Getter 
+     * @return The seed to be used for map generation
+     */
+    public static long getSeed() {
+        return seed;
+    }
+
+
+    /**
      * @return the current gameScene
      */
 	public static GameScene getScene() {
 		return currentScene;
 	}
 
+
 	/**
-	 * Getter 
 	 * @return the current stack pane
 	 */
     public static StackPane getPane() {
 		return currentScene.getPane();
 	}
 
+
     /**
-     * Getter
      * @return  the current canvas
      */
 	public static Canvas getCanvas() {
 		return currentScene.getCanvas();
 	}
 
+
 	/**
-	 * Getter
-	 * @return the currentScene and cast it to a Lobby and 
-	 * throw an error if it isn't an instance of Lobby
+	 * @return Lobby if {@link #currentScene} is Lobby, otherwise null
 	 */
     public static Lobby getLobby() {
-        if (!(currentScene instanceof Lobby)) {
-            App.logger.error("Tried to access lobby when not in one");
-            return null;
-        } else {
+        if (currentScene instanceof Lobby) {
             return (Lobby) currentScene;
+        } else {
+            App.logger.error("Tried to get Lobby whilst not in Lobby");
+            return null;
         }
     }
 
+
     /**
-     * 
+     * @return MainGame if {@link #currentScene} is MainGame, otherwise null
+     */
+    public static MainGame getMainGame() {
+        if (currentScene instanceof MainGame) {
+            return (MainGame) currentScene;
+        }
+        else {
+            App.logger.error("Tried to get MainGame whilst not in MainGame");
+            return null;
+        }
+    }
+
+
+    /**
      * @return inLobby
      */
 	public static boolean inLobby() {
         return inLobby;
 	}
 
+
 	/**
-	 * 
 	 * @return inGame
 	 */
     public static boolean inGame() {
         return inGame;
     }
 
+
     /**
-     * 
      * @return The current game map
      */
     public static Map getMap() {
         return gameMap;
     }
-
 }

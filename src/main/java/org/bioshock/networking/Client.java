@@ -11,7 +11,9 @@ import java.util.prefs.Preferences;
 import org.bioshock.gui.SettingsController;
 import org.bioshock.main.App;
 import org.bioshock.scenes.SceneManager;
+import org.java_websocket.WebSocket;
 import org.java_websocket.client.WebSocketClient;
+import org.java_websocket.framing.Framedata;
 import org.java_websocket.handshake.ServerHandshake;
 
 public class Client extends WebSocketClient {
@@ -185,13 +187,22 @@ public class Client extends WebSocketClient {
     }
 
 
+    @Override
+    public void onWebsocketPong(WebSocket conn, Framedata f) {
+        long nanoTime = System.nanoTime();
+        NetworkManager.setPing(
+            NetworkManager.me(),
+            (int) ((nanoTime - NetworkManager.getPreviousPingTime()) / 10e6)
+        );
+    }
+
+
     /**
      * @return True if waiting for initial message
      */
     public boolean haveInitMessage() { return initMessage; }
 
 
-    
     /**
      * @return Chosen name of player
      */

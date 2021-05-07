@@ -30,9 +30,7 @@ import static org.bioshock.audio.AudioManager.playWalkingSfx;
 import static org.bioshock.audio.AudioManager.stopWalkingSfx;
 
 /**
- * 
  * A class representing a hider
- *
  */
 public class Hider extends SquareEntity implements Collisions {
 
@@ -44,26 +42,32 @@ public class Hider extends SquareEntity implements Collisions {
      * The powerup manager for the hider
      */
     private final PowerUpManager powerUpManager = new PowerUpManager(this);
+
     /**
      * Boolean of whether the hider is dead or alive
      */
     private boolean dead = false;
+
     /**
      * The current sprite for the hider
      */
     private Sprite currentSprite;
+
     /**
      * The Hider animations
      */
     private HiderAnimations hiderAnimations;
+
     /**
-     * Boolean of if the sound effect has been played or not
+     * True if sound effect has been played
      */
     private boolean playedSfx = false;
+
     /**
      * The name of the Hider
      */
-    private String name;
+    private String name = "Hider";
+
 
     /**
      * Construct a new Hider
@@ -81,15 +85,22 @@ public class Hider extends SquareEntity implements Collisions {
         initCollision(this);
     }
 
+
     @Override
     protected void tick(double timeDelta) {
-        if (!dead) {
+        if (
+            !dead
+            && !movement.movementPaused()
+        ) {
             movement.tick(timeDelta);
             setAnimation();
             setWalkingSfx();
             powerUpManager.tick(timeDelta);
+        } else if (!dead) {
+            setAnimation(hiderAnimations.getPlayerIdleSprite());
         }
     }
+
 
     @Override
     public void collisionTick(Set<Entity> collisions) {
@@ -101,7 +112,7 @@ public class Hider extends SquareEntity implements Collisions {
         List<Hider> otherPlayers = new ArrayList<>(EntityManager.getPlayers());
         otherPlayers.remove(EntityManager.getCurrentPlayer());
 
-        /* Seeker */
+        /* Seekers */
         List<SeekerAI> seekers = EntityManager.getSeekers();
 
         /* Walls of room */
@@ -121,8 +132,9 @@ public class Hider extends SquareEntity implements Collisions {
         }
     }
 
+
     /**
-     * Initialize the animations of the hider
+     * Initialise the animations of the hider
      */
     public void initAnimations() {
         hiderAnimations = new HiderAnimations(
@@ -132,13 +144,15 @@ public class Hider extends SquareEntity implements Collisions {
         currentSprite = hiderAnimations.getPlayerIdleSprite();
     }
 
+
     /**
      * Set the name of the hider
      * @param hiderName The new name
      */
-    public void setName(String hiderName){
+    public void setName(String hiderName) {
         name = hiderName;
     }
+
 
     /**
      * Set the current sprite
@@ -151,12 +165,14 @@ public class Hider extends SquareEntity implements Collisions {
             App.logger.error("Sprite is missing!");
         }
     }
-    
+
+
     /**
      * Set the hider to be dead or not
      * @param d
      */
     public void setDead(boolean d) {
+        /* Only run of first death */
         if (!dead && d) {
             rendererC.setColour(Color.GREY);
             if (App.isNetworked()) {
@@ -166,13 +182,13 @@ public class Hider extends SquareEntity implements Collisions {
             hitbox = new Rectangle();
 
             RenderManager.setClip(false);
+
+            setCurrentSprite(hiderAnimations.getPlayerDying());
         }
 
         dead = d;
-        if(d) {
-            setCurrentSprite(hiderAnimations.getPlayerDying());
-        }
     }
+
 
     /**
      * Set the hiders animation based on how it moved from the last tick
@@ -196,8 +212,18 @@ public class Hider extends SquareEntity implements Collisions {
         setCurrentSprite(animation);
     }
 
+
     /**
-     * Set the walking sound effect based on how the hider moved compared 
+     * Manually sets current animation
+     * @param sprite The animation to be played
+     */
+    private void setAnimation(Sprite sprite) {
+        setCurrentSprite(sprite);
+    }
+
+
+    /**
+     * Set the walking sound effect based on how the hider moved compared
      * to the last tick
      */
     public void setWalkingSfx() {
@@ -220,9 +246,9 @@ public class Hider extends SquareEntity implements Collisions {
 
     }
 
+
     /**
-     * Getter
-     * @return If the hider is dead or not
+     * @return True if hider is dead
      */
     public boolean isDead() {
         return dead;
@@ -241,24 +267,25 @@ public class Hider extends SquareEntity implements Collisions {
         );
     }
 
+
     /**
-     * Getter
      * @return The hiders name
      */
     public String getName() {
         return name;
     }
-    
+
+
     /**
-     * 
      * @return The current sprite
      */
     public Sprite getCurrentSprite() {
         return currentSprite;
     }
 
+
     /**
-     * 
+     *
      * @return The powerup manager
      */
     public PowerUpManager getPowerUpManager() { return powerUpManager; }
@@ -298,5 +325,4 @@ public class Hider extends SquareEntity implements Collisions {
     public double getInitPositionY(){
         return initPositionY;
     }
-
 }
