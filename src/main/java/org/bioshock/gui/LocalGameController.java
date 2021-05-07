@@ -38,7 +38,7 @@ public class LocalGameController {
     public void initialize() {
         launchButton.setText(App.getBundle().getString("LAUNCH_BUTTON_TEXT"));
         backButton.setText(App.getBundle().getString("BACK_NEW_GAME_BUTTON_TEXT"));
-        developmentLabel.setText(App.getBundle().getString("SINGLE_PLAYER_BUTTON_TEXT") + " " + App.getBundle().getString("IN_DEVELOPMENT_TEXT"));
+        developmentLabel.setText(App.getBundle().getString("SINGLE_PLAYER_LOADING_TEXT"));
 
         Image backImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("icons/arrow.png")));
         ImageView backImageView = new ImageView(backImage);

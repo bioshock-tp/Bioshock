@@ -34,7 +34,7 @@ public class OnlineGameController {
     public void initialize() {
         launchButton.setText(App.getBundle().getString("LAUNCH_BUTTON_TEXT"));
         backButton.setText(App.getBundle().getString("BACK_NEW_GAME_BUTTON_TEXT"));
-        developmentLabel.setText(App.getBundle().getString("ONLINE_BUTTON_TEXT") + " " + App.getBundle().getString("IN_DEVELOPMENT_TEXT"));
+        developmentLabel.setText(App.getBundle().getString("ONLINE_LOADING_TEXT"));
         nameLabel.setText(App.getBundle().getString("PLAYER_NAME_TEXT") + ":");
         Preferences prefs = Preferences.userNodeForPackage(SettingsController.class);
         nameField.setText(prefs.get("playerName", App.getBundle().getString("DEFAULT_PLAYER_NAME_TEXT")));

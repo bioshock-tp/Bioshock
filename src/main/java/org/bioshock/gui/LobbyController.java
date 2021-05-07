@@ -1,15 +1,5 @@
 package org.bioshock.gui;
 
-import java.util.Objects;
-import java.util.prefs.Preferences;
-
-import org.bioshock.main.App;
-import org.bioshock.networking.NetworkManager;
-import org.bioshock.scenes.GameScene;
-import org.bioshock.scenes.LoadingScreen;
-import org.bioshock.scenes.MainGame;
-import org.bioshock.scenes.SceneManager;
-
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -17,6 +7,15 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
+import org.bioshock.main.App;
+import org.bioshock.networking.NetworkManager;
+import org.bioshock.scenes.GameScene;
+import org.bioshock.scenes.LoadingScreen;
+import org.bioshock.scenes.MainGame;
+import org.bioshock.scenes.SceneManager;
+
+import java.util.Objects;
+import java.util.prefs.Preferences;
 
 public class LobbyController extends GameScene {
     public Label playerCountLabel;
@@ -74,9 +73,9 @@ public class LobbyController extends GameScene {
             )
         );
         lobbyLabel.setText(
-            playerName + " "
-            + App.getBundle().getString("ONLINE_BUTTON_TEXT") + " "
-            + App.getBundle().getString("IN_DEVELOPMENT_TEXT")
+            App.getBundle().getString("HELLO_TEXT") + " "
+            + playerName + "! "
+            + App.getBundle().getString("WAITING_TEXT")
         );
 
         Image backImage = new Image(
