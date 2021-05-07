@@ -10,7 +10,7 @@ public class SpeedItem extends Food {
      * Path to the image that should be displayed
      */
     private static final String PATH = Food.class.getResource(
-        "/org/bioshock/images/food/running_shoes.png"
+        "/org/bioshock/images/food/lightning.png"
     ).getPath();
 
 

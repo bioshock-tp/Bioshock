@@ -77,7 +77,7 @@ public abstract class Item extends ImageEntity implements Collisions {
 
 
     /**
-     * The sound effect to play when collecting this item
+     * Plays a sound when collecting this item
      */
     protected abstract void playCollectSound();
 

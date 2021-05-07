@@ -9,7 +9,7 @@ public class InvisibilityItem extends Food {
      * Path to the image that should be displayed
      */
     private static final String PATH = Food.class.getResource(
-        "/org/bioshock/images/food/cloak.png"
+        "/org/bioshock/images/food/dark_ghost.png"
     ).getPath();
 
     public InvisibilityItem(long seed) { super(PATH, seed); }
