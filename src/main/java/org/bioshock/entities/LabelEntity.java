@@ -12,11 +12,14 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 
 /**
- * 
+ *
  * An entity used to display text on screen
  *
  */
 public class LabelEntity extends Entity {
+
+    StringBuilder sb = new StringBuilder();
+
 	/**
 	 * The string to display on screen
 	 */
@@ -51,7 +54,7 @@ public class LabelEntity extends Entity {
      * @param point The position of the top left of the label on the screen
      * @param initText The initial text of the label
      * @param font The font of the label
-     * @param charsPerLine The number of characters per line 
+     * @param charsPerLine The number of characters per line
      * @param colour The colour of the text
      */
     public LabelEntity(
@@ -73,6 +76,8 @@ public class LabelEntity extends Entity {
 
         label = initText;
 
+        sb.append(initText);
+
         renderer = LabelRenderer.class;
 
         alwaysRender = true;
@@ -81,10 +86,10 @@ public class LabelEntity extends Entity {
     }
 
     /**
-     * 
+     *
      * @param p The position of the top left of the label on the screen
      * @param font The font of the label
-     * @param charsPerLine The number of characters per line 
+     * @param charsPerLine The number of characters per line
      * @param colour The colour of the text
      */
     public LabelEntity(Point3D p, Font font, int charsPerLine, Color colour) {
@@ -103,8 +108,15 @@ public class LabelEntity extends Entity {
      */
     public void setLabel(String newLabel) {
         label = newLabel;
+        sb = new StringBuilder(label);
     }
-    
+
+    public void setStringBuilder(StringBuilder sb) {
+
+        this.sb = sb;
+        label = sb.toString();
+    }
+
     /**
      * Set whether to display the label or not
      * @param bl
@@ -114,7 +126,7 @@ public class LabelEntity extends Entity {
     }
 
     /**
-     * 
+     *
      * @return The color of the label text
      */
     public Color getColour() {
@@ -122,7 +134,7 @@ public class LabelEntity extends Entity {
     }
 
     /**
-     * 
+     *
      * @return The line spacing
      */
     public int getLineSpacing() {
@@ -130,7 +142,7 @@ public class LabelEntity extends Entity {
     }
 
     /**
-     * 
+     *
      * @return The number of characters per line
      */
     public int getCharsPerLine() {
@@ -138,7 +150,7 @@ public class LabelEntity extends Entity {
     }
 
     /**
-     * 
+     *
      * @return Whether the label is displayed or not
      */
     public boolean isDisplayed() {
@@ -146,7 +158,7 @@ public class LabelEntity extends Entity {
     }
 
     /**
-     * 
+     *
      * @return the font of the label
      */
     public Font getFont() {
@@ -154,7 +166,7 @@ public class LabelEntity extends Entity {
     }
 
     /**
-     * 
+     *
      * @return The current string to be displayed
      */
     public String getString() {
@@ -163,8 +175,8 @@ public class LabelEntity extends Entity {
 
     /**
      * Appends the given string to the label with a newline added to the end
-     * 
-     * If there have been more than numMessages messages the oldest 
+     *
+     * If there have been more than numMessages messages the oldest
      * message gets removed from the label
      * @param s
      */
@@ -174,7 +186,8 @@ public class LabelEntity extends Entity {
 
         msLen.add(string.length());
 
-        StringBuilder sb = new StringBuilder(label);
+        sb = new StringBuilder(label);
+
         if (msLen.size() == numMessages + 1) {
             int len = msLen.getFirst();
             sb.delete(0, len);

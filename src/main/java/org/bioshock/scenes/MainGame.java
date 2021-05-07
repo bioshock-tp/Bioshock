@@ -10,6 +10,7 @@ import org.bioshock.engine.core.FrameRate;
 import org.bioshock.engine.input.InputManager;
 import org.bioshock.entities.EntityManager;
 import org.bioshock.entities.LabelEntity;
+import org.bioshock.entities.TextChat;
 import org.bioshock.entities.items.food.Burger;
 import org.bioshock.entities.items.food.Dessert;
 import org.bioshock.entities.items.food.Donut;
@@ -18,6 +19,7 @@ import org.bioshock.entities.items.food.Pizza;
 import org.bioshock.entities.items.powerup_items.FreezeItem;
 import org.bioshock.entities.items.powerup_items.InvisibilityItem;
 import org.bioshock.entities.items.powerup_items.SpeedItem;
+import org.bioshock.entities.items.powerup_items.VentItem;
 import org.bioshock.entities.map.Room;
 import org.bioshock.entities.map.RoomEntity;
 import org.bioshock.entities.map.Wall;
@@ -82,18 +84,6 @@ public class MainGame extends GameScene {
      * Number of food items to be collected to win
      */
     private static final int FOOD_TO_WIN = 5;
-
-    /**
-     * Path to the stylesheet
-     */
-    private static final String STYLESHEET_PATH = App.class.getResource(
-        "/org/bioshock/gui/style.css"
-    ).toExternalForm();
-
-    /**
-     * Milliseconds between scoreboard updates
-     */
-    private static final int SCOREBOARD_UPDATE_RATE = 100;
 
     /**
      * The amount of food currently collected
@@ -334,7 +324,7 @@ public class MainGame extends GameScene {
 
         children.add(chatLabel);
 
-		textChat = new LabelEntity(
+		textChat = new TextChat(
             new Point3D(
                 10,
                 GameScene.getGameScreen().getHeight() / 2
@@ -381,6 +371,9 @@ public class MainGame extends GameScene {
             double x = roomToSpawn.getRoomCenter().getX();
             double y = roomToSpawn.getRoomCenter().getY();
             playersNotSpawnedIn.remove(roomToSpawn);
+
+            hiders.get(i).setInitPositionX(x - (double) GlobalConstants.UNIT_WIDTH / 2);
+            hiders.get(i).setInitPositionY(y - (double) GlobalConstants.UNIT_HEIGHT / 2);
 
             hiders.get(i).setPosition(
                 x - (double) GlobalConstants.UNIT_WIDTH / 2,
@@ -549,6 +542,7 @@ public class MainGame extends GameScene {
 		children.add(new FreezeItem(rand.nextLong()));
 		children.add(new InvisibilityItem(rand.nextLong()));
 		children.add(new SpeedItem(rand.nextLong()));
+		children.add(new VentItem(rand.nextLong()));
     }
 
 
@@ -556,12 +550,7 @@ public class MainGame extends GameScene {
      * Initialises the scoreboard
      */
     public void initScoreboard() {
-        if (!(SceneManager.getScene() instanceof MainGame)) {
-            App.logger.error("Could not find MainGame");
-            return;
-        }
-
-        SceneManager.getMainGame().getStylesheets().add(STYLESHEET_PATH);
+        this.getStylesheets().add(GlobalConstants.STYLESHEET_PATH);
 
         scoreboard = new TableView<>();
         scoreboard.setVisible(false);
@@ -588,7 +577,8 @@ public class MainGame extends GameScene {
         players.setSortable(false);
 
         /* Power Up Score */
-        TableColumn<Hider, Integer> powerUpScore = new TableColumn<>("Power Up Score");
+        TableColumn<Hider, Integer> powerUpScore =
+            new TableColumn<>("Power Up Score");
         powerUpScore.setCellValueFactory(cellData ->
             playerPowerUpScore.get(cellData.getValue()).asObject()
         );

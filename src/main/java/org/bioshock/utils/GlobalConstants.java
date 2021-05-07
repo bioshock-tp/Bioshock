@@ -1,36 +1,35 @@
 package org.bioshock.utils;
 
-import static org.bioshock.entities.map.utils.RoomType.NO_ROOM;
-import static org.bioshock.entities.map.utils.RoomType.SINGLE_ROOM;
+import javafx.scene.image.Image;
+import org.bioshock.entities.map.utils.RoomType;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bioshock.entities.map.utils.RoomType;
-
-import javafx.scene.image.Image;
+import static org.bioshock.entities.map.utils.RoomType.NO_ROOM;
+import static org.bioshock.entities.map.utils.RoomType.SINGLE_ROOM;
 
 /**
- * 
- * A class to store constants shared across the App 
+ *
+ * A class to store constants shared across the App
  *
  */
 public final class GlobalConstants {
     /**
-     * TODO
+     * The width of the player on the sprite sheet
      */
     public static final double PLAYER_WIDTH = 36;
     /**
-     * TODO
+     * The height of the player on the sprite sheet
      */
     public static final double PLAYER_HEIGHT = 42;
     /**
-     * TODO
+     * The scale at which to render the player
      */
     public static final double PLAYER_SCALE = 1.6;
     /**
-     * TODO
+     * The playback speed of the player walking animation
      */
     public static final double PLAYER_ANIMATION_SPEED = 0.15;
 
@@ -93,7 +92,7 @@ public final class GlobalConstants {
 
     /*
      * The following is a set of image paths and then their loaded image
-     */    
+     */
     private static final String BOT_HORI_WALL_PATH =
         GlobalConstants.class.getResource(
             "/org/bioshock/images/walls/botHori.png"
@@ -208,6 +207,16 @@ public final class GlobalConstants {
             ));
         }
     }
+
+
+    /**
+     * Path to the stylesheet
+     */
+    public static final String STYLESHEET_PATH =
+        GlobalConstants.class.getResource(
+            "/org/bioshock/gui/style.css"
+        ).toExternalForm();
+
 
     /**
      * Private as this is meant to be used as a static class

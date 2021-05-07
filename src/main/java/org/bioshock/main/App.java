@@ -54,7 +54,7 @@ public class App extends Application {
     private static int playerCount = 2;
 
     /**
-     * TODO
+     * The current FXML scene displayed
      */
     private static Scene fxmlScene;
 
@@ -64,12 +64,12 @@ public class App extends Application {
     private static boolean networked;
 
     /**
-     * TODO
+     * The resource bundle being used
      */
     private static ResourceBundle bundle;
 
     /**
-     * TODO
+     * The user's locale/language
      */
     private static Locale locale;
 
@@ -87,7 +87,7 @@ public class App extends Application {
 
         AudioManager.initialiseBackgroundAudio();
         LanguageManager.initialiseLanguageSettings();
-        FontManager.loadFonts();
+        new FontManager();
 
         WindowManager.initialise(stage);
         initFXMLScene();
@@ -142,10 +142,10 @@ public class App extends Application {
         String textToDisplay;
         if (victory) {
             AudioManager.playWinSfx();
-            textToDisplay = "You win!";
+            textToDisplay = App.getBundle().getString("WIN_TEXT");
         } else {
             AudioManager.playLoseSfx();
-            textToDisplay = "You Lose!";
+            textToDisplay = App.getBundle().getString("LOSE_TEXT");
         }
 
         Runnable anyKeyContinue = () -> {
@@ -175,8 +175,8 @@ public class App extends Application {
 
 
     /**
-     * TODO
-     * @param fxml
+     * Switches current scene to FXML file specified.
+     * @param fxml The FXML file you want to switch to.
      */
     public static void setFXMLRoot(String fxml) {
         fxmlScene.setRoot(loadFXML(fxml));
@@ -184,7 +184,7 @@ public class App extends Application {
 
 
     /**
-     * TODO
+     * Initialises the current scene with the main FXML file.
      */
     private static void initFXMLScene() {
         fxmlScene = new Scene(Objects.requireNonNull(loadFXML("main")));
@@ -192,9 +192,9 @@ public class App extends Application {
 
 
     /**
-     * TODO
-     * @param fxml
-     * @return
+     * Loads the FXML file from resources.
+     * @param fxml The name of the FXML file.
+     * @return The FXML file specified.
      */
     private static Parent loadFXML(String fxml) {
         try {
@@ -234,8 +234,8 @@ public class App extends Application {
 
 
     /**
-     * TODO
-     * @param bundle
+     * Sets the current resource bundle.
+     * @param bundle The resource bundle to set.
      */
     public static void setBundle(ResourceBundle bundle) {
         App.bundle = bundle;
@@ -243,8 +243,8 @@ public class App extends Application {
 
 
     /**
-     * TODO
-     * @param locale
+     * Sets the current locale/language.
+     * @param locale The locale to set.
      */
     public static void setLocale(Locale locale) {
         App.locale = locale;
@@ -252,8 +252,8 @@ public class App extends Application {
 
 
     /**
-     * TODO
-     * @return
+     * Gets the current resource bundle.
+     * @return The current resource bundle.
      */
     public static ResourceBundle getBundle() {
         return bundle;

@@ -9,7 +9,6 @@ import org.bioshock.engine.core.ChatManager;
 import org.bioshock.entities.EntityManager;
 import org.bioshock.entities.LabelEntity;
 import org.bioshock.main.App;
-import org.bioshock.networking.NetworkManager;
 import org.bioshock.rendering.RenderManager;
 import org.bioshock.scenes.SceneManager;
 
@@ -29,6 +28,7 @@ public class InputManager {
     private static Map<KeyCode, Runnable> keyReleases = new EnumMap<>(
         KeyCode.class
     );
+
 
     /** When true, will use debugging features */
     private static boolean debug = false;
@@ -152,30 +152,10 @@ public class InputManager {
     public static void changeScene() {
         SceneManager.getScene().setOnKeyPressed(e -> {
             Runnable runnable;
-            if (SceneManager.inGame() && ChatManager.inChat()) {
-                if (e.getCode() == KeyCode.ENTER) {
-                    NetworkManager.addMessage(ChatManager.popText());
-                    ChatManager.setInChat(false);
-                }
-
-                else if (e.getCode() == KeyCode.BACK_SPACE) {
-                    ChatManager.backSpace();
-                }
-
-                else {
-                    App.logger.debug("Char to append: {}", e.getCharacter());
-                    ChatManager.append(e.getCharacter());
-                }
-            }
-
-            else if (SceneManager.inGame() && e.getCode() == KeyCode.ENTER) {
-                ChatManager.setInChat(true);
-                SceneManager.getMainGame().setChatVisibility(
-                    ChatManager.inChat()
-                );
-            }
-
-            else if ((runnable = keyPresses.get(e.getCode())) != null) {
+            if (
+                (runnable = keyPresses.get(e.getCode())) != null
+                && !ChatManager.inChat()
+            ) {
                 runnable.run();
             }
         });

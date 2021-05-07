@@ -32,7 +32,7 @@ public class Debug extends App {
 
         AudioManager.initialiseBackgroundAudio();
         LanguageManager.initialiseLanguageSettings();
-        FontManager.loadFonts();
+        new FontManager();
 
         WindowManager.initialise(stage);
         startGame(stage, new MainGame(), false);

@@ -179,8 +179,7 @@ public class NetworkManager {
         String message = "";
 
         if (!chatMessageList.isEmpty() && !me.isDead()) {
-            message = chatMessageList.peek();
-            chatMessageList.poll();
+            message = chatMessageList.poll();
         }
 
         Message.ClientInput input = new Message.ClientInput(

@@ -1,13 +1,9 @@
 package org.bioshock.entities.players;
 
-import static org.bioshock.audio.AudioManager.playWalkingSfx;
-import static org.bioshock.audio.AudioManager.stopWalkingSfx;
-
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
+import javafx.geometry.Point2D;
+import javafx.geometry.Point3D;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 import org.bioshock.animations.HiderAnimations;
 import org.bioshock.animations.Sprite;
 import org.bioshock.components.NetworkC;
@@ -25,15 +21,23 @@ import org.bioshock.rendering.renderers.components.PlayerRendererC;
 import org.bioshock.utils.GlobalConstants;
 import org.bioshock.utils.Size;
 
-import javafx.geometry.Point2D;
-import javafx.geometry.Point3D;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import static org.bioshock.audio.AudioManager.playWalkingSfx;
+import static org.bioshock.audio.AudioManager.stopWalkingSfx;
 
 /**
  * A class representing a hider
  */
 public class Hider extends SquareEntity implements Collisions {
+
+    private double initPositionX = 0;
+
+    private double initPositionY = 0;
+
     /**
      * The powerup manager for the hider
      */
@@ -270,4 +274,41 @@ public class Hider extends SquareEntity implements Collisions {
      * @return The powerup manager
      */
     public PowerUpManager getPowerUpManager() { return powerUpManager; }
+
+    /**
+     * Setter
+     * Sets the x coordinate of the position that this hider initially had
+     */
+
+    public void setInitPositionX(double x){
+        initPositionX = x;
+    }
+
+    /**
+     * Setter
+     * Sets the y coordinate of the position that this hider initially had
+     */
+
+    public void setInitPositionY(double y){
+        initPositionY = y;
+    }
+
+    /**
+     * Getter
+     * Gets the x coordinate of the position that this hider initially had
+     */
+
+    public double getInitPositionX(){
+        return  initPositionX;
+    }
+
+    /**
+     * Getter
+     * Gets the y coordinate of the position that this hider initially had
+     */
+
+    public double getInitPositionY(){
+        return initPositionY;
+    }
+
 }

@@ -9,7 +9,6 @@ import org.bioshock.entities.players.Hider;
 import org.bioshock.entities.players.SeekerAI;
 import org.bioshock.main.App;
 import org.bioshock.networking.NetworkManager;
-import org.bioshock.scenes.SceneManager;
 
 /**
  * A class that keeps track of all entities that need to be ticked and sorts
@@ -195,7 +194,7 @@ public final class EntityManager {
      */
     public static Hider getCurrentPlayer() {
         Hider me = null;
-        if (SceneManager.inGame() && !players.isEmpty()) {
+        if (!players.isEmpty()) {
             if (!App.isNetworked()) {
                 me = players.get(0);
             }

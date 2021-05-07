@@ -19,5 +19,6 @@
    </padding>
    <Button fx:id="newGameButton" onAction="#openNewGameView" styleClass="gui-button"/>
    <Button fx:id="settingsButton" onAction="#openSettingsView" styleClass="gui-button"/>
+   <Button fx:id="helpButton" onAction="#openHelpView" styleClass="gui-button"/>
    <Button fx:id="quitButton" onAction="#handleQuitButton" styleClass="gui-button"/>
 </VBox>

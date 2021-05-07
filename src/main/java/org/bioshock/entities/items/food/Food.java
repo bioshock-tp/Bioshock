@@ -61,19 +61,21 @@ public abstract class Food extends Item {
             room = rooms.get(roomIndex);
         } while (roomsWithFood.contains(room));
 
-        GraphNode[][] traversable = room.getTraversableArray();
+        GraphNode[][] traversableArray = room.getTraversableArray();
+        Set<GraphNode> traversableNodes = room.getTraversableGraph().getNodes();
+
         int i;
         int j;
 
         do {
-            i = random.nextInt(traversable.length);
-            j = random.nextInt(traversable[0].length);
+            i = random.nextInt(traversableArray.length);
+            j = random.nextInt(traversableArray[0].length);
         }
-        while (traversable[i][j] == null);
+        while (traversableArray[i][j] == null || !traversableNodes.contains(traversableArray[i][j]));
 
         roomsWithFood.add(room);
 
-        Point2D foodCentre = traversable[i][j].getLocation();
+        Point2D foodCentre = traversableArray[i][j].getLocation();
         double x = foodCentre.getX() - SIZE / 2f;
         double y = foodCentre.getY() - SIZE / 2f;
 

@@ -16,6 +16,7 @@ import org.bioshock.main.App;
 import org.bioshock.physics.Movement;
 import org.bioshock.scenes.GameScene;
 import org.bioshock.scenes.SceneManager;
+import org.bioshock.utils.GlobalConstants;
 import org.bioshock.utils.Size;
 
 import javafx.animation.FadeTransition;
@@ -29,40 +30,46 @@ import javafx.scene.control.Label;
 import javafx.scene.effect.GaussianBlur;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
-import javafx.scene.text.Font;
 import javafx.util.Duration;
 
 
 public final class RenderManager {
     /**
-     *
+     * Duration of text display animation
      */
     private static final int BLUR_LENGTH = 3000;
+
     /**
      * Says if entities should be clipped to the FOV of the current player or not
      */
     private static boolean clip = true;
+
     /**
      * A list of entities that want to be rendered
      */
     private static List<Entity> entities = new ArrayList<>();
+
     /**
      * The position of the camera
      */
     private static Point2D cameraPos = new Point2D(0, 0);
+
     /**
      * The amount to scale objects drawn on the canvas
      */
     private static Point2D scale = new Point2D(1, 1);
+
     /**
      * The current zoom on factor
      */
     private static double zoom = 1;
+
     /**
      * How much bigger to make every rendered object so they join up correctly
      * with floating point error
      */
     private static double padding = 1;
+
     /**
      * Label to display text in the centre of the screen
      */
@@ -156,6 +163,7 @@ public final class RenderManager {
 
             int i;
             final int N = entities.size();
+            /* If entities identical Z values, insert the newer entity first */
             for (i = 0; currentEntity.getZ() < entity.getZ() && i < N; i++) {
                 currentEntity = entities.get(i);
             }
@@ -258,8 +266,13 @@ public final class RenderManager {
         if (label != null) SceneManager.getPane().getChildren().remove(label);
 
         label = new Label(string);
-        label.setFont(new Font(100));
         label.setOpacity(0);
+
+        SceneManager.getPane().getStylesheets().add(
+            GlobalConstants.STYLESHEET_PATH
+        );
+
+        label.getStyleClass().add("paragraph");
 
         FadeTransition fadeTransition = new FadeTransition(
             Duration.millis(BLUR_LENGTH),
@@ -284,7 +297,11 @@ public final class RenderManager {
 
         label = new Label(string);
 
-        label.setFont(new Font(100));
+        SceneManager.getPane().getStylesheets().add(
+            GlobalConstants.STYLESHEET_PATH
+        );
+
+        label.getStyleClass().add("countdown");
 
         SceneManager.getPane().getChildren().add(label);
     }
