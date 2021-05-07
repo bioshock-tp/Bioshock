@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.UUID;
 
+import org.bioshock.engine.core.ChatManager;
 import org.bioshock.entities.Entity;
 import org.bioshock.entities.SquareEntity;
 import org.bioshock.entities.players.Hider;
@@ -264,19 +265,9 @@ public class NetworkManager {
      * @param message The message to add to chat
      */
     private static void sendChat(Message message) {
-        Hider messageFrom = loadedPlayers.get(message.uuid);
         ClientInput input = message.input;
 
-        if (messageFrom == me) {
-            SceneManager.getMainGame().appendStringToChat(
-                "Me: " + input.message
-            );
-            return;
-        }
-
-        SceneManager.getMainGame().appendStringToChat(
-            message.name + ": " + input.message
-        );
+        ChatManager.incomingMessage(input.message);
     }
 
 

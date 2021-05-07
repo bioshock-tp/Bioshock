@@ -162,7 +162,6 @@ public class InputManager {
             if (
                 (active || e.getCode() == KeyCode.ENTER)
                 && (runnable = keyPresses.get(e.getCode())) != null
-                && !ChatManager.inChat()
             ) {
                 runnable.run();
             }
@@ -173,7 +172,6 @@ public class InputManager {
             if (
                 (active || e.getCode() == KeyCode.ENTER)
                 && (runnable = keyReleases.get(e.getCode())) != null
-                && !ChatManager.inChat()
             ) {
                 runnable.run();
             }

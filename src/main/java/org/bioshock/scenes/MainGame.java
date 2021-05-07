@@ -6,11 +6,11 @@ import java.util.List;
 import java.util.Random;
 
 import org.bioshock.components.NetworkC;
+import org.bioshock.engine.core.ChatManager;
 import org.bioshock.engine.core.FrameRate;
 import org.bioshock.engine.input.InputManager;
 import org.bioshock.entities.EntityManager;
 import org.bioshock.entities.LabelEntity;
-import org.bioshock.entities.TextChat;
 import org.bioshock.entities.items.food.Burger;
 import org.bioshock.entities.items.food.Dessert;
 import org.bioshock.entities.items.food.Donut;
@@ -163,6 +163,11 @@ public class MainGame extends GameScene {
      * Shows the information about how the player is performing
      */
     private TableView<Hider> scoreboard;
+
+    /**
+     * Contains nodes to be shown over the top of the game
+     */
+    private BorderPane borderPane;
 
 
     public MainGame() {
@@ -323,22 +328,6 @@ public class MainGame extends GameScene {
         chatLabel.setDisplay(false);
 
         children.add(chatLabel);
-
-		textChat = new TextChat(
-            new Point3D(
-                10,
-                GameScene.getGameScreen().getHeight() / 2
-                    + GameScene.getGameScreen().getHeight() / 15,
-                1000
-            ),
-            new Font(20),
-            86,
-            Color.BLACK
-        );
-
-        textChat.setDisplay(false);
-
-        children.add(textChat);
     }
 
 
@@ -388,6 +377,8 @@ public class MainGame extends GameScene {
         startCountdown();
 
         initScoreboard();
+
+        ChatManager.initialise();
 
         SceneManager.setInLobby(false);
         SceneManager.setInGame(true);
@@ -600,7 +591,7 @@ public class MainGame extends GameScene {
 
         scoreboard.getItems().addAll(EntityManager.getPlayers());
 
-        BorderPane borderPane = new BorderPane(scoreboard);
+        borderPane = new BorderPane(scoreboard);
         BorderPane.setMargin(scoreboard, new Insets(300, 500, 300, 500));
         SceneManager.getMainGame().getPane().getChildren().add(borderPane);
 
@@ -694,6 +685,22 @@ public class MainGame extends GameScene {
     public void increasePowerUpScore(Hider hider) {
         IntegerProperty playerScore = playerPowerUpScore.get(hider);
         playerScore.set(playerScore.get() + 1);
+    }
+
+
+    /**
+     * @return The BorderPane displayed in game
+     */
+    public BorderPane getBorderPane() {
+        return borderPane;
+    }
+
+
+    /**
+     * @return The scoreboard displayed in game
+     */
+    public TableView<Hider> getScoreboard() {
+        return scoreboard;
     }
 
 
