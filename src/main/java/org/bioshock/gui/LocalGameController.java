@@ -3,12 +3,14 @@ package org.bioshock.gui;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 import org.bioshock.main.App;
 import org.bioshock.scenes.LoadingScreen;
+import org.bioshock.utils.Difficulty;
 
 import java.util.Objects;
 
@@ -19,6 +21,10 @@ public class LocalGameController {
     public Button launchButton;
     @FXML
     public Label developmentLabel;
+    @FXML
+    public Label difficultyLabel;
+    @FXML
+    public ComboBox<Difficulty> difficultyComboBox;
 
     @FXML
     private void switchToMainView() {
@@ -38,6 +44,10 @@ public class LocalGameController {
         backButton.setText(App.getBundle().getString("BACK_NEW_GAME_BUTTON_TEXT"));
         developmentLabel.setText(App.getBundle().getString("SINGLE_PLAYER_BUTTON_TEXT") + " " + App.getBundle().getString("IN_DEVELOPMENT_TEXT"));
 
+        difficultyLabel.setText(App.getBundle().getString("DIFFICULTY_TEXT") + ": ");
+        difficultyComboBox.getItems().setAll(Difficulty.values());
+        difficultyComboBox.getSelectionModel().selectFirst();
+
         Image backImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("icons/arrow.png")));
         ImageView backImageView = new ImageView(backImage);
         backImageView.setPreserveRatio(true);
@@ -52,6 +62,7 @@ public class LocalGameController {
     }
 
     public void launchGame(ActionEvent actionEvent) {
+        App.setDifficulty(difficultyComboBox.getValue());
         Stage stage = (Stage) launchButton.getScene().getWindow();
         App.startGame(stage, new LoadingScreen(false, App.getBundle().getString("SINGLE_PLAYER_LOADING_TEXT")), false);
     }

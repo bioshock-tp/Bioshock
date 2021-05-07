@@ -16,6 +16,7 @@ import org.bioshock.gui.MainController;
 import org.bioshock.rendering.RenderManager;
 import org.bioshock.scenes.GameScene;
 import org.bioshock.scenes.SceneManager;
+import org.bioshock.utils.Difficulty;
 import org.bioshock.utils.FontManager;
 import org.bioshock.utils.LanguageManager;
 
@@ -64,6 +65,10 @@ public class App extends Application {
      * The font manager object
      */
     private static FontManager fontManager;
+    /**
+     * The difficulty of the game
+     */
+    private static Difficulty difficulty;
 
     @Override
     public void start(Stage stage) {
@@ -230,6 +235,22 @@ public class App extends Application {
      */
     public static void setName(String name) {
         App.name = name;
+    }
+
+    /**
+     *
+     * @return The difficulty of the game
+     */
+    public static Difficulty getDifficulty() {
+        return difficulty;
+    }
+
+    /**
+     * Sets the difficulty of the game
+     * @param difficulty The difficulty
+     */
+    public static void setDifficulty(Difficulty difficulty) {
+        App.difficulty = difficulty;
     }
 
     /**
