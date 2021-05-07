@@ -31,6 +31,7 @@ import org.bioshock.entities.map.maps.RandomMap;
 import org.bioshock.entities.players.Hider;
 import org.bioshock.entities.players.SeekerAI;
 import org.bioshock.main.App;
+import org.bioshock.networking.Account;
 import org.bioshock.networking.NetworkManager;
 import org.bioshock.rendering.RenderManager;
 import org.bioshock.utils.GlobalConstants;
@@ -91,6 +92,12 @@ public class MainGame extends GameScene {
      * The amount of food currently collected
      */
     private int collectedFood = 0;
+
+    /**
+     * The bomb item
+     */
+
+    private BombItem bomb;
 
     /**
      * Maps each player to their score
@@ -653,8 +660,12 @@ public class MainGame extends GameScene {
      * If number of items collected is {@link #FOOD_TO_WIN}, game is won
      */
     public void collectFood(Hider hider) {
+        if(hider == NetworkManager.me()){
+            Account.setScoreToInc(Account.getScoreToInc() + 1);
+        }
         if (++collectedFood == FOOD_TO_WIN) {
             NetworkManager.tick();
+
             App.end(true);
         }
 

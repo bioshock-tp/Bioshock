@@ -17,13 +17,12 @@ public class TrapItem extends Food {
 
     /**
      * Set the item to activate the freeze power up when collected by a hider
-     * @param entity the entity that has collected
+     * @param hider the entity that has collected
      */
+
     @Override
-    protected void apply(Entity entity){
-        if(entity instanceof Hider){
-            ((Hider) entity).getPowerUpManager().getTrapPower().start();
-        }
+    protected void apply(Hider hider){
+        hider.getPowerUpManager().getTrapPower().start();
     }
 
     /**
@@ -31,6 +30,6 @@ public class TrapItem extends Food {
      */
     @Override
     protected void playCollectSound(){
-        AudioManager.playTeleportSfx();
+        AudioManager.playTrapSfx();
     }
 }

@@ -1,5 +1,12 @@
 package org.bioshock.networking;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -8,12 +15,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import java.util.UUID;
+import java.util.prefs.Preferences;
 
 import org.bioshock.engine.core.ChatManager;
 import org.bioshock.entities.Entity;
 import org.bioshock.entities.SquareEntity;
 import org.bioshock.entities.players.Hider;
 import org.bioshock.entities.players.SeekerAI;
+import org.bioshock.gui.SettingsController;
 import org.bioshock.main.App;
 import org.bioshock.networking.Message.ClientInput;
 import org.bioshock.scenes.SceneManager;
@@ -27,6 +36,7 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.concurrent.Task;
 import javafx.geometry.Point2D;
 import javafx.util.Duration;
+import org.json.JSONObject;
 
 public class NetworkManager {
 
@@ -346,14 +356,35 @@ public class NetworkManager {
      */
     public static void kill(Hider hider) {
         client.send(Message.serialise(
-            new Message(
-                -1,
-                hider.getID(),
-                playerNames.get(hider),
-                null,
-                true
-            )
+                new Message(
+                        -1,
+                        hider.getID(),
+                        playerNames.get(hider),
+                        null,
+                        true
+                )
         ));
+
+        if (hider == me) {
+
+            try {
+
+                URL url = new URL("http://recklessgame.net:8034/increaseScore");
+                String jsonInputString = "{\"Token\":\"" + Account.getToken() + "\",\"Score\":\"" + Integer.toString(Account.getScoreToInc()) + "\"}";
+                byte[] postDataBytes = jsonInputString.getBytes("UTF-8");
+                HttpURLConnection con = (HttpURLConnection) url.openConnection();
+                con.setRequestMethod("PUT");
+                con.setRequestProperty("Content-Type", "application/json; utf-8");
+                con.setDoOutput(true);
+                con.getOutputStream().write(postDataBytes);
+                Reader in = new BufferedReader(new InputStreamReader(con.getInputStream(), "UTF-8"));
+                Account.setScore(Account.getScoreToInc() + Account.getScore());
+                Account.setScoreToInc(0);
+            } catch (MalformedURLException ex) {
+            } catch (IOException e) {
+            }
+
+        }
     }
 
 
