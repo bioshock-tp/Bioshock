@@ -94,12 +94,6 @@ public class MainGame extends GameScene {
     private int collectedFood = 0;
 
     /**
-     * The bomb item
-     */
-
-    private BombItem bomb;
-
-    /**
      * Maps each player to their score
      */
     private java.util.Map<Hider, IntegerProperty> playerScores;
