@@ -68,7 +68,7 @@ public class App extends Application {
     /**
      * The difficulty of the game
      */
-    private static Difficulty difficulty;
+    private static Difficulty difficulty = Difficulty.EASY;
 
     @Override
     public void start(Stage stage) {
