@@ -20,7 +20,7 @@
     <Label fx:id="developmentLabel" styleClass="p"/>
     <HBox spacing="10" alignment="CENTER">
         <Label fx:id="difficultyLabel" styleClass="p"/>
-        <ComboBox fx:id="difficultyComboBox"/>
+        <ComboBox fx:id="difficultyComboBox" styleClass="combo-box"/>
     </HBox>
     <Button fx:id="launchButton" onAction="#launchGame" styleClass="gui-button"/>
     <Button fx:id="backButton" onAction="#switchToNewGameView" styleClass="gui-button"/>
