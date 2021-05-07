@@ -29,9 +29,16 @@ public class InputManager {
         KeyCode.class
     );
 
+    /** Maps WASD to if they've been pressed, help ignore repeated key presses */
+    private static Map<KeyCode, Integer> wasd = new EnumMap<>(
+        KeyCode.class
+    );
 
     /** When true, will use debugging features */
     private static boolean debug = false;
+
+    /** True if should listen to key presses/releases */
+    private static boolean active = true;
 
 
     /** InputManager is a static class */
@@ -153,7 +160,8 @@ public class InputManager {
         SceneManager.getScene().setOnKeyPressed(e -> {
             Runnable runnable;
             if (
-                (runnable = keyPresses.get(e.getCode())) != null
+                (active || e.getCode() == KeyCode.ENTER)
+                && (runnable = keyPresses.get(e.getCode())) != null
                 && !ChatManager.inChat()
             ) {
                 runnable.run();
@@ -163,7 +171,8 @@ public class InputManager {
         SceneManager.getScene().setOnKeyReleased(e -> {
             Runnable runnable;
             if (
-                (runnable = keyReleases.get(e.getCode())) != null
+                (active || e.getCode() == KeyCode.ENTER)
+                && (runnable = keyReleases.get(e.getCode())) != null
                 && !ChatManager.inChat()
             ) {
                 runnable.run();
@@ -230,10 +239,38 @@ public class InputManager {
 
 
     /**
+     * @param active True if key presses/releases should be listened to
+     */
+    public static void setActive(boolean active) {
+        InputManager.active = active;
+    }
+
+    /**
      * Stops listening to key presses/releases
      */
     public static void stop() {
         keyPresses.clear();
         keyReleases.clear();
+    }
+
+
+    /**
+     * Maps WASD keys to whether they are pressed, helps to ignore repeated key
+     * presses
+     */
+    public static void initMovement() {
+        InputManager.onPress(  KeyCode.W, () -> wasd.put(KeyCode.W, 1));
+        InputManager.onPress(  KeyCode.A, () -> wasd.put(KeyCode.A, 1));
+        InputManager.onPress(  KeyCode.S, () -> wasd.put(KeyCode.S, 1));
+        InputManager.onPress(  KeyCode.D, () -> wasd.put(KeyCode.D, 1));
+
+        InputManager.onRelease(KeyCode.W, () -> wasd.put(KeyCode.W, 0));
+        InputManager.onRelease(KeyCode.A, () -> wasd.put(KeyCode.A, 0));
+        InputManager.onRelease(KeyCode.S, () -> wasd.put(KeyCode.S, 0));
+        InputManager.onRelease(KeyCode.D, () -> wasd.put(KeyCode.D, 0));
+    }
+
+    public static Map<KeyCode, Integer> getWasd() {
+        return wasd;
     }
 }

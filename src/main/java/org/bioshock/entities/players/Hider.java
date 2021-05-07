@@ -88,11 +88,16 @@ public class Hider extends SquareEntity implements Collisions {
 
     @Override
     protected void tick(double timeDelta) {
-        if (!dead) {
+        if (
+            !dead
+            && !movement.movementPaused()
+        ) {
             movement.tick(timeDelta);
             setAnimation();
             setWalkingSfx();
             powerUpManager.tick(timeDelta);
+        } else if (!dead) {
+            setAnimation(hiderAnimations.getPlayerIdleSprite());
         }
     }
 
@@ -167,6 +172,7 @@ public class Hider extends SquareEntity implements Collisions {
      * @param d
      */
     public void setDead(boolean d) {
+        /* Only run of first death */
         if (!dead && d) {
             rendererC.setColour(Color.GREY);
             if (App.isNetworked()) {
@@ -176,12 +182,11 @@ public class Hider extends SquareEntity implements Collisions {
             hitbox = new Rectangle();
 
             RenderManager.setClip(false);
+
+            setCurrentSprite(hiderAnimations.getPlayerDying());
         }
 
         dead = d;
-        if(d) {
-            setCurrentSprite(hiderAnimations.getPlayerDying());
-        }
     }
 
 
@@ -209,6 +214,15 @@ public class Hider extends SquareEntity implements Collisions {
 
 
     /**
+     * Manually sets current animation
+     * @param sprite The animation to be played
+     */
+    private void setAnimation(Sprite sprite) {
+        setCurrentSprite(sprite);
+    }
+
+
+    /**
      * Set the walking sound effect based on how the hider moved compared
      * to the last tick
      */
@@ -231,6 +245,7 @@ public class Hider extends SquareEntity implements Collisions {
         }
 
     }
+
 
     /**
      * @return True if hider is dead
@@ -310,5 +325,4 @@ public class Hider extends SquareEntity implements Collisions {
     public double getInitPositionY(){
         return initPositionY;
     }
-
 }

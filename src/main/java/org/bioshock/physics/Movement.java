@@ -20,12 +20,23 @@ public class Movement {
 
     private Entity entity;
 
+    /**
+     * True if key input should not move player
+     */
+    private boolean movementPaused;
+
     public Movement(Entity entity) {
         this.entity = entity;
     }
 
     public void tick(double delta) {
         oldPosition = new Point2D(entity.getX(), entity.getY());
+
+        direction(
+            (InputManager.getWasd().getOrDefault(KeyCode.D, 0) - InputManager.getWasd().getOrDefault(KeyCode.A, 0)) * speed,
+            (InputManager.getWasd().getOrDefault(KeyCode.S, 0)
+            - InputManager.getWasd().getOrDefault(KeyCode.W, 0)) * speed
+        );
 
         if (
             entity == EntityManager.getCurrentPlayer()
@@ -84,24 +95,16 @@ public class Movement {
     }
 
     public void initMovement() {
-        InputManager.onPress(  KeyCode.W, () -> direction(0, -speed));
-        InputManager.onPress(  KeyCode.A, () -> direction(-speed, 0));
-        InputManager.onPress(  KeyCode.S, () -> direction(0,  speed));
-        InputManager.onPress(  KeyCode.D, () -> direction(speed,  0));
-
-        InputManager.onRelease(KeyCode.W, () -> direction(0,  speed));
-        InputManager.onRelease(KeyCode.A, () -> direction(speed,  0));
-        InputManager.onRelease(KeyCode.S, () -> direction(0, -speed));
-        InputManager.onRelease(KeyCode.D, () -> direction(-speed, 0));
+        InputManager.initMovement();
     }
 
     public void direction(double newXDirection, double newYDirection) {
         if (Math.abs(xDirection + newXDirection) <= speed) {
-            xDirection += newXDirection;
+            xDirection = newXDirection == 0 ? 0 : xDirection + newXDirection;
         }
 
         if (Math.abs(yDirection + newYDirection) <= speed) {
-            yDirection += newYDirection;
+            yDirection = newYDirection == 0 ? 0 : yDirection + newYDirection;
         }
     }
 
@@ -127,6 +130,23 @@ public class Movement {
         speed = newSpeed > 0.05 ? newSpeed : 0;
     }
 
+
+    /**
+     * @param movementPaused True if key input should not move player
+     */
+    public void pauseMovement(boolean movementPaused) {
+        this.movementPaused = movementPaused;
+    }
+
+
+    /**
+     * Sets both directions to 0
+     */
+    public void stopPlayer() {
+        direction(0, 0);
+    }
+
+
     public Point getDirection() {
         return new Point(xDirection, yDirection);
     }
@@ -147,5 +167,13 @@ public class Movement {
 
     public double getSpeed() {
         return speed;
+    }
+
+
+    /**
+     * @return True if movement is paused
+     */
+    public boolean movementPaused() {
+        return movementPaused;
     }
 }
