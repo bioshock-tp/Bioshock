@@ -25,7 +25,7 @@ public class NetworkManager {
     private static String myName;
     private static Hider me;
     private static Hider masterHider;
-    
+
     private static List<SeekerAI> seekers = new ArrayList<>(App.playerCount());
     private static List<Hider> playerList = new ArrayList<>(App.playerCount());
     private static Map<String, Hider> loadedPlayers = new HashMap<>(
@@ -43,11 +43,6 @@ public class NetworkManager {
     private NetworkManager() {}
 
     public static void initialise(LobbyController lobbyController) {
-        keyPressed.put(KeyCode.W, false);
-        keyPressed.put(KeyCode.A, false);
-        keyPressed.put(KeyCode.S, false);
-        keyPressed.put(KeyCode.D, false);
-
         initThread = new Thread(new Task<>() {
             @Override
             protected Object call() {
@@ -121,14 +116,11 @@ public class NetworkManager {
         int y = (int) me.getY();
 
         int[][] aiCoords = new int[seekers.size()][2];
-        for(int i=0;i<seekers.size();i++) {
+        for (int i=0; i < seekers.size(); i++) {
             Point2D seekerPos = seekers.get(i).getPosition();
             aiCoords[i][0] = (int) seekerPos.getX();
             aiCoords[i][1] = (int) seekerPos.getY();
         }
-//        Point2D aiPos = seekers.getPosition();
-//        int aiX = (int) aiPos.getX();
-//        int aiY = (int) aiPos.getY();
 
         String message = "";
 
@@ -137,7 +129,9 @@ public class NetworkManager {
             messageList.poll();
         }
 
-        Message.ClientInput input = new Message.ClientInput(x, y, aiCoords, message);
+        Message.ClientInput input = new Message.ClientInput(
+            x, y, aiCoords, message
+        );
 
         return new Message(-1, myID, myName, input, me.isDead());
     }
@@ -174,14 +168,17 @@ public class NetworkManager {
 
             updateDirection(input, messageFrom);
 
-            if (messageFrom == masterHider && input.aiCoords != null && input.aiCoords.length == seekers.size()) {
+            if (
+                messageFrom == masterHider
+                && input.aiCoords != null
+                && input.aiCoords.length == seekers.size()
+            ) {
                 for(int i=0;i<seekers.size();i++) {
                     seekers.get(i).getMovement().moveTo(
                         input.aiCoords[i][0],
                         input.aiCoords[i][1]
                     );
                 }
-                
             }
 
             messageFrom.getMovement().moveTo(
@@ -262,10 +259,6 @@ public class NetworkManager {
         if (!message.isEmpty()) {
             messageList.add(message);
         }
-    }
-
-    public static void setKeysPressed(KeyCode key, boolean pressed) {
-        keyPressed.replace(key, pressed);
     }
 
     public static int playerCount() {

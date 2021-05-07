@@ -92,33 +92,6 @@ public class MainGame extends GameScene {
             null
         )));
 
-        InputManager.onRelease(KeyCode.Y, () ->	cameraLock = !cameraLock);
-
-        InputManager.onRelease(KeyCode.C, () ->
-            RenderManager.setClip(!RenderManager.clips())
-        );
-
-        InputManager.onPress(KeyCode.LEFT, () ->
-            RenderManager.setCameraPos(
-                RenderManager.getCameraPos().add(-10, 0)
-            )
-        );
-        InputManager.onPress(KeyCode.RIGHT, () ->
-            RenderManager.setCameraPos(
-                RenderManager.getCameraPos().add(10, 0)
-            )
-        );
-        InputManager.onPress(KeyCode.UP, () ->
-            RenderManager.setCameraPos(
-                RenderManager.getCameraPos().add(0, -10)
-            )
-        );
-        InputManager.onPress(KeyCode.DOWN, () ->
-            RenderManager.setCameraPos(
-                RenderManager.getCameraPos().add(0, 10)
-            )
-        );
-
         initEntities();
     }
 
@@ -222,6 +195,33 @@ public class MainGame extends GameScene {
 
     @Override
     public void initScene(long seed) {
+        InputManager.onRelease(KeyCode.Y, () ->	cameraLock = !cameraLock);
+
+        InputManager.onRelease(KeyCode.C, () ->
+            RenderManager.setClip(!RenderManager.clips())
+        );
+
+        InputManager.onPress(KeyCode.LEFT, () ->
+            RenderManager.setCameraPos(
+                RenderManager.getCameraPos().add(-10, 0)
+            )
+        );
+        InputManager.onPress(KeyCode.RIGHT, () ->
+            RenderManager.setCameraPos(
+                RenderManager.getCameraPos().add(10, 0)
+            )
+        );
+        InputManager.onPress(KeyCode.UP, () ->
+            RenderManager.setCameraPos(
+                RenderManager.getCameraPos().add(0, -10)
+            )
+        );
+        InputManager.onPress(KeyCode.DOWN, () ->
+            RenderManager.setCameraPos(
+                RenderManager.getCameraPos().add(0, 10)
+            )
+        );
+
         rand = new Random(seed);
         initMap(seed);
 
