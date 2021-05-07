@@ -20,10 +20,7 @@ import org.bioshock.entities.EntityManager;
 import org.bioshock.entities.LabelEntity;
 import org.bioshock.entities.TextChat;
 import org.bioshock.entities.items.food.*;
-import org.bioshock.entities.items.powerup_items.FreezeItem;
-import org.bioshock.entities.items.powerup_items.InvisibilityItem;
-import org.bioshock.entities.items.powerup_items.SpeedItem;
-import org.bioshock.entities.items.powerup_items.VentItem;
+import org.bioshock.entities.items.powerup_items.*;
 import org.bioshock.entities.map.Room;
 import org.bioshock.entities.map.RoomEntity;
 import org.bioshock.entities.map.Wall;
@@ -474,6 +471,8 @@ public class MainGame extends GameScene {
 		children.add(new InvisibilityItem(rand.nextLong()));
 		children.add(new SpeedItem(rand.nextLong()));
 		children.add(new VentItem(rand.nextLong()));
+		children.add(new BombItem(rand.nextLong()));
+        children.add(new TrapItem(rand.nextLong()));
     }
 
     @Override
