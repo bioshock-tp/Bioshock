@@ -68,7 +68,7 @@ public class App extends Application {
     /**
      * The difficulty of the game
      */
-    private static Difficulty difficulty = Difficulty.EASY;
+    private static Difficulty difficulty;
 
     @Override
     public void start(Stage stage) {
@@ -87,6 +87,7 @@ public class App extends Application {
 
         WindowManager.initialise(stage);
         initFXMLScene();
+        difficulty = Difficulty.EASY;
 
         stage.setScene(fxmlScene);
         stage.show();

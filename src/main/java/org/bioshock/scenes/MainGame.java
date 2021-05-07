@@ -35,6 +35,7 @@ import org.bioshock.entities.players.SeekerAI;
 import org.bioshock.main.App;
 import org.bioshock.networking.NetworkManager;
 import org.bioshock.rendering.RenderManager;
+import org.bioshock.utils.Difficulty;
 import org.bioshock.utils.GlobalConstants;
 import org.bioshock.utils.Size;
 
@@ -409,7 +410,7 @@ public class MainGame extends GameScene {
 
         timeline.setOnFinished(e -> {
             RenderManager.displayText();
-            initSeekers(SEEKER_COUNT);
+            initSeekers(App.getDifficulty().equals(Difficulty.EASY) ? SEEKER_COUNT : SEEKER_COUNT + 1);
             label.setOpacity(1);
             label.setOpacity(0.5);
             label.setFont(new Font(150));
