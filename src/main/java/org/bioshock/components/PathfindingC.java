@@ -88,6 +88,7 @@ public class PathfindingC<T extends GraphNode, S> {
 
         T destination = current;
         if (endNode == null) {
+            //pick a random end node that isnt the start node
             Iterator<T> iterator = graph.getNodes().iterator();
             while (
                 iterator.hasNext()
@@ -104,11 +105,12 @@ public class PathfindingC<T extends GraphNode, S> {
         }
 
         List<T> nodePath = new ArrayList<>();
+        nodePath.add(current);
         List<T> possibleMoves = new ArrayList<>();
         while (current != destination) {
             List<T> adjacents = graph.getConnectedNodes(current);
             for (T node : adjacents) {
-                if (!nodePath.contains(node)) {
+                if (!nodePath.contains(node) && !node.isObject()) {
                     possibleMoves.add(node);
                 }
             }
@@ -182,16 +184,6 @@ public class PathfindingC<T extends GraphNode, S> {
         List<T> closedList = new ArrayList<>();
 
         T currentNode;
-
-        if (endNode == null) {
-            Iterator<T> iterator = copyGraph.getNodes().iterator();
-            do {
-                endNode = iterator.next();
-            }
-            while (iterator.hasNext() && !endNode.equals(startNode));
-
-            if (endNode.equals(startNode)) App.logger.error("Not enough nodes");
-        }
 
         openList.add(startNode);
 
