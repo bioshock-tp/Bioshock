@@ -23,6 +23,7 @@ import org.bioshock.networking.NetworkManager;
 import org.bioshock.rendering.RenderManager;
 import org.bioshock.scenes.GameScene;
 import org.bioshock.scenes.SceneManager;
+import org.bioshock.utils.Difficulty;
 import org.bioshock.utils.FontManager;
 import org.bioshock.utils.LanguageManager;
 
@@ -84,6 +85,11 @@ public class App extends Application {
      */
     private static FXMLLoader fxmlLoader;
 
+    /**
+     * The difficulty of the game
+     */
+    private static Difficulty difficulty;
+
 
     @Override
     public void start(Stage stage) {
@@ -131,6 +137,7 @@ public class App extends Application {
             ); /* Necessary as GUI invocation overwrites exceptions */
         }
     }
+
 
     /**
      * <ul>
@@ -237,6 +244,7 @@ public class App extends Application {
         App.networked = networked;
     }
 
+
     /**
      * @param playerCount The new player count
      */
@@ -262,7 +270,6 @@ public class App extends Application {
 
 
     /**
-     * Sets the current resource bundle.
      * @param bundle The resource bundle to set.
      */
     public static void setBundle(ResourceBundle bundle) {
@@ -314,6 +321,25 @@ public class App extends Application {
 
     /**
      * Closes the game
+     *
+     * @return The difficulty of the game
+     */
+    public static Difficulty getDifficulty() {
+        return difficulty;
+    }
+
+
+    /**
+     * Sets the difficulty of the game
+     * @param difficulty The difficulty
+     */
+    public static void setDifficulty(Difficulty difficulty) {
+        App.difficulty = difficulty;
+    }
+
+
+    /**
+     *
      * @param code The exit code
      */
     public static void exit(int code) {

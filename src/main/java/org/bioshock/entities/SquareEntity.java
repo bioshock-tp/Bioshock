@@ -4,6 +4,7 @@ import org.bioshock.components.NetworkC;
 import org.bioshock.physics.Movement;
 import org.bioshock.rendering.renderers.components.RendererC;
 import org.bioshock.utils.Size;
+import org.checkerframework.checker.units.qual.radians;
 
 import javafx.geometry.Point3D;
 import javafx.scene.paint.Color;
@@ -96,6 +97,14 @@ public abstract class SquareEntity extends Entity {
 
 
     /**
+     * @param radius The new radius for the {@link #fov}
+     */
+    public void setRadius(double radius) {
+        fov = new Circle(position.getX(), position.getY(), radius);
+    }
+
+
+    /**
      * @return the size of the square entity
      */
     public Size getSize() {
@@ -110,12 +119,14 @@ public abstract class SquareEntity extends Entity {
         return fov.getRadius();
     }
 
+
     /**
      * @return The rotation of the current entity
      */
     public Rotate getRotate() {
         return rotate;
     }
+
 
     /**
      * @return The movement component the entity

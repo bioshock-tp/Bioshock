@@ -38,6 +38,7 @@ import org.bioshock.main.App;
 import org.bioshock.networking.Account;
 import org.bioshock.networking.NetworkManager;
 import org.bioshock.rendering.RenderManager;
+import org.bioshock.utils.Difficulty;
 import org.bioshock.utils.GlobalConstants;
 import org.bioshock.utils.Size;
 
@@ -466,7 +467,12 @@ public class MainGame extends GameScene {
 
         timeline.setOnFinished(e -> {
             RenderManager.displayText();
-            initSeekers(SEEKER_COUNT);
+
+            initSeekers(
+                App.getDifficulty() == Difficulty.EASY ?
+                    SEEKER_COUNT
+                    : SEEKER_COUNT + 1
+            );
         });
 
         timeline.play();
@@ -474,8 +480,8 @@ public class MainGame extends GameScene {
 
 
     /**
-     * Construct and initialise n seekers </p>
-     * Spawning them in rooms no player is within
+     * Construct and initialise n seekers spawning them in rooms no player is
+     * within
      * @param n The number of seekers to construct
      */
     private void initSeekers(int n) {
@@ -501,6 +507,13 @@ public class MainGame extends GameScene {
                 520,
                 Color.INDIANRED
             );
+
+            if (App.getDifficulty() == Difficulty.HARD) {
+                double originalSpeed = seeker.getMovement().getSpeed();
+                seeker.getMovement().setSpeed(originalSpeed * 1.25);
+
+                seeker.setRadius(seeker.getRadius() * 1.25);
+            }
 
             seeker.initAnimations();
             EntityManager.register(seeker);

@@ -162,7 +162,7 @@ public class SeekerAI extends SquareEntity implements Collisions {
     public SeekerAI(Point3D p, NetworkC com, Size s, int r, Color c) {
         super(p, com, new SimpleRendererC(), s, r, c);
 
-        movement.setSpeed(movement.getSpeed() / 1.5);
+        movement.setSpeed(movement.getSpeed() * 0.9);
 
         renderer = SeekerRenderer.class;
 
