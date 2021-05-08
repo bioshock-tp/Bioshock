@@ -24,7 +24,6 @@ public class VentItem extends Item {
         );
     }
 
-
     @Override
     protected void apply(Hider hider) {
         hider.setPosition(
@@ -40,7 +39,6 @@ public class VentItem extends Item {
     }
 
 
-    @Override
     protected void tick(double timeDelta) {
         /* This entity does not change */
     }

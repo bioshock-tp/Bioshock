@@ -1,6 +1,11 @@
 package org.bioshock.main;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.Locale;
@@ -14,6 +19,8 @@ import org.bioshock.engine.core.GameLoop;
 import org.bioshock.engine.core.WindowManager;
 import org.bioshock.engine.input.InputManager;
 import org.bioshock.gui.MainController;
+import org.bioshock.networking.Account;
+import org.bioshock.networking.NetworkManager;
 import org.bioshock.rendering.RenderManager;
 import org.bioshock.scenes.GameScene;
 import org.bioshock.scenes.SceneManager;
@@ -140,6 +147,24 @@ public class App extends Application {
     public static void end(boolean victory) {
         RenderManager.endGame();
         String textToDisplay;
+        if (victory && !NetworkManager.me().isDead()){
+            try {
+
+                URL url = new URL("http://recklessgame.net:8034/increaseScore");
+                String jsonInputString = "{\"Token\":\"" + Account.getToken() + "\",\"Score\":\"" + Integer.toString(Account.getScoreToInc()) + "\"}";
+                byte[] postDataBytes = jsonInputString.getBytes("UTF-8");
+                HttpURLConnection con = (HttpURLConnection) url.openConnection();
+                con.setRequestMethod("PUT");
+                con.setRequestProperty("Content-Type", "application/json; utf-8");
+                con.setDoOutput(true);
+                con.getOutputStream().write(postDataBytes);
+                Reader in = new BufferedReader(new InputStreamReader(con.getInputStream(), "UTF-8"));
+                Account.setScore(Account.getScoreToInc() + Account.getScore());
+                Account.setScoreToInc(0);
+            } catch (MalformedURLException ex) {
+            } catch (IOException e) {
+            }
+        }
         if (victory) {
             AudioManager.playWinSfx();
             textToDisplay = App.getBundle().getString("WIN_TEXT");

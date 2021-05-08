@@ -18,14 +18,14 @@ public class BombItem extends Food {
 
     /**
      * When collected by a hider, set the item to teleport the hider through the vent to the position that he initially had
-     * @param entity the entity that has collected
+     * @param hider the entity that has collected
      */
-    @Override
-    protected void apply(Entity entity){
 
-        if(entity instanceof Hider){
-            ((Hider) entity).setDead(true);
-        }
+    @Override
+    protected void apply(Hider hider){
+
+        hider.setDead(true);
+        this.destroy();
     }
 
     /**
@@ -33,7 +33,7 @@ public class BombItem extends Food {
      */
     @Override
     protected void playCollectSound(){
-        AudioManager.playTeleportSfx();
+        AudioManager.playBombSfx();
     }
 
 }

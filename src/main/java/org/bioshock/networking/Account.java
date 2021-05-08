@@ -4,6 +4,11 @@ public class Account {
     static String userName = "";
     static String token = "";
     static int score = 0;
+    static int scoreToInc = 0;
+
+    public static int getScoreToInc() { return scoreToInc; }
+
+    public static void setScoreToInc(int score) { scoreToInc = score; }
 
     public static void setUserNam(String newName) {
         userName = newName;
