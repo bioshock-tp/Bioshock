@@ -37,7 +37,7 @@ public class LobbyController extends GameScene {
 
         SceneManager.setMainGame(new MainGame());
 
-        NetworkManager.initialise(this);
+        NetworkManager.initialise();
     }
 
 
@@ -89,5 +89,4 @@ public class LobbyController extends GameScene {
         backImageView.setFitWidth(17);
         backButton.setGraphic(backImageView);
     }
-
 }

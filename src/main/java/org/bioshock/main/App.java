@@ -1,11 +1,12 @@
 package org.bioshock.main;
 
-import javafx.application.Application;
-import javafx.application.Platform;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.stage.Stage;
+import java.io.IOException;
+import java.net.URL;
+import java.util.Arrays;
+import java.util.Locale;
+import java.util.Objects;
+import java.util.ResourceBundle;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bioshock.audio.AudioManager;
@@ -19,12 +20,12 @@ import org.bioshock.scenes.SceneManager;
 import org.bioshock.utils.FontManager;
 import org.bioshock.utils.LanguageManager;
 
-import java.io.IOException;
-import java.net.URL;
-import java.util.Arrays;
-import java.util.Locale;
-import java.util.Objects;
-import java.util.ResourceBundle;
+import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
 
 public class App extends Application {
     public static final Logger logger = LogManager.getLogger(App.class);
@@ -35,6 +36,9 @@ public class App extends Application {
     private static boolean networked;
     private static ResourceBundle bundle;
     private static Locale locale;
+
+    private static FXMLLoader fxmlLoader;
+
 
     @Override
     public void start(Stage stage) {
@@ -100,7 +104,7 @@ public class App extends Application {
     private static Parent loadFXML(String fxml) {
         try {
             URL location = MainController.class.getResource(fxml + ".fxml");
-            FXMLLoader fxmlLoader = new FXMLLoader(location);
+            fxmlLoader = new FXMLLoader(location);
             return fxmlLoader.load();
         } catch (IOException e) {
             App.logger.error("Error loading FXML: {}", fxml, e);
@@ -139,6 +143,14 @@ public class App extends Application {
 
     public static void setName(String name) {
         App.name = name;
+    }
+
+
+    /**
+     * @return The current controller used for the game's GUI
+     */
+    public static GameScene getFXMLController() {
+        return fxmlLoader.getController();
     }
 
     public static void exit(int code) {
