@@ -11,7 +11,8 @@ import org.bioshock.engine.core.FrameRate;
 import org.bioshock.engine.input.InputManager;
 import org.bioshock.entities.EntityManager;
 import org.bioshock.entities.LabelEntity;
-import org.bioshock.entities.items.VentItem;
+import org.bioshock.entities.items.Bomb;
+import org.bioshock.entities.items.Teleporter;
 import org.bioshock.entities.items.loot.Bag;
 import org.bioshock.entities.items.loot.Chest;
 import org.bioshock.entities.items.loot.Coins;
@@ -24,6 +25,7 @@ import org.bioshock.entities.items.loot.TreasureSack;
 import org.bioshock.entities.items.powerups.FreezeItem;
 import org.bioshock.entities.items.powerups.InvisibilityItem;
 import org.bioshock.entities.items.powerups.SpeedItem;
+import org.bioshock.entities.items.powerups.Trap;
 import org.bioshock.entities.map.Room;
 import org.bioshock.entities.map.RoomEntity;
 import org.bioshock.entities.map.Wall;
@@ -33,6 +35,7 @@ import org.bioshock.entities.map.maps.RandomMap;
 import org.bioshock.entities.players.Hider;
 import org.bioshock.entities.players.SeekerAI;
 import org.bioshock.main.App;
+import org.bioshock.networking.Account;
 import org.bioshock.networking.NetworkManager;
 import org.bioshock.rendering.RenderManager;
 import org.bioshock.utils.GlobalConstants;
@@ -126,7 +129,7 @@ public class MainGame extends GameScene {
 
     /**
      * True if you have lost the game
-     * i.e. {@link #LOSE_DELAY} amount of time has passed since {@link losing}
+     * i.e. {@link #LOSE_DELAY} amount of time has passed since
      * has been true
      */
     private boolean lost;
@@ -532,7 +535,9 @@ public class MainGame extends GameScene {
 		children.add(new FreezeItem(rand.nextLong()));
 		children.add(new InvisibilityItem(rand.nextLong()));
 		children.add(new SpeedItem(rand.nextLong()));
-		children.add(new VentItem(rand.nextLong()));
+		children.add(new Teleporter(rand.nextLong()));
+		children.add(new Bomb(rand.nextLong()));
+        children.add(new Trap(rand.nextLong()));
     }
 
 
@@ -664,8 +669,14 @@ public class MainGame extends GameScene {
      * If number of items collected is {@link #lootToWin}, game is won
      */
     public void collectLoot(Hider hider) {
+        if (hider == NetworkManager.me()) {
+            Account.setScoreToInc(Account.getScoreToInc() + 1);
+        }
+
         if (++collectedLoot == lootToWin) {
+
             NetworkManager.tick();
+
             App.end(true);
         }
 

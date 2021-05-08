@@ -25,6 +25,8 @@ public class AudioManager {
     private static EffectController teleportEffectController;
     private static EffectController winEffectController;
     private static EffectController loseEffectController;
+    private static EffectController bombEffectController;
+    private static EffectController trapEffectController;
 
     /**
      * Initialises all of the audio controllers in the game.
@@ -57,6 +59,12 @@ public class AudioManager {
         );
         teleportEffectController = AudioController.loadEffectController(
             "teleport"
+        );
+        bombEffectController = AudioController.loadEffectController(
+                "bomb"
+        );
+        trapEffectController = AudioController.loadEffectController(
+                "trap"
         );
         winEffectController = AudioController.loadEffectController(
             "win"
@@ -185,6 +193,30 @@ public class AudioManager {
 
         if (prefs.getBoolean("sfxOn", true)) {
             teleportEffectController.play(plinkEffectSettings);
+        }
+    }
+
+    /**
+     * PLays bomb sound.
+     */
+
+    public static void playBombSfx() {
+        Preferences prefs = Preferences.userNodeForPackage(SettingsController.class);
+
+        if (prefs.getBoolean("sfxOn", true)) {
+            bombEffectController.play(plinkEffectSettings);
+        }
+    }
+
+    /**
+     * PLays trap sound.
+     */
+
+    public static void playTrapSfx() {
+        Preferences prefs = Preferences.userNodeForPackage(SettingsController.class);
+
+        if (prefs.getBoolean("sfxOn", true)) {
+            trapEffectController.play(plinkEffectSettings);
         }
     }
 

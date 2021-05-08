@@ -55,6 +55,18 @@
   },
   {
     "type": "effect",
+    "name": "bomb",
+    "path": "src/main/resources/org/bioshock/audio/bomb.wav",
+    "filesystem": "local"
+  },
+  {
+    "type": "effect",
+    "name": "trap",
+    "path": "src/main/resources/org/bioshock/audio/trap.wav",
+    "filesystem": "local"
+  },
+  {
+    "type": "effect",
     "name": "win",
     "path": "src/main/resources/org/bioshock/audio/win.wav",
     "filesystem": "local"

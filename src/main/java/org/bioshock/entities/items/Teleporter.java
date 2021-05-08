@@ -5,7 +5,7 @@ import org.bioshock.components.NetworkC;
 import org.bioshock.entities.players.Hider;
 import org.bioshock.utils.Size;
 
-public class VentItem extends Item {
+public class Teleporter extends Item {
     /**
      * Path to the image that should be displayed
      */
@@ -13,7 +13,7 @@ public class VentItem extends Item {
         "/org/bioshock/images/items/teleport.png"
     ).getPath();
 
-    public VentItem(long seed) {
+    public Teleporter(long seed) {
         super(
             spawn(seed),
             new Size(DEFAULT_SIZE, DEFAULT_SIZE),
@@ -35,11 +35,5 @@ public class VentItem extends Item {
     @Override
     protected void playCollectSound() {
         AudioManager.playTeleportSfx();
-    }
-
-
-    @Override
-    protected void tick(double timeDelta) {
-        /* This entity does not change */
     }
 }

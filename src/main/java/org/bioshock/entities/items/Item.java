@@ -75,6 +75,12 @@ public abstract class Item extends ImageEntity implements Collisions {
 
 
     @Override
+    protected void tick(double timeDelta) {
+        /* Items do not change */
+    }
+
+
+    @Override
     public void collisionTick(Set<Entity> collisions) {
         if (!enabled) return;
         collisions.forEach(collision -> {
