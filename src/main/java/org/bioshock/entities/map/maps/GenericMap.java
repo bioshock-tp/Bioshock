@@ -28,18 +28,22 @@ public class GenericMap implements Map {
      * stores a graph representing the map
      */
     private Graph<Room, Pair<Direction, ConnType>> roomGraph = new Graph<>();
-
+    /**
+     * A graph of all traversable locations in the map
+     */
     private Graph<GraphNode, Pair<Direction, Double>> traversableGraph;
-
+    /**
+     * An array of all traversable locations in the map
+     */
     GraphNode[][] traversableArray;
-
+    /**
+     * An array of all rooms in the map
+     */
     private Room[][] roomArray;
-
     /**
      * a list of rooms ordered first by height then by width
      */
     private List<Room> orderedRoomList = new ArrayList<>();
-
 
     /***
      * Generate a new generic map
@@ -145,7 +149,7 @@ public class GenericMap implements Map {
             }
         }
 
-        // initialize every room
+        // initialise every room
         initRooms(seed);
 
         /*
@@ -172,6 +176,9 @@ public class GenericMap implements Map {
             }
         }
 
+        /*
+         * Generate a traversable graph of all traversable nodes in the map
+         */
         Graph<GraphNode, Pair<Direction, Double>> graph1 =
             new Graph<>(traversableArray, new TraversableEdgeGenerator());
 
@@ -180,6 +187,13 @@ public class GenericMap implements Map {
         );
     }
 
+    /**
+     * Attempt to combine single rooms together into larger rooms
+     * @param rooms An array of rooms that make up the map
+     * @param i The i position of the room you're trying to combine
+     * @param j The j position of the room you're trying to combine
+     * @return Whether the room has been combined into a bigger room
+     */
     private boolean tryToCombineRooms(Room[][] rooms, int i, int j) {
         return
             square2(rooms, i, j)
@@ -187,6 +201,13 @@ public class GenericMap implements Map {
             || hori2(rooms, i, j);
     }
 
+    /**
+     * Try to combine rooms into a vertical room made up of 2 rooms
+     * @param rooms An array of rooms that make up the map
+     * @param i The i position of the room you're trying to combine
+     * @param j The j position of the room you're trying to combine
+     * @return Whether the room has been combined into a bigger room
+     */
     private boolean vert2(Room[][] rooms, int i, int j) {
         List<Pair<Integer, Integer>> positions = new ArrayList<>();
         positions.add(new Pair<>(i, j));
@@ -195,6 +216,13 @@ public class GenericMap implements Map {
         return biggerRoom(rooms, positions);
     }
 
+    /**
+     * Try to combine rooms into a horizontal room made up of 2 rooms
+     * @param rooms An array of rooms that make up the map
+     * @param i The i position of the room you're trying to combine
+     * @param j The j position of the room you're trying to combine
+     * @return Whether the room has been combined into a bigger room
+     */
     private boolean hori2(Room[][] rooms, int i, int j) {
         List<Pair<Integer, Integer>> positions = new ArrayList<>();
         positions.add(new Pair<>(i, j));
@@ -203,6 +231,13 @@ public class GenericMap implements Map {
         return biggerRoom(rooms, positions);
     }
 
+    /**
+     * Try to combine rooms into a 2x2 bigger room
+     * @param rooms An array of rooms that make up the map
+     * @param i The i position of the room you're trying to combine
+     * @param j The j position of the room you're trying to combine
+     * @return Whether the room has been combined into a bigger room
+     */
     private boolean square2(Room[][] rooms, int i, int j) {
         List<Pair<Integer, Integer>> positions = new ArrayList<>();
         positions.add(new Pair<>(i, j));
@@ -213,6 +248,12 @@ public class GenericMap implements Map {
         return biggerRoom(rooms, positions);
     }
 
+    /**
+     * Try to combine rooms into a bigger room based off a list of coordinates
+     * @param rooms An array of rooms that make up the map
+     * @param positions The positions of the rooms you want to attempt to join together
+     * @return Whether the room has been combined into a bigger room
+     */
     private boolean biggerRoom(
         Room[][] rooms,
         List<Pair<Integer, Integer>> positions
@@ -240,6 +281,7 @@ public class GenericMap implements Map {
             roomAndPoses.add(new Pair<>(r, coord));
         }
 
+        //Construct the bigger room by adding the adjacent rooms to each others openlyConnectedRooms list
         for(Pair<Room, Pair<Integer, Integer>> rp1: roomAndPoses) {
             for(Pair<Room, Pair<Integer, Integer>> rp2: roomAndPoses) {
                 if(adjacent(rp1.getValue(), rp2.getValue())) {
@@ -310,7 +352,7 @@ public class GenericMap implements Map {
     /***
     * @return the room graph representing the map
     */
-   public Graph<Room, Pair<Direction, ConnType>> getRoomGraph(){
+   public Graph<Room, Pair<Direction, ConnType>> getRoomGraph() {
        return roomGraph;
    }
 
@@ -324,6 +366,7 @@ public class GenericMap implements Map {
         return traversableGraph;
     }
 
+    @Override
     public GraphNode[][] getTraversableArray() {
         return traversableArray;
     }

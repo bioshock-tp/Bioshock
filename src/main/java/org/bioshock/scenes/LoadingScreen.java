@@ -16,8 +16,6 @@ import org.bioshock.main.App;
 
 public class LoadingScreen extends GameScene {
 	public LoadingScreen (String loadingText) {
-        super();
-
         VBox verticalBox = new VBox();
         verticalBox.setAlignment(Pos.CENTER);
 
@@ -28,10 +26,10 @@ public class LoadingScreen extends GameScene {
         killLabel.setTextFill(Color.web("0xC50909"));
 
         TextFlow titleFlow = new TextFlow(buzzLabel, killLabel);
-        titleFlow.setStyle("-fx-font-family: \"Helvetica\"; -fx-font-size: 72px; -fx-font-weight: bold; -fx-text-alignment: center;");
+        titleFlow.setStyle("-fx-font-family: \"Minercraftory\"; -fx-font-size: 72px; -fx-font-weight: bold; -fx-text-alignment: center;");
 
         Label infoLabel = new Label(loadingText);
-        infoLabel.setStyle("-fx-font-family: \"Helvetica\"; -fx-font-size: 36px; -fx-text-alignment: center;");
+        infoLabel.setStyle("-fx-font-family: \"Ubuntu\"; -fx-font-size: 36px; -fx-text-alignment: center;");
         infoLabel.setTextFill(Color.WHITE);
 
         verticalBox.getChildren().addAll(titleFlow, infoLabel);
@@ -59,6 +57,8 @@ public class LoadingScreen extends GameScene {
 
         fadeIn.setOnFinished(e -> fadeOut.play());
 
-        fadeOut.setOnFinished(e -> SceneManager.setScene(SceneManager.getMainGame()));
+        fadeOut.setOnFinished(e ->
+            SceneManager.setScene(SceneManager.getMainGameInstance())
+        );
 	}
 }

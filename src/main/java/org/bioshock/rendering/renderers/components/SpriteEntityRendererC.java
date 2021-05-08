@@ -1,7 +1,5 @@
 package org.bioshock.rendering.renderers.components;
 
-import org.bioshock.components.RendererC;
-
 import javafx.scene.paint.Color;
 
 public class SpriteEntityRendererC implements RendererC {

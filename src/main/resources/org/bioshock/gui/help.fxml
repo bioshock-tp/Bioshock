@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import java.net.URL?>
+<VBox alignment="CENTER" spacing="30.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="org.bioshock.gui.HelpController" styleClass="background">
+    <fx:include source="title.fxml"/>
+
+    <stylesheets>
+        <URL value="@style.css"/>
+    </stylesheets>
+
+    <padding>
+        <Insets bottom="40.0" left="60.0" right="60.0" top="40.0"/>
+    </padding>
+
+    <VBox spacing="40" alignment="CENTER">
+        <VBox spacing="10" alignment="CENTER">
+            <Label fx:id="aboutLabel" styleClass="p"/>
+            <HBox spacing="10" alignment="CENTER">
+                <Label fx:id="aboutDescriptionLabel" styleClass="desc" textAlignment="CENTER"/>
+            </HBox>
+        </VBox>
+
+        <VBox spacing="10" alignment="CENTER">
+            <Label fx:id="aimLabel" styleClass="p"/>
+            <HBox spacing="10" alignment="CENTER">
+                <Label fx:id="aimDescriptionLabel" styleClass="desc"/>
+            </HBox>
+        </VBox>
+
+        <VBox spacing="10" alignment="CENTER">
+            <Label fx:id="controlsLabel" styleClass="p"/>
+            <HBox spacing="10" alignment="CENTER">
+                <Label fx:id="controlsDescriptionLabel" styleClass="desc"/>
+            </HBox>
+        </VBox>
+    </VBox>
+
+    <Button fx:id="backButton" onAction="#switchToMainView" styleClass="gui-button"/>
+</VBox>

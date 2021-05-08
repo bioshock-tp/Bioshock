@@ -35,6 +35,7 @@ public class LocalGameController {
     /**
      * Initialise the local game menu.
      */
+    @FXML
     public void initialize() {
         launchButton.setText(App.getBundle().getString("LAUNCH_BUTTON_TEXT"));
         backButton.setText(App.getBundle().getString("BACK_NEW_GAME_BUTTON_TEXT"));
@@ -56,7 +57,8 @@ public class LocalGameController {
     public void launchGame(ActionEvent actionEvent) {
         Stage stage = (Stage) launchButton.getScene().getWindow();
         App.setPlayerCount(1);
-        SceneManager.setMainGame(new MainGame());
-        App.startGame(stage, new LoadingScreen(App.getBundle().getString("SINGLE_PLAYER_LOADING_TEXT")), false);
+        App.setNetworked(false);
+        SceneManager.setMainGameInstance(new MainGame());
+        App.startGame(stage, new LoadingScreen(App.getBundle().getString("SINGLE_PLAYER_LOADING_TEXT")));
     }
 }

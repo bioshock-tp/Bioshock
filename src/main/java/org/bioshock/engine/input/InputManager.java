@@ -5,13 +5,10 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 
-import org.bioshock.engine.core.ChatManager;
 import org.bioshock.entities.EntityManager;
 import org.bioshock.entities.LabelEntity;
 import org.bioshock.main.App;
-import org.bioshock.networking.NetworkManager;
 import org.bioshock.rendering.RenderManager;
-import org.bioshock.scenes.MainGame;
 import org.bioshock.scenes.SceneManager;
 
 import javafx.geometry.Point3D;
@@ -20,18 +17,37 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 
 public class InputManager {
+
+    /** Maps a key press to it's desired action */
     private static Map<KeyCode, Runnable> keyPresses = new EnumMap<>(
         KeyCode.class
     );
 
+    /** Maps a key release to it's desired action */
     private static Map<KeyCode, Runnable> keyReleases = new EnumMap<>(
         KeyCode.class
     );
 
+    /** Maps WASD to if they've been pressed, help ignore repeated key presses */
+    private static Map<KeyCode, Integer> wasd = new EnumMap<>(
+        KeyCode.class
+    );
+
+    /** When true, will use debugging features */
     private static boolean debug = false;
 
+    /** True if should listen to key presses/releases */
+    private static boolean active = true;
+
+
+    /** InputManager is a static class */
     private InputManager() {}
 
+
+    /**
+     * Calls {@link #changeScene()}
+     * @see #changeScene()
+     */
 	public static void initialise() {
         initDebugPress();
 		changeScene();
@@ -122,6 +138,7 @@ public class InputManager {
         });
     }
 
+
     /**
      * Runs {@code target} before running {@code toApp}
      * @param target The {@link Runnable} to run first
@@ -136,33 +153,15 @@ public class InputManager {
         };
     }
 
+
+    /** Adds adds the event listeners to the current scene */
     public static void changeScene() {
         SceneManager.getScene().setOnKeyPressed(e -> {
             Runnable runnable;
-            if (SceneManager.inGame() && ChatManager.inChat()) {
-                if (e.getCode() == KeyCode.ENTER) {
-                    NetworkManager.addMessage(ChatManager.popText());
-                    ChatManager.setInChat(false);
-                }
-
-                else if (e.getCode() == KeyCode.BACK_SPACE) {
-                    ChatManager.backSpace();
-                }
-
-                else {
-                    App.logger.debug("Char to append: {}", e.getCharacter());
-                    ChatManager.append(e.getCharacter());
-                }
-            }
-
-            else if (SceneManager.inGame() && e.getCode() == KeyCode.ENTER) {
-                ChatManager.setInChat(true);
-                ((MainGame) SceneManager.getScene()).setChatVisibility(
-                    ChatManager.inChat()
-                );
-            }
-
-            else if ((runnable = keyPresses.get(e.getCode())) != null) {
+            if (
+                (active || e.getCode() == KeyCode.ENTER)
+                && (runnable = keyPresses.get(e.getCode())) != null
+            ) {
                 runnable.run();
             }
         });
@@ -170,14 +169,22 @@ public class InputManager {
         SceneManager.getScene().setOnKeyReleased(e -> {
             Runnable runnable;
             if (
-                (runnable = keyReleases.get(e.getCode())) != null
-                && !ChatManager.inChat()
+                (active || e.getCode() == KeyCode.ENTER)
+                && (runnable = keyReleases.get(e.getCode())) != null
             ) {
                 runnable.run();
             }
         });
     }
 
+
+    /**
+     * Adds a key listener to the specified {@code KeyCode}. Runs the
+     * {@code Runnable} when the associated key is pressed
+     * @param keyCode The key pressed that should call {@code #runnable}
+     * @param runnable A functional interface to run when the specified key is
+     * pressed
+     */
 	public static void onPress(KeyCode keyCode, Runnable runnable) {
         if (keyPresses.putIfAbsent(keyCode, runnable) != null) {
             App.logger.error(
@@ -187,6 +194,14 @@ public class InputManager {
         }
 	}
 
+
+    /**
+     * Adds a key listener to the specified {@code KeyCode}. Runs
+     * {@code runnable} when the associated key is released
+     * @param keyCode The key pressed that should call {@code runnable}
+     * @param runnable A functional interface to run when the specified key is
+     * released
+     */
     public static void onRelease(KeyCode keyCode, Runnable runnable) {
         if (keyReleases.putIfAbsent(keyCode, runnable) != null) {
             App.logger.error(
@@ -196,12 +211,63 @@ public class InputManager {
         }
 	}
 
+
+    /**
+     * Stops running the mapped {@link Runnable} (if any) when
+     * {@link KeyCode KeyCode(s)} key is pressed
+     * @param keyCode The {@code KeyCode} of the key to ignore
+     * {@link KeyCode KeyCode(s)} of
+     */
     public static void removeKeyListener(KeyCode keyCode) {
         keyPresses.remove(keyCode);
         keyReleases.remove(keyCode);
 	}
 
+
+    /**
+     * Stops running the mapped {@link Runnable Runnable(s)} when any of the
+     * {@link KeyCode KeyCode(s)} key is pressed
+     * @param keyCodes The {@link KeyCode KeyCode(s)} of the key(s) to ignore
+     * {@link javafx.scene.input.KeyEvent KeyEvent(s)} of
+     */
     public static void removeKeyListeners(KeyCode... keyCodes) {
         Arrays.asList(keyCodes).forEach(InputManager::removeKeyListener);
 	}
+
+
+    /**
+     * @param active True if key presses/releases should be listened to
+     */
+    public static void setActive(boolean active) {
+        InputManager.active = active;
+    }
+
+    /**
+     * Stops listening to key presses/releases
+     */
+    public static void stop() {
+        keyPresses.clear();
+        keyReleases.clear();
+    }
+
+
+    /**
+     * Maps WASD keys to whether they are pressed, helps to ignore repeated key
+     * presses
+     */
+    public static void initMovement() {
+        InputManager.onPress(  KeyCode.W, () -> wasd.put(KeyCode.W, 1));
+        InputManager.onPress(  KeyCode.A, () -> wasd.put(KeyCode.A, 1));
+        InputManager.onPress(  KeyCode.S, () -> wasd.put(KeyCode.S, 1));
+        InputManager.onPress(  KeyCode.D, () -> wasd.put(KeyCode.D, 1));
+
+        InputManager.onRelease(KeyCode.W, () -> wasd.put(KeyCode.W, 0));
+        InputManager.onRelease(KeyCode.A, () -> wasd.put(KeyCode.A, 0));
+        InputManager.onRelease(KeyCode.S, () -> wasd.put(KeyCode.S, 0));
+        InputManager.onRelease(KeyCode.D, () -> wasd.put(KeyCode.D, 0));
+    }
+
+    public static Map<KeyCode, Integer> getWasd() {
+        return wasd;
+    }
 }

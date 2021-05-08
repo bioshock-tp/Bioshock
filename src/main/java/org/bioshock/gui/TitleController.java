@@ -13,6 +13,7 @@ public class TitleController {
     /**
      * Initialises the title text.
      */
+    @FXML
     public void initialize() {
         buzzLabel.setText(App.getBundle().getString("BUZZ_TEXT"));
         killLabel.setText(App.getBundle().getString("KILL_TEXT"));

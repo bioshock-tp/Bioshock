@@ -73,18 +73,26 @@ public abstract class GameScene extends Scene {
      * Initialises the scene and registers the scene's {@link #children} to
      * both the {@link org.bioshock.entities.EntityManager EntityManager}
      * and the
-     * {@link org.bioshock.rendering.RenderManager RenderManager}.
+     * {@link org.bioshock.rendering.RenderManager RenderManager}. <p />
      * Called in
      * {@link org.bioshock.scenes.SceneManager#setScene(GameScene)
      * SceneManager.setScene(GameScene)}
      */
-    public void initScene(long seed) {
+    public void initScene() {
         registerEntities();
         renderEntities();
     }
 
+    /**
+     * Render tick method that can be overridden if the scene needs it
+     * @param timeDelta currently only takes 0 as it isn't utilised
+     */
     public void renderTick(double timeDelta) {}
 
+    /**
+     * Logic tick method that can be overridden if the scene needs it
+     * @param timeDelta the time for a logic tick in seconds
+     */
     public void logicTick(double timeDelta) {}
 
     /**
@@ -125,6 +133,9 @@ public abstract class GameScene extends Scene {
         children.forEach(RenderManager::unregister);
     }
 
+    /**
+     * Scales the canvas to the current Window Width
+     */
     public void scaleCanvas() {
         RenderManager.setScale(new Point2D(
             WindowManager.getWindowWidth() / gameScreen.getWidth(),
@@ -160,7 +171,10 @@ public abstract class GameScene extends Scene {
         return canvas;
     }
 
-
+    /**
+     *
+     * @return The size of the game screen
+     */
     public static Size getGameScreen() {
         return gameScreen;
     }

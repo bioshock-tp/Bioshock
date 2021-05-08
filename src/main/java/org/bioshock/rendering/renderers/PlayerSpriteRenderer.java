@@ -7,7 +7,6 @@ import static org.bioshock.rendering.RenderManager.getRenY;
 
 import org.bioshock.animations.AnimationPlayer;
 import org.bioshock.entities.EntityManager;
-import org.bioshock.entities.SquareEntity;
 import org.bioshock.entities.players.Hider;
 import org.bioshock.rendering.RenderManager;
 
@@ -22,9 +21,9 @@ import javafx.scene.transform.Rotate;
 public class PlayerSpriteRenderer implements Renderer {
     private PlayerSpriteRenderer() {}
 
-    public static <E extends SquareEntity> void render(
-            GraphicsContext gc,
-            E player
+    public static <E extends Hider> void render(
+        GraphicsContext gc,
+        E player
     ) {
         double x = player.getX();
         double y = player.getY();
@@ -32,7 +31,10 @@ public class PlayerSpriteRenderer implements Renderer {
         double width = player.getWidth();
         double height = player.getHeight();
 
-        if (player == EntityManager.getCurrentPlayer() && RenderManager.clips()) {
+        if (
+            player == EntityManager.getCurrentPlayer()
+            && RenderManager.clips()
+        ) {
             gc.save();
             gc.beginPath();
 
@@ -72,20 +74,9 @@ public class PlayerSpriteRenderer implements Renderer {
             r.getMyy(), r.getTx(), r.getTy()
         );
 
-        ColorAdjust ca = new ColorAdjust(0,0, 0,0);
-        if(((Hider) player).getPowerUpManager().getSpeedPower().getActive()){
-            ca.setHue(0.15);
-            ca.setContrast(0.2);
-        }
-        if (((Hider) player).getPowerUpManager().getFreezePower().getActive()) {
-            ca.setHue(Color.BLUE.getHue());
-            ca.setContrast(0);
-        }
-        if(((Hider) player).getPowerUpManager().getInvisiblePower().getActive()){
-            ca.setBrightness(-0.5);
-            ca.setContrast(0);
-        }
-        gc.setEffect(ca);
+        ColorAdjust colourAdjust = player.getColourAdjust();
+
+        gc.setEffect(colourAdjust);
         gc.setFill(player.getRendererC().getColour());
 
         gc.setLineWidth(10);
@@ -93,7 +84,7 @@ public class PlayerSpriteRenderer implements Renderer {
 
         // Handles animations
         AnimationPlayer.playAnimation(
-            ((Hider) player).getCurrentSprite(),
+            player.getCurrentSprite(),
             new Point2D (
                 getRenX(x),
                 getRenY(y)
@@ -106,14 +97,18 @@ public class PlayerSpriteRenderer implements Renderer {
         if (player == EntityManager.getCurrentPlayer()) {
             gc.setFill(Color.GREEN);
         }
-        else{
+        else {
             gc.setFill(Color.BLACK);
         }
 
         gc.setFont(new Font(getRenHeight(20)));
-        gc.fillText(((Hider) player).getName(), getRenX(x + width / 2), getRenY(y - 5), getRenWidth(width * 3));
+        gc.fillText(
+            player.getName(),
+            getRenX(x + width / 2),
+            getRenY(y - 5),
+            getRenWidth(width * 3)
+        );
 
         gc.restore();
     }
-
 }

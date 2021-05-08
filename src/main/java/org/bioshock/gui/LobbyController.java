@@ -35,7 +35,7 @@ public class LobbyController extends GameScene {
         initialiseScene();
         playerCountLabel.setText("0/" + App.playerCount());
 
-        SceneManager.setMainGame(new MainGame());
+        SceneManager.setMainGameInstance(new MainGame());
 
         NetworkManager.initialise();
     }
@@ -53,8 +53,7 @@ public class LobbyController extends GameScene {
                 stage,
                 new LoadingScreen(
                     App.getBundle().getString("ONLINE_LOADING_TEXT")
-                ),
-                true
+                )
             );
         }
     }

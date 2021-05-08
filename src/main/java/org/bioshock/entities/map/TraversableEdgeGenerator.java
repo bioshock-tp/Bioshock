@@ -11,6 +11,11 @@ import org.bioshock.utils.Direction;
 
 import javafx.util.Pair;
 
+/**
+ * 
+ * Class to generate the edges between GraphNodes
+ *
+ */
 public class TraversableEdgeGenerator implements EdgeGenerator<GraphNode, Pair<Direction, Double>>{
 
 	@Override

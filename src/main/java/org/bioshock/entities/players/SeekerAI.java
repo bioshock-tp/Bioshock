@@ -35,6 +35,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * A class to represent the AI Seeker entity
+ * @author Kian Wells - Ben Stein
+ */
 public class SeekerAI extends SquareEntity implements Collisions {
 
     /**
@@ -54,7 +58,8 @@ public class SeekerAI extends SquareEntity implements Collisions {
         SceneManager.getMap().getRoomGraph();
 
     /**
-     * A pathfinding component that is initialised with the room graph for pathfinding from room to room
+     * A pathfinding component that is initialised with the room graph for
+     * pathfinding from room to room
      */
     private PathfindingC<Room, Pair<Direction, ConnType>> roomPathfinding =
     new PathfindingC<>(
@@ -65,7 +70,8 @@ public class SeekerAI extends SquareEntity implements Collisions {
     );
 
     /**
-     * A pathfinding component that is initialised with the complete node map for pathfinding between obstacles and within rooms
+     * A pathfinding component that is initialised with the complete node map
+     * for pathfinding between obstacles and within rooms
      */
     private PathfindingC<GraphNode, Pair<Direction, Double>> nodePathfinding =
     new PathfindingC<>(
@@ -86,7 +92,8 @@ public class SeekerAI extends SquareEntity implements Collisions {
     private Room currRoom;
 
     /**
-     * Contains the previous room to be used as a room to avoid when pathfinding
+     * Contains the previous room to be used as a room to avoid when
+     * pathfinding
      */
     private Room prevRoom;
 
@@ -115,7 +122,8 @@ public class SeekerAI extends SquareEntity implements Collisions {
     private static final double TIME_BETWEEN_SWINGS = 1.0;
 
     /**
-     * The time in seconds that should elapse between the seeker starting an attack and finishing it
+     * The time in seconds that should elapse between the seeker starting an
+     * attack and finishing it
      */
     private static final double TIME_SWINGING = 1.0;
 
@@ -136,7 +144,8 @@ public class SeekerAI extends SquareEntity implements Collisions {
     private boolean isSearching = false;
 
     /**
-     * True if the woosh sound has been played after an attack, used to stop it repeating
+     * True if the woosh sound has been played after an attack, used to stop it
+     * repeating
      */
     private boolean wooshSoundPlayed = false;
 
@@ -168,7 +177,10 @@ public class SeekerAI extends SquareEntity implements Collisions {
         currRoom = this.findCurrentRoom();
         prevRoom = currRoom;
 
-        currentTargetLocation = new Point2D(getCentre().getX(), getCentre().getY());
+        currentTargetLocation = new Point2D(
+            getCentre().getX(),
+            getCentre().getY()
+        );
     }
 
     /**
@@ -233,6 +245,7 @@ public class SeekerAI extends SquareEntity implements Collisions {
         boolean masterPlayer = firstPlayer == EntityManager.getCurrentPlayer();
 
         EntityManager.getPlayers().forEach(entity -> {
+            //If the swatter hitbox is active and touches the player
             if (
                 EntityManager.isManaged(this, entity)
                 && isActive()
@@ -242,6 +255,7 @@ public class SeekerAI extends SquareEntity implements Collisions {
                 entity.setDead(true);
             }
 
+            //If the player is within the seeker's fov
             if (
                 EntityManager.isManaged(this, entity)
                 && !entity.isDead()
@@ -255,12 +269,12 @@ public class SeekerAI extends SquareEntity implements Collisions {
                 ) {
                     setActive(true);
 
-                    if (!wooshSoundPlayed){
+                    if (!wooshSoundPlayed) {
                         AudioManager.playWooshSfx();
                         wooshSoundPlayed = true;
                     }
 
-                    if (timeSwinging >= TIME_SWINGING){
+                    if (timeSwinging >= TIME_SWINGING) {
                         setActive(false);
                         wooshSoundPlayed = false;
                         timeSwinging = 0;
@@ -273,7 +287,6 @@ public class SeekerAI extends SquareEntity implements Collisions {
                 if (masterPlayer) chasePlayer(target);
             }
         });
-
         if (
             EntityManager.getPlayers().stream().noneMatch(entity ->
                 EntityManager.isManaged(this, entity)
@@ -286,6 +299,7 @@ public class SeekerAI extends SquareEntity implements Collisions {
             rendererC.setColour(Color.INDIANRED);
         }
 
+        //if none of this happens
         if (masterPlayer && isSearching) {
             setActive(false);
             search();
@@ -299,7 +313,11 @@ public class SeekerAI extends SquareEntity implements Collisions {
      * @return true if it is within range, false otherwise
      */
     private boolean checkInSwingDistance(SquareEntity entity) {
-        return entity.getCentre().subtract(this.getCentre()).magnitude() <= this.getRadius() / 2;
+        return
+            entity.getCentre()
+                .subtract(this.getCentre())
+                .magnitude()
+                <= this.getRadius() / 2;
     }
 
     /**
@@ -395,9 +413,15 @@ public class SeekerAI extends SquareEntity implements Collisions {
 
         path.clear();
 
-        lastSeenPosition = new Point2D(entity.getCentre().getX(), entity.getCentre().getY());
+        lastSeenPosition = new Point2D(
+            entity.getCentre().getX(),
+            entity.getCentre().getY()
+        );
 
-        path = nodePathfinding.createBestPath(this.getCentre(), lastSeenPosition);
+        path = nodePathfinding.createBestPath(
+            this.getCentre(),
+            lastSeenPosition
+        );
 
         path.add(lastSeenPosition);
 
@@ -411,7 +435,8 @@ public class SeekerAI extends SquareEntity implements Collisions {
 
     /**
      * Contains the behaviour tree for patrolling the map
-     * Will move towards the target location and pop a new location off the path stack
+     * Will move towards the target location and pop a new location off the
+     * path stack
      */
     public void search() {
         updateRoom(this);
@@ -425,7 +450,10 @@ public class SeekerAI extends SquareEntity implements Collisions {
 
             path.add(path.get((path.size()) - 1));
 
-            List<Point2D> pathToNextRoom = nodePathfinding.createBestPath(this.getCentre(), path.get(0));
+            List<Point2D> pathToNextRoom = nodePathfinding.createBestPath(
+                this.getCentre(),
+                path.get(0)
+            );
 
             path.addAll(0, pathToNextRoom);
 
@@ -439,8 +467,12 @@ public class SeekerAI extends SquareEntity implements Collisions {
                 )
             );
 
-            double absX = Math.abs(currentTargetLocation.getX() - getWidth() / 2 - getX());
-            double absY = Math.abs(currentTargetLocation.getY() - getHeight() / 2 - getY());
+            double absX = Math.abs(
+                currentTargetLocation.getX() - getWidth() / 2 - getX()
+            );
+            double absY = Math.abs(
+                currentTargetLocation.getY() - getHeight() / 2 - getY()
+            );
 
             if (absX < 1 && absY < 1) {
                 currentTargetLocation = path.remove(0);
@@ -450,7 +482,8 @@ public class SeekerAI extends SquareEntity implements Collisions {
     }
 
     /**
-     * Checks if the room has changed and if yes, update the current and previous room
+     * Checks if the room has changed and if yes, update the current and
+     * previous room
      * @param entity the entity to update the room of
      */
     private void updateRoom(Entity entity) {
@@ -504,7 +537,8 @@ public class SeekerAI extends SquareEntity implements Collisions {
     }
 
     /**
-     * Sets animation of the seeker based on the movement towards the current target location.
+     * Sets animation of the seeker based on the movement towards the current
+     * target location.
      */
     public void setAnimation() {
         Point2D translation = currentTargetLocation.subtract(getCentre());
@@ -554,9 +588,11 @@ public class SeekerAI extends SquareEntity implements Collisions {
     }
 
     /**
-     * Will use the last seen position to estimate which room should be checked next
+     * Will use the last seen position to estimate which room should be checked
+     * next</p>
      * The closest room to the last seen position will be returned
-     * @return the closest room to the last seen position, or null if last seen position is null
+     * @return the closest room to the last seen position, or null if last seen
+     * position is null
      */
     private Room getPreferred() {
         if (lastSeenPosition == null) {
@@ -599,15 +635,18 @@ public class SeekerAI extends SquareEntity implements Collisions {
         return finalRoom;
     }
 
+
     /**
-     * @param b the value to set isActive to
+     * @param b True if this {@link SeekerAI} is active
      */
     public void setActive(boolean b) { isActive = b; }
 
+
     /**
-     * @param b the value to set isSearching to
+     * @param b True if this {@link SeekerAI} is currently searching
      */
     public void setSearch(boolean b) { isSearching = b; }
+
 
     /**
      * @return the current sprite
@@ -623,20 +662,24 @@ public class SeekerAI extends SquareEntity implements Collisions {
         return currentSwingAnimation;
     }
 
+
     /**
      * @return the swatter hitbox
      */
     public Arc getSwatterHitbox() { return swatterHitbox; }
+
 
     /**
      * @return the current target
      */
     public SquareEntity getTarget() { return target; }
 
+
     /**
-     * @return the value of isActive
+     * @return True if this {@link SeekerAI} is active
      */
     public boolean isActive() { return isActive; }
+
 
     @Override
     public Rectangle getRenderArea() {

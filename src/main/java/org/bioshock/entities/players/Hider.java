@@ -15,7 +15,6 @@ import org.bioshock.entities.Entity;
 import org.bioshock.entities.EntityManager;
 import org.bioshock.entities.SquareEntity;
 import org.bioshock.entities.map.Wall;
-import org.bioshock.entities.powerup.PowerUpManager;
 import org.bioshock.main.App;
 import org.bioshock.networking.NetworkManager;
 import org.bioshock.physics.Collisions;
@@ -30,29 +29,83 @@ import javafx.geometry.Point3D;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
+/**
+ * A class representing a hider
+ */
 public class Hider extends SquareEntity implements Collisions {
-    private final PowerUpManager powerUpManager = new PowerUpManager(this);
+
+    private double initPositionX = 0;
+
+    private double initPositionY = 0;
+
+
+    /**
+     * True if this {@link Hider} is dead
+     */
     private boolean dead = false;
+
+    /**
+     * The current sprite for the hider
+     */
     private Sprite currentSprite;
+
+    /**
+     * The Hider animations
+     */
     private HiderAnimations hiderAnimations;
+
+    /**
+     * True if sound effect has been played
+     */
     private boolean playedSfx = false;
 
-    private String name;
+    /**
+     * The name of the Hider
+     */
+    private String name = "Hider";
 
-    public Hider(Point3D p, NetworkC com, Size s, int r, Color c) {
-        super(p, com, new PlayerRendererC(), s, r, c);
+
+    /**
+     * Construct a new Hider
+     * @param position The top left position of the hider
+     * @param networkComponent The network component
+     * @param size The size of the hider
+     * @param fovRadius The radius of the FOV of the hider
+     * @param colour The colour of the Hider
+     */
+    public Hider(
+        Point3D position,
+        NetworkC networkComponent,
+        Size size,
+        int fovRadius,
+        Color colour
+    ) {
+        super(
+            position,
+            networkComponent,
+            new PlayerRendererC(),
+            size,
+            fovRadius,
+            colour
+        );
 
         renderer = PlayerSpriteRenderer.class;
 
         initCollision(this);
     }
 
+
+    @Override
     protected void tick(double timeDelta) {
-        if (!dead) {
+        if (
+            !dead
+            && !movement.movementPaused()
+        ) {
             movement.tick(timeDelta);
             setAnimation();
             setWalkingSfx();
-            powerUpManager.tick(timeDelta);
+        } else if (!dead) {
+            setAnimation(hiderAnimations.getPlayerIdleSprite());
         }
     }
 
@@ -67,7 +120,7 @@ public class Hider extends SquareEntity implements Collisions {
         List<Hider> otherPlayers = new ArrayList<>(EntityManager.getPlayers());
         otherPlayers.remove(EntityManager.getCurrentPlayer());
 
-        /* Seeker */
+        /* Seekers */
         List<SeekerAI> seekers = EntityManager.getSeekers();
 
         /* Walls of room */
@@ -87,6 +140,10 @@ public class Hider extends SquareEntity implements Collisions {
         }
     }
 
+
+    /**
+     * Initialise the animations of the hider
+     */
     public void initAnimations() {
         hiderAnimations = new HiderAnimations(
             this,
@@ -95,10 +152,20 @@ public class Hider extends SquareEntity implements Collisions {
         currentSprite = hiderAnimations.getPlayerIdleSprite();
     }
 
-    public void setName(String hiderName){
+
+    /**
+     * Set the name of the hider
+     * @param hiderName The new name
+     */
+    public void setName(String hiderName) {
         name = hiderName;
     }
 
+
+    /**
+     * Set the current sprite
+     * @param s The new sprite
+     */
     private void setCurrentSprite(Sprite s) {
         if (s != null) {
             currentSprite = s;
@@ -107,21 +174,33 @@ public class Hider extends SquareEntity implements Collisions {
         }
     }
 
+
+    /**
+     * Set the hider to be dead or not
+     * @param d
+     */
     public void setDead(boolean d) {
+        /* Only run of first death */
         if (!dead && d) {
             rendererC.setColour(Color.GREY);
-            if (App.isNetworked()) NetworkManager.kill(this);
+            if (App.isNetworked()) {
+                NetworkManager.kill(this);
+            }
 
             hitbox = new Rectangle();
 
             RenderManager.setClip(false);
+
+            setCurrentSprite(hiderAnimations.getPlayerDying());
         }
 
         dead = d;
-
-        setCurrentSprite(hiderAnimations.getPlayerDying());
     }
 
+
+    /**
+     * Set the hiders animation based on how it moved from the last tick
+     */
     public void setAnimation() {
         Point2D translation = movement.getDirection();
 
@@ -141,6 +220,20 @@ public class Hider extends SquareEntity implements Collisions {
         setCurrentSprite(animation);
     }
 
+
+    /**
+     * Manually sets current animation
+     * @param sprite The animation to be played
+     */
+    private void setAnimation(Sprite sprite) {
+        setCurrentSprite(sprite);
+    }
+
+
+    /**
+     * Set the walking sound effect based on how the hider moved compared
+     * to the last tick
+     */
     public void setWalkingSfx() {
         Point2D translation = movement.getDirection();
 
@@ -161,6 +254,10 @@ public class Hider extends SquareEntity implements Collisions {
 
     }
 
+
+    /**
+     * @return True if hider is dead
+     */
     public boolean isDead() {
         return dead;
     }
@@ -178,13 +275,53 @@ public class Hider extends SquareEntity implements Collisions {
         );
     }
 
+
+    /**
+     * @return The hiders name
+     */
     public String getName() {
         return name;
     }
 
+
+    /**
+     * @return The current sprite
+     */
     public Sprite getCurrentSprite() {
         return currentSprite;
     }
 
-    public PowerUpManager getPowerUpManager() { return powerUpManager; }
+
+    /**
+     * @param x the x coordinate of the position that this hider initially
+     * had
+     */
+
+    public void setInitPositionX(double x){
+        initPositionX = x;
+    }
+
+
+    /**
+     * @param y the y coordinate of the position that this hider initially had
+     */
+    public void setInitPositionY(double y){
+        initPositionY = y;
+    }
+
+
+    /**
+     * @return the x coordinate of the position that this hider initially had
+     */
+    public double getInitPositionX(){
+        return  initPositionX;
+    }
+
+
+    /**
+     * @return the y coordinate of the position that this hider initially had
+     */
+    public double getInitPositionY(){
+        return initPositionY;
+    }
 }

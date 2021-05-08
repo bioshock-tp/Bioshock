@@ -1,9 +1,8 @@
 package org.bioshock.entities.players;
 
 import org.bioshock.components.NetworkC;
-import org.bioshock.components.RendererC;
 import org.bioshock.entities.SquareEntity;
-import org.bioshock.rendering.renderers.PlayerSpriteRenderer;
+import org.bioshock.rendering.renderers.components.RendererC;
 import org.bioshock.utils.Size;
 
 import javafx.geometry.Point3D;
@@ -21,8 +20,6 @@ public class SeekerHuman extends SquareEntity {
         Color c
     ) {
     	super(p, nCom, rCom, s, r, c);
-
-        renderer = PlayerSpriteRenderer.class;
     }
 
 	protected void tick(double timeDelta) {

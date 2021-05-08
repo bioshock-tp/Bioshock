@@ -20,7 +20,13 @@ public class AudioManager {
     private static EffectController plinkEffectController;
     private static EffectSettings plinkEffectSettings;
     private static EffectController freezeEffectController;
-    private static EffectSettings freezeEffectSettings;
+    private static EffectController fastAirEffectController;
+    private static EffectController ghostEffectController;
+    private static EffectController teleportEffectController;
+    private static EffectController winEffectController;
+    private static EffectController loseEffectController;
+    private static EffectController bombEffectController;
+    private static EffectController trapEffectController;
 
     /**
      * Initialises all of the audio controllers in the game.
@@ -45,7 +51,27 @@ public class AudioManager {
         freezeEffectController = AudioController.loadEffectController(
             "freeze"
         );
-        freezeEffectSettings = new EffectSettings();
+        ghostEffectController = AudioController.loadEffectController(
+            "ghost"
+        );
+        fastAirEffectController = AudioController.loadEffectController(
+            "fastAir"
+        );
+        teleportEffectController = AudioController.loadEffectController(
+            "teleport"
+        );
+        bombEffectController = AudioController.loadEffectController(
+                "bomb"
+        );
+        trapEffectController = AudioController.loadEffectController(
+                "trap"
+        );
+        winEffectController = AudioController.loadEffectController(
+            "win"
+        );
+        loseEffectController = AudioController.loadEffectController(
+            "lose"
+        );
     }
 
     /**
@@ -133,10 +159,86 @@ public class AudioManager {
         Preferences prefs = Preferences.userNodeForPackage(SettingsController.class);
 
         if (prefs.getBoolean("sfxOn", true)) {
-            double volume = prefs.getDouble("sfxVolume", 1.0);
-            freezeEffectSettings.setVolume(volume);
-            freezeEffectSettings.setCycleCount(1);
-            freezeEffectController.play(freezeEffectSettings);
+            freezeEffectController.play(plinkEffectSettings);
+        }
+    }
+
+    /**
+     * PLays ghost sound.
+     */
+    public static void playGhostSfx() {
+        Preferences prefs = Preferences.userNodeForPackage(SettingsController.class);
+
+        if (prefs.getBoolean("sfxOn", true)) {
+            ghostEffectController.play(plinkEffectSettings);
+        }
+    }
+
+    /**
+     * PLays fast air sound.
+     */
+    public static void playFastAirSfx() {
+        Preferences prefs = Preferences.userNodeForPackage(SettingsController.class);
+
+        if (prefs.getBoolean("sfxOn", true)) {
+            fastAirEffectController.play(plinkEffectSettings);
+        }
+    }
+
+    /**
+     * PLays teleport sound.
+     */
+    public static void playTeleportSfx() {
+        Preferences prefs = Preferences.userNodeForPackage(SettingsController.class);
+
+        if (prefs.getBoolean("sfxOn", true)) {
+            teleportEffectController.play(plinkEffectSettings);
+        }
+    }
+
+    /**
+     * PLays bomb sound.
+     */
+
+    public static void playBombSfx() {
+        Preferences prefs = Preferences.userNodeForPackage(SettingsController.class);
+
+        if (prefs.getBoolean("sfxOn", true)) {
+            bombEffectController.play(plinkEffectSettings);
+        }
+    }
+
+    /**
+     * PLays trap sound.
+     */
+
+    public static void playTrapSfx() {
+        Preferences prefs = Preferences.userNodeForPackage(SettingsController.class);
+
+        if (prefs.getBoolean("sfxOn", true)) {
+            trapEffectController.play(plinkEffectSettings);
+        }
+    }
+
+    /**
+     * PLays win sound.
+     */
+    public static void playWinSfx() {
+        Preferences prefs = Preferences.userNodeForPackage(SettingsController.class);
+
+        if (prefs.getBoolean("sfxOn", true)) {
+            winEffectController.play(plinkEffectSettings);
+        }
+    }
+
+    /**
+     * PLays lose sound.
+     */
+    public static void playLoseSfx() {
+        Preferences prefs = Preferences.userNodeForPackage(SettingsController.class);
+
+        if (prefs.getBoolean("sfxOn", true)) {
+            loseEffectController.play(plinkEffectSettings);
         }
     }
 
@@ -146,4 +248,6 @@ public class AudioManager {
     public static void stopWooshSfx() {
         wooshEffectController.stop();
     }
+
+
 }

@@ -55,11 +55,11 @@ public class AudioController {
     }
 
     /**
-     * Initializes this AudioController, by loading all of the music and effect
+     * Initialises this AudioController, by loading all of the music and effect
      * data from a JSON file.
      *
-     * If this AudioController has already been initialized, this resets all
-     * internal data and then re-initializes this AudioController.
+     * If this AudioController has already been initialised, this resets all
+     * internal data and then re-initialises this AudioController.
      *
      */
     public static void initialise() {

@@ -1,11 +1,5 @@
 package org.bioshock.networking;
 
-import org.bioshock.gui.SettingsController;
-import org.bioshock.main.App;
-import org.bioshock.scenes.SceneManager;
-import org.java_websocket.client.WebSocketClient;
-import org.java_websocket.handshake.ServerHandshake;
-
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.ByteBuffer;
@@ -14,30 +8,68 @@ import java.util.Queue;
 import java.util.concurrent.Semaphore;
 import java.util.prefs.Preferences;
 
-public class Client extends WebSocketClient {
-    private static final String DEFURI = "ws://51.15.109.210:8029/";
+import org.bioshock.gui.SettingsController;
+import org.bioshock.main.App;
+import org.bioshock.scenes.SceneManager;
+import org.java_websocket.WebSocket;
+import org.java_websocket.client.WebSocketClient;
+import org.java_websocket.framing.Framedata;
+import org.java_websocket.handshake.ServerHandshake;
 
+public class Client extends WebSocketClient {
+    /** URI of the game's server */
+    private static final String DEF_URI = "ws://51.15.109.210:8029/";
+
+    /** The players number within a lobby */
     private int playerNumber;
 
     private Semaphore mutex = new Semaphore(1);
+
+    /** Messages received within a lobby */
     private Queue<Message> initialMessages = new ArrayDeque<>();
+
+    /** Messages received during gameplay */
     private Queue<Message> messageQueue = new ArrayDeque<>();
-    private boolean connected = false;
+
+    /** True if waiting for initial message */
     private boolean initMessage = true;
+
+    /** Chosen name of player */
     private String playerName;
 
+
+    /**
+     * Creates a {@code Client} with a custom URI
+     * @param serverURI URI of server to connect to
+     */
     private Client(URI serverURI) {
         super(serverURI);
     }
 
+
+    /** Creates a {@code Client} using the default URI */
     public Client() {
-        this(DEFURI);
+        this(DEF_URI);
     }
 
+
+    /**
+     * Creates a {@code Client} with a custom URI string
+     * @param uri A string containing the URI of the server to connect to
+     * @see URI
+     */
     public Client(String uri) {
         this(getURI(uri));
     }
 
+
+    /**
+     * Creates a URI object from a string
+     * @param uri A string containing the URI of the server to connect to
+     * @return A URI object If the string has valid syntax, otherwise
+     * {@code null}
+     * @see URI
+     */
     private static URI getURI(String uri) {
         try {
             return new URI(uri);
@@ -48,6 +80,7 @@ public class Client extends WebSocketClient {
         }
     }
 
+
     @Override
     public void onOpen(ServerHandshake handshakedata) {
 
@@ -55,6 +88,7 @@ public class Client extends WebSocketClient {
         Preferences prefs = Preferences.userNodeForPackage(SettingsController.class);
         playerName = prefs.get("playerName", App.getBundle().getString("DEFAULT_PLAYER_NAME_TEXT"));
     }
+
 
     @Override
     public void onMessage(String string) {
@@ -115,11 +149,13 @@ public class Client extends WebSocketClient {
         }
     }
 
+
     @Override
     public void onMessage(ByteBuffer message) {
         App.logger.debug("received ByteBuffer");
         onMessage(message.toString());
     }
+
 
     @Override
     public void onError(Exception ex) {
@@ -134,6 +170,7 @@ public class Client extends WebSocketClient {
 
     }
 
+
     @Override
     public void onClose(int code, String reason, boolean remote) {
         App.logger.fatal(
@@ -143,23 +180,50 @@ public class Client extends WebSocketClient {
         );
     }
 
-    public boolean haveInitMessage() {return initMessage;}
 
-    public String getPlayerName() {return playerName;}
+    @Override
+    public void onWebsocketPong(WebSocket conn, Framedata f) {
+        long nanoTime = System.nanoTime();
+        NetworkManager.setPing(
+            NetworkManager.me(),
+            (int) ((nanoTime - NetworkManager.getPreviousPingTime()) / 10e6)
+        );
+    }
 
+
+    /**
+     * @return True if waiting for initial message
+     */
+    public boolean haveInitMessage() { return initMessage; }
+
+
+    /**
+     * @return Chosen name of player
+     */
+    public String getPlayerName() { return playerName; }
+
+
+    /**
+     * @return Messages received within a lobby
+     */
     public Queue<Message> getInitialMessages() {
         return initialMessages;
     }
 
+
+    /**
+     * @return Messages received during gameplay
+     * @see #getMutex()
+     */
     public Queue<Message> getMessageQ() {
         return messageQueue;
     }
 
+
+    /**
+     * @return A semaphore for accessing {@link #messageQueue}
+     */
     public Semaphore getMutex() {
         return mutex;
-    }
-
-    public boolean isConnected() {
-        return connected;
     }
 }
