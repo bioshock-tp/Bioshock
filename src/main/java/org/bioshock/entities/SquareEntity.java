@@ -5,6 +5,7 @@ import org.bioshock.physics.Movement;
 import org.bioshock.rendering.renderers.components.RendererC;
 import org.bioshock.utils.Point;
 import org.bioshock.utils.Size;
+import org.checkerframework.checker.units.qual.radians;
 
 import javafx.geometry.Point3D;
 import javafx.scene.paint.Color;
@@ -13,7 +14,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.transform.Rotate;
 
 /**
- * 
+ *
  * A class to represent a generic square entity with a FOV (field of view) with a radius of r
  *
  */
@@ -46,7 +47,7 @@ public abstract class SquareEntity extends Entity {
      * @param rCom The new render component
      * @param s The size of the square of that makes up the entity
      * @param r The radius of the FOV
-     * @param c The Colour of the squareEntity for rendering purposes 
+     * @param c The Colour of the squareEntity for rendering purposes
      * (not necessarily used but set one to avoid null pointers)
      */
     protected SquareEntity(
@@ -91,8 +92,17 @@ public abstract class SquareEntity extends Entity {
      */
     public void setInvisible(boolean invisible) { this.invisible = invisible; }
 
+
     /**
-     * 
+     * @param radius The new radius for the {@link #fov}
+     */
+    public void setRadius(double radius) {
+        fov = new Circle(position.getX(), position.getY(), radius);
+    }
+
+
+    /**
+     *
      * @return The centre of the square entity
      * i.e. new Point(getX() + getWidth() / 2, getY() + getHeight() / 2)
      */
@@ -125,15 +135,14 @@ public abstract class SquareEntity extends Entity {
     }
 
     /**
-     * 
-     * return The radius of the current entity
+     * @return The radius of the current entity
      */
     public double getRadius() {
         return fov.getRadius();
     }
 
     /**
-     * 
+     *
      * @return The rotation of the current entity
      */
     public Rotate getRotate() {
@@ -141,7 +150,7 @@ public abstract class SquareEntity extends Entity {
     }
 
     /**
-     * 
+     *
      * @return The movement component the entity
      */
     public Movement getMovement() {
@@ -149,7 +158,7 @@ public abstract class SquareEntity extends Entity {
     }
 
     /**
-     * 
+     *
      * @return If the entity is invisible or not
      */
     public boolean isInvisible() { return invisible; }
