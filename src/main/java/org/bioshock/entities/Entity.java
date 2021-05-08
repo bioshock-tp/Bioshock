@@ -14,6 +14,7 @@ import org.bioshock.utils.Point;
 
 import javafx.geometry.Point2D;
 import javafx.geometry.Point3D;
+import javafx.scene.effect.ColorAdjust;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
@@ -63,6 +64,11 @@ public abstract class Entity {
      * The renderer that the entity is rendered with
      */
     protected Class<? extends Renderer> renderer;
+
+    /**
+     * Affects the colour for rendering
+     */
+    private final ColorAdjust colourAdjust = new ColorAdjust();
 
 
     /**
@@ -346,6 +352,14 @@ public abstract class Entity {
      */
     public boolean alwaysRender() {
         return alwaysRender;
+    }
+
+
+    /**
+     * @return This {@link Entity Entity's} {@link ColorAdjust}
+     */
+    public ColorAdjust getColourAdjust() {
+        return colourAdjust;
     }
 
 

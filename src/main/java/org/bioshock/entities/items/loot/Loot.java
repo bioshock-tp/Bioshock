@@ -1,4 +1,4 @@
-package org.bioshock.entities.items.food;
+package org.bioshock.entities.items.loot;
 
 import org.bioshock.audio.AudioManager;
 import org.bioshock.components.NetworkC;
@@ -7,14 +7,12 @@ import org.bioshock.entities.players.Hider;
 import org.bioshock.scenes.SceneManager;
 import org.bioshock.utils.Size;
 
-public abstract class Food extends Item {
-
-
+public abstract class Loot extends Item {
     /**
      * Creates a room in a random room in a random location
      * @param path Path to this entities image file
      */
-    protected Food(String path, long seed) {
+    protected Loot(String path, long seed) {
         super(
             spawn(seed),
             new Size(DEFAULT_SIZE, DEFAULT_SIZE),
@@ -26,7 +24,7 @@ public abstract class Food extends Item {
 
     @Override
     protected void apply(Hider hider) {
-        SceneManager.getMainGame().collectFood(hider);
+        SceneManager.getMainGame().collectLoot(hider);
     }
 
 

@@ -67,7 +67,7 @@ public abstract class Item extends ImageEntity implements Collisions {
      * Called when an {@link Hider} walks over this item
      * @param hider The hider that collected this item
      */
-    public void collect(Hider hider) {
+    protected void collect(Hider hider) {
         apply(hider);
         playCollectSound();
         destroy();
@@ -102,14 +102,14 @@ public abstract class Item extends ImageEntity implements Collisions {
 
         Room room = null;
         do {
-            if (roomsWithFood.size() == rooms.size()) {
-                App.logger.error("Too many food items being created");
+            if (roomsWithLoot.size() == rooms.size()) {
+                App.logger.error("Too many loot items being created");
             }
 
             int roomIndex = random.nextInt(rooms.size());
 
             room = rooms.get(roomIndex);
-        } while (roomsWithFood.contains(room));
+        } while (roomsWithLoot.contains(room));
 
         GraphNode[][] traversableArray = room.getTraversableArray();
         Set<GraphNode> traversableNodes = room.getTraversableGraph().getNodes();
@@ -126,11 +126,11 @@ public abstract class Item extends ImageEntity implements Collisions {
             || !traversableNodes.contains(traversableArray[i][j])
         );
 
-        roomsWithFood.add(room);
+        roomsWithLoot.add(room);
 
-        Point2D foodCentre = traversableArray[i][j].getLocation();
-        double x = foodCentre.getX() - DEFAULT_SIZE / 2f;
-        double y = foodCentre.getY() - DEFAULT_SIZE / 2f;
+        Point2D lootCentre = traversableArray[i][j].getLocation();
+        double x = lootCentre.getX() - DEFAULT_SIZE / 2f;
+        double y = lootCentre.getY() - DEFAULT_SIZE / 2f;
 
         return new Point3D(x, y, Z);
     }

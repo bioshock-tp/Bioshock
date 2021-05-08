@@ -1,9 +1,13 @@
 package org.bioshock.entities.players;
 
-import javafx.geometry.Point2D;
-import javafx.geometry.Point3D;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
+import static org.bioshock.audio.AudioManager.playWalkingSfx;
+import static org.bioshock.audio.AudioManager.stopWalkingSfx;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import org.bioshock.animations.HiderAnimations;
 import org.bioshock.animations.Sprite;
 import org.bioshock.components.NetworkC;
@@ -11,7 +15,6 @@ import org.bioshock.entities.Entity;
 import org.bioshock.entities.EntityManager;
 import org.bioshock.entities.SquareEntity;
 import org.bioshock.entities.map.Wall;
-import org.bioshock.entities.powerup.PowerUpManager;
 import org.bioshock.main.App;
 import org.bioshock.networking.NetworkManager;
 import org.bioshock.physics.Collisions;
@@ -21,13 +24,10 @@ import org.bioshock.rendering.renderers.components.PlayerRendererC;
 import org.bioshock.utils.GlobalConstants;
 import org.bioshock.utils.Size;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import static org.bioshock.audio.AudioManager.playWalkingSfx;
-import static org.bioshock.audio.AudioManager.stopWalkingSfx;
+import javafx.geometry.Point2D;
+import javafx.geometry.Point3D;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 
 /**
  * A class representing a hider
@@ -38,10 +38,6 @@ public class Hider extends SquareEntity implements Collisions {
 
     private double initPositionY = 0;
 
-    /**
-     * The powerup manager for the hider
-     */
-    private final PowerUpManager powerUpManager = new PowerUpManager(this);
 
     /**
      * True if this {@link Hider} is dead
@@ -108,7 +104,6 @@ public class Hider extends SquareEntity implements Collisions {
             movement.tick(timeDelta);
             setAnimation();
             setWalkingSfx();
-            powerUpManager.tick(timeDelta);
         } else if (!dead) {
             setAnimation(hiderAnimations.getPlayerIdleSprite());
         }
@@ -296,12 +291,6 @@ public class Hider extends SquareEntity implements Collisions {
         return currentSprite;
     }
 
-
-    /**
-     *
-     * @return The powerup manager
-     */
-    public PowerUpManager getPowerUpManager() { return powerUpManager; }
 
     /**
      * @param x the x coordinate of the position that this hider initially

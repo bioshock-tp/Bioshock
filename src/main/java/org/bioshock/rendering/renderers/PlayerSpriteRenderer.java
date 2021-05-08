@@ -74,19 +74,8 @@ public class PlayerSpriteRenderer implements Renderer {
             r.getMyy(), r.getTx(), r.getTy()
         );
 
-        ColorAdjust colourAdjust = new ColorAdjust(0,0, 0,0);
-        if (player.getPowerUpManager().getSpeedPower().isActive()) {
-            colourAdjust.setHue(0.15);
-            colourAdjust.setContrast(0.2);
-        }
-        if (player.getPowerUpManager().getFreezePower().isActive()) {
-            colourAdjust.setHue(Color.BLUE.getHue());
-            colourAdjust.setContrast(0);
-        }
-        if (player.getPowerUpManager().getInvisiblePower().isActive()) {
-            colourAdjust.setBrightness(-0.5);
-            colourAdjust.setContrast(0);
-        }
+        ColorAdjust colourAdjust = player.getColourAdjust();
+
         gc.setEffect(colourAdjust);
         gc.setFill(player.getRendererC().getColour());
 

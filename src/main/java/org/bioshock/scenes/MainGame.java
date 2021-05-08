@@ -11,15 +11,19 @@ import org.bioshock.engine.core.FrameRate;
 import org.bioshock.engine.input.InputManager;
 import org.bioshock.entities.EntityManager;
 import org.bioshock.entities.LabelEntity;
-import org.bioshock.entities.items.food.Burger;
-import org.bioshock.entities.items.food.Dessert;
-import org.bioshock.entities.items.food.Donut;
-import org.bioshock.entities.items.food.HotDog;
-import org.bioshock.entities.items.food.Pizza;
-import org.bioshock.entities.items.powerup_items.FreezeItem;
-import org.bioshock.entities.items.powerup_items.InvisibilityItem;
-import org.bioshock.entities.items.powerup_items.SpeedItem;
-import org.bioshock.entities.items.powerup_items.VentItem;
+import org.bioshock.entities.items.VentItem;
+import org.bioshock.entities.items.loot.Bag;
+import org.bioshock.entities.items.loot.Chest;
+import org.bioshock.entities.items.loot.Coins;
+import org.bioshock.entities.items.loot.Crystal;
+import org.bioshock.entities.items.loot.Goblet;
+import org.bioshock.entities.items.loot.Key;
+import org.bioshock.entities.items.loot.Loot;
+import org.bioshock.entities.items.loot.Necklace;
+import org.bioshock.entities.items.loot.TreasureSack;
+import org.bioshock.entities.items.powerups.FreezeItem;
+import org.bioshock.entities.items.powerups.InvisibilityItem;
+import org.bioshock.entities.items.powerups.SpeedItem;
 import org.bioshock.entities.map.Room;
 import org.bioshock.entities.map.RoomEntity;
 import org.bioshock.entities.map.Wall;
@@ -55,9 +59,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.util.Duration;
 
+
 public class MainGame extends GameScene {
-
-
     /**
      * Number of seekers to spawn
      */
@@ -71,7 +74,8 @@ public class MainGame extends GameScene {
 
     /**
      * How long until the the hiders win the game
-     * (Currently timer isn't used as win condition is now collecting a certain amount of food)
+     * (Currently timer isn't used as win condition is now collecting a certain
+     * amount of loot)
      */
     private static final double END_TIME = 2 * 60f + 3;
 
@@ -81,14 +85,14 @@ public class MainGame extends GameScene {
     private static final double LOSE_DELAY = 0;
 
     /**
-     * Number of food items to be collected to win
+     * Number of loot items to be collected to win
      */
-    private static final int FOOD_TO_WIN = 5;
+    private int lootToWin;
 
     /**
-     * The amount of food currently collected
+     * The amount of loot currently collected
      */
-    private int collectedFood = 0;
+    private int collectedLoot = 0;
 
     /**
      * Maps each player to their score
@@ -101,7 +105,7 @@ public class MainGame extends GameScene {
     private java.util.Map<Hider, IntegerProperty> playerPowerUpScore;
 
     /**
-     * The counter representing how much food has been collected
+     * The counter representing how much loot has been collected
      */
     private LabelEntity counter;
 
@@ -134,7 +138,8 @@ public class MainGame extends GameScene {
 
     /**
      * The timer entity representing how much time is left in the game
-     * (Currently timer isn't used as win condition is now collecting a certain amount of food)
+     * (Currently timer isn't used as win condition is now collecting a certain
+     *  amount of loot)
      */
     private LabelEntity timer;
 
@@ -224,8 +229,6 @@ public class MainGame extends GameScene {
 
         children.add(FrameRate.getLabel());
 
-        initCounter();
-
         initChat();
 
         registerEntities();
@@ -273,22 +276,6 @@ public class MainGame extends GameScene {
             playerScores.put(player, new SimpleIntegerProperty(0));
             playerPowerUpScore.put(player, new SimpleIntegerProperty(0));
         });
-    }
-
-
-    /**
-     * Initialise the game counter
-     */
-    private void initCounter() {
-        counter = new LabelEntity(
-            new Point3D(GameScene.getGameScreen().getWidth() / 2, 50, 100),
-            String.format("%d/%d", collectedFood, FOOD_TO_WIN),
-            new Font("arial", 20),
-            50,
-            Color.BLACK
-        );
-
-        children.add(counter);
     }
 
 
@@ -371,6 +358,8 @@ public class MainGame extends GameScene {
         }
 
         initItems();
+
+        initCounter();
 
         renderEntities();
 
@@ -525,15 +514,41 @@ public class MainGame extends GameScene {
      * Initialises the collectible items
      */
     private void initItems() {
-        children.add(new Burger(rand.nextLong()));
-        children.add(new Dessert(rand.nextLong()));
-        children.add(new Donut(rand.nextLong()));
-        children.add(new HotDog(rand.nextLong()));
-        children.add(new Pizza(rand.nextLong()));
+        List<Loot> loot = List.of(
+            new Bag(rand.nextLong()),
+            new Chest(rand.nextLong()),
+            new Coins(rand.nextLong()),
+            new Crystal(rand.nextLong()),
+            new Goblet(rand.nextLong()),
+            new Key(rand.nextLong()),
+            new Necklace(rand.nextLong()),
+            new TreasureSack(rand.nextLong())
+        );
+
+        lootToWin = loot.size();
+
+        children.addAll(loot);
+
 		children.add(new FreezeItem(rand.nextLong()));
 		children.add(new InvisibilityItem(rand.nextLong()));
 		children.add(new SpeedItem(rand.nextLong()));
 		children.add(new VentItem(rand.nextLong()));
+    }
+
+
+    /**
+     * Initialise the game counter
+     */
+    private void initCounter() {
+        counter = new LabelEntity(
+            new Point3D(GameScene.getGameScreen().getWidth() / 2, 50, 100),
+            String.format("%d/%d", collectedLoot, lootToWin),
+            new Font("arial", 20),
+            50,
+            Color.BLACK
+        );
+
+        children.add(counter);
     }
 
 
@@ -646,15 +661,15 @@ public class MainGame extends GameScene {
 
     /**
      * Handles item collection<p />
-     * If number of items collected is {@link #FOOD_TO_WIN}, game is won
+     * If number of items collected is {@link #lootToWin}, game is won
      */
-    public void collectFood(Hider hider) {
-        if (++collectedFood == FOOD_TO_WIN) {
+    public void collectLoot(Hider hider) {
+        if (++collectedLoot == lootToWin) {
             NetworkManager.tick();
             App.end(true);
         }
 
-        counter.setLabel(String.format("%d/%d", collectedFood, FOOD_TO_WIN));
+        counter.setLabel(String.format("%d/%d", collectedLoot, lootToWin));
 
         IntegerProperty score = playerScores.get(hider);
         score.set(score.getValue() + 1);

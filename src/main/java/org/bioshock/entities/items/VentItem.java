@@ -1,9 +1,7 @@
-package org.bioshock.entities.items.powerup_items;
+package org.bioshock.entities.items;
 
 import org.bioshock.audio.AudioManager;
 import org.bioshock.components.NetworkC;
-import org.bioshock.entities.items.Item;
-import org.bioshock.entities.items.food.Food;
 import org.bioshock.entities.players.Hider;
 import org.bioshock.utils.Size;
 
@@ -11,8 +9,8 @@ public class VentItem extends Item {
     /**
      * Path to the image that should be displayed
      */
-    private static final String PATH = Food.class.getResource(
-        "/org/bioshock/images/food/teleport.png"
+    private static final String PATH = Item.class.getResource(
+        "/org/bioshock/images/items/teleport.png"
     ).getPath();
 
     public VentItem(long seed) {
