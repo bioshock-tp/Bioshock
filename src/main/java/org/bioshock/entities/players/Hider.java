@@ -44,7 +44,7 @@ public class Hider extends SquareEntity implements Collisions {
     private final PowerUpManager powerUpManager = new PowerUpManager(this);
 
     /**
-     * Boolean of whether the hider is dead or alive
+     * True if this {@link Hider} is dead
      */
     private boolean dead = false;
 
@@ -71,14 +71,27 @@ public class Hider extends SquareEntity implements Collisions {
 
     /**
      * Construct a new Hider
-     * @param p The top left position of the hider
-     * @param com The network component
-     * @param s The size of the hider
-     * @param r The radius of the FOV of the hider
-     * @param c The colour of the Hider
+     * @param position The top left position of the hider
+     * @param networkComponent The network component
+     * @param size The size of the hider
+     * @param fovRadius The radius of the FOV of the hider
+     * @param colour The colour of the Hider
      */
-    public Hider(Point3D p, NetworkC com, Size s, int r, Color c) {
-        super(p, com, new PlayerRendererC(), s, r, c);
+    public Hider(
+        Point3D position,
+        NetworkC networkComponent,
+        Size size,
+        int fovRadius,
+        Color colour
+    ) {
+        super(
+            position,
+            networkComponent,
+            new PlayerRendererC(),
+            size,
+            fovRadius,
+            colour
+        );
 
         renderer = PlayerSpriteRenderer.class;
 
@@ -291,37 +304,34 @@ public class Hider extends SquareEntity implements Collisions {
     public PowerUpManager getPowerUpManager() { return powerUpManager; }
 
     /**
-     * Setter
-     * Sets the x coordinate of the position that this hider initially had
+     * @param x the x coordinate of the position that this hider initially
+     * had
      */
 
     public void setInitPositionX(double x){
         initPositionX = x;
     }
 
-    /**
-     * Setter
-     * Sets the y coordinate of the position that this hider initially had
-     */
 
+    /**
+     * @param y the y coordinate of the position that this hider initially had
+     */
     public void setInitPositionY(double y){
         initPositionY = y;
     }
 
-    /**
-     * Getter
-     * Gets the x coordinate of the position that this hider initially had
-     */
 
+    /**
+     * @return the x coordinate of the position that this hider initially had
+     */
     public double getInitPositionX(){
         return  initPositionX;
     }
 
-    /**
-     * Getter
-     * Gets the y coordinate of the position that this hider initially had
-     */
 
+    /**
+     * @return the y coordinate of the position that this hider initially had
+     */
     public double getInitPositionY(){
         return initPositionY;
     }

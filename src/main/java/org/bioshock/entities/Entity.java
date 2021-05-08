@@ -21,71 +21,83 @@ import javafx.util.Pair;
 
 /**
  * A class representing a generic entity in the game
- *
- *
  */
 public abstract class Entity {
 	/**
 	 * The 2d position of the entity
 	 */
     protected Point position;
+
     /**
      * The entities hitbox
      */
     protected Rectangle hitbox;
+
     /**
      * The unique ID of the entity
      */
     protected String uuid = UUID.randomUUID().toString();
+
     /**
      * The entities network component
      */
     protected NetworkC networkC;
+
     /**
      * The entities render component
      */
     protected RendererC rendererC;
+
     /**
      * Boolean to represent whether to always render the current
      * entity or not no matter it's renderArea
      */
     protected boolean alwaysRender = false;
+
     /**
      * Boolean to represent if the current entity is enabled or not
      */
     protected boolean enabled = true;
+
     /**
      * The renderer that the entity is rendered with
      */
     protected Class<? extends Renderer> renderer;
 
-    /**
-     * Basic constructor
-     * @param p the position of the entity
-     * @param h the hitbox of the entity
-     * @param netC the network component of the entity
-     * @param renC the renderComponent of the entity
-     */
-    protected Entity(Point3D p, Rectangle h, NetworkC netC, RendererC renC) {
-    	//set the current position in 2d
-        position = new Point(p.getX(), p.getY());
 
-        hitbox = h;
-        hitbox.setFill(Color.TRANSPARENT);
+    /**
+     * @param position the position of the entity
+     * @param hitbox the hitbox of the entity
+     * @param networkComponent the network component of the entity
+     * @param renderComponent the renderComponent of the entity
+     */
+    protected Entity(
+        Point3D position,
+        Rectangle hitbox,
+        NetworkC networkComponent,
+        RendererC renderComponent
+    ) {
+    	//set the current position in 2d
+        this.position = new Point(position.getX(), position.getY());
+
+        this.hitbox = hitbox;
+        this.hitbox.setFill(Color.TRANSPARENT);
 
         setPosition(position);
 
-        networkC = netC;
-        rendererC = renC;
+        this.networkC = networkComponent;
+        this.rendererC = renderComponent;
 
-        rendererC.setZ(p.getZ());
+        this.rendererC.setZ(position.getZ());
     }
+
 
     /**
      * The method to update the current entity
      * @param timeDelta the amount of time to update the entity in seconds
      */
     protected abstract void tick(double timeDelta);
+
 
     /**
      * Method that calls tick on the entity only if the entity is enabled
@@ -97,21 +109,23 @@ public abstract class Entity {
         }
     }
 
+
     /**
-     * Checks to see if the given entities hitbox intersects the this entities hitbox
-     * @param entity
-     * @return whether the given entities hitbox intersects the this entities hitbox
-     *
-     * false if the given entity is this
+     * Checks if two entities intersect visually
+     * @param entity The {@link Entity} to check the intersection with
+     * @return True if the {@link Entity Entity's} hitboxes intersect,
+     * false if provided {@code entity} is {@code this}
      */
     public boolean intersects(Entity entity) {
         return entity != this && intersects(entity.getHitbox());
     }
 
+
     /**
-     * Checks to see if the given shape
-     * @param shape
-     * @return whether the given shape intersects the this entities hitbox
+     * Checks if {@code this} intersects with a shape visually
+     * @param shape The {@link Shape} to check the intersection with
+     * @return True if this {@link Entity Entity's} hitbox intersects with the
+     * {@link Shape}
      */
     public boolean intersects(Shape shape) {
         Shape intersects = Shape.intersect(
@@ -122,29 +136,30 @@ public abstract class Entity {
         return (intersects.getBoundsInLocal().getWidth() != -1);
     }
 
+
     /**
-     * getter
-     * @return enabled
+     * @return True if this {@link Entity} is enabled
      */
     public boolean isEnabled() {
         return enabled;
     }
 
+
     /**
-     * sets a new X coordinate
-     * @param newX new X coordinate
+     * @param newX the new X coordinate of this {@link Entity}
      */
     public void setX(double newX) {
         setPosition(newX, getY());
     }
 
+
     /**
-     * sets a new Y coordinate
-     * @param newY new Y coordinate
+     * @param newY the new Y coordinate this {@link Entity}
      */
     public void setY(double newY) {
         setPosition(getX(), newY);
     }
+
 
     /**
      * Sets the current position of the entity
@@ -162,6 +177,7 @@ public abstract class Entity {
         hitbox.setTranslateY(y + hitbox.getHeight() / 2);
     }
 
+
     /**
      * Sets the current position of the entity
      * @param point the new position of this entity
@@ -169,6 +185,7 @@ public abstract class Entity {
     public void setPosition(Point point) {
         setPosition(point.getX(), point.getY());
     }
+
 
     /**
      * Sets the current position of the entity
@@ -178,48 +195,48 @@ public abstract class Entity {
         setPosition(point.getX(), point.getY());
     }
 
+
     /**
-     * sets enabled to the given boolean
-     * @param enabled
+     * @param enabled True if this {@link Entity} should be {@link #enabled}
      */
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
     }
 
+
     /**
-     * Sets rendererC to the given render component
-     * @param renderC
+     * @param renderC the new {@link #rendererC} for this {@link Entity}
      */
     public void setRenderC(RendererC renderC) {
         this.rendererC = renderC;
     }
 
-    /**
-     * Sets networkC to the given network component
-     * @param component
-     */
-    public void setNetworkC(NetworkC component) {
-        this.networkC = component;
-    }
 
     /**
-     * Sets the Unique ID of this entity
-     * @param newID
+     * @param networkC the new {@link #networkC} for this {@link Entity}
+     */
+    public void setNetworkC(NetworkC networkC) {
+        this.networkC = networkC;
+    }
+
+
+    /**
+     * @param newID the new Unique ID of this entity
      */
     public void setID(String newID) {
         uuid = newID;
     }
 
+
     /**
-     *
      * @return the Unique ID of this entity
      */
     public String getID() {
         return uuid;
     }
 
+
     /**
-     *
      * @return the area an entity would effect when rendered
      *
      * this is used to speed up rendering by not attempting
@@ -234,84 +251,108 @@ public abstract class Entity {
         );
     }
 
+
     /**
-     *
-     * @return the current position of this entity
+     * @return the current position of this {@link Entity}
      */
     public Point getPosition() {
         return position;
     }
 
+
     /**
-     *
      * @return the current X coordinate
      */
     public double getX() {
         return position.getX();
     }
 
+
     /**
-     *
      * @return the current Y coordinate
      */
     public double getY() {
         return position.getY();
     }
 
+
     /**
-     *
      * @return the current Z coordinate
      */
     public double getZ() {
         return rendererC.getZ();
     }
 
+
     /**
-     *
-     * @return this entities hitbox
+     * @return this {@link Entity} hitbox
      */
     public Rectangle getHitbox() {
         return hitbox;
     }
 
+
     /**
-     *
-     * @return this entities renerer class
+     * @return The width of {@link Entity}
+     */
+    public double getWidth() {
+        return hitbox.getWidth();
+    }
+
+
+    /**
+     * @return The height of {@link Entity}
+     */
+    public double getHeight() {
+        return hitbox.getHeight();
+    }
+
+
+    /**
+     * @return The centre of this {@link Entity}
+     * i.e. new Point(getX() + getWidth() / 2, getY() + getHeight() / 2)
+     */
+    public Point getCentre() {
+        return new Point(getX() + getWidth() / 2, getY() + getHeight() / 2);
+    }
+
+
+    /**
+     * @return this {@link Entity} {@link #renderer} class
      */
     public Class<? extends Renderer> getRenderer() {
         return renderer;
     }
 
+
     /**
-     *
-     * @return this entities render component
+     * @return this {@link Entity} {@link #rendererC}
      */
     public RendererC getRendererC() {
         return rendererC;
     }
 
+
     /**
-     *
-     * @return this entities network component
+     * @return this {@link Entity} {@link #networkC}
      */
     public NetworkC getNetworkC() {
         return networkC;
     }
 
+
     /**
-     *
-     * @return whether to always render this entity
+     * @return True if this {@link Entity} should always render
      */
     public boolean alwaysRender() {
         return alwaysRender;
     }
 
+
     /**
      *
-     * Finds the current room that an entity is in
-     *
-     * @param entity the entity to find current room of
-     * @return the current room of the entity
+     * Finds the current room that this {@link Entity} is in
+     * @return the current room of this {@link Entity}
      */
     public Room findCurrentRoom() {
         return findCurrentRoom(this.getPosition());
@@ -319,45 +360,26 @@ public abstract class Entity {
 
 
     /**
-     *
      * Finds the current room that a position is in
-     *
-     * @param pos the point to find current room of
+     * @param position the point to find current room of
      * @return the current room of the point
      */
-    public static Room findCurrentRoom(Point2D pos) {
+    public static Room findCurrentRoom(Point2D position) {
         Room[][] current = SceneManager.getMap().getRoomArray();
         Room temp = SceneManager.getMap().getRooms().get(0);
         double tRoomWidth = temp.getTotalSize().getWidth();
         double tRoomHeight = temp.getTotalSize().getHeight();
 
-        int i = (int) Math.floor(pos.getY() / tRoomHeight);
-        int j = (int) Math.floor(pos.getX() / tRoomWidth);
+        int i = (int) Math.floor(position.getY() / tRoomHeight);
+        int j = (int) Math.floor(position.getX() / tRoomWidth);
 
         return current[i][j];
     }
 
 
     /**
-     * @return the current room and the 2 rooms that you are closest too and then the room those 2 are connected too
-     *
-     * OXXO
-     * OXYO
-     * OOOO
-     *
-     * so if you were in the top left of room Y it would return all rooms X and Y
-     *
-     * OOOO
-     * OOYX
-     * OOXX
-     *
-     * if you were in the bottom right of room Y
-     *
-     * OXYO
-     * OOOO
-     * OOOO
-     * if you were in the top left of room y
-     * (in this case only two rooms would be in the list)
+     * @return The current room this {@link Entity} is in and the four rooms
+     * adjacent to it (if applicable)
      */
     public List<Room> find4ClosestRooms() {
         return find4ClosestRooms(this.getPosition());
@@ -365,49 +387,40 @@ public abstract class Entity {
 
 
     /**
-     *
-     * @param pos the position you want the 4 rooms to be close too
-     * @return the current room and the 2 rooms that you are closest too and then the room those 2 are connected too
-     *
-     * OXXO
-     * OXYO
-     * OOOO
-     *
-     * so if you were in the top left of room Y it would return all rooms X and Y
-     *
-     * OOOO
-     * OOYX
-     * OOXX
-     *
-     * if you were in the bottom right of room Y
-     *
-     * OXYO
-     * OOOO
-     * OOOO
-     * if you were in the top left of room y
-     * (in this case only two rooms would be in the list)
+     * @param position The position to find the room and adjacent rooms of
+     * @return The current room of the given position and the four rooms
+     * adjacent to it (if applicable)
      */
-    public static List<Room> find4ClosestRooms(Point2D pos) {
+    public static List<Room> find4ClosestRooms(Point2D position) {
         Room[][] current = SceneManager.getMap().getRoomArray();
         Room temp = SceneManager.getMap().getRooms().get(0);
         double tRoomWidth = temp.getTotalSize().getWidth();
         double tRoomHeight = temp.getTotalSize().getHeight();
 
         //Get the indices of the 4 closest rooms and add them to coords
-        int i = (int) Math.round(pos.getY() / tRoomHeight);
-        int j = (int) Math.round(pos.getX() / tRoomWidth);
+        int i = (int) Math.round(position.getY() / tRoomHeight);
+        int j = (int) Math.round(position.getX() / tRoomWidth);
         List<Pair<Integer, Integer>> coords = new ArrayList<>();
         coords.add(new Pair<>(i, j));
         coords.add(new Pair<>(i - 1, j));
         coords.add(new Pair<>(i, j - 1));
         coords.add(new Pair<>(i - 1, j - 1));
 
-        //Attempt to get the room at every position in coords and if it exists and is not null
-        //add it to the rooms array
+        /*
+         * Attempt to get the room at every position in coords and if it exists
+         * and is not null add it to the rooms array
+         */
         List<Room> rooms = new ArrayList<>();
         for (Pair<Integer, Integer> coord : coords) {
-            if (ArrayUtils.safeGet(current, coord.getKey(), coord.getValue()) != null) {
-                rooms.add(ArrayUtils.safeGet(current, coord.getKey(), coord.getValue()));
+            Room room;
+            if (
+                (room = ArrayUtils.safeGet(
+                    current,
+                    coord.getKey(),
+                    coord.getValue()
+                )) != null
+            ) {
+                rooms.add(room);
             }
         }
         return rooms;

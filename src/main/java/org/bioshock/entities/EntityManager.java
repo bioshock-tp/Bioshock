@@ -11,8 +11,7 @@ import org.bioshock.main.App;
 import org.bioshock.networking.NetworkManager;
 
 /**
- * A class that keeps track of all entities that need to be ticked and sorts
- * them into sublists if they are players or seekers
+ * A class that keeps track of all entities that need to be ticked
  */
 public final class EntityManager {
 	/**

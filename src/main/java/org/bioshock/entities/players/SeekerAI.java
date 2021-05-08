@@ -635,15 +635,18 @@ public class SeekerAI extends SquareEntity implements Collisions {
         return finalRoom;
     }
 
+
     /**
-     * @param b the value to set isActive to
+     * @param b True if this {@link SeekerAI} is active
      */
     public void setActive(boolean b) { isActive = b; }
 
+
     /**
-     * @param b the value to set isSearching to
+     * @param b True if this {@link SeekerAI} is currently searching
      */
     public void setSearch(boolean b) { isSearching = b; }
+
 
     /**
      * @return the current sprite
@@ -659,20 +662,24 @@ public class SeekerAI extends SquareEntity implements Collisions {
         return currentSwingAnimation;
     }
 
+
     /**
      * @return the swatter hitbox
      */
     public Arc getSwatterHitbox() { return swatterHitbox; }
+
 
     /**
      * @return the current target
      */
     public SquareEntity getTarget() { return target; }
 
+
     /**
-     * @return the value of isActive
+     * @return True if this {@link SeekerAI} is active
      */
     public boolean isActive() { return isActive; }
+
 
     @Override
     public Rectangle getRenderArea() {

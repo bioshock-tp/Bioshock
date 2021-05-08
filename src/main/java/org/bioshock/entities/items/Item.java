@@ -21,27 +21,36 @@ import javafx.geometry.Point2D;
 import javafx.geometry.Point3D;
 
 public abstract class Item extends ImageEntity implements Collisions {
+    /**
+     * The default Z value
+     */
     protected static final int Z = 10;
+
+    /**
+     * The default width/height
+     */
     protected static final int DEFAULT_SIZE = 50;
 
-    private static Set<Room> roomsWithFood = new HashSet<>();
+    /**
+     * Rooms that contain loot
+     */
+    private static Set<Room> roomsWithLoot = new HashSet<>();
 
 
     /**
-     *
-     * @param p
-     * @param s Desired size of {@code Entity}. If null, will be inferred from
-     * size of {@link #image}
-     * @param nC
-     * @param path
+     * @param position Position of this {@link Entity}
+     * @param size Desired size of {@link Entity}. If null, will be inferred
+     * from size of {@link #image}
+     * @param networkComponent This {@link Entity Entity's} {@link #networkC}
+     * @param path Path to the image for this {@link Entity}
      */
     protected Item(
-        Point3D p,
-        Size s,
-        NetworkC nC,
+        Point3D position,
+        Size size,
+        NetworkC networkComponent,
         String path
     ) {
-        super(p, s, nC, path);
+        super(position, size, networkComponent, path);
 
         initCollision(this);
     }
