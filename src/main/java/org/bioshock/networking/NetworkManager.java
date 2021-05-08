@@ -15,14 +15,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import java.util.UUID;
-import java.util.prefs.Preferences;
 
 import org.bioshock.engine.core.ChatManager;
 import org.bioshock.entities.Entity;
 import org.bioshock.entities.SquareEntity;
 import org.bioshock.entities.players.Hider;
 import org.bioshock.entities.players.SeekerAI;
-import org.bioshock.gui.SettingsController;
 import org.bioshock.main.App;
 import org.bioshock.networking.Message.ClientInput;
 import org.bioshock.scenes.SceneManager;
@@ -36,7 +34,6 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.concurrent.Task;
 import javafx.geometry.Point2D;
 import javafx.util.Duration;
-import org.json.JSONObject;
 
 public class NetworkManager {
 

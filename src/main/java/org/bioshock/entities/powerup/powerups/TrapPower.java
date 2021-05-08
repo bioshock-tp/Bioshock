@@ -1,10 +1,6 @@
 package org.bioshock.entities.powerup.powerups;
 
-import java.util.Comparator;
-
-import org.bioshock.entities.EntityManager;
 import org.bioshock.entities.SquareEntity;
-import org.bioshock.entities.players.SeekerAI;
 import org.bioshock.entities.powerup.PowerUp;
 
 public class TrapPower extends PowerUp {

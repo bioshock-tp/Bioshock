@@ -1,7 +1,5 @@
 package org.bioshock.networking;
 
-import javafx.scene.control.Label;
-
 public class Results {
     static String FirstName;
     static String SecondName;

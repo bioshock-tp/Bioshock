@@ -1,23 +1,23 @@
 package org.bioshock.components;
 
-import javafx.geometry.Point2D;
-import javafx.util.Pair;
-import org.bioshock.engine.pathfinding.Graph;
-import org.bioshock.engine.pathfinding.GraphNode;
-import org.bioshock.entities.map.TraversableEdgeGenerator;
-import org.bioshock.entities.map.utils.ConnType;
-import org.bioshock.utils.Direction;
-import org.bioshock.utils.GlobalConstants;
-import org.junit.Before;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.RepeatedTest;
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import org.bioshock.engine.pathfinding.Graph;
+import org.bioshock.engine.pathfinding.GraphNode;
+import org.bioshock.entities.map.TraversableEdgeGenerator;
+import org.bioshock.utils.Direction;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.RepeatedTest;
+import org.junit.jupiter.api.Test;
+
+import javafx.geometry.Point2D;
+import javafx.util.Pair;
 
 class PathfindingCTest {
     private static Graph<GraphNode, Pair<Direction, Double>> graph;

@@ -1,38 +1,12 @@
 package org.bioshock.gui;
 
-import javafx.event.ActionEvent;
-import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextField;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.stage.Stage;
 import org.bioshock.main.App;
 import org.bioshock.networking.Account;
 import org.bioshock.networking.Results;
-import org.bioshock.scenes.LoadingScreen;
 
-import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-
-import java.net.http.HttpClient;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.prefs.Preferences;
-
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLEncoder;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import org.json.JSONObject;
+import javafx.fxml.FXML;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 
 public class ResultsController {
     public Label FirstName;
