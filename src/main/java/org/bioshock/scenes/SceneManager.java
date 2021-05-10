@@ -59,7 +59,10 @@ public final class SceneManager {
      * @param initialScene
      */
     public static void initialise(Stage primaryStage, GameScene initialScene) {
-        if (initialised) return;
+        if (initialised) {
+            setScene(initialScene);
+            return;
+        }
         initialised = true;
 
 		stage = primaryStage;

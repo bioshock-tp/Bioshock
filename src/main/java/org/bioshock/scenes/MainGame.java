@@ -9,6 +9,7 @@ import org.bioshock.components.NetworkC;
 import org.bioshock.engine.core.ChatManager;
 import org.bioshock.engine.core.FrameRate;
 import org.bioshock.engine.input.InputManager;
+import org.bioshock.entities.Entity;
 import org.bioshock.entities.EntityManager;
 import org.bioshock.entities.LabelEntity;
 import org.bioshock.entities.items.Bomb;
@@ -302,6 +303,8 @@ public class MainGame extends GameScene {
      * @param seed The seed to be used for map generation
      */
     private void initScene(long seed) {
+        RenderManager.setClip(true);
+
         InputManager.onRelease(KeyCode.Y, () ->	cameraLock = !cameraLock);
 
         InputManager.onRelease(KeyCode.C, () ->
@@ -742,6 +745,10 @@ public class MainGame extends GameScene {
     @Override
     public void destroy() {
         super.destroy();
+
+        Entity[] childArray = children.toArray(new Entity[children.size()]);
+        EntityManager.unregisterAll(childArray);
+        RenderManager.unregisterAll(children);
 
         SceneManager.setInGame(false);
 

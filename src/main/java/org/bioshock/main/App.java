@@ -17,11 +17,13 @@ import org.bioshock.audio.AudioManager;
 import org.bioshock.engine.core.GameLoop;
 import org.bioshock.engine.core.WindowManager;
 import org.bioshock.engine.input.InputManager;
+import org.bioshock.entities.EntityManager;
 import org.bioshock.gui.MainController;
 import org.bioshock.networking.Account;
 import org.bioshock.networking.NetworkManager;
 import org.bioshock.rendering.RenderManager;
 import org.bioshock.scenes.GameScene;
+import org.bioshock.scenes.LoadingScreen;
 import org.bioshock.scenes.SceneManager;
 import org.bioshock.utils.Difficulty;
 import org.bioshock.utils.FontManager;
@@ -90,6 +92,8 @@ public class App extends Application {
      */
     private static Difficulty difficulty;
 
+    private static GameLoop gameLoop;
+
 
     @Override
     public void start(Stage stage) {
@@ -128,7 +132,8 @@ public class App extends Application {
             SceneManager.initialise(primaryStage, initScene);
             InputManager.initialise();
 
-            new GameLoop().start();
+            gameLoop = new GameLoop();
+            gameLoop.start();
         } catch (Exception e) {
             App.logger.error(
                 "{}\n{}",
@@ -151,6 +156,46 @@ public class App extends Application {
     public static void end(boolean victory) {
         RenderManager.endGame();
         String textToDisplay;
+
+        sendScores(victory);
+
+        if (victory) {
+            AudioManager.playWinSfx();
+            textToDisplay = App.getBundle().getString("WIN_TEXT");
+        } else {
+            AudioManager.playLoseSfx();
+            textToDisplay = App.getBundle().getString("LOSE_TEXT");
+        }
+
+        Runnable anyKeyContinue = () -> {
+            RenderManager.displayText();
+            SceneManager.getMainGame().showScoreboard(true);
+
+            Label label = new Label("Press Any Key to Continue");
+            label.setFont(new Font(50));
+            label.setTranslateY(
+                GameScene.getGameScreen().getHeight() / 2 - 100
+            );
+
+            SceneManager.getPane().getChildren().add(label);
+
+            InputManager.stop();
+
+            SceneManager.getScene().addEventHandler(
+                KeyEvent.KEY_PRESSED,
+                e -> App.backToMenu()
+            );
+        };
+
+        RenderManager.displayText(textToDisplay, anyKeyContinue);
+    }
+
+
+    /**
+     * TODO
+     * @param victory
+     */
+    private static void sendScores(boolean victory) {
         if (victory && !NetworkManager.me().isDead()){
             try {
                 URL url = new URL("http://recklessgame.net:8034/increaseScore");
@@ -168,37 +213,6 @@ public class App extends Application {
                 App.logger.error(e);
             }
         }
-        if (victory) {
-            AudioManager.playWinSfx();
-            textToDisplay = App.getBundle().getString("WIN_TEXT");
-        } else {
-            AudioManager.playLoseSfx();
-            textToDisplay = App.getBundle().getString("LOSE_TEXT");
-        }
-
-        Runnable anyKeyContinue = () -> {
-            Label label = new Label("Press Any Key to Continue");
-            label.setFont(new Font(50));
-            label.setTranslateY(
-                GameScene.getGameScreen().getHeight() / 2 - 100
-            );
-
-            SceneManager.getPane().getChildren().add(label);
-
-            InputManager.stop();
-            InputManager.onPress(KeyCode.ESCAPE, () -> App.exit(0));
-
-            SceneManager.getScene().addEventHandler(
-                KeyEvent.KEY_PRESSED,
-                e -> {
-                    RenderManager.displayText();
-                    label.setVisible(false);
-                    SceneManager.getMainGame().showScoreboard(true);
-                }
-            );
-        };
-
-        RenderManager.displayText(textToDisplay, anyKeyContinue);
     }
 
 
@@ -234,6 +248,36 @@ public class App extends Application {
             exit(-1);
             return null; /* Prevents no return value warning */
         }
+    }
+
+
+    public static void backToMenu() {
+        try {
+            URL location = MainController.class.getResource("main.fxml");
+            fxmlLoader = new FXMLLoader(location);
+            fxmlScene = new Scene(fxmlLoader.load());
+        } catch (IOException e) {
+            App.logger.error(e);
+        }
+
+        if(App.isNetworked()) NetworkManager.reset();
+
+        gameLoop.stop();
+
+        /* Destroys previous MainGame*/
+        SceneManager.getScene().destroy();
+
+        /* Placeholder scene */
+        SceneManager.setScene(new LoadingScreen("Loading...", () -> {}));
+
+        /* Destroy placeholder scene */
+        SceneManager.getScene().destroy();
+
+        EntityManager.unregisterAll();
+        // RenderManager.unregisterAll();
+
+        Stage stage = (Stage) SceneManager.getScene().getWindow();
+        stage.setScene(fxmlScene);
     }
 
 
