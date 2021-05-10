@@ -224,7 +224,7 @@ public class MainGame extends GameScene {
                 (double) GlobalConstants.UNIT_WIDTH - PADDING,
                 (double) GlobalConstants.UNIT_HEIGHT - PADDING
             ),
-            300,
+            400,
             Color.PINK
         );
         players.add(hider);
@@ -513,9 +513,9 @@ public class MainGame extends GameScene {
 
             if (App.getDifficulty() == Difficulty.HARD) {
                 double originalSpeed = seeker.getMovement().getSpeed();
-                seeker.getMovement().setSpeed(originalSpeed * 1.25);
+                seeker.getMovement().setSpeed(originalSpeed * 1.1);
 
-                seeker.setRadius(seeker.getRadius() * 1.25);
+                seeker.setRadius(seeker.getRadius() * 1.3);
             }
 
             seeker.initAnimations();
@@ -562,7 +562,7 @@ public class MainGame extends GameScene {
             String.format("%d/%d", collectedLoot, lootToWin),
             new Font("arial", 20),
             50,
-            Color.BLACK
+            Color.LIGHTGRAY
         );
 
         children.add(counter);
