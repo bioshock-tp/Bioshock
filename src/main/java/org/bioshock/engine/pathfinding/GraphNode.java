@@ -35,7 +35,7 @@ public class GraphNode{
     /**
      * The parent node used in A*
      */
-    private GraphNode parent;
+    private GraphNode parent = null;
 
     /**
      * Used for A*, true if visited by the algorithm, false otherwise
@@ -101,7 +101,7 @@ public class GraphNode{
     /**
      * @return whether the node is visited
      */
-    public boolean getIsVisited() {
+    public boolean isVisited() {
         return isVisited;
     }
 
@@ -150,14 +150,14 @@ public class GraphNode{
     /**
      * @param visited the visited status of the node
      */
-    public void setIsVisited(boolean visited) {
+    public void setVisited(boolean visited) {
         isVisited = visited;
     }
 
     /**
      * @param object object status of the node
      */
-    public void setIsObject(boolean object) {
+    public void setObject(boolean object) {
         isObject = object;
     }
 }
