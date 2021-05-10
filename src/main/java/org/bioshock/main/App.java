@@ -151,6 +151,8 @@ public class App extends Application {
     public static void end(boolean victory) {
         RenderManager.endGame();
         String textToDisplay;
+        //bug with lines 156 to 172 causing collected items displayed as 1 above the collected amount. Also prevents winning text from appearing
+        //TODO fix this if statement
         if (victory && !NetworkManager.me().isDead()){
             try {
                 URL url = new URL("http://recklessgame.net:8034/increaseScore");
