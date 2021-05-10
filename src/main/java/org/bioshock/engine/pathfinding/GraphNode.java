@@ -30,7 +30,7 @@ public class GraphNode{
     /**
      * The real world location of the node
      */
-    private Point2D location;
+    private Point2D location = null;
 
     /**
      * The parent node used in A*
@@ -58,63 +58,105 @@ public class GraphNode{
         this.isVisited = false;
     }
 
+    /**
+     * Creates a graph node with a given location
+     */
     public GraphNode(Point2D location) {
         this();
         this.location = location;
     }
-    
+
     public Point2D getLocation() {
         return location;
     }
 
+    /**
+     * @return the h cost of the node
+     */
     public int getHCost() {
         return hCost;
     }
 
+    /**
+     * @return the g cost of the node
+     */
     public int getGCost() {
         return gCost;
     }
 
+    /**
+     * @return the f cost of the node
+     */
     public int getFCost() {
         return fCost;
     }
 
+    /**
+     * @return the node's parent node
+     */
     public GraphNode getParent() {
         return parent;
     }
 
+    /**
+     * @return whether the node is visited
+     */
     public boolean getIsVisited() {
         return isVisited;
     }
 
+    /**
+     * @return whether the node is an object
+     */
     public boolean isObject() {
         return isObject;
     }
 
+    /**
+     * @param hCost h cost of the node
+     */
     public void setHCost(int hCost) {
         this.hCost = hCost;
     }
 
+    /**
+     * @param gCost g cost of the node
+     */
     public void setGCost(int gCost) {
         this.gCost = gCost;
     }
 
+    /**
+     * @param fCost f cost of the node
+     */
     public void setFCost(int fCost) {
         this.fCost = fCost;
     }
 
+    /**
+     * @param location location of the node
+     */
     public void setLocation(Point2D location) {
         this.location = location;
     }
 
+    /**
+     * @param parent parent node of the node
+     */
     public void setParent(GraphNode parent) {
         this.parent = parent;
     }
 
+    /**
+     * @param visited the visited status of the node
+     */
     public void setIsVisited(boolean visited) {
         isVisited = visited;
     }
 
+    /**
+     * @param object object status of the node
+     */
     public void setIsObject(boolean object) {
         isObject = object;
     }
