@@ -354,11 +354,11 @@ public class NetworkManager {
     public static void kill(Hider hider) {
         client.send(Message.serialise(
                 new Message(
-                        -1,
-                        hider.getID(),
-                        playerNames.get(hider),
-                        null,
-                        true
+                    -1,
+                    hider.getID(),
+                    playerNames.get(hider),
+                    null,
+                    true
                 )
         ));
 
