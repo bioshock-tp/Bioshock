@@ -2,11 +2,13 @@ package org.main;
 
 import java.util.concurrent.CountDownLatch;
 
+import org.bioshock.audio.AudioManager;
 import org.bioshock.engine.core.GameLoop;
 import org.bioshock.engine.core.WindowManager;
 import org.bioshock.entities.EntityManager;
 import org.bioshock.entities.map.RoomEntity;
 import org.bioshock.entities.map.maps.GenericMap;
+import org.bioshock.rendering.RenderManager;
 import org.bioshock.scenes.LoadingScreen;
 import org.bioshock.scenes.SceneManager;
 import org.bioshock.utils.GlobalConstants;
@@ -14,6 +16,7 @@ import org.bioshock.utils.LanguageManager;
 import org.bioshock.utils.Size;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.geometry.Point3D;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
@@ -28,19 +31,25 @@ public class TestingApp extends Application {
      * The thread used to run the {@link Application}
      */
     private static Thread javaFXThread;
+
     /**
-     * The game loop this testing app calls
+     * The {@code GameLoop} of {@link #javaFXThread}
      */
-    GameLoop gameLoop;
+    private static GameLoop gameLoop;
+
     /**
-     * Stores if the gameLoop is running or not
+     * Stage of {@link #javaFXThread}
      */
-    boolean loopRunning = false;
+    private static Stage stage;
 
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+        stage = primaryStage;
+
         WindowManager.initialise(primaryStage);
+
+        AudioManager.initialiseBackgroundAudio();
 
         LanguageManager.initialiseLanguageSettings();
 
@@ -60,7 +69,6 @@ public class TestingApp extends Application {
             )
         );
 
-
         SceneManager.getMap().getRooms().forEach(room -> {
             RoomEntity roomEntity = new RoomEntity(room);
             EntityManager.register(roomEntity);
@@ -68,30 +76,37 @@ public class TestingApp extends Application {
 
         gameLoop = new GameLoop();
         playGameLoop();
-        
-       
+
         latch.countDown();
     }
-    
+
+
     /**
-     * Method that starts the game loop if it isn't already started
+     * Starts the GameLoop if not running
      */
-    public void playGameLoop() {
-        if(!loopRunning) {
-            gameLoop.start();
-            loopRunning = true;
-        }
+    public static void playGameLoop() {
+        gameLoop.start();
     }
-    
+
+
     /**
-     * Method that stops the game loop
+     * Stops the GameLoop if running
      */
-    public void stopGameLoop() {
-        if(loopRunning) {
-            gameLoop.stop();
-            loopRunning = false;
-        }
+    public static void stopGameLoop() {
+        gameLoop.stop();
     }
+
+    /**
+     * Shows what is currenlty being tested
+     */
+    public static void showGame() {
+        if (javaFXThread == null) return;
+
+        EntityManager.getEntityList().forEach(RenderManager::register);
+
+        Platform.runLater(stage::show);
+    }
+
 
     /**
      * Launches the JavaFX thread
