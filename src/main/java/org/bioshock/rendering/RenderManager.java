@@ -150,7 +150,7 @@ public final class RenderManager {
      * @param entity The entity to register
      */
     public static void register(Entity entity) {
-        if (entity.getRendererC() == null) {
+        if (entity.getRendererC() == null || entities.contains(entity)) {
             return;
         }
 
