@@ -4,6 +4,8 @@ import javafx.geometry.Point2D;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.lang.reflect.Field;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class GraphNodeTest {
@@ -87,6 +89,14 @@ class GraphNodeTest {
         GraphNode graphNode = new GraphNode();
         GraphNode parent = new GraphNode(new Point2D(100,100));
         graphNode.setParent(parent);
+        Field parentF;
+        try{
+            parentF = GraphNode.class.getDeclaredField("parent");
+        }catch(Exception e){
+            fail("parent field not found");
+            return;
+        }
+
         assertEquals(parent, graphNode.getParent());
     }
 
