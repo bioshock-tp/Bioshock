@@ -52,7 +52,8 @@ public class LobbyController extends GameScene {
             App.startGame(
                 stage,
                 new LoadingScreen(
-                    App.getBundle().getString("ONLINE_LOADING_TEXT")
+                    App.getBundle().getString("ONLINE_LOADING_TEXT"),
+                    () -> SceneManager.setScene(SceneManager.getMainGameInstance())
                 )
             );
         }

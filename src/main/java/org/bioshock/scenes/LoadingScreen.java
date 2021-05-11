@@ -15,7 +15,7 @@ import javafx.util.Duration;
 import org.bioshock.main.App;
 
 public class LoadingScreen extends GameScene {
-	public LoadingScreen (String loadingText) {
+	public LoadingScreen (String loadingText, Runnable onFinished) {
         VBox verticalBox = new VBox();
         verticalBox.setAlignment(Pos.CENTER);
 
@@ -57,8 +57,6 @@ public class LoadingScreen extends GameScene {
 
         fadeIn.setOnFinished(e -> fadeOut.play());
 
-        fadeOut.setOnFinished(e ->
-            SceneManager.setScene(SceneManager.getMainGameInstance())
-        );
+        fadeOut.setOnFinished(e -> onFinished.run());
 	}
 }

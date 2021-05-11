@@ -41,12 +41,12 @@ public class Graph<T extends GraphNode, S> {
     public Graph() {}
 
     /**
-     * constructs a graph based of the given node array using the 
+     * constructs a graph based of the given node array using the
      * edge generator to generate the edges between the 8 adjacent nodes
-     * 
-     * Note the given graph won't necessarily be connected 
+     *
+     * Note the given graph won't necessarily be connected
      * @param nodes2D The array of nodes to be put into the graph
-     * @param eg The edge generator that gives the rules about what 
+     * @param eg The edge generator that gives the rules about what
      * edges between adjacent nodes should be
      */
     public Graph(T[][] nodes2D, EdgeGenerator<T, S> eg) {
@@ -192,7 +192,7 @@ public class Graph<T extends GraphNode, S> {
     }
 
     /**
-     * 
+     *
      * @param node
      * @return the edge info for all edges leaving the given node
      */
@@ -279,7 +279,7 @@ public class Graph<T extends GraphNode, S> {
         frontier.add(node);
         //this search is an implementation  of breadth first search
         //loop while there are still nodes to explore
-        while(!frontier.isEmpty()) {
+        for (int i = 0; !frontier.isEmpty() && i < 1e4; i++) {
             //visit the first node in the frontier
             T currNode = frontier.get(0);
             frontier.remove(0);

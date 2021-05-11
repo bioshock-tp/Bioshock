@@ -150,7 +150,7 @@ public final class RenderManager {
      * @param entity The entity to register
      */
     public static void register(Entity entity) {
-        if (entity.getRendererC() == null) {
+        if (entity.getRendererC() == null || entities.contains(entity)) {
             return;
         }
 
@@ -197,6 +197,14 @@ public final class RenderManager {
      * @param entities List of entities to remove
      */
     public static void unregisterAll(Collection<Entity> entities) {
+        entities.forEach(RenderManager::unregister);
+    }
+
+
+    /**
+     * Unregisters every entity
+     */
+    public static void unregisterAll() {
         entities.forEach(RenderManager::unregister);
     }
 

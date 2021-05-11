@@ -71,6 +71,12 @@ public class LocalGameController {
         App.setPlayerCount(1);
         App.setNetworked(false);
         SceneManager.setMainGameInstance(new MainGame());
-        App.startGame(stage, new LoadingScreen(App.getBundle().getString("SINGLE_PLAYER_LOADING_TEXT")));
+        App.startGame(
+            stage,
+            new LoadingScreen(
+                App.getBundle().getString("SINGLE_PLAYER_LOADING_TEXT"),
+                () -> SceneManager.setScene(SceneManager.getMainGameInstance())
+            )
+        );
     }
 }

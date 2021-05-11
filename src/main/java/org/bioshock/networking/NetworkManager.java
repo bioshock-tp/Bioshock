@@ -87,6 +87,11 @@ public class NetworkManager {
     /** Nano Time of previous ping to game server */
     private static long previousPing;
 
+    /**
+     * Timeline responsible for periodically updating ping
+     */
+    private static Timeline pingTimeline;
+
 
     /** NetworkManager is a static class */
     private NetworkManager() {}
@@ -163,7 +168,7 @@ public class NetworkManager {
             playerList.forEach(Hider::initAnimations);
             seekers.forEach(SeekerAI::initAnimations);
 
-            Timeline pingTimeline = new Timeline(new KeyFrame(
+            pingTimeline = new Timeline(new KeyFrame(
                 Duration.seconds(PING_UPDATE_RATE),
                 e -> NetworkManager.sendPing()
             ));
@@ -233,6 +238,10 @@ public class NetworkManager {
         while ((message = client.getMessageQ().poll()) != null) {
             /* The hider the message came from */
             Hider messageFrom = loadedPlayers.get(message.uuid);
+            if (messageFrom == null) {
+                App.logger.error("messageFrom null");
+                return;
+            }
 
             ClientInput input = message.input;
 
@@ -245,7 +254,6 @@ public class NetworkManager {
             ) {
                 sendChat(message);
             }
-
             if (messageFrom == me || input == null) continue;
 
             updateDirection(input, messageFrom);
@@ -295,6 +303,7 @@ public class NetworkManager {
      * @see Message.ClientInput
      */
     private static void updateDirection(ClientInput input, Hider messageFrom) {
+        App.logger.debug("input {} messageFrom {}", input, messageFrom);
         int dispX = (int) (input.x - messageFrom.getX());
         if (dispX != 0) dispX = dispX / Math.abs(dispX);
 
@@ -362,11 +371,11 @@ public class NetworkManager {
     public static void kill(Hider hider) {
         client.send(Message.serialise(
                 new Message(
-                        -1,
-                        hider.getID(),
-                        playerNames.get(hider),
-                        null,
-                        true
+                    -1,
+                    hider.getID(),
+                    playerNames.get(hider),
+                    null,
+                    true
                 )
         ));
 
@@ -406,8 +415,10 @@ public class NetworkManager {
      * Sends ping to game server
      */
     private static void sendPing() {
-        client.sendPing();
-        previousPing = System.nanoTime();
+        if (client.isOpen()) {
+            client.sendPing();
+            previousPing = System.nanoTime();
+        }
     }
 
 
@@ -483,6 +494,8 @@ public class NetworkManager {
             );
         }
 
+        pingTimeline.stop();
+        client.getMessageQ().clear();
         client.close();
         client = new Client();
         loadedPlayers.clear();

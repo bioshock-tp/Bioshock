@@ -96,6 +96,8 @@ public final class EntityManager {
      * @param entity the entity to register
      */
     public static void register(Entity entity) {
+        if (entities.contains(entity)) return;
+
         if (
             App.isNetworked()
             && entity.getNetworkC().isNetworked()
