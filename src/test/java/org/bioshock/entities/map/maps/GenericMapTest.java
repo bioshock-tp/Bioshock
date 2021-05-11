@@ -15,7 +15,6 @@ import org.bioshock.scenes.SceneManager;
 import org.bioshock.utils.GlobalConstants;
 import org.bioshock.utils.Size;
 import org.junit.jupiter.api.Test;
-import org.powermock.core.classloader.annotations.PrepareForTest;
 
 import javafx.application.Application;
 import javafx.geometry.Point3D;
@@ -28,7 +27,6 @@ class GenericMapTest extends JavaFxTest{
 
     
     @Test
-    @PrepareForTest(GlobalConstants.class)
     void test() throws InterruptedException{
         init();
         
