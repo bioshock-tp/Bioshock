@@ -178,12 +178,6 @@ public class Client extends WebSocketClient {
             code,
             reason
         );
-        try {
-            this.connectBlocking();
-        } catch (InterruptedException e) {
-            App.logger.error(e);
-            Thread.currentThread().interrupt();
-        }
     }
 
 

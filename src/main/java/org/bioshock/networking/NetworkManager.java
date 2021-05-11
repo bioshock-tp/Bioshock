@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -21,9 +20,9 @@ import org.bioshock.entities.Entity;
 import org.bioshock.entities.SquareEntity;
 import org.bioshock.entities.players.Hider;
 import org.bioshock.entities.players.SeekerAI;
+import org.bioshock.gui.LobbyController;
 import org.bioshock.main.App;
 import org.bioshock.networking.Message.ClientInput;
-import org.bioshock.scenes.SceneManager;
 
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
@@ -31,7 +30,6 @@ import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
-import javafx.concurrent.Task;
 import javafx.geometry.Point2D;
 import javafx.util.Duration;
 
@@ -76,6 +74,10 @@ public class NetworkManager {
      */
     private static Object awaitingPlayerLock = new Object();
 
+    /**
+     * Thread used to wait for players to join
+     */
+    private static Thread initThread;
 
     /**
      * Maps each player to their ping
@@ -85,84 +87,95 @@ public class NetworkManager {
     /** Nano Time of previous ping to game server */
     private static long previousPing;
 
+    /**
+     * Timeline responsible for periodically updating ping
+     */
+    private static Timeline pingTimeline;
+
 
     /** NetworkManager is a static class */
     private NetworkManager() {}
 
-
-    /**
-     * Creates a new thread that connects to game server and awaits joining
-     * players
-     * @see Client#DEF_URI
-     */
     public static void initialise() {
-        Thread initThread = new Thread(new Task<>() {
-            @Override
-            protected Object call() {
-                try {
-                    App.logger.info("Connecting to web socket...");
-                    client.connectBlocking();
-                    App.logger.info("Connected to web socket");
-                } catch (InterruptedException e) {
-                    App.logger.error(e);
-                    Thread.currentThread().interrupt();
-                }
+        initThread = new Thread(() -> {
+            try {
+                App.logger.info("Connecting to web socket...");
+                client.connectBlocking();
+                App.logger.info("Connected to web socket");
+            } catch (InterruptedException e) {
+                App.logger.error(
+                    "Thread was interrupted whilst connecting to server"
+                );
+                Thread.currentThread().interrupt();
+                return;
+            }
 
-                myName = client.getPlayerName();
-                client.send(Integer.toString(App.playerCount()));
+            myName = client.getPlayerName();
+            client.send(Integer.toString(App.playerCount()));
 
-                /* Wait until players join then add them to loadedPlayers */
-                while (loadedPlayers.size() < App.playerCount()) {
-                    synchronized(awaitingPlayerLock) {
-                        while (client.getInitialMessages().isEmpty()) {
-                            try {
-                                awaitingPlayerLock.wait();
-                            } catch (InterruptedException e) {
-                                App.logger.error(e);
-                                Thread.currentThread().interrupt();
-                            }
+            /* Wait until players join then add them to loadedPlayers */
+            while (loadedPlayers.size() < App.playerCount()) {
+                synchronized (awaitingPlayerLock) {
+                    while (client.getInitialMessages().isEmpty()) {
+                        try {
+                            awaitingPlayerLock.wait();
+                        } catch (InterruptedException e) {
+                            App.logger.error(
+                                "Thread was interrupted whilst waiting for"
+                                + " players to join. This is usually due"
+                                + " to a change of lobby size"
+                            );
+                            Thread.currentThread().interrupt();
+                            return;
                         }
                     }
-
-                    Message message = client.getInitialMessages().remove();
-
-                    Hider hider = playerList.get(message.playerNumber - 1);
-
-                    hider.setID(message.uuid);
-
-                    hider.setName(message.name);
-
-                    loadedPlayers.putIfAbsent(message.uuid, hider);
-                    playerNames.putIfAbsent(hider, message.name);
-                    pingMap.putIfAbsent(hider, new SimpleIntegerProperty(0));
-
-                    int newCount = loadedPlayers.size();
-
-                    Platform.runLater(() ->
-                        SceneManager.getLobby().updatePlayerCount(newCount)
-                    );
                 }
 
-                masterHider = playerList.get(0);
+                Message message = client.getInitialMessages().remove();
 
-                me = loadedPlayers.get(myID);
+                Hider hider = playerList.get(message.playerNumber - 1);
 
-                me.getMovement().initMovement();
+                hider.setID(message.uuid);
 
-                playerList.forEach(Hider::initAnimations);
-                seekers.forEach(SeekerAI::initAnimations);
+                hider.setName(message.name);
 
-                Timeline pingTimeline = new Timeline(new KeyFrame(
-                    Duration.seconds(PING_UPDATE_RATE),
-                    e -> NetworkManager.sendPing()
-                ));
-                pingTimeline.setCycleCount(Animation.INDEFINITE);
-                pingTimeline.play();
+                loadedPlayers.putIfAbsent(message.uuid, hider);
+                playerNames.putIfAbsent(hider, message.name);
+                pingMap.putIfAbsent(hider, new SimpleIntegerProperty(0));
 
-                App.logger.info("Networking initialised");
+                if (App.getFXMLController() instanceof LobbyController) {
+                    LobbyController lobbyController =
+                        (LobbyController) App.getFXMLController();
 
-                return null;
+                    Platform.runLater(() ->
+                        lobbyController.updatePlayerCount(
+                            loadedPlayers.size()
+                        )
+                    );
+                } else {
+                    App.logger.error(
+                        "Tried to get LobbyController whilst not in lobby"
+                    );
+                }
             }
+
+            masterHider = playerList.get(0);
+
+            me = loadedPlayers.get(myID);
+
+            me.getMovement().initMovement();
+
+            playerList.forEach(Hider::initAnimations);
+            seekers.forEach(SeekerAI::initAnimations);
+
+            pingTimeline = new Timeline(new KeyFrame(
+                Duration.seconds(PING_UPDATE_RATE),
+                e -> NetworkManager.sendPing()
+            ));
+            pingTimeline.setCycleCount(Animation.INDEFINITE);
+            pingTimeline.play();
+
+            App.logger.info("Networking initialised");
         });
 
         initThread.start();
@@ -225,6 +238,10 @@ public class NetworkManager {
         while ((message = client.getMessageQ().poll()) != null) {
             /* The hider the message came from */
             Hider messageFrom = loadedPlayers.get(message.uuid);
+            if (messageFrom == null) {
+                App.logger.error("messageFrom null");
+                return;
+            }
 
             ClientInput input = message.input;
 
@@ -237,7 +254,6 @@ public class NetworkManager {
             ) {
                 sendChat(message);
             }
-
             if (messageFrom == me || input == null) continue;
 
             updateDirection(input, messageFrom);
@@ -249,7 +265,7 @@ public class NetworkManager {
                 && input.aiCoords != null
                 && input.aiCoords.length == seekers.size()
             ) {
-                for(int i = 0; i < seekers.size(); i++) {
+                for (int i = 0; i < seekers.size(); i++) {
                     seekers.get(i).getMovement().moveTo(
                         input.aiCoords[i][0],
                         input.aiCoords[i][1]
@@ -287,6 +303,7 @@ public class NetworkManager {
      * @see Message.ClientInput
      */
     private static void updateDirection(ClientInput input, Hider messageFrom) {
+        App.logger.debug("input {} messageFrom {}", input, messageFrom);
         int dispX = (int) (input.x - messageFrom.getX());
         if (dispX != 0) dispX = dispX / Math.abs(dispX);
 
@@ -363,9 +380,7 @@ public class NetworkManager {
         ));
 
         if (hider == me) {
-
             try {
-
                 URL url = new URL("http://recklessgame.net:8034/increaseScore");
                 String jsonInputString = "{\"Token\":\"" + Account.getToken() + "\",\"Score\":\"" + Integer.toString(Account.getScoreToInc()) + "\"}";
                 byte[] postDataBytes = jsonInputString.getBytes("UTF-8");
@@ -377,8 +392,8 @@ public class NetworkManager {
                 Reader in = new BufferedReader(new InputStreamReader(con.getInputStream(), "UTF-8"));
                 Account.setScore(Account.getScoreToInc() + Account.getScore());
                 Account.setScoreToInc(0);
-            } catch (MalformedURLException ex) {
             } catch (IOException e) {
+                App.logger.error(e);
             }
 
         }
@@ -400,8 +415,10 @@ public class NetworkManager {
      * Sends ping to game server
      */
     private static void sendPing() {
-        client.sendPing();
-        previousPing = System.nanoTime();
+        if (client.isOpen()) {
+            client.sendPing();
+            previousPing = System.nanoTime();
+        }
     }
 
 
@@ -461,5 +478,26 @@ public class NetworkManager {
      */
     public static long getPreviousPingTime() {
         return previousPing;
+    }
+
+
+    /**
+     * Stops thread responsible for waiting for players to join
+     */
+    public static void reset() {
+        if (initThread != null) {
+            initThread.interrupt();
+            initThread = null;
+        } else {
+            App.logger.error(
+                "Tried to kill networking thread before initalisation"
+            );
+        }
+
+        pingTimeline.stop();
+        client.getMessageQ().clear();
+        client.close();
+        client = new Client();
+        loadedPlayers.clear();
     }
 }

@@ -139,7 +139,7 @@ public final class EntityManager {
 
         entities.clear();
         players.clear();
-        seekers = null;
+        seekers.clear();
     }
 
     /**

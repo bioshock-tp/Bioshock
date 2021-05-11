@@ -202,6 +202,14 @@ public final class RenderManager {
 
 
     /**
+     * Unregisters every entity
+     */
+    public static void unregisterAll() {
+        entities.forEach(RenderManager::unregister);
+    }
+
+
+    /**
      * Blurs the canvas and slows the player
      */
     public static void endGame() {

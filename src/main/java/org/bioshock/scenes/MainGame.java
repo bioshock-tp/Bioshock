@@ -9,6 +9,7 @@ import org.bioshock.components.NetworkC;
 import org.bioshock.engine.core.ChatManager;
 import org.bioshock.engine.core.FrameRate;
 import org.bioshock.engine.input.InputManager;
+import org.bioshock.entities.Entity;
 import org.bioshock.entities.EntityManager;
 import org.bioshock.entities.LabelEntity;
 import org.bioshock.entities.items.Bomb;
@@ -38,6 +39,7 @@ import org.bioshock.main.App;
 import org.bioshock.networking.Account;
 import org.bioshock.networking.NetworkManager;
 import org.bioshock.rendering.RenderManager;
+import org.bioshock.utils.Difficulty;
 import org.bioshock.utils.GlobalConstants;
 import org.bioshock.utils.Size;
 
@@ -179,45 +181,14 @@ public class MainGame extends GameScene {
 
 
     public MainGame() {
+        EntityManager.unregisterAll();
+
         setCursor(Cursor.HAND);
         setBackground(new Background(new BackgroundFill(
             Color.LIGHTGRAY,
             null,
             null
         )));
-
-        //Make it so you can toggle the camera lock on and off by pressing Y
-        InputManager.onRelease(KeyCode.Y, () ->	cameraLock = !cameraLock);
-
-        //Make it so you can toggle clipping on and off by pressing C
-        InputManager.onRelease(KeyCode.C, () ->
-            RenderManager.setClip(!RenderManager.clips())
-        );
-
-        //Make it so if you press the left key the camera moves to the left
-        InputManager.onPress(KeyCode.LEFT, () ->
-            RenderManager.setCameraPos(
-                RenderManager.getCameraPos().add(-10, 0)
-            )
-        );
-        //Make it so if you press the right key the camera moves to the right
-        InputManager.onPress(KeyCode.RIGHT, () ->
-            RenderManager.setCameraPos(
-                RenderManager.getCameraPos().add(10, 0)
-            )
-        );
-        //Make it so if you press the up key the camera moves up
-        InputManager.onPress(KeyCode.UP, () ->
-            RenderManager.setCameraPos(
-                RenderManager.getCameraPos().add(0, -10)
-            )
-        );
-        //Make it so if you press the down key the camera moves down
-        InputManager.onPress(KeyCode.DOWN, () ->
-            RenderManager.setCameraPos(
-                RenderManager.getCameraPos().add(0, 10)
-            )
-        );
 
         initEntities();
     }
@@ -253,7 +224,7 @@ public class MainGame extends GameScene {
                 (double) GlobalConstants.UNIT_WIDTH - PADDING,
                 (double) GlobalConstants.UNIT_HEIGHT - PADDING
             ),
-            300,
+            400,
             Color.PINK
         );
         players.add(hider);
@@ -332,6 +303,35 @@ public class MainGame extends GameScene {
      * @param seed The seed to be used for map generation
      */
     private void initScene(long seed) {
+        RenderManager.setClip(true);
+
+        InputManager.onRelease(KeyCode.Y, () ->	cameraLock = !cameraLock);
+
+        InputManager.onRelease(KeyCode.C, () ->
+            RenderManager.setClip(!RenderManager.clips())
+        );
+
+        InputManager.onPress(KeyCode.LEFT, () ->
+            RenderManager.setCameraPos(
+                RenderManager.getCameraPos().add(-10, 0)
+            )
+        );
+        InputManager.onPress(KeyCode.RIGHT, () ->
+            RenderManager.setCameraPos(
+                RenderManager.getCameraPos().add(10, 0)
+            )
+        );
+        InputManager.onPress(KeyCode.UP, () ->
+            RenderManager.setCameraPos(
+                RenderManager.getCameraPos().add(0, -10)
+            )
+        );
+        InputManager.onPress(KeyCode.DOWN, () ->
+            RenderManager.setCameraPos(
+                RenderManager.getCameraPos().add(0, 10)
+            )
+        );
+
         rand = new Random(seed);
         initMap(seed);
 
@@ -470,7 +470,12 @@ public class MainGame extends GameScene {
 
         timeline.setOnFinished(e -> {
             RenderManager.displayText();
-            initSeekers(SEEKER_COUNT);
+
+            initSeekers(
+                App.getDifficulty() == Difficulty.EASY ?
+                    SEEKER_COUNT
+                    : SEEKER_COUNT + 1
+            );
         });
 
         timeline.play();
@@ -478,8 +483,8 @@ public class MainGame extends GameScene {
 
 
     /**
-     * Construct and initialise n seekers </p>
-     * Spawning them in rooms no player is within
+     * Construct and initialise n seekers spawning them in rooms no player is
+     * within
      * @param n The number of seekers to construct
      */
     private void initSeekers(int n) {
@@ -505,6 +510,13 @@ public class MainGame extends GameScene {
                 520,
                 Color.INDIANRED
             );
+
+            if (App.getDifficulty() == Difficulty.HARD) {
+                double originalSpeed = seeker.getMovement().getSpeed();
+                seeker.getMovement().setSpeed(originalSpeed * 1.1);
+
+                seeker.setRadius(seeker.getRadius() * 1.3);
+            }
 
             seeker.initAnimations();
             EntityManager.register(seeker);
@@ -550,7 +562,7 @@ public class MainGame extends GameScene {
             String.format("%d/%d", collectedLoot, lootToWin),
             new Font("arial", 20),
             50,
-            Color.BLACK
+            Color.LIGHTGRAY
         );
 
         children.add(counter);
@@ -733,6 +745,10 @@ public class MainGame extends GameScene {
     @Override
     public void destroy() {
         super.destroy();
+
+        Entity[] childArray = children.toArray(new Entity[children.size()]);
+        EntityManager.unregisterAll(childArray);
+        RenderManager.unregisterAll(children);
 
         SceneManager.setInGame(false);
 

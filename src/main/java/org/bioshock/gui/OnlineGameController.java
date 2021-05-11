@@ -4,12 +4,11 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.Spinner;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.stage.Stage;
 import org.bioshock.main.App;
-import org.bioshock.scenes.LoadingScreen;
 
 import java.util.Objects;
 import java.util.prefs.Preferences;
@@ -21,6 +20,8 @@ public class OnlineGameController {
     public Label nameLabel;
     public TextField nameField;
     public Label errorLabel;
+    public Label numPlayersLabel;
+    public Spinner<Integer> numPlayers;
 
     @FXML
     public void switchToNewGameView(ActionEvent actionEvent) {
@@ -34,10 +35,11 @@ public class OnlineGameController {
     public void initialize() {
         launchButton.setText(App.getBundle().getString("LAUNCH_BUTTON_TEXT"));
         backButton.setText(App.getBundle().getString("BACK_NEW_GAME_BUTTON_TEXT"));
-        developmentLabel.setText(App.getBundle().getString("ONLINE_BUTTON_TEXT") + " " + App.getBundle().getString("IN_DEVELOPMENT_TEXT"));
+        developmentLabel.setText(App.getBundle().getString("ONLINE_LOADING_TEXT"));
         nameLabel.setText(App.getBundle().getString("PLAYER_NAME_TEXT") + ":");
         Preferences prefs = Preferences.userNodeForPackage(SettingsController.class);
         nameField.setText(prefs.get("playerName", App.getBundle().getString("DEFAULT_PLAYER_NAME_TEXT")));
+        numPlayersLabel.setText(App.getBundle().getString("NUM_PLAYERS_TEXT"));
 
         Image backImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("icons/arrow.png")));
         ImageView backImageView = new ImageView(backImage);
@@ -57,8 +59,9 @@ public class OnlineGameController {
         String playerName = nameField.getText();
         if (playerName.length() > 0 && playerName.length() <= 16) {
             prefs.put("playerName", playerName);
-            Stage stage = (Stage) launchButton.getScene().getWindow();
-            App.startGame(stage, new LoadingScreen(true, App.getBundle().getString("ONLINE_LOADING_TEXT")), true);
+            App.setPlayerCount(numPlayers.getValue());
+            App.setNetworked(true);
+            App.setFXMLRoot("lobby");
         }
         else {
             errorLabel.setStyle("-fx-text-fill:red");
