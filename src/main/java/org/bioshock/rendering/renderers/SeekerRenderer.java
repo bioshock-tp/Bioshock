@@ -17,6 +17,12 @@ import static org.bioshock.rendering.RenderManager.*;
 public class SeekerRenderer implements Renderer {
     private SeekerRenderer() {}
 
+    /**
+     * Method to render the given entity
+     * @param gc the graphics context to render to
+     * @param ent the seeker type to render
+     * @param <E> a generic type extending SeekerAI
+     */
     public static <E extends SeekerAI> void render(GraphicsContext gc, E ent) {
         SeekerAI seeker = ent;
 

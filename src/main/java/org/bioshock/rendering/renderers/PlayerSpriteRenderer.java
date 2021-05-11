@@ -21,6 +21,12 @@ import javafx.scene.transform.Rotate;
 public class PlayerSpriteRenderer implements Renderer {
     private PlayerSpriteRenderer() {}
 
+    /**
+     * Method to render the given entity
+     * @param gc the graphics context to render to
+     * @param player the player type to render
+     * @param <E> a generic type extending Hider
+     */
     public static <E extends Hider> void render(
         GraphicsContext gc,
         E player
