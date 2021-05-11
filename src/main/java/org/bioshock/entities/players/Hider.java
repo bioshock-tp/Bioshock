@@ -154,7 +154,6 @@ public class Hider extends SquareEntity implements Collisions {
 
 
     /**
-     * Set the name of the hider
      * @param hiderName The new name
      */
     public void setName(String hiderName) {
@@ -176,12 +175,11 @@ public class Hider extends SquareEntity implements Collisions {
 
 
     /**
-     * Set the hider to be dead or not
-     * @param d
+     * @param dead True if player is dead
      */
-    public void setDead(boolean d) {
+    public void setDead(boolean dead) {
         /* Only run of first death */
-        if (!dead && d) {
+        if (!this.dead && dead) {
             rendererC.setColour(Color.GREY);
             if (App.isNetworked()) {
                 NetworkManager.kill(this);
@@ -189,12 +187,14 @@ public class Hider extends SquareEntity implements Collisions {
 
             hitbox = new Rectangle();
 
-            RenderManager.setClip(false);
+            if (this == EntityManager.getCurrentPlayer()) {
+                RenderManager.setClip(false);
+            }
 
             setCurrentSprite(hiderAnimations.getPlayerDying());
         }
 
-        dead = d;
+        this.dead = dead;
     }
 
 
