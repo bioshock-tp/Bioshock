@@ -28,6 +28,14 @@ public class TestingApp extends Application {
      * The thread used to run the {@link Application}
      */
     private static Thread javaFXThread;
+    /**
+     * The game loop this testing app calls
+     */
+    GameLoop gameLoop;
+    /**
+     * Stores if the gameLoop is running or not
+     */
+    boolean loopRunning = false;
 
 
     @Override
@@ -44,7 +52,7 @@ public class TestingApp extends Application {
             new GenericMap(
                 new Point3D(0, 0, 0),
                 1,
-                new Size(500, 500),
+                new Size(9, 11),
                 new Size(1, 1),
                 Color.RED,
                 GlobalConstants.SIMPLE_MAP,
@@ -58,11 +66,32 @@ public class TestingApp extends Application {
             EntityManager.register(roomEntity);
         });
 
-        new GameLoop().start();
-
+        gameLoop = new GameLoop();
+        playGameLoop();
+        
+       
         latch.countDown();
     }
-
+    
+    /**
+     * Method that starts the game loop if it isn't already started
+     */
+    public void playGameLoop() {
+        if(!loopRunning) {
+            gameLoop.start();
+            loopRunning = true;
+        }
+    }
+    
+    /**
+     * Method that stops the game loop
+     */
+    public void stopGameLoop() {
+        if(loopRunning) {
+            gameLoop.stop();
+            loopRunning = false;
+        }
+    }
 
     /**
      * Launches the JavaFX thread
