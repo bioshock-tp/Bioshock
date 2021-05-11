@@ -28,8 +28,6 @@ public class AudioManagerTest {
 
     @Test
     public void testInitialiseAudioControllers() {
-        // Setup
-        
         AudioController.initialise();
         initialiseAudioControllers();
 
