@@ -520,7 +520,7 @@ public class MainGame extends GameScene {
 
             seeker.initAnimations();
             EntityManager.register(seeker);
-            children.add(seeker);
+            RenderManager.register(seeker);
         }
     }
 
