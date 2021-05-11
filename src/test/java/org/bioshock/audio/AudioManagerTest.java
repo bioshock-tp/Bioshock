@@ -3,26 +3,16 @@ package org.bioshock.audio;
 import javafx.application.Platform;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+import java.util.prefs.Preferences;
 
 import javafx.scene.media.MediaPlayer;
-import org.bioshock.engine.pathfinding.Graph;
-import org.bioshock.engine.pathfinding.GraphNode;
-import org.bioshock.entities.map.TraversableEdgeGenerator;
-import org.bioshock.utils.Direction;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.RepeatedTest;
+import org.bioshock.gui.SettingsController;
 import org.junit.jupiter.api.Test;
 import org.bioshock.audio.controllers.AudioController;
-import org.bioshock.audio.controllers.MusicController;
-import org.bioshock.audio.settings.MusicSettings;
 
-import static org.bioshock.audio.AudioManager.initialiseAudioControllers;
+import static org.bioshock.audio.AudioManager.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class AudioManagerTest {
@@ -34,6 +24,10 @@ public class AudioManagerTest {
         {
             // This block will be executed on JavaFX Thread
         });
+    }
+
+    private void exitJavafxPlatform() {
+        Platform.startup(boolean false);
     }
 
     @Test
@@ -51,179 +45,269 @@ public class AudioManagerTest {
             assertNotNull(controller);
         }
 
+        exitJavafxPlatform();
     }
 
     @Test
     public void testInitialiseBackgroundAudio() throws InterruptedException {
         // Setup
         initialiseJavafxPlatform();
-
-        // Run the test
-//        AudioManager.initialiseBackgroundAudio();
-
-        AudioController.initialise();
-//        AudioManager.initialiseAudioControllers();
-
-        MusicController bgMusicController = AudioController.loadMusicController(
-            "background-music"
-        );
-
-        bgMusicController.play(new MusicSettings());
+        initialiseBackgroundAudio();
 
         waiter.await(1, TimeUnit.SECONDS); // 1ms
 
-        assertEquals(MediaPlayer.Status.PLAYING, bgMusicController.getStatus());
+        Preferences prefs = Preferences.userNodeForPackage(SettingsController.class);
+        MediaPlayer.Status expectedStatus;
 
-        // Verify the results
+        // Tests if music is playing according to user's preferences
+        if (prefs.getBoolean("musicOn", true)) {
+            expectedStatus = MediaPlayer.Status.PLAYING;
+        }
+        else {
+            expectedStatus = MediaPlayer.Status.READY;
+        }
+        assertEquals(expectedStatus, getBgMusicController().getStatus());
+
+        exitJavafxPlatform();
     }
 
     @Test
-    public void testStopBackgroundMusic() {
-        // Setup
+    public void testStopBackgroundMusic() throws InterruptedException {
 
-        // Run the test
+        initialiseJavafxPlatform();
+        AudioController.initialise();
+        initialiseAudioControllers();
+
+        AudioManager.playBackgroundMusic(1.0);
+
+        waiter.await(1, TimeUnit.SECONDS);
+
+        // Tests if music is playing
+        assertEquals(MediaPlayer.Status.PLAYING, getBgMusicController().getStatus());
+
         AudioManager.stopBackgroundMusic();
 
-        // Verify the results
+        waiter.await(1, TimeUnit.SECONDS);
+
+        // Tests if music has stopped
+        assertEquals(MediaPlayer.Status.STOPPED, getBgMusicController().getStatus());
+
+        exitJavafxPlatform();
     }
 
     @Test
-    public void testPlayBackgroundMusic() {
-        // Setup
+    public void testPlayBackgroundMusic() throws InterruptedException {
+        initialiseJavafxPlatform();
+        AudioController.initialise();
+        initialiseAudioControllers();
 
-        // Run the test
-        AudioManager.playBackgroundMusic(0.0);
+        AudioManager.playBackgroundMusic(1.0);
 
-        // Verify the results
+        waiter.await(1, TimeUnit.SECONDS);
+
+        // Tests if music is playing
+        assertEquals(MediaPlayer.Status.PLAYING, getBgMusicController().getStatus());
+
+        exitJavafxPlatform();
     }
 
     @Test
-    public void testPlayWalkingSfx() {
-        // Setup
+    public void testPlayWalkingSfx() throws InterruptedException {
+        initialiseJavafxPlatform();
+        AudioController.initialise();
+        initialiseAudioControllers();
 
-        // Run the test
         AudioManager.playWalkingSfx();
 
-        // Verify the results
+        waiter.await(1, TimeUnit.SECONDS);
+
+        // Tests if effect is playing
+        assertTrue(getWalkingEffectController().isPlaying());
+
+        exitJavafxPlatform();
     }
 
     @Test
-    public void testStopWalkingSfx() {
-        // Setup
+    public void testStopWalkingSfx() throws InterruptedException {
+        initialiseJavafxPlatform();
+        AudioController.initialise();
+        initialiseAudioControllers();
 
-        // Run the test
+        AudioManager.playWalkingSfx();
+
+        waiter.await(1, TimeUnit.SECONDS);
+
+        // Tests if effect is playing
+        assertTrue(getWalkingEffectController().isPlaying());
+
         AudioManager.stopWalkingSfx();
 
-        // Verify the results
+        waiter.await(1, TimeUnit.SECONDS);
+
+        // Tests if effect has stopped
+        assertFalse(getWalkingEffectController().isPlaying());
+
+        exitJavafxPlatform();
     }
 
     @Test
-    public void testPlayWooshSfx() {
-        // Setup
+    public void testPlayWooshSfx() throws InterruptedException {
+        initialiseJavafxPlatform();
+        AudioController.initialise();
+        initialiseAudioControllers();
 
-        // Run the test
         AudioManager.playWooshSfx();
 
-        // Verify the results
+        waiter.await(1, TimeUnit.SECONDS);
+
+        // Tests if effect is playing
+        assertTrue(getWooshEffectController().isPlaying());
+
+        exitJavafxPlatform();
     }
 
     @Test
-    public void testPlayPlinkSfx() {
-        // Setup
+    public void testPlayPlinkSfx() throws InterruptedException {
+        initialiseJavafxPlatform();
+        AudioController.initialise();
+        initialiseAudioControllers();
 
-        // Run the test
         AudioManager.playPlinkSfx();
 
-        // Verify the results
+        waiter.await(1, TimeUnit.SECONDS);
+
+        // Tests if effect is playing
+        assertTrue(getPlinkEffectController().isPlaying());
+
+        exitJavafxPlatform();
     }
 
     @Test
-    public void testPlayFreezeSfx() {
-        // Setup
+    public void testPlayFreezeSfx() throws InterruptedException {
+        initialiseJavafxPlatform();
+        AudioController.initialise();
+        initialiseAudioControllers();
 
-        // Run the test
         AudioManager.playFreezeSfx();
 
-        // Verify the results
+        waiter.await(1, TimeUnit.SECONDS);
+
+        // Tests if effect is playing
+        assertTrue(getFreezeEffectController().isPlaying());
+
+        exitJavafxPlatform();
     }
 
     @Test
-    public void testPlayGhostSfx() {
-        // Setup
+    public void testPlayGhostSfx() throws InterruptedException {
+        initialiseJavafxPlatform();
+        AudioController.initialise();
+        initialiseAudioControllers();
 
-        // Run the test
         AudioManager.playGhostSfx();
 
-        // Verify the results
+        waiter.await(1, TimeUnit.SECONDS);
+
+        // Tests if effect is playing
+        assertTrue(getGhostEffectController().isPlaying());
+
+        exitJavafxPlatform();
     }
 
     @Test
-    public void testPlayFastAirSfx() {
-        // Setup
+    public void testPlayFastAirSfx() throws InterruptedException {
+        initialiseJavafxPlatform();
+        AudioController.initialise();
+        initialiseAudioControllers();
 
-        // Run the test
         AudioManager.playFastAirSfx();
 
-        // Verify the results
+        waiter.await(1, TimeUnit.SECONDS);
+
+        // Tests if effect is playing
+        assertTrue(getFastAirEffectController().isPlaying());
+
+        exitJavafxPlatform();
     }
 
     @Test
-    public void testPlayTeleportSfx() {
-        // Setup
+    public void testPlayTeleportSfx() throws InterruptedException {
+        initialiseJavafxPlatform();
+        AudioController.initialise();
+        initialiseAudioControllers();
 
-        // Run the test
         AudioManager.playTeleportSfx();
 
-        // Verify the results
+        waiter.await(1, TimeUnit.SECONDS);
+
+        // Tests if effect is playing
+        assertTrue(getTeleportEffectController().isPlaying());
+
+        exitJavafxPlatform();
     }
 
     @Test
-    public void testPlayBombSfx() {
-        // Setup
+    public void testPlayBombSfx() throws InterruptedException {
+        initialiseJavafxPlatform();
+        AudioController.initialise();
+        initialiseAudioControllers();
 
-        // Run the test
         AudioManager.playBombSfx();
 
-        // Verify the results
+        waiter.await(1, TimeUnit.SECONDS);
+
+        // Tests if effect is playing
+        assertTrue(getBombEffectController().isPlaying());
+
+        exitJavafxPlatform();
     }
 
     @Test
-    public void testPlayTrapSfx() {
-        // Setup
+    public void testPlayTrapSfx() throws InterruptedException {
+        initialiseJavafxPlatform();
+        AudioController.initialise();
+        initialiseAudioControllers();
 
-        // Run the test
         AudioManager.playTrapSfx();
 
-        // Verify the results
+        waiter.await(1, TimeUnit.SECONDS);
+
+        // Tests if effect is playing
+        assertTrue(getTrapEffectController().isPlaying());
+
+        exitJavafxPlatform();
     }
 
     @Test
-    public void testPlayWinSfx() {
-        // Setup
+    public void testPlayWinSfx() throws InterruptedException {
+        initialiseJavafxPlatform();
+        AudioController.initialise();
+        initialiseAudioControllers();
 
-        // Run the test
         AudioManager.playWinSfx();
 
-        // Verify the results
+        waiter.await(1, TimeUnit.SECONDS);
+
+        // Tests if effect is playing
+        assertTrue(getWinEffectController().isPlaying());
+
+        exitJavafxPlatform();
     }
 
     @Test
-    public void testPlayLoseSfx() {
-        // Setup
+    public void testPlayLoseSfx() throws InterruptedException {
+        initialiseJavafxPlatform();
+        AudioController.initialise();
+        initialiseAudioControllers();
 
-        // Run the test
         AudioManager.playLoseSfx();
 
-        // Verify the results
+        waiter.await(1, TimeUnit.SECONDS);
+
+        // Tests if effect is playing
+        assertTrue(getLoseEffectController().isPlaying());
+
+        exitJavafxPlatform();
     }
 
-    @Test
-    public void testStopWooshSfx() {
-        // Setup
-
-        // Run the test
-        AudioManager.stopWooshSfx();
-
-        // Verify the results
-    }
 }
