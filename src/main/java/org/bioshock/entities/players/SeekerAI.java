@@ -112,8 +112,19 @@ public class SeekerAI extends SquareEntity implements Collisions {
      */
     private Sprite currentSprite;
 
-    private Sprite currentSwingAnimation;
+    /**
+     * The current swing animation
+     */
+    private Sprite currentSwingSprite;
+
+    /**
+     * The current seeker animation
+     */
     private SeekerAnimations seekerAnimations;
+
+    /**
+     * The current swing animation
+     */
     private SwingAnimations swingAnimations;
 
     /**
@@ -196,7 +207,7 @@ public class SeekerAI extends SquareEntity implements Collisions {
             this,
             1.5
         );
-        currentSwingAnimation = SwingAnimations.getIdle();
+        currentSwingSprite = SwingAnimations.getIdle();
     }
 
     /**
@@ -498,7 +509,7 @@ public class SeekerAI extends SquareEntity implements Collisions {
      * Sets current sprite to sprite s
      * @param s the sprite to change to
      */
-    private void setCurrentSprite(Sprite s) {
+    public void setCurrentSprite(Sprite s) {
         if (s != null) {
             currentSprite = s;
         } else {
@@ -510,9 +521,9 @@ public class SeekerAI extends SquareEntity implements Collisions {
      * Changes the current swing animation to sprite s
      * @param s the sprite to change to
      */
-    public void setCurrentSwingAnimation(Sprite s) {
+    public void setCurrentSwingSprite(Sprite s) {
         if (s != null) {
-            currentSwingAnimation = s;
+            currentSwingSprite = s;
         } else {
             App.logger.debug("Sprite is missing!");
         }
@@ -584,7 +595,7 @@ public class SeekerAI extends SquareEntity implements Collisions {
             }
         }
 
-        setCurrentSwingAnimation(animation);
+        setCurrentSwingSprite(animation);
     }
 
     /**
@@ -658,8 +669,8 @@ public class SeekerAI extends SquareEntity implements Collisions {
     /**
      * @return the current swing animation
      */
-    public Sprite getCurrentSwingAnimation() {
-        return currentSwingAnimation;
+    public Sprite getCurrentSwingSprite() {
+        return currentSwingSprite;
     }
 
 
@@ -673,6 +684,20 @@ public class SeekerAI extends SquareEntity implements Collisions {
      * @return the current target
      */
     public SquareEntity getTarget() { return target; }
+
+    /**
+     * @return the current seeker animation
+     */
+    public SeekerAnimations getSeekerAnimations() {
+        return seekerAnimations;
+    }
+
+    /**
+     * @return the current swing animation
+     */
+    public SwingAnimations getSwingAnimations() {
+        return swingAnimations;
+    }
 
 
     /**

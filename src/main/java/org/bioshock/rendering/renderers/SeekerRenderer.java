@@ -80,7 +80,7 @@ public class SeekerRenderer implements Renderer {
          */
         if (isActive) {
             // Handles swing animation
-            Sprite currentSwingAnimation = ent.getCurrentSwingAnimation();
+            Sprite currentSwingAnimation = ent.getCurrentSwingSprite();
             AnimationPlayer.playAnimation(
                 currentSwingAnimation,
                 calcSwingPosition(currentSwingAnimation, x, y),

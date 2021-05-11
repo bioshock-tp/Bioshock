@@ -242,12 +242,67 @@ public class AudioManager {
         }
     }
 
-    /**
-     * Stops woosh sound.
-     */
-    public static void stopWooshSfx() {
-        wooshEffectController.stop();
+    public static MusicController getBgMusicController() {
+        return bgMusicController;
     }
 
+    public static MusicSettings getBgMusicSettings() {
+        return bgMusicSettings;
+    }
 
+    public static EffectController getWalkingEffectController() {
+        return walkingEffectController;
+    }
+
+    public static EffectSettings getWalkingEffectSettings() {
+        return walkingEffectSettings;
+    }
+
+    public static EffectController getWooshEffectController() {
+        return wooshEffectController;
+    }
+
+    public static EffectSettings getWooshEffectSettings() {
+        return wooshEffectSettings;
+    }
+
+    public static EffectController getPlinkEffectController() {
+        return plinkEffectController;
+    }
+
+    public static EffectSettings getPlinkEffectSettings() {
+        return plinkEffectSettings;
+    }
+
+    public static EffectController getFreezeEffectController() {
+        return freezeEffectController;
+    }
+
+    public static EffectController getFastAirEffectController() {
+        return fastAirEffectController;
+    }
+
+    public static EffectController getGhostEffectController() {
+        return ghostEffectController;
+    }
+
+    public static EffectController getTeleportEffectController() {
+        return teleportEffectController;
+    }
+
+    public static EffectController getWinEffectController() {
+        return winEffectController;
+    }
+
+    public static EffectController getLoseEffectController() {
+        return loseEffectController;
+    }
+
+    public static EffectController getBombEffectController() {
+        return bombEffectController;
+    }
+
+    public static EffectController getTrapEffectController() {
+        return trapEffectController;
+    }
 }
