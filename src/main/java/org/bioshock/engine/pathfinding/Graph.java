@@ -279,7 +279,7 @@ public class Graph<T extends GraphNode, S> {
         frontier.add(node);
         //this search is an implementation  of breadth first search
         //loop while there are still nodes to explore
-        for (int i = 0; !frontier.isEmpty() && i < 1e4; i++) {
+        while (!frontier.isEmpty()) {
             //visit the first node in the frontier
             T currNode = frontier.get(0);
             frontier.remove(0);
