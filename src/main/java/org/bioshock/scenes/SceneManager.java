@@ -44,6 +44,7 @@ public final class SceneManager {
      * The seed used to initialise the game scene
      */
     private static long seed;
+    private static MainGame mainGame;
 
 
     /**
@@ -58,7 +59,10 @@ public final class SceneManager {
      * @param initialScene
      */
     public static void initialise(Stage primaryStage, GameScene initialScene) {
-        if (initialised) return;
+        if (initialised) {
+            setScene(initialScene);
+            return;
+        }
         initialised = true;
 
 		stage = primaryStage;
@@ -116,6 +120,14 @@ public final class SceneManager {
 
 
     /**
+     * @param mainGame The {@link MainGame} scene instance to be used game-wide
+     */
+    public static void setMainGameInstance(MainGame mainGame) {
+        SceneManager.mainGame = mainGame;
+    }
+
+
+    /**
      * @return The seed to be used for map generation
      */
     public static long getSeed() {
@@ -147,19 +159,6 @@ public final class SceneManager {
 	}
 
 
-	/**
-	 * @return Lobby if {@link #currentScene} is Lobby, otherwise null
-	 */
-    public static Lobby getLobby() {
-        if (currentScene instanceof Lobby) {
-            return (Lobby) currentScene;
-        } else {
-            App.logger.error("Tried to get Lobby whilst not in Lobby");
-            return null;
-        }
-    }
-
-
     /**
      * @return MainGame if {@link #currentScene} is MainGame, otherwise null
      */
@@ -171,6 +170,14 @@ public final class SceneManager {
             App.logger.error("Tried to get MainGame whilst not in MainGame");
             return null;
         }
+    }
+
+
+    /**
+     * @return The {@link MainGame} scene instance to be used game-wide
+     */
+    public static MainGame getMainGameInstance() {
+        return mainGame;
     }
 
 

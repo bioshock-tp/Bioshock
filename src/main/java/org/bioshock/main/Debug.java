@@ -33,7 +33,7 @@ public class Debug extends App {
         new FontManager();
 
         WindowManager.initialise(stage);
-        startGame(stage, new MainGame(), false);
+        startGame(stage, new MainGame());
 
         stage.show();
     }

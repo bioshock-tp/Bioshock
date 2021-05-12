@@ -15,7 +15,7 @@ import javafx.util.Duration;
 import org.bioshock.main.App;
 
 public class LoadingScreen extends GameScene {
-	public LoadingScreen (boolean isNetworked, String loadingText) {
+	public LoadingScreen (String loadingText, Runnable onFinished) {
         VBox verticalBox = new VBox();
         verticalBox.setAlignment(Pos.CENTER);
 
@@ -57,10 +57,6 @@ public class LoadingScreen extends GameScene {
 
         fadeIn.setOnFinished(e -> fadeOut.play());
 
-        if (isNetworked) {
-            fadeOut.setOnFinished(e -> SceneManager.setScene(new Lobby()));
-        } else {
-            fadeOut.setOnFinished(e -> SceneManager.setScene(new MainGame()));
-        }
+        fadeOut.setOnFinished(e -> onFinished.run());
 	}
 }
