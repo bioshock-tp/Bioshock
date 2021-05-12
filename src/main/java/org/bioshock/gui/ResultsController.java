@@ -1,5 +1,7 @@
 package org.bioshock.gui;
 
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import org.bioshock.main.App;
 import org.bioshock.networking.Account;
 import org.bioshock.networking.Results;
@@ -7,6 +9,8 @@ import org.bioshock.networking.Results;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+
+import java.util.Objects;
 
 public class ResultsController {
     public Label FirstName;
@@ -50,6 +54,11 @@ public class ResultsController {
         tableDescription.setText(App.getBundle().getString("TOP_5_DESCRIPTION"));
         userDetailsLabel.setText(App.getBundle().getString("HI_MESSAGE") + " " + Account.getUserName() + "," + App.getBundle().getString("YOUR_SCORE") + " " + Account.getScore() + ".");
 
+        Image backImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("icons/arrow.png")));
+        ImageView backImageView = new ImageView(backImage);
+        backImageView.setPreserveRatio(true);
+        backImageView.setFitWidth(17);
+        backButton.setGraphic(backImageView);
 
     }
 
