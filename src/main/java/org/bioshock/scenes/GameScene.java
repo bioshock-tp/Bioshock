@@ -25,7 +25,6 @@ public abstract class GameScene extends Scene {
      */
     private StackPane pane;
 
-
     /**
      * The {@code Canvas} this scene draws on
      */
@@ -35,7 +34,6 @@ public abstract class GameScene extends Scene {
     );
 
     private static Size gameScreen = new Size(1920, 1080); //1080p 16:9
-
 
     /**
      * The entities that extend {@link Entity} to be drawn on the
@@ -83,17 +81,20 @@ public abstract class GameScene extends Scene {
         renderEntities();
     }
 
+
     /**
      * Render tick method that can be overridden if the scene needs it
      * @param timeDelta currently only takes 0 as it isn't utilised
      */
     public void renderTick(double timeDelta) {}
 
+
     /**
      * Logic tick method that can be overridden if the scene needs it
      * @param timeDelta the time for a logic tick in seconds
      */
     public void logicTick(double timeDelta) {}
+
 
     /**
      * Registers the scene's {@link #children} to the
@@ -103,6 +104,7 @@ public abstract class GameScene extends Scene {
     public void registerEntities() {
         children.forEach(EntityManager::register);
     }
+
 
     /**
      * Registers the scene's {@link #children} to the
@@ -132,6 +134,7 @@ public abstract class GameScene extends Scene {
     public void destroyEntities() {
         children.forEach(RenderManager::unregister);
     }
+
 
     /**
      * Scales the canvas to the current Window Width
@@ -171,6 +174,7 @@ public abstract class GameScene extends Scene {
         return canvas;
     }
 
+
     /**
      *
      * @return The size of the game screen
@@ -178,6 +182,7 @@ public abstract class GameScene extends Scene {
     public static Size getGameScreen() {
         return gameScreen;
     }
+
 
     /**
      * Destroys the scene and unregisters the scene's {@link #children} from

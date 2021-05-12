@@ -7,15 +7,13 @@ import org.bioshock.main.App;
 import javafx.geometry.Point2D;
 
 /**
- * 
- * A mutable version of the class Point 2D
- *
+ * A mutable version of {@link Point2D}
  */
 public class Point extends Point2D {
     private Field xField;
     private Field yField;
 
-    
+
     public Point(double x, double y) {
         super(x, y);
         try {
@@ -30,8 +28,8 @@ public class Point extends Point2D {
         }
     }
 
+
     /**
-     * Changes this points x value
      * @param newX New value for x for this point
      */
     public void setX(double newX) {
@@ -43,8 +41,8 @@ public class Point extends Point2D {
         }
     }
 
+
     /**
-     * Changes this points y value
      * @param newY New value for y for this point
      */
     public void setY(double newY) {
@@ -56,8 +54,10 @@ public class Point extends Point2D {
         }
     }
 
+
     @Override
     public boolean equals(Object b) { return super.equals(b); }
+
 
     @Override
     public int hashCode() { return super.hashCode(); }

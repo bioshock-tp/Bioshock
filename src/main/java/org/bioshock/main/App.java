@@ -5,8 +5,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Locale;
 import java.util.Objects;
@@ -51,13 +51,11 @@ public class App extends Application {
     /**
      * The name of the game
      */
-
     private static String name;
 
     /**
      * The number of players for online play
      */
-
     private static int playerCount = 2;
 
     /**
@@ -152,17 +150,17 @@ public class App extends Application {
 
                 URL url = new URL("http://recklessgame.net:8034/increaseScore");
                 String jsonInputString = "{\"Token\":\"" + Account.getToken() + "\",\"Score\":\"" + Integer.toString(Account.getScoreToInc()) + "\"}";
-                byte[] postDataBytes = jsonInputString.getBytes("UTF-8");
+                byte[] postDataBytes = jsonInputString.getBytes(StandardCharsets.UTF_8);
                 HttpURLConnection con = (HttpURLConnection) url.openConnection();
                 con.setRequestMethod("PUT");
                 con.setRequestProperty("Content-Type", "application/json; utf-8");
                 con.setDoOutput(true);
                 con.getOutputStream().write(postDataBytes);
-                Reader in = new BufferedReader(new InputStreamReader(con.getInputStream(), "UTF-8"));
+                Reader in = new BufferedReader(new InputStreamReader(con.getInputStream(), StandardCharsets.UTF_8));
                 Account.setScore(Account.getScoreToInc() + Account.getScore());
                 Account.setScoreToInc(0);
-            } catch (MalformedURLException ex) {
             } catch (IOException e) {
+                App.logger.error(e);
             }
         }
         if (victory) {

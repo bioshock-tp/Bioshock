@@ -558,6 +558,7 @@ public class SeekerAI extends SquareEntity implements Collisions {
         setCurrentSprite(animation);
     }
 
+
     /**
      * Sets the swing animation of the seeker based on where the hider is.
      */
@@ -586,6 +587,7 @@ public class SeekerAI extends SquareEntity implements Collisions {
 
         setCurrentSwingAnimation(animation);
     }
+
 
     /**
      * Will use the last seen position to estimate which room should be checked

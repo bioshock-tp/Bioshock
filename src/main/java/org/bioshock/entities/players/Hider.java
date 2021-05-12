@@ -162,12 +162,11 @@ public class Hider extends SquareEntity implements Collisions {
 
 
     /**
-     * Set the current sprite
-     * @param s The new sprite
+     * @param sprite The new sprite
      */
-    private void setCurrentSprite(Sprite s) {
-        if (s != null) {
-            currentSprite = s;
+    private void setCurrentSprite(Sprite sprite) {
+        if (sprite != null) {
+            currentSprite = sprite;
         } else {
             App.logger.error("Sprite is missing!");
         }
@@ -296,8 +295,7 @@ public class Hider extends SquareEntity implements Collisions {
      * @param x the x coordinate of the position that this hider initially
      * had
      */
-
-    public void setInitPositionX(double x){
+    public void setInitPositionX(double x) {
         initPositionX = x;
     }
 
@@ -305,7 +303,7 @@ public class Hider extends SquareEntity implements Collisions {
     /**
      * @param y the y coordinate of the position that this hider initially had
      */
-    public void setInitPositionY(double y){
+    public void setInitPositionY(double y) {
         initPositionY = y;
     }
 
@@ -313,7 +311,7 @@ public class Hider extends SquareEntity implements Collisions {
     /**
      * @return the x coordinate of the position that this hider initially had
      */
-    public double getInitPositionX(){
+    public double getInitPositionX() {
         return  initPositionX;
     }
 
@@ -321,7 +319,7 @@ public class Hider extends SquareEntity implements Collisions {
     /**
      * @return the y coordinate of the position that this hider initially had
      */
-    public double getInitPositionY(){
+    public double getInitPositionY() {
         return initPositionY;
     }
 }

@@ -49,7 +49,6 @@ public abstract class SquareEntity extends Entity {
      * @param size The size of the square of that makes up the entity
      * @param radius The radius of the FOV
      * @param colour The Colour of the squareEntity for rendering purposes
-     * (not necessarily used but set one to avoid null pointers)
      */
     protected SquareEntity(
         Point3D position,
@@ -61,7 +60,12 @@ public abstract class SquareEntity extends Entity {
     ) {
         super(
             position,
-            new Rectangle(position.getX(), position.getY(), size.getWidth(), size.getHeight()),
+            new Rectangle(
+                position.getX(),
+                position.getY(),
+                size.getWidth(),
+                size.getHeight()
+            ),
             nComponent,
             rComponent
         );
@@ -110,12 +114,14 @@ public abstract class SquareEntity extends Entity {
         return fov.getRadius();
     }
 
+
     /**
      * @return The rotation of the current entity
      */
     public Rotate getRotate() {
         return rotate;
     }
+
 
     /**
      * @return The movement component the entity

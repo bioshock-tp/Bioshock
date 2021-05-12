@@ -131,6 +131,7 @@ public final class EntityManager {
         if (entity == seekers) seekers = null;
     }
 
+
     /**
      * Unregisters every entity currently managed by the EntityManager
      */
@@ -142,6 +143,7 @@ public final class EntityManager {
         seekers = null;
     }
 
+
     /**
      * Unregisters every entity in the list
      * @param toRemove the list of entities to unregister
@@ -149,6 +151,7 @@ public final class EntityManager {
     public static void unregisterAll(Entity... toRemove) {
         Arrays.asList(toRemove).forEach(EntityManager::unregister);
     }
+
 
     /**
      * @param entities
@@ -160,12 +163,14 @@ public final class EntityManager {
             && EntityManager.entities.containsAll(Arrays.asList(entities));
     }
 
+
     /**
      * @return an array of all managed entities
      */
     public static Entity[] getEntities() {
         return entities.toArray(new Entity[0]);
     }
+
 
     /**
      * @return a list of all managed entities
@@ -174,6 +179,7 @@ public final class EntityManager {
         return entities;
     }
 
+
     /**
      * @return a list of all managed seekers
      */
@@ -181,12 +187,14 @@ public final class EntityManager {
         return seekers;
     }
 
+
     /**
      * @return a list of all managed players
      */
     public static List<Hider> getPlayers() {
         return players;
     }
+
 
     /**
      * @return the player controlled by the player on this game

@@ -25,6 +25,7 @@ public class Movement {
      */
     private boolean movementPaused;
 
+
     public Movement(Entity entity) {
         this.entity = entity;
     }
