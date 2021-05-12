@@ -243,7 +243,7 @@ public class InputManager {
     }
 
     /**
-     * Stops listening to key presses/releases
+     * Removes the mapped call-backs to from all keys
      */
     public static void stop() {
         keyPresses.clear();
@@ -252,8 +252,7 @@ public class InputManager {
 
 
     /**
-     * Maps WASD keys to whether they are pressed, helps to ignore repeated key
-     * presses
+     * Maps WASD keys to 1 if pressed, 0 otherwise
      */
     public static void initMovement() {
         InputManager.onPress(  KeyCode.W, () -> wasd.put(KeyCode.W, 1));
