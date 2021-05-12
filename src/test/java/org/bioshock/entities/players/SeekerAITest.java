@@ -1,6 +1,7 @@
 package org.bioshock.entities.players;
 
 import java.lang.reflect.Field;
+import java.util.concurrent.TimeUnit;
 
 import org.bioshock.components.NetworkC;
 import org.bioshock.entities.EntityManager;
@@ -23,7 +24,7 @@ public class SeekerAITest extends TestCase {
 
 
     @Test
-    public void testTest() {
+    public void testTest() throws InterruptedException {
         Point2D roomCenter = SceneManager.getMap().getRooms().get(0).getRoomCenter();
 
         Hider hider = new Hider(
