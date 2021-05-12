@@ -29,6 +29,9 @@ public class PathfindingC<T extends GraphNode, S> {
      */
     private Graph<T, S> graph;
 
+    /**
+     * Random number generator fo random path
+     */
     private Random rand = new Random();
 
     /**
@@ -47,12 +50,19 @@ public class PathfindingC<T extends GraphNode, S> {
      */
     private T[][] nodeArray;
 
+    /**
+     * Creates a new instance of PathfindingC
+     * @param graph the graph of node
+     * @param nodeArray the array of nodes that are in the graph
+     * @param unitWidth the width between each node
+     * @param unitHeight the height between each node
+     */
     public PathfindingC(
-        Graph<T, S> g, T[][] nodeArray,
+        Graph<T, S> graph, T[][] nodeArray,
         double unitWidth,
         double unitHeight
     ) {
-        graph = g;
+        this.graph = graph;
         this.nodeArray = nodeArray;
         this.unitHeight = unitHeight;
         this.unitWidth = unitWidth;
@@ -328,9 +338,15 @@ public class PathfindingC<T extends GraphNode, S> {
         return current[i][j];
     }
 
+    /**
+     * @param newGraph the graph to set this.graph to
+     */
     public void setGraph(Graph<T, S> newGraph) {
         this.graph = newGraph;
     }
 
+    /**
+     * @return the graph of nodes that the pathfindingC is working from
+     */
     public Graph<T, S> getGraph() { return graph; }
 }

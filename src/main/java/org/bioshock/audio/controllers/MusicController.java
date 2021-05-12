@@ -23,7 +23,8 @@ public class MusicController {
      *          The path of the music file.
      */
     public MusicController(final Path path) {
-        player = new MediaPlayer(new Media(path.toFile().toURI().toString()));
+        Media media = new Media(path.toFile().toURI().toString());
+        player = new MediaPlayer(media);
     }
 
     /** @see MediaPlayer#dispose() */
@@ -125,5 +126,9 @@ public class MusicController {
 
             player.stop();
         });
+    }
+
+    public MediaPlayer.Status getStatus() {
+        return player.getStatus();
     }
 }

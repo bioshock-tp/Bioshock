@@ -2,6 +2,7 @@ package org.bioshock.audio.controllers;
 
 import javafx.application.Platform;
 import javafx.scene.media.AudioClip;
+import javafx.scene.media.MediaPlayer;
 import org.bioshock.audio.settings.EffectSettings;
 
 import java.nio.file.Path;
@@ -44,5 +45,9 @@ public class EffectController {
      */
     public void stop() {
         Platform.runLater(clip::stop);
+    }
+
+    public boolean isPlaying() {
+        return clip.isPlaying();
     }
 }

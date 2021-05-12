@@ -42,21 +42,21 @@ class PathfindingCTest {
         }
         objectNodes = new ArrayList<>();
 
-        traversableNodes[1][1].setIsObject(true);
+        traversableNodes[1][1].setObject(true);
         objectNodes.add(traversableNodes[1][1]);
-        traversableNodes[1][2].setIsObject(true);
+        traversableNodes[1][2].setObject(true);
         objectNodes.add(traversableNodes[1][2]);
-        traversableNodes[1][3].setIsObject(true);
+        traversableNodes[1][3].setObject(true);
         objectNodes.add(traversableNodes[1][3]);
-        traversableNodes[2][1].setIsObject(true);
+        traversableNodes[2][1].setObject(true);
         objectNodes.add(traversableNodes[2][1]);
-        traversableNodes[2][2].setIsObject(true);
+        traversableNodes[2][2].setObject(true);
         objectNodes.add(traversableNodes[2][2]);
-        traversableNodes[2][3].setIsObject(true);
+        traversableNodes[2][3].setObject(true);
         objectNodes.add(traversableNodes[2][3]);
-        traversableNodes[0][1].setIsObject(true);
+        traversableNodes[0][1].setObject(true);
         objectNodes.add(traversableNodes[0][1]);
-        traversableNodes[0][3].setIsObject(true);
+        traversableNodes[0][3].setObject(true);
         objectNodes.add(traversableNodes[0][3]);
 
         /*
