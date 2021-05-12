@@ -22,7 +22,6 @@ public interface Collisions {
         CollisionUtils.collidables.forEach(entity -> {
             Set<Entity> collisions = CollisionUtils.collisions.get(entity);
 
-            if (collisions.isEmpty()) return;
             ((Collisions) entity).collisionTick(collisions);
         });
     }

@@ -384,8 +384,8 @@ public class MainGame extends GameScene {
             // If not networked there should be one player and then initialise
             // the movement and animations of the player/hider
             assert(App.playerCount() == 1);
-            EntityManager.getPlayers().get(0).getMovement().initMovement();
-            EntityManager.getPlayers().get(0).initAnimations();
+            EntityManager.getCurrentPlayer().getMovement().initMovement();
+            EntityManager.getCurrentPlayer().initAnimations();
         }
     }
 

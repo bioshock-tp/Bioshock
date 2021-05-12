@@ -100,11 +100,13 @@ public class Hider extends SquareEntity implements Collisions {
         if (
             !dead
             && !movement.movementPaused()
+            && this == EntityManager.getCurrentPlayer()
         ) {
             movement.tick(timeDelta);
-            setAnimation();
-            setWalkingSfx();
-        } else if (!dead) {
+        } else if (
+            !dead
+            && movement.movementPaused()
+        ) {
             setAnimation(hiderAnimations.getPlayerIdleSprite());
         }
     }
@@ -113,6 +115,7 @@ public class Hider extends SquareEntity implements Collisions {
     @Override
     public void collisionTick(Set<Entity> collisions) {
         if (dead) return;
+
 
         /* Collision Candidates*/
 
@@ -137,6 +140,11 @@ public class Hider extends SquareEntity implements Collisions {
 
         if (!collisions.isEmpty()) {
             movement.moveBack(collisions);
+        }
+
+        if (!movement.movementPaused()) {
+            setAnimation();
+            setWalkingSfx();
         }
     }
 
@@ -201,7 +209,7 @@ public class Hider extends SquareEntity implements Collisions {
      * Set the hiders animation based on how it moved from the last tick
      */
     public void setAnimation() {
-        Point2D translation = movement.getDirection();
+        Point2D translation = movement.getDisplacement();
 
         double x = translation.getX();
         double y = translation.getY();
@@ -217,6 +225,10 @@ public class Hider extends SquareEntity implements Collisions {
         else if (y < 0) animation = hiderAnimations.getMoveUpSprite();
 
         setCurrentSprite(animation);
+
+        if (getMovement().getDisplacement() != null) {
+            getMovement().setDirection(0, 0);
+        }
     }
 
 
@@ -234,7 +246,7 @@ public class Hider extends SquareEntity implements Collisions {
      * to the last tick
      */
     public void setWalkingSfx() {
-        Point2D translation = movement.getDirection();
+        Point2D translation = movement.getDisplacement();
 
         int x = (int) translation.getX();
         int y = (int) translation.getY();

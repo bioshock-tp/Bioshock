@@ -5,8 +5,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -18,6 +18,7 @@ import java.util.UUID;
 
 import org.bioshock.engine.core.ChatManager;
 import org.bioshock.entities.Entity;
+import org.bioshock.entities.EntityManager;
 import org.bioshock.entities.SquareEntity;
 import org.bioshock.entities.players.Hider;
 import org.bioshock.entities.players.SeekerAI;
@@ -230,17 +231,16 @@ public class NetworkManager {
 
             if (input == null && message.dead) messageFrom.setDead(true);
 
+            if (input == null) continue;
+
             if (
-                input != null
-                && input.message != null
+                input.message != null
                 && !input.message.isEmpty()
             ) {
                 sendChat(message);
             }
 
-            if (messageFrom == me || input == null) continue;
-
-            updateDirection(input, messageFrom);
+            if (messageFrom == me) continue;
 
             NetworkManager.setPing(messageFrom, input.ping);
 
@@ -249,13 +249,16 @@ public class NetworkManager {
                 && input.aiCoords != null
                 && input.aiCoords.length == seekers.size()
             ) {
-                for(int i = 0; i < seekers.size(); i++) {
-                    seekers.get(i).getMovement().moveTo(
-                        input.aiCoords[i][0],
-                        input.aiCoords[i][1]
-                    );
+                for (int i = 0; i < seekers.size(); i++) {
+                    int x = input.aiCoords[i][0];
+                    int y = input.aiCoords[i][1];
+
+                    setDisplacement(new Point2D(x, y), seekers.get(i));
+                    seekers.get(i).getMovement().moveTo(x, y);
                 }
             }
+
+            setDisplacement(new Point2D(input.x, input.y), messageFrom);
 
             messageFrom.getMovement().moveTo(
                 input.x,
@@ -280,20 +283,22 @@ public class NetworkManager {
 
     /**
      * Updates the
-     * {@link org.bioshock.physics.Movement#direction Movement.direction}
+     * {@link org.bioshock.physics.Movement#getDisplacement()
+     * Movement.displacement}
      * of each {@link Entity}
-     * @param input Information about the player
-     * @param messageFrom The player to update
+     * @param newPosition New position
+     * @param entity The {@link Entity} to update
      * @see Message.ClientInput
      */
-    private static void updateDirection(ClientInput input, Hider messageFrom) {
-        int dispX = (int) (input.x - messageFrom.getX());
-        if (dispX != 0) dispX = dispX / Math.abs(dispX);
+    private static void setDisplacement(
+        Point2D newPosition,
+        SquareEntity entity
+    ) {
+        double dispX = newPosition.getX() - entity.getX();
 
-        int dispY = (int) (input.y - messageFrom.getY());
-        if (dispY != 0) dispY = dispY / Math.abs(dispY);
+        double dispY = newPosition.getY() - entity.getY();
 
-        messageFrom.getMovement().direction(dispX, dispY);
+        entity.getMovement().setDisplacement(dispX, dispY);
     }
 
 
@@ -368,19 +373,18 @@ public class NetworkManager {
 
                 URL url = new URL("http://recklessgame.net:8034/increaseScore");
                 String jsonInputString = "{\"Token\":\"" + Account.getToken() + "\",\"Score\":\"" + Integer.toString(Account.getScoreToInc()) + "\"}";
-                byte[] postDataBytes = jsonInputString.getBytes("UTF-8");
+                byte[] postDataBytes = jsonInputString.getBytes(StandardCharsets.UTF_8);
                 HttpURLConnection con = (HttpURLConnection) url.openConnection();
                 con.setRequestMethod("PUT");
                 con.setRequestProperty("Content-Type", "application/json; utf-8");
                 con.setDoOutput(true);
                 con.getOutputStream().write(postDataBytes);
-                Reader in = new BufferedReader(new InputStreamReader(con.getInputStream(), "UTF-8"));
+                Reader in = new BufferedReader(new InputStreamReader(con.getInputStream(), StandardCharsets.UTF_8));
                 Account.setScore(Account.getScoreToInc() + Account.getScore());
                 Account.setScoreToInc(0);
-            } catch (MalformedURLException ex) {
             } catch (IOException e) {
+                App.logger.error(e);
             }
-
         }
     }
 

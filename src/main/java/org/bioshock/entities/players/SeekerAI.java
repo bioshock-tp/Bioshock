@@ -181,6 +181,8 @@ public class SeekerAI extends SquareEntity implements Collisions {
             getCentre().getX(),
             getCentre().getY()
         );
+
+        initCollision(this);
     }
 
     /**
@@ -214,21 +216,25 @@ public class SeekerAI extends SquareEntity implements Collisions {
         setSwatterPos();
         setSwatterRot();
 
-        setAnimation();
         setSwingAnimation();
-
-        movement.tick(timeDelta);
     }
 
 
     @Override
     public void collisionTick(Set<Entity> collisions) {
+        if (collisions.isEmpty()) {
+            setAnimation();
+            return;
+        }
+
         /* Walls of current room */
         List<Wall> walls = this.findCurrentRoom().getWalls();
 
         collisions.retainAll(walls);
 
         if (!collisions.isEmpty()) movement.moveBack(collisions);
+
+        setAnimation();
     }
 
 
@@ -537,14 +543,14 @@ public class SeekerAI extends SquareEntity implements Collisions {
     }
 
     /**
-     * Sets animation of the seeker based on the movement towards the current
-     * target location.
+     * Set the animation based on how it moved from the last tick
      */
     public void setAnimation() {
-        Point2D translation = currentTargetLocation.subtract(getCentre());
+        Point2D translation = movement.getDisplacement();
 
         int x = (int) translation.getX();
         int y = (int) translation.getY();
+
         Sprite animation = seekerAnimations.getPlayerIdleSprite();
 
         if (x > 0) animation = seekerAnimations.getMoveRightSprite();
