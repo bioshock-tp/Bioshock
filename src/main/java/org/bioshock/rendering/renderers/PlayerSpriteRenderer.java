@@ -48,7 +48,8 @@ public class PlayerSpriteRenderer implements Renderer {
                 getRenY(y + height / 2),
                 getRenWidth(radius),
                 getRenHeight(radius),
-                0, 360);
+                0, 360
+            );
 
             gc.rect(
                 0,

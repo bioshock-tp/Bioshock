@@ -100,11 +100,13 @@ public class Hider extends SquareEntity implements Collisions {
         if (
             !dead
             && !movement.movementPaused()
+            && this == EntityManager.getCurrentPlayer()
         ) {
             movement.tick(timeDelta);
-            setAnimation();
-            setWalkingSfx();
-        } else if (!dead) {
+        } else if (
+            !dead
+            && movement.movementPaused()
+        ) {
             setAnimation(hiderAnimations.getPlayerIdleSprite());
         }
     }
@@ -113,6 +115,7 @@ public class Hider extends SquareEntity implements Collisions {
     @Override
     public void collisionTick(Set<Entity> collisions) {
         if (dead) return;
+
 
         /* Collision Candidates*/
 
@@ -138,6 +141,11 @@ public class Hider extends SquareEntity implements Collisions {
         if (!collisions.isEmpty()) {
             movement.moveBack(collisions);
         }
+
+        if (!movement.movementPaused()) {
+            setAnimation();
+            setWalkingSfx();
+        }
     }
 
 
@@ -162,12 +170,11 @@ public class Hider extends SquareEntity implements Collisions {
 
 
     /**
-     * Set the current sprite
-     * @param s The new sprite
+     * @param sprite The new sprite
      */
-    private void setCurrentSprite(Sprite s) {
-        if (s != null) {
-            currentSprite = s;
+    private void setCurrentSprite(Sprite sprite) {
+        if (sprite != null) {
+            currentSprite = sprite;
         } else {
             App.logger.error("Sprite is missing!");
         }
@@ -202,7 +209,7 @@ public class Hider extends SquareEntity implements Collisions {
      * Set the hiders animation based on how it moved from the last tick
      */
     public void setAnimation() {
-        Point2D translation = movement.getDirection();
+        Point2D translation = movement.getDisplacement();
 
         double x = translation.getX();
         double y = translation.getY();
@@ -218,6 +225,10 @@ public class Hider extends SquareEntity implements Collisions {
         else if (y < 0) animation = hiderAnimations.getMoveUpSprite();
 
         setCurrentSprite(animation);
+
+        if (getMovement().getDisplacement() != null) {
+            getMovement().setDirection(0, 0);
+        }
     }
 
 
@@ -235,7 +246,7 @@ public class Hider extends SquareEntity implements Collisions {
      * to the last tick
      */
     public void setWalkingSfx() {
-        Point2D translation = movement.getDirection();
+        Point2D translation = movement.getDisplacement();
 
         int x = (int) translation.getX();
         int y = (int) translation.getY();
@@ -296,8 +307,7 @@ public class Hider extends SquareEntity implements Collisions {
      * @param x the x coordinate of the position that this hider initially
      * had
      */
-
-    public void setInitPositionX(double x){
+    public void setInitPositionX(double x) {
         initPositionX = x;
     }
 
@@ -305,7 +315,7 @@ public class Hider extends SquareEntity implements Collisions {
     /**
      * @param y the y coordinate of the position that this hider initially had
      */
-    public void setInitPositionY(double y){
+    public void setInitPositionY(double y) {
         initPositionY = y;
     }
 
@@ -313,7 +323,7 @@ public class Hider extends SquareEntity implements Collisions {
     /**
      * @return the x coordinate of the position that this hider initially had
      */
-    public double getInitPositionX(){
+    public double getInitPositionX() {
         return  initPositionX;
     }
 
@@ -321,7 +331,7 @@ public class Hider extends SquareEntity implements Collisions {
     /**
      * @return the y coordinate of the position that this hider initially had
      */
-    public double getInitPositionY(){
+    public double getInitPositionY() {
         return initPositionY;
     }
 }

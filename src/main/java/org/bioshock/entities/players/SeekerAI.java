@@ -112,8 +112,19 @@ public class SeekerAI extends SquareEntity implements Collisions {
      */
     private Sprite currentSprite;
 
-    private Sprite currentSwingAnimation;
+    /**
+     * The current swing animation
+     */
+    private Sprite currentSwingSprite;
+
+    /**
+     * The current seeker animation
+     */
     private SeekerAnimations seekerAnimations;
+
+    /**
+     * The current swing animation
+     */
     private SwingAnimations swingAnimations;
 
     /**
@@ -181,6 +192,8 @@ public class SeekerAI extends SquareEntity implements Collisions {
             getCentre().getX(),
             getCentre().getY()
         );
+
+        initCollision(this);
     }
 
     /**
@@ -196,7 +209,7 @@ public class SeekerAI extends SquareEntity implements Collisions {
             this,
             1.5
         );
-        currentSwingAnimation = SwingAnimations.getIdle();
+        currentSwingSprite = SwingAnimations.getIdle();
     }
 
     /**
@@ -214,21 +227,25 @@ public class SeekerAI extends SquareEntity implements Collisions {
         setSwatterPos();
         setSwatterRot();
 
-        setAnimation();
         setSwingAnimation();
-
-        movement.tick(timeDelta);
     }
 
 
     @Override
     public void collisionTick(Set<Entity> collisions) {
+        if (collisions.isEmpty()) {
+            setAnimation();
+            return;
+        }
+
         /* Walls of current room */
         List<Wall> walls = this.findCurrentRoom().getWalls();
 
         collisions.retainAll(walls);
 
         if (!collisions.isEmpty()) movement.moveBack(collisions);
+
+        setAnimation();
     }
 
 
@@ -498,7 +515,7 @@ public class SeekerAI extends SquareEntity implements Collisions {
      * Sets current sprite to sprite s
      * @param s the sprite to change to
      */
-    private void setCurrentSprite(Sprite s) {
+    public void setCurrentSprite(Sprite s) {
         if (s != null) {
             currentSprite = s;
         } else {
@@ -510,9 +527,9 @@ public class SeekerAI extends SquareEntity implements Collisions {
      * Changes the current swing animation to sprite s
      * @param s the sprite to change to
      */
-    public void setCurrentSwingAnimation(Sprite s) {
+    public void setCurrentSwingSprite(Sprite s) {
         if (s != null) {
-            currentSwingAnimation = s;
+            currentSwingSprite = s;
         } else {
             App.logger.debug("Sprite is missing!");
         }
@@ -537,14 +554,14 @@ public class SeekerAI extends SquareEntity implements Collisions {
     }
 
     /**
-     * Sets animation of the seeker based on the movement towards the current
-     * target location.
+     * Set the animation based on how it moved from the last tick
      */
     public void setAnimation() {
-        Point2D translation = currentTargetLocation.subtract(getCentre());
+        Point2D translation = movement.getDisplacement();
 
         int x = (int) translation.getX();
         int y = (int) translation.getY();
+
         Sprite animation = seekerAnimations.getPlayerIdleSprite();
 
         if (x > 0) animation = seekerAnimations.getMoveRightSprite();
@@ -557,6 +574,7 @@ public class SeekerAI extends SquareEntity implements Collisions {
 
         setCurrentSprite(animation);
     }
+
 
     /**
      * Sets the swing animation of the seeker based on where the hider is.
@@ -584,8 +602,9 @@ public class SeekerAI extends SquareEntity implements Collisions {
             }
         }
 
-        setCurrentSwingAnimation(animation);
+        setCurrentSwingSprite(animation);
     }
+
 
     /**
      * Will use the last seen position to estimate which room should be checked
@@ -658,8 +677,8 @@ public class SeekerAI extends SquareEntity implements Collisions {
     /**
      * @return the current swing animation
      */
-    public Sprite getCurrentSwingAnimation() {
-        return currentSwingAnimation;
+    public Sprite getCurrentSwingSprite() {
+        return currentSwingSprite;
     }
 
 
@@ -673,6 +692,20 @@ public class SeekerAI extends SquareEntity implements Collisions {
      * @return the current target
      */
     public SquareEntity getTarget() { return target; }
+
+    /**
+     * @return the current seeker animation
+     */
+    public SeekerAnimations getSeekerAnimations() {
+        return seekerAnimations;
+    }
+
+    /**
+     * @return the current swing animation
+     */
+    public SwingAnimations getSwingAnimations() {
+        return swingAnimations;
+    }
 
 
     /**

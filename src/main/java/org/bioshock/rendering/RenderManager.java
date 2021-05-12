@@ -1,6 +1,5 @@
 package org.bioshock.rendering;
 
-
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -31,7 +30,6 @@ import javafx.scene.effect.GaussianBlur;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
 import javafx.util.Duration;
-
 
 public final class RenderManager {
     /**

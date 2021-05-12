@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Locale;
 import java.util.Objects;
@@ -52,7 +53,6 @@ public class App extends Application {
     /**
      * The name of the game
      */
-
     private static String name;
 
     /**
@@ -259,7 +259,7 @@ public class App extends Application {
             App.logger.error(e);
         }
 
-        if(App.isNetworked()) NetworkManager.reset();
+        if (App.isNetworked()) NetworkManager.reset();
 
         gameLoop.stop();
 
@@ -273,7 +273,6 @@ public class App extends Application {
         SceneManager.getScene().destroy();
 
         EntityManager.unregisterAll();
-        // RenderManager.unregisterAll();
 
         Stage stage = (Stage) SceneManager.getScene().getWindow();
         stage.setScene(fxmlScene);

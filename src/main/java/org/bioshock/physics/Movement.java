@@ -1,10 +1,12 @@
 package org.bioshock.physics;
 
+import java.util.Map;
 import java.util.Set;
 
 import org.bioshock.engine.input.InputManager;
 import org.bioshock.entities.Entity;
 import org.bioshock.entities.EntityManager;
+import org.bioshock.main.App;
 import org.bioshock.utils.Point;
 
 import javafx.geometry.Point2D;
@@ -14,6 +16,12 @@ public class Movement {
     private double speed = 8;
 
     private Point2D oldPosition;
+
+    /**
+     * Displacement as set by the
+     * {@link org.bioshock.networking.NetworkManager NetworkManager}
+     */
+    private Point2D displacement;
 
     private double xDirection = 0;
     private double yDirection = 0;
@@ -25,6 +33,7 @@ public class Movement {
      */
     private boolean movementPaused;
 
+
     public Movement(Entity entity) {
         this.entity = entity;
     }
@@ -32,11 +41,14 @@ public class Movement {
     public void tick(double delta) {
         oldPosition = new Point2D(entity.getX(), entity.getY());
 
-        direction(
-            (InputManager.getWasd().getOrDefault(KeyCode.D, 0) - InputManager.getWasd().getOrDefault(KeyCode.A, 0)) * speed,
-            (InputManager.getWasd().getOrDefault(KeyCode.S, 0)
-            - InputManager.getWasd().getOrDefault(KeyCode.W, 0)) * speed
-        );
+        Map<KeyCode, Integer> wasd = InputManager.getWasd();
+
+        Integer d = wasd.getOrDefault(KeyCode.D, 0);
+        Integer a = wasd.getOrDefault(KeyCode.A, 0);
+        Integer s = wasd.getOrDefault(KeyCode.S, 0);
+        Integer w = wasd.getOrDefault(KeyCode.W, 0);
+
+        direction((d - a) * speed, (s - w) * speed);
 
         if (
             entity == EntityManager.getCurrentPlayer()
@@ -62,6 +74,8 @@ public class Movement {
     }
 
     public void moveTo(Point2D target) {
+        oldPosition = new Point2D(entity.getX(), entity.getY());
+
         for (int i = 0; i < speed; i++) {
             move(target.subtract(entity.getPosition()));
         }
@@ -78,6 +92,11 @@ public class Movement {
      * colliding with
      */
     public void moveBack(Set<Entity> collisions) {
+        if (oldPosition == null) {
+            App.logger.fatal("Collision without movement from {}", entity);
+            return;
+        }
+
         double newX = entity.getX();
 
         /* Check if x value was cause of collision */
@@ -112,6 +131,17 @@ public class Movement {
         direction(targ.getX(), targ.getY());
     }
 
+
+    /**
+     * Hard sets direction values
+     * @param x The new x direction value
+     * @param y The new y direction value
+     */
+    public void setDirection(double x, double y) {
+        this.xDirection = x;
+        this.yDirection = y;
+    }
+
     public void setSpeed(double newSpeed) {
         if (xDirection > 0) {
             xDirection = newSpeed;
@@ -132,23 +162,38 @@ public class Movement {
 
 
     /**
+     * @param x The displacement in x relative to previous tick
+     * @param y The displacement in y relative to previous tick
+     */
+	public void setDisplacement(double x, double y) {
+        displacement = new Point2D(x, y);
+	}
+
+
+    /**
      * @param movementPaused True if key input should not move player
      */
     public void pauseMovement(boolean movementPaused) {
         this.movementPaused = movementPaused;
     }
 
-
-    /**
-     * Sets both directions to 0
-     */
-    public void stopPlayer() {
-        direction(0, 0);
+    public Point getDirection() {
+        return new Point(xDirection, yDirection);
     }
 
 
-    public Point getDirection() {
-        return new Point(xDirection, yDirection);
+    /**
+     * @return The movement relative to previous game tick
+     */
+    public Point2D getDisplacement() {
+        if (displacement != null) {
+            return displacement;
+        }
+        else if (oldPosition != null) {
+            return entity.getPosition().subtract(oldPosition);
+        } else {
+            return new Point2D(0, 0);
+        }
     }
 
     public static double getFacingRotate(Point2D trans) {
