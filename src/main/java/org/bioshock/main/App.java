@@ -58,7 +58,6 @@ public class App extends Application {
     /**
      * The number of players for online play
      */
-
     private static int playerCount = 1;
 
     /**
@@ -91,6 +90,9 @@ public class App extends Application {
      */
     private static Difficulty difficulty;
 
+    /**
+     * The loop responsible for calling updating the game state
+     */
     private static GameLoop gameLoop;
 
 
@@ -250,6 +252,9 @@ public class App extends Application {
     }
 
 
+    /**
+     * Sets the current scene to the initial GUI
+     */
     public static void backToMenu() {
         try {
             URL location = MainController.class.getResource("main.fxml");

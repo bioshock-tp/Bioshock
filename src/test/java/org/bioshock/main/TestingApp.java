@@ -1,4 +1,4 @@
-package org.main;
+package org.bioshock.main;
 
 import java.util.concurrent.CountDownLatch;
 

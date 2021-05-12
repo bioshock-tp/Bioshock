@@ -9,10 +9,10 @@ import java.util.prefs.Preferences;
 
 import javafx.scene.media.MediaPlayer;
 import org.bioshock.gui.SettingsController;
+import org.bioshock.main.TestingApp;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.bioshock.audio.controllers.AudioController;
-import org.main.TestingApp;
 
 import static org.bioshock.audio.AudioManager.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -45,7 +45,7 @@ public class AudioManagerTest {
     @Test
     public void testInitialiseBackgroundAudio() throws InterruptedException {
         // Setup
-        
+
         initialiseBackgroundAudio();
 
         waiter.await(1, TimeUnit.SECONDS); // 1ms
@@ -68,7 +68,7 @@ public class AudioManagerTest {
     @Test
     public void testStopBackgroundMusic() throws InterruptedException {
 
-        
+
         AudioController.initialise();
         initialiseAudioControllers();
 
@@ -91,7 +91,7 @@ public class AudioManagerTest {
 
     @Test
     public void testPlayBackgroundMusic() throws InterruptedException {
-        
+
         AudioController.initialise();
         initialiseAudioControllers();
 
@@ -107,7 +107,7 @@ public class AudioManagerTest {
 
     @Test
     public void testPlayWalkingSfx() throws InterruptedException {
-        
+
         AudioController.initialise();
         initialiseAudioControllers();
 
@@ -123,7 +123,7 @@ public class AudioManagerTest {
 
     @Test
     public void testStopWalkingSfx() throws InterruptedException {
-        
+
         AudioController.initialise();
         initialiseAudioControllers();
 
@@ -146,7 +146,7 @@ public class AudioManagerTest {
 
     @Test
     public void testPlayWooshSfx() throws InterruptedException {
-        
+
         AudioController.initialise();
         initialiseAudioControllers();
 
@@ -162,7 +162,7 @@ public class AudioManagerTest {
 
     @Test
     public void testPlayPlinkSfx() throws InterruptedException {
-        
+
         AudioController.initialise();
         initialiseAudioControllers();
 
@@ -178,7 +178,7 @@ public class AudioManagerTest {
 
     @Test
     public void testPlayFreezeSfx() throws InterruptedException {
-        
+
         AudioController.initialise();
         initialiseAudioControllers();
 
@@ -194,7 +194,7 @@ public class AudioManagerTest {
 
     @Test
     public void testPlayGhostSfx() throws InterruptedException {
-        
+
         AudioController.initialise();
         initialiseAudioControllers();
 
@@ -210,7 +210,7 @@ public class AudioManagerTest {
 
     @Test
     public void testPlayFastAirSfx() throws InterruptedException {
-        
+
         AudioController.initialise();
         initialiseAudioControllers();
 
@@ -226,7 +226,7 @@ public class AudioManagerTest {
 
     @Test
     public void testPlayTeleportSfx() throws InterruptedException {
-        
+
         AudioController.initialise();
         initialiseAudioControllers();
 
@@ -242,7 +242,7 @@ public class AudioManagerTest {
 
     @Test
     public void testPlayBombSfx() throws InterruptedException {
-        
+
         AudioController.initialise();
         initialiseAudioControllers();
 
@@ -258,7 +258,7 @@ public class AudioManagerTest {
 
     @Test
     public void testPlayTrapSfx() throws InterruptedException {
-        
+
         AudioController.initialise();
         initialiseAudioControllers();
 
@@ -273,7 +273,7 @@ public class AudioManagerTest {
 
     @Test
     public void testPlayWinSfx() throws InterruptedException {
-        
+
         AudioController.initialise();
         initialiseAudioControllers();
 
@@ -289,7 +289,7 @@ public class AudioManagerTest {
 
     @Test
     public void testPlayLoseSfx() throws InterruptedException {
-        
+
         AudioController.initialise();
         initialiseAudioControllers();
 

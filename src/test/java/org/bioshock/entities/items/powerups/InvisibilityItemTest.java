@@ -7,12 +7,12 @@ import org.bioshock.entities.EntityManager;
 import org.bioshock.entities.SquareEntity;
 import org.bioshock.entities.players.Hider;
 import org.bioshock.entities.players.SeekerAI;
+import org.bioshock.main.TestingApp;
 import org.bioshock.scenes.SceneManager;
 import org.bioshock.utils.GlobalConstants;
 import org.bioshock.utils.Size;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.main.TestingApp;
 
 import java.lang.reflect.Field;
 

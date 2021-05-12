@@ -45,11 +45,11 @@ public class Point extends Point2D {
 
     /**
      * Sets the value of the {@code x} field of this instance's {@link Point2D}
-     * @param newX New value for x for this point
+     * @param x New value for x for this point
      */
-    public void setX(double newX) {
+    public void setX(double x) {
         try {
-            xField.set(this, newX);
+            xField.set(this, x);
         } catch (IllegalArgumentException | IllegalAccessException e) {
             App.logger.error("Could not change x value of Point");
         }
@@ -58,11 +58,11 @@ public class Point extends Point2D {
 
     /**
      * Sets the value of the {@code y} field of this instance's {@link Point2D}
-     * @param newY New value for y for this point
+     * @param y New value for y for this point
      */
-    public void setY(double newY) {
+    public void setY(double y) {
         try {
-            yField.set(this, newY);
+            yField.set(this, y);
         } catch (IllegalArgumentException | IllegalAccessException e) {
             App.logger.error("Could not change y value of Point");
         }

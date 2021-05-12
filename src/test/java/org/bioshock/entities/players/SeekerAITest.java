@@ -4,11 +4,11 @@ import java.lang.reflect.Field;
 
 import org.bioshock.components.NetworkC;
 import org.bioshock.entities.EntityManager;
+import org.bioshock.main.TestingApp;
 import org.bioshock.scenes.SceneManager;
 import org.bioshock.utils.Size;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.main.TestingApp;
 
 import javafx.geometry.Point2D;
 import javafx.geometry.Point3D;
