@@ -222,6 +222,8 @@ public class ChatManager {
      * {@link NetworkManager#addMessage(String)}
      */
     public static void sendMessage() {
+        if (EntityManager.getCurrentPlayer().isDead()) return;
+
         if (textField.getLength() > hiderName.length() + 2) {
             if (App.isNetworked()) {
                 NetworkManager.addMessage(textField.getText());
