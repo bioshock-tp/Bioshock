@@ -1,13 +1,8 @@
 package org.bioshock.entities.players;
 
-import java.lang.reflect.Field;
-import java.util.ArrayList;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 
 import org.bioshock.components.NetworkC;
-import org.bioshock.engine.pathfinding.GraphNode;
-import org.bioshock.entities.Entity;
 import org.bioshock.entities.EntityManager;
 import org.bioshock.main.TestingApp;
 import org.bioshock.scenes.SceneManager;
@@ -19,9 +14,6 @@ import javafx.geometry.Point2D;
 import javafx.geometry.Point3D;
 import javafx.scene.paint.Color;
 import junit.framework.TestCase;
-import org.mockito.Mock;
-
-import static org.junit.jupiter.api.Assertions.fail;
 
 public class SeekerAITest extends TestCase {
 

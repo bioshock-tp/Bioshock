@@ -51,12 +51,14 @@ public class ResultsController {
 
         for (int i = 0; i < nameLabels.size(); i++) {
             String number = Integer.toString(i + 1);
+
             String nameKey = "Name" + number;
             String name = highScores.getString(nameKey);
             nameLabels.get(i).setText(name);
+
             String scoreKey = "Score" + Integer.toString(i + 1);
-            String score = highScores.getString(scoreKey);
-            scoreLabels.get(i).setText(score);
+            int score = highScores.getInt(scoreKey);
+            scoreLabels.get(i).setText(Integer.toString(score));
         }
 
         Image backImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("icons/arrow.png")));
@@ -64,8 +66,6 @@ public class ResultsController {
         backImageView.setPreserveRatio(true);
         backImageView.setFitWidth(17);
         backButton.setGraphic(backImageView);
-
-
 
         backButton.setText(
             App.getBundle().getString("BACK_ACCOUNT_MENU_TEXT")

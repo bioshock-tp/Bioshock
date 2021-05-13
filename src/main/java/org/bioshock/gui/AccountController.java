@@ -1,22 +1,15 @@
 package org.bioshock.gui;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.Objects;
 
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import org.bioshock.main.App;
 import org.bioshock.networking.NetworkManager;
 
 import javafx.fxml.FXML;
 import javafx.scene.Cursor;
 import javafx.scene.control.Button;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 
 public class AccountController {
     public Button loginButton;

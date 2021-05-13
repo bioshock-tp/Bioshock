@@ -40,8 +40,6 @@ import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.geometry.Point2D;
 import javafx.util.Duration;
-import org.bioshock.scenes.MainGame;
-import org.bioshock.scenes.SceneManager;
 
 
 public class NetworkManager {
@@ -435,7 +433,7 @@ public class NetworkManager {
                 )
             ));
         }
-        
+
         if (hider == me) {
             sendScores();
         }

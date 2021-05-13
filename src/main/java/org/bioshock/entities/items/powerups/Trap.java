@@ -2,10 +2,6 @@ package org.bioshock.entities.items.powerups;
 
 import org.bioshock.audio.AudioManager;
 import org.bioshock.entities.players.Hider;
-import org.bioshock.scenes.SceneManager;
-
-import javafx.animation.PauseTransition;
-import javafx.util.Duration;
 
 public class Trap extends PowerUp {
     /**

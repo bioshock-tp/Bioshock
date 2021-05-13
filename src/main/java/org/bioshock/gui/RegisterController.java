@@ -1,17 +1,7 @@
 package org.bioshock.gui;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.Objects;
-import java.util.prefs.Preferences;
 
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import org.bioshock.main.App;
 import org.bioshock.networking.NetworkManager;
 
@@ -20,6 +10,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 
 public class RegisterController {
     public Button backButton;
