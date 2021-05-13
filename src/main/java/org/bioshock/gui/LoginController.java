@@ -1,17 +1,7 @@
 package org.bioshock.gui;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.prefs.Preferences;
-
 import org.bioshock.main.App;
-import org.bioshock.networking.Account;
-import org.json.JSONObject;
+import org.bioshock.networking.NetworkManager;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -28,86 +18,44 @@ public class LoginController {
     public TextField passwordField;
     public Label messageLabel;
 
+
     @FXML
     public void switchToAccountView() {
-
         messageLabel.setText("");
         nameField.setText("");
         passwordField.setText("");
         App.setFXMLRoot("account");
-
     }
+
 
     @FXML
     public void loginAccount() {
-        try {
+        String response = NetworkManager.login(
+            nameField.getText(),
+            passwordField.getText()
+        );
 
-            URL url = new URL("http://recklessgame.net:8034/login");
-            String jsonInputString = "{\"Name\":\"" + nameField.getText() + "\",\"Password\":\"" + passwordField.getText() + "\"}";
-            byte[] postDataBytes = jsonInputString.getBytes("UTF-8");
-            HttpURLConnection con = (HttpURLConnection)url.openConnection();
-            con.setRequestMethod("POST");
-            con.setRequestProperty("Content-Type", "application/json; utf-8");
-            con.setDoOutput(true);
-            con.getOutputStream().write(postDataBytes);
-            Reader in = new BufferedReader(new InputStreamReader(con.getInputStream(), "UTF-8"));
-            StringBuilder sb = new StringBuilder();
-            for (int c; (c = in.read()) >= 0;)
-                sb.append((char)c);
-            String response = sb.toString();
-            JSONObject myResponse = new JSONObject(response.toString());
-            Preferences prefs = Preferences.userNodeForPackage(SettingsController.class);
-
-            if(myResponse.has("Message")){
-                messageLabel.setText(myResponse.getString("Message"));
-            }
-            else{
-                messageLabel.setText("Internal Error");
-            }
-            if(myResponse.has("Status") && myResponse.getInt("Status") == 200){
-                prefs.put("playerName", nameField.getText());
-                Account.setUserNam(nameField.getText());
-                if(myResponse.has("Score")){
-                    Account.setScore(myResponse.getInt("Score"));
-                }
-                if(myResponse.has("Token")){
-                    Account.setToken(myResponse.getString("Token"));
-                }
-                nameField.setText("");
-                passwordField.setText("");
-
-            }
-
-        }
-        catch (MalformedURLException ex){
-            messageLabel.setText("Internal Error");
-        } catch (IOException e) {
-            messageLabel.setText("Internal Error");
-        }
+        nameField.setText("");
+        passwordField.setText("");
+        messageLabel.setText(response);
     }
+
 
     @FXML
     public void logoutAccount() {
-
-        Account.setToken("");
-        Account.setUserNam("");
-        Account.setScore(0);
+        NetworkManager.logout();
         nameField.setText("");
         passwordField.setText("");
         messageLabel.setText("You are logged out");
     }
 
-    /**
-     * Initialise the Login Page.
-     */
-    public void initialize() {
 
+    @FXML
+    public void initialize() {
         backButton.setText(App.getBundle().getString("BACK_ACCOUNT_MENU_TEXT"));
         loginButton.setText(App.getBundle().getString("LOGIN_BUTTON_TEXT"));
         logoutButton.setText(App.getBundle().getString("LOGOUT_BUTTON_TEXT"));
         nameLabel.setText(App.getBundle().getString("ACCOUNT_NAME") + ":");
         passwordLabel.setText(App.getBundle().getString("ACCOUNT_PASSWORD") + ":");
-
     }
-
 }

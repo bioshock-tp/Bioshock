@@ -3,8 +3,8 @@ package org.bioshock.networking;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.Reader;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayDeque;
@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import java.util.UUID;
+import java.util.prefs.Preferences;
 
 import org.bioshock.engine.core.ChatManager;
 import org.bioshock.entities.Entity;
@@ -23,8 +24,13 @@ import org.bioshock.entities.SquareEntity;
 import org.bioshock.entities.players.Hider;
 import org.bioshock.entities.players.SeekerAI;
 import org.bioshock.gui.LobbyController;
+import org.bioshock.gui.SettingsController;
 import org.bioshock.main.App;
 import org.bioshock.networking.Message.ClientInput;
+import org.bioshock.scenes.MainGame;
+import org.bioshock.scenes.SceneManager;
+import org.bioshock.utils.JSON;
+import org.json.JSONObject;
 
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
@@ -36,6 +42,11 @@ import javafx.geometry.Point2D;
 import javafx.util.Duration;
 
 public class NetworkManager {
+    /**
+     * The address of the scoring server
+     */
+    private static final String SCORE_SERVER =
+        "http://51.15.109.210:8034";
 
     /** Seconds between game server ping time updates */
     private static final int PING_UPDATE_RATE = 1;
@@ -93,6 +104,16 @@ public class NetworkManager {
      * Timeline responsible for periodically updating ping
      */
     private static Timeline pingTimeline;
+
+    /**
+     * A JSON of the local players account information
+     */
+    private static JSONObject account = new JSONObject();
+
+    /**
+     * A JSON of the high scores scoreboard
+     */
+    private static JSONObject highScores = new JSONObject();
 
 
     /** NetworkManager is a static class */
@@ -376,13 +397,13 @@ public class NetworkManager {
      */
     public static void kill(Hider hider) {
         client.send(Message.serialise(
-                new Message(
-                    -1,
-                    hider.getID(),
-                    playerNames.get(hider),
-                    null,
-                    true
-                )
+            new Message(
+                -1,
+                hider.getID(),
+                playerNames.get(hider),
+                null,
+                true
+            )
         ));
 
         if (hider == me) {
@@ -392,24 +413,279 @@ public class NetworkManager {
 
 
     /**
-     * TODO
+     * Attempts to create a new account for the scoring server
+     * @param username Of the account to create
+     * @param password Of the account to create
+     * @param passwordConfirmation Should match #password
+     * @return
      */
-    private static void sendScores() {
+    public static String registerAccount(
+        String username,
+        String password,
+        String passwordConfirmation
+    ) {
         try {
-            URL url = new URL("http://recklessgame.net:8034/increaseScore");
-            String jsonInputString = "{\"Token\":\"" + Account.getToken() + "\",\"Score\":\"" + Integer.toString(Account.getScoreToInc()) + "\"}";
-            byte[] postDataBytes = jsonInputString.getBytes(StandardCharsets.UTF_8);
+            URL url = new URL(SCORE_SERVER + "/register");
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
-            con.setRequestMethod("PUT");
-            con.setRequestProperty("Content-Type", "application/json; utf-8");
+            con.setRequestMethod(JSON.POST);
+            con.setRequestProperty(
+                JSON.CONTENT_TYPE,
+                JSON.JSON_HEADER
+            );
             con.setDoOutput(true);
-            con.getOutputStream().write(postDataBytes);
-            Reader in = new BufferedReader(new InputStreamReader(con.getInputStream(), StandardCharsets.UTF_8));
-            Account.setScore(Account.getScoreToInc() + Account.getScore());
-            Account.setScoreToInc(0);
-        } catch (IOException e) {
+
+            JSONObject json = new JSONObject();
+            json.put(JSON.NAME, username);
+            json.put(JSON.PASSWORD, password);
+            json.put("PasswordConfirmation", passwordConfirmation);
+
+            byte[] data = json.toString().getBytes(StandardCharsets.UTF_8);
+
+            con.getOutputStream().write(data);
+
+            try (
+                BufferedReader input = new BufferedReader(
+                    new InputStreamReader(
+                        con.getInputStream(),
+                        StandardCharsets.UTF_8
+                    )
+                )
+            ) {
+                StringBuilder stringBuilder = new StringBuilder();
+                String line;
+                while ((line = input.readLine()) != null) {
+                    stringBuilder.append(line);
+                }
+
+                JSONObject response = new JSONObject(stringBuilder.toString());
+
+                if (response.optInt(JSON.STATUS) == 200) {
+                    Preferences prefs = Preferences.userNodeForPackage(
+                        SettingsController.class
+                    );
+                    prefs.put("playerName", username);
+
+                    account.put(JSON.NAME,  response.optString(JSON.NAME ));
+                    account.put(JSON.SCORE, response.optInt(   JSON.SCORE));
+                    account.put(JSON.TOKEN, response.optString(JSON.TOKEN));
+                }
+
+                return response.optString(
+                    JSON.MESSAGE,
+                    JSON.AN_ERROR_OCCURRED
+                );
+            }
+        }
+        catch (MalformedURLException e) {
+            App.logger.error(JSON.ADDRESS_INCORRECT, e);
+            return JSON.AN_ERROR_OCCURRED;
+        }
+        catch (IOException e) {
+            App.logger.error(e);
+            return JSON.AN_ERROR_OCCURRED;
+        }
+    }
+
+
+    /**
+     * Attempts to login to scoring server then stores account information if
+     * successful
+     * @param username The username of the account to attempt log in to
+     * @param password The password of the account to attempt log in to
+     * @return The response from the server
+     */
+    public static String login(String username, String password) {
+        try {
+            URL url = new URL(SCORE_SERVER + "/login");
+
+            JSONObject json = new JSONObject();
+            json.put(JSON.NAME, username);
+            json.put(JSON.PASSWORD, password);
+
+            byte[] data = json.toString().getBytes(StandardCharsets.UTF_8);
+            HttpURLConnection con = (HttpURLConnection) url.openConnection();
+            con.setRequestMethod(JSON.POST);
+            con.setRequestProperty(
+                JSON.CONTENT_TYPE,
+                JSON.JSON_HEADER
+            );
+            con.setDoOutput(true);
+            con.getOutputStream().write(data);
+
+            try (
+                BufferedReader input = new BufferedReader(
+                    new InputStreamReader(
+                        con.getInputStream(),
+                        StandardCharsets.UTF_8
+                    )
+                )
+            ) {
+                StringBuilder stringBuilder = new StringBuilder();
+                String line;
+                while ((line = input.readLine()) != null) {
+                    stringBuilder.append(line);
+                }
+                JSONObject response = new JSONObject(stringBuilder.toString());
+
+                if (response.optInt(JSON.STATUS) == 200) {
+                    Preferences prefs = Preferences.userNodeForPackage(
+                        SettingsController.class
+                    );
+                    prefs.put("playerName", username);
+
+                    account.put(JSON.NAME,  response.optString(JSON.NAME ));
+                    account.put(JSON.SCORE, response.optInt(   JSON.SCORE));
+                    account.put(JSON.TOKEN, response.optString(JSON.TOKEN));
+                }
+
+                return response.optString(
+                    JSON.MESSAGE,
+                    JSON.AN_ERROR_OCCURRED
+                );
+            }
+        }
+        catch (MalformedURLException e) {
+            App.logger.error(JSON.ADDRESS_INCORRECT, e);
+            return JSON.AN_ERROR_OCCURRED;
+        }
+        catch (IOException e) {
+            App.logger.error(e);
+            return JSON.AN_ERROR_OCCURRED;
+        }
+    }
+
+
+    /**
+     * Clears stored account data
+     */
+    public static void logout() {
+        account = new JSONObject();
+    }
+
+
+    /**
+     * A successful {@link #login(String, String) login()} must have been made
+     * before this function returns a on empty {@link JSONObject}
+     *
+     * @return A JSON of the local players account information, empty if not
+     * logged in
+     *
+     * @see #login(String, String)
+     */
+    public static JSONObject getMyAccount() {
+        return account;
+    }
+
+
+    /**
+     * Sends local players scores to scoring server
+     * @param victory True if game was won
+     */
+    public static void sendScores() {
+        try {
+            URL url = new URL(SCORE_SERVER + "/increaseScore");
+            HttpURLConnection con = (HttpURLConnection) url.openConnection();
+            con.setRequestMethod(JSON.PUT);
+            con.setRequestProperty(
+                JSON.CONTENT_TYPE,
+                JSON.JSON_HEADER
+            );
+            con.setDoOutput(true);
+
+            JSONObject json = new JSONObject();
+            json.put(JSON.TOKEN, account.optString(JSON.TOKEN));
+            json.put(JSON.SCORE, account.optString(JSON.SCORE));
+
+            byte[] data = json.toString().getBytes(StandardCharsets.UTF_8);
+
+            con.getOutputStream().write(data);
+
+            int oldScore = account.optInt(JSON.SCORE);
+            MainGame mainGame = SceneManager.getMainGame();
+            Map<Hider, Integer> playerScores = mainGame.getPlayerScores();
+            Hider player = EntityManager.getCurrentPlayer();
+            account.put(JSON.SCORE, oldScore + playerScores.get(player));
+        }
+        catch (MalformedURLException e) {
+            App.logger.error(JSON.ADDRESS_INCORRECT, e);
+        }
+        catch (IOException e) {
             App.logger.error(e);
         }
+    }
+
+
+    /**
+     * Makes a request to scoring server to receive the high scores scoreboard
+     * @return True if valid response is given
+     * @see #getHighScores()
+     */
+    public static boolean requestHighScores() {
+        try {
+            URL url = new URL(SCORE_SERVER + "/getTop5Scores");
+            HttpURLConnection con = (HttpURLConnection) url.openConnection();
+
+            con.setRequestMethod(JSON.GET);
+            con.setRequestProperty(
+                JSON.CONTENT_TYPE,
+                JSON.JSON_HEADER
+            );
+            con.setDoInput(true);
+
+            try (
+                BufferedReader input = new BufferedReader(
+                    new InputStreamReader(
+                        con.getInputStream(),
+                        StandardCharsets.UTF_8
+                    )
+                )
+            ) {
+                StringBuilder stringBuilder = new StringBuilder();
+
+                String line;
+                while ((line = input.readLine()) != null) {
+                    stringBuilder.append(line);
+                }
+
+                JSONObject response = new JSONObject(stringBuilder.toString());
+
+                List<String> requiredKeys = List.of(
+                    JSON.STATUS, "Score1", "Score2", "Score3", "Score4",
+                    "Score5", "Name1", "Name2", "Name3", "Name4", "Name5"
+                );
+
+                if (
+                    response.optInt(JSON.STATUS) == 200
+                    && response.keySet().containsAll(requiredKeys)
+                ) {
+                    highScores = response;
+                }
+
+                return true;
+            }
+        }
+        catch (MalformedURLException e) {
+            App.logger.error(JSON.ADDRESS_INCORRECT, e);
+            return false;
+        }
+        catch (IOException e) {
+            App.logger.error(e);
+            return false;
+        }
+    }
+
+
+    /**
+     * A call to {@link #requestHighScores()} must evaluate to {@code true}
+     * before this function returns a non empty {@link JSONObject}
+     *
+     * @return A JSON of the local players in-game statistics, empty if
+     * successful request has not been made
+     * 
+     * @see #requestHighScores()
+     */
+    public static JSONObject getHighScores() {
+        return highScores;
     }
 
 
@@ -503,7 +779,7 @@ public class NetworkManager {
             initThread = null;
         } else {
             App.logger.error(
-                "Tried to kill networking thread before initalisation"
+                "Tried to kill networking thread before initialisation"
             );
         }
 

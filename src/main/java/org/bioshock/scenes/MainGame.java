@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 import org.bioshock.components.NetworkC;
 import org.bioshock.engine.core.ChatManager;
@@ -36,7 +37,6 @@ import org.bioshock.entities.map.maps.RandomMap;
 import org.bioshock.entities.players.Hider;
 import org.bioshock.entities.players.SeekerAI;
 import org.bioshock.main.App;
-import org.bioshock.networking.Account;
 import org.bioshock.networking.NetworkManager;
 import org.bioshock.rendering.RenderManager;
 import org.bioshock.utils.Difficulty;
@@ -681,12 +681,7 @@ public class MainGame extends GameScene {
      * If number of items collected is {@link #lootToWin}, game is won
      */
     public void collectLoot(Hider hider) {
-        if (hider == NetworkManager.me()) {
-            Account.setScoreToInc(Account.getScoreToInc() + 1);
-        }
-
         if (++collectedLoot == lootToWin) {
-
             NetworkManager.tick();
 
             App.end(true);
@@ -731,6 +726,20 @@ public class MainGame extends GameScene {
      */
     public BorderPane getBorderPane() {
         return borderPane;
+    }
+
+
+    /**
+     * @return A map of players to their scores
+     */
+    public java.util.Map<Hider, Integer> getPlayerScores() {
+        return playerScores.entrySet().stream()
+            .collect(
+                Collectors.toMap(
+                    java.util.Map.Entry::getKey,
+                    entry -> entry.getValue().get()
+                )
+            );
     }
 
 

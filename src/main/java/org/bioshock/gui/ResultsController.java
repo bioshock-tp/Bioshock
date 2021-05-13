@@ -1,8 +1,11 @@
 package org.bioshock.gui;
 
+import java.util.List;
+
 import org.bioshock.main.App;
-import org.bioshock.networking.Account;
-import org.bioshock.networking.Results;
+import org.bioshock.networking.NetworkManager;
+import org.bioshock.utils.JSON;
+import org.json.JSONObject;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -23,6 +26,7 @@ public class ResultsController {
     public Label tableDescription;
     public Button backButton;
 
+
     @FXML
     public void switchToAccountView() {
 
@@ -30,27 +34,45 @@ public class ResultsController {
 
     }
 
-    /**
-     * Initialise the results.
-     */
+
+    @FXML
     public void initialize() {
+        JSONObject highScores = NetworkManager.getHighScores();
 
-        FirstName.setText(Results.getFirstName());
-        SecondName.setText(Results.getSecondName());
-        ThirdName.setText(Results.getThirdName());
-        FourthName.setText(Results.getFourthName());
-        FifthName.setText(Results.getFifthName());
-        FirstScore.setText(Results.getFirstScore());
-        SecondScore.setText(Results.getSecondScore());
-        ThirdScore.setText(Results.getThirdScore());
-        FourthScore.setText(Results.getFourthScore());
-        FifthScore.setText(Results.getFifthScore());
+        List<Label> nameLabels = List.of(
+            FirstName, SecondName, ThirdName, FourthName, FifthName
+        );
 
-        backButton.setText(App.getBundle().getString("BACK_ACCOUNT_MENU_TEXT"));
-        tableDescription.setText(App.getBundle().getString("TOP_5_DESCRIPTION"));
-        userDetailsLabel.setText(App.getBundle().getString("HI_MESSAGE") + " " + Account.getUserName() + "," + App.getBundle().getString("YOUR_SCORE") + " " + Account.getScore() + ".");
+        List<Label> scoreLabels = List.of(
+            FirstScore, SecondScore, ThirdScore, FourthScore, FifthScore
+        );
 
+        for (int i = 0; i < nameLabels.size(); i++) {
+            String number = Integer.toString(i + 1);
+            String nameKey = "Name" + number;
+            String name = highScores.getString(nameKey);
+            nameLabels.get(i).setText(name);
 
+            String scoreKey = "Score" + Integer.toString(i + 1);
+            String score = highScores.getString(scoreKey);
+            scoreLabels.get(i).setText(score);
+        }
+
+        backButton.setText(
+            App.getBundle().getString("BACK_ACCOUNT_MENU_TEXT")
+        );
+        tableDescription.setText(
+            App.getBundle().getString("TOP_5_DESCRIPTION")
+        );
+
+        JSONObject account = NetworkManager.getMyAccount();
+        if (account.has(JSON.NAME) && account.has(JSON.SCORE)) {
+            userDetailsLabel.setText(
+                App.getBundle().getString("HI_MESSAGE")  + " "
+                + account.getString(JSON.NAME) + ", "
+                + App.getBundle().getString("YOUR_SCORE") + " "
+                + account.getString(JSON.SCORE) + "."
+            );
+        }
     }
-
 }
