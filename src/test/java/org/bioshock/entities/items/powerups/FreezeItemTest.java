@@ -1,8 +1,8 @@
 package org.bioshock.entities.items.powerups;
 
-import javafx.geometry.Point3D;
-import javafx.scene.paint.Color;
-import org.bioshock.audio.AudioManager;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import org.bioshock.components.NetworkC;
 import org.bioshock.entities.EntityManager;
 import org.bioshock.entities.players.Hider;
@@ -14,7 +14,8 @@ import org.bioshock.utils.Size;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import javafx.geometry.Point3D;
+import javafx.scene.paint.Color;
 
 class FreezeItemTest {
 

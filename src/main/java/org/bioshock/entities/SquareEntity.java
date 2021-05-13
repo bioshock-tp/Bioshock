@@ -4,7 +4,6 @@ import org.bioshock.components.NetworkC;
 import org.bioshock.physics.Movement;
 import org.bioshock.rendering.renderers.components.RendererC;
 import org.bioshock.utils.Size;
-import org.checkerframework.checker.units.qual.radians;
 
 import javafx.geometry.Point3D;
 import javafx.scene.paint.Color;

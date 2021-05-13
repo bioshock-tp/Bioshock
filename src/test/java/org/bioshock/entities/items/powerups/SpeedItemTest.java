@@ -1,21 +1,20 @@
 package org.bioshock.entities.items.powerups;
 
-import javafx.geometry.Point3D;
-import javafx.scene.paint.Color;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
+
+import java.lang.reflect.Field;
+
 import org.bioshock.components.NetworkC;
 import org.bioshock.entities.EntityManager;
 import org.bioshock.entities.players.Hider;
-import org.bioshock.entities.players.SeekerAI;
 import org.bioshock.main.TestingApp;
-import org.bioshock.scenes.SceneManager;
-import org.bioshock.utils.GlobalConstants;
 import org.bioshock.utils.Size;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.lang.reflect.Field;
-
-import static org.junit.jupiter.api.Assertions.*;
+import javafx.geometry.Point3D;
+import javafx.scene.paint.Color;
 
 class SpeedItemTest {
 

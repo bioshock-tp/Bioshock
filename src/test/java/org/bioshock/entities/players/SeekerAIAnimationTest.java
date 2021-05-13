@@ -1,8 +1,8 @@
 package org.bioshock.entities.players;
 
-import javafx.geometry.Point2D;
-import javafx.geometry.Point3D;
-import javafx.scene.paint.Color;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import org.bioshock.animations.SeekerAnimations;
 import org.bioshock.animations.Sprite;
 import org.bioshock.animations.SwingAnimations;
@@ -14,9 +14,11 @@ import org.bioshock.utils.Size;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import static org.junit.jupiter.api.Assertions.*;
+
+import javafx.geometry.Point2D;
+import javafx.geometry.Point3D;
+import javafx.scene.paint.Color;
 
 @RunWith(MockitoJUnitRunner.class)
 public class SeekerAIAnimationTest {

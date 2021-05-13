@@ -1,9 +1,8 @@
 package org.bioshock.animations;
 
-import javafx.geometry.Point3D;
-import javafx.scene.paint.Color;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import org.bioshock.components.NetworkC;
-import org.bioshock.entities.Entity;
 import org.bioshock.entities.EntityManager;
 import org.bioshock.entities.players.Hider;
 import org.bioshock.entities.players.SeekerAI;
@@ -16,7 +15,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import static org.junit.jupiter.api.Assertions.*;
+
+import javafx.geometry.Point3D;
+import javafx.scene.paint.Color;
 
 @RunWith(MockitoJUnitRunner.class)
 public class PlayerAnimationsTest {

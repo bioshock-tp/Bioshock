@@ -97,7 +97,7 @@ public class TestingApp extends Application {
     }
 
     /**
-     * Shows what is currenlty being tested
+     * Shows what is currently being tested
      */
     public static void showGame() {
         if (javaFXThread == null) return;

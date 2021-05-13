@@ -1,21 +1,36 @@
 package org.bioshock.audio;
 
-import javafx.application.Platform;
+import static org.bioshock.audio.AudioManager.getBgMusicController;
+import static org.bioshock.audio.AudioManager.getBombEffectController;
+import static org.bioshock.audio.AudioManager.getFastAirEffectController;
+import static org.bioshock.audio.AudioManager.getFreezeEffectController;
+import static org.bioshock.audio.AudioManager.getGhostEffectController;
+import static org.bioshock.audio.AudioManager.getLoseEffectController;
+import static org.bioshock.audio.AudioManager.getPlinkEffectController;
+import static org.bioshock.audio.AudioManager.getTeleportEffectController;
+import static org.bioshock.audio.AudioManager.getTrapEffectController;
+import static org.bioshock.audio.AudioManager.getWalkingEffectController;
+import static org.bioshock.audio.AudioManager.getWinEffectController;
+import static org.bioshock.audio.AudioManager.getWooshEffectController;
+import static org.bioshock.audio.AudioManager.initialiseAudioControllers;
+import static org.bioshock.audio.AudioManager.initialiseBackgroundAudio;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.lang.reflect.Field;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.prefs.Preferences;
 
-import javafx.scene.media.MediaPlayer;
+import org.bioshock.audio.controllers.AudioController;
 import org.bioshock.gui.SettingsController;
 import org.bioshock.main.TestingApp;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.bioshock.audio.controllers.AudioController;
 
-import static org.bioshock.audio.AudioManager.*;
-import static org.junit.jupiter.api.Assertions.*;
+import javafx.scene.media.MediaPlayer;
 
 public class AudioManagerTest {
 

@@ -1,11 +1,11 @@
 package org.bioshock.audio.controllers;
 
-import javafx.application.Platform;
-import javafx.scene.media.AudioClip;
-import javafx.scene.media.MediaPlayer;
+import java.nio.file.Path;
+
 import org.bioshock.audio.settings.EffectSettings;
 
-import java.nio.file.Path;
+import javafx.application.Platform;
+import javafx.scene.media.AudioClip;
 
 public class EffectController {
     /** The audio clip used to play the effect file. */
