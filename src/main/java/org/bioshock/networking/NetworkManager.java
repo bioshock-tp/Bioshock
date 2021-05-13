@@ -40,6 +40,9 @@ import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.geometry.Point2D;
 import javafx.util.Duration;
+import org.bioshock.scenes.MainGame;
+import org.bioshock.scenes.SceneManager;
+
 
 public class NetworkManager {
     /**
@@ -227,13 +230,19 @@ public class NetworkManager {
         }
 
         Message.ClientInput input = new Message.ClientInput(
-            x,
-            y,
-            aiCoords,
-            message
+                x,
+                y,
+                aiCoords,
+                message
         );
 
-        return new Message(-1, myID, myName, input, me.isDead());
+        if(me.isTeleported()){
+            me.setTeleported(false);
+            MainGame.destroyTeleporter();
+            return new Message(-2, myID, myName, input, me.isDead());
+        }
+        else
+            return new Message(-1, myID, myName, input, me.isDead());
     }
 
 
@@ -267,6 +276,13 @@ public class NetworkManager {
             }
 
             ClientInput input = message.input;
+
+            if(message.playerNumber == -2){
+                if( message.dead)
+                    MainGame.destroyBomb();
+                else
+                    MainGame.destroyTeleporter();
+            }
 
             if (input == null && message.dead) messageFrom.setDead(true);
 
@@ -396,16 +412,30 @@ public class NetworkManager {
      * @param hider The player that has been killed
      */
     public static void kill(Hider hider) {
-        client.send(Message.serialise(
-            new Message(
-                -1,
-                hider.getID(),
-                playerNames.get(hider),
-                null,
-                true
-            )
-        ));
-
+        if (hider.isBombed()) {
+            hider.setBombed(false);
+            MainGame.destroyBomb();
+            client.send(Message.serialise(
+                new Message(
+                    -2,
+                    hider.getID(),
+                    playerNames.get(hider),
+                    null,
+                    true
+                )
+            ));
+        } else {
+            client.send(Message.serialise(
+                new Message(
+                    -1,
+                    hider.getID(),
+                    playerNames.get(hider),
+                    null,
+                    true
+                )
+            ));
+        }
+        
         if (hider == me) {
             sendScores();
         }
@@ -681,7 +711,7 @@ public class NetworkManager {
      *
      * @return A JSON of the local players in-game statistics, empty if
      * successful request has not been made
-     * 
+     *
      * @see #requestHighScores()
      */
     public static JSONObject getHighScores() {

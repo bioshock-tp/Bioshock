@@ -22,27 +22,29 @@
     </padding>
 
     <VBox alignment="CENTER">
-        <Label fx:id="userDetailsLabel" styleClass="p"/>
-        <Label fx:id="tableDescription" styleClass="p"/>
+        <VBox spacing="10" alignment="CENTER">
+            <Label fx:id="userDetailsLabel" styleClass="p"/>
+            <Label fx:id="tableDescription" styleClass="p"/>
+        </VBox>
         <HBox spacing="10" alignment="CENTER">
-            <Label fx:id="FirstName"  styleClass="p"/>
-            <Label fx:id="FirstScore"  styleClass="p"/>
+            <Label fx:id="FirstName"  styleClass="desc"/>
+            <Label fx:id="FirstScore"  styleClass="desc"/>
         </HBox>
         <HBox spacing="10" alignment="CENTER">
-            <Label fx:id="SecondName"  styleClass="p"/>
-            <Label fx:id="SecondScore"  styleClass="p"/>
+            <Label fx:id="SecondName"  styleClass="desc"/>
+            <Label fx:id="SecondScore"  styleClass="desc"/>
         </HBox>
         <HBox spacing="10" alignment="CENTER">
-            <Label fx:id="ThirdName"  styleClass="p"/>
-            <Label fx:id="ThirdScore"  styleClass="p"/>
+            <Label fx:id="ThirdName"  styleClass="desc"/>
+            <Label fx:id="ThirdScore"  styleClass="desc"/>
         </HBox>
         <HBox spacing="10" alignment="CENTER">
-            <Label fx:id="FourthName"  styleClass="p"/>
-            <Label fx:id="FourthScore"  styleClass="p"/>
+            <Label fx:id="FourthName"  styleClass="desc"/>
+            <Label fx:id="FourthScore"  styleClass="desc"/>
         </HBox>
         <HBox spacing="10" alignment="CENTER">
-            <Label fx:id="FifthName"  styleClass="p"/>
-            <Label fx:id="FifthScore"  styleClass="p"/>
+            <Label fx:id="FifthName"  styleClass="desc"/>
+            <Label fx:id="FifthScore"  styleClass="desc"/>
         </HBox>
     </VBox>
 

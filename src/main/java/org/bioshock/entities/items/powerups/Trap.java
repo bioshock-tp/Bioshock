@@ -22,16 +22,6 @@ public class Trap extends PowerUp {
 
     public Trap(long seed) { super(PATH, seed); }
 
-
-    @Override
-    protected void collect(Hider hider) {
-        SceneManager.getMainGame().increasePowerUpScore(hider);
-        PauseTransition pause = new PauseTransition(Duration.seconds(length));
-        pause.setOnFinished(e -> revert(hider));
-        pause.play();
-    }
-
-
     @Override
     protected void apply(Hider hider) {
         oldSpeed = hider.getMovement().getSpeed();

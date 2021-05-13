@@ -17,7 +17,7 @@ public class Teleporter extends Item {
         super(
             spawn(seed),
             new Size(DEFAULT_SIZE, DEFAULT_SIZE),
-            new NetworkC(false),
+            new NetworkC(true),
             PATH
         );
     }
@@ -25,6 +25,7 @@ public class Teleporter extends Item {
 
     @Override
     protected void apply(Hider hider) {
+        hider.setTeleported(true);
         hider.setPosition(
             hider.getInitPositionX(),
             hider.getInitPositionY()
@@ -36,4 +37,6 @@ public class Teleporter extends Item {
     protected void playCollectSound() {
         AudioManager.playTeleportSfx();
     }
+
+    protected void tick(double timeDelta) {}
 }

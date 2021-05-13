@@ -85,6 +85,18 @@ public class MainGame extends GameScene {
     private static final double END_TIME = 2 * 60f + 3;
 
     /**
+     * The teleporter
+     */
+
+    private static Teleporter teleport;
+
+    /**
+     * The bomb
+     */
+
+    private static Bomb bomb;
+
+    /**
      * The amount of time between you losing and the lose screen being shown
      */
     private static final double LOSE_DELAY = 0;
@@ -547,8 +559,10 @@ public class MainGame extends GameScene {
 		children.add(new FreezeItem(rand.nextLong()));
 		children.add(new InvisibilityItem(rand.nextLong()));
 		children.add(new SpeedItem(rand.nextLong()));
-		children.add(new Teleporter(rand.nextLong()));
-		children.add(new Bomb(rand.nextLong()));
+		teleport = new Teleporter(rand.nextLong());
+		children.add(teleport);
+		bomb = new Bomb(rand.nextLong());
+		children.add(bomb);
         children.add(new Trap(rand.nextLong()));
     }
 
@@ -709,6 +723,22 @@ public class MainGame extends GameScene {
     public void setChatVisibility(boolean visible) {
         chatLabel.setDisplay(visible);
         textChat.setDisplay(visible);
+    }
+
+    /**
+     * destroy teleporter
+     */
+
+    public static void destroyTeleporter(){
+        teleport.destroy();
+    }
+
+    /**
+     * destroy bomb
+     */
+
+    public static void destroyBomb(){
+        bomb.destroy();
     }
 
 

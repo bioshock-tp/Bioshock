@@ -61,35 +61,72 @@ class GraphNodeTest {
     }
 
     @Test
-    void setHCost() {
+    void setHCost() throws IllegalAccessException {
         GraphNode graphNode = new GraphNode();
         graphNode.setHCost(20);
-        assertEquals(20, graphNode.getHCost());
+
+        Field hCost;
+        try{
+            hCost = GraphNode.class.getDeclaredField("hCost");
+        }catch(Exception e){
+            fail("hCost field not found");
+            return;
+        }
+        hCost.setAccessible(true);
+
+        assertEquals(20, hCost.getInt(graphNode));
     }
 
     @Test
-    void setGCost() {
+    void setGCost() throws IllegalAccessException {
         GraphNode graphNode = new GraphNode();
         graphNode.setGCost(20);
-        assertEquals(20, graphNode.getGCost());
+        Field gCost;
+        try{
+            gCost = GraphNode.class.getDeclaredField("gCost");
+        }catch(Exception e){
+            fail("gCost field not found");
+            return;
+        }
+        gCost.setAccessible(true);
+
+        assertEquals(20, gCost.getInt(graphNode));
     }
 
     @Test
-    void setFCost() {
+    void setFCost() throws IllegalAccessException {
         GraphNode graphNode = new GraphNode();
         graphNode.setFCost(20);
-        assertEquals(20, graphNode.getFCost());
+        Field fCost;
+        try{
+            fCost = GraphNode.class.getDeclaredField("fCost");
+        }catch(Exception e){
+            fail("fCost field not found");
+            return;
+        }
+        fCost.setAccessible(true);
+
+        assertEquals(20, fCost.getInt(graphNode));
     }
 
     @Test
-    void setLocation() {
+    void setLocation() throws IllegalAccessException {
         GraphNode graphNode = new GraphNode();
         graphNode.setLocation(new Point2D(1000,1000));
-        assertEquals(new Point2D(1000,1000), graphNode.getLocation());
+        Field location;
+        try{
+            location = GraphNode.class.getDeclaredField("location");
+        }catch(Exception e){
+            fail("location field not found");
+            return;
+        }
+        location.setAccessible(true);
+
+        assertEquals(new Point2D(1000,1000), location.get(graphNode));
     }
 
     @Test
-    void setParent() {
+    void setParent() throws IllegalAccessException {
         GraphNode graphNode = new GraphNode();
         GraphNode parent = new GraphNode(new Point2D(100,100));
         graphNode.setParent(parent);
@@ -100,21 +137,40 @@ class GraphNodeTest {
             fail("parent field not found");
             return;
         }
+        parentF.setAccessible(true);
 
-        assertEquals(parent, graphNode.getParent());
+        assertEquals(parent, parentF.get(graphNode));
     }
 
     @Test
-    void setVisited() {
+    void setVisited() throws IllegalAccessException {
         GraphNode graphNode = new GraphNode();
         graphNode.setVisited(true);
-        assertTrue(graphNode.isVisited());
+        Field isVisited;
+        try{
+            isVisited = GraphNode.class.getDeclaredField("isVisited");
+        }catch(Exception e){
+            fail("isVisited field not found");
+            return;
+        }
+        isVisited.setAccessible(true);
+
+        assertTrue(isVisited.getBoolean(graphNode));
     }
 
     @Test
-    void setIsObject() {
+    void setIsObject() throws IllegalAccessException {
         GraphNode graphNode = new GraphNode();
         graphNode.setObject(true);
-        assertTrue(graphNode.isObject());
+        Field isObject;
+        try{
+            isObject = GraphNode.class.getDeclaredField("isObject");
+        }catch(Exception e){
+            fail("isVisited field not found");
+            return;
+        }
+        isObject.setAccessible(true);
+
+        assertTrue(isObject.getBoolean(graphNode));
     }
 }

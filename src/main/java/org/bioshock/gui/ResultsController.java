@@ -2,6 +2,8 @@ package org.bioshock.gui;
 
 import java.util.List;
 
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import org.bioshock.main.App;
 import org.bioshock.networking.NetworkManager;
 import org.bioshock.utils.JSON;
@@ -10,6 +12,8 @@ import org.json.JSONObject;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+
+import java.util.Objects;
 
 public class ResultsController {
     public Label FirstName;
@@ -29,9 +33,7 @@ public class ResultsController {
 
     @FXML
     public void switchToAccountView() {
-
         App.setFXMLRoot("account");
-
     }
 
 
@@ -52,11 +54,18 @@ public class ResultsController {
             String nameKey = "Name" + number;
             String name = highScores.getString(nameKey);
             nameLabels.get(i).setText(name);
-
             String scoreKey = "Score" + Integer.toString(i + 1);
             String score = highScores.getString(scoreKey);
             scoreLabels.get(i).setText(score);
         }
+
+        Image backImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("icons/arrow.png")));
+        ImageView backImageView = new ImageView(backImage);
+        backImageView.setPreserveRatio(true);
+        backImageView.setFitWidth(17);
+        backButton.setGraphic(backImageView);
+
+
 
         backButton.setText(
             App.getBundle().getString("BACK_ACCOUNT_MENU_TEXT")

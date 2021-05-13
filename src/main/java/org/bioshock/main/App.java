@@ -117,7 +117,6 @@ public class App extends Application {
      * Initialises more of the game's core managers and starts gameplay
      * @param primaryStage The main stage in the window
      * @param initScene The initial {@link GameScene} of the game
-     * @param isNetworked True if game is networked
      */
     public static void startGame(
         Stage primaryStage,
@@ -150,6 +149,7 @@ public class App extends Application {
      */
     public static void end(boolean victory) {
         RenderManager.endGame();
+        AudioManager.stopWalkingSfx();
         String textToDisplay;
 
         if (victory && !EntityManager.getCurrentPlayer().isDead()) {

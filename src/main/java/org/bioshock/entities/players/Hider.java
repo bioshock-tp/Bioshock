@@ -38,6 +38,10 @@ public class Hider extends SquareEntity implements Collisions {
 
     private double initPositionY = 0;
 
+    private boolean isTeleported = false;
+
+    private boolean isBombed = false;
+
 
     /**
      * True if this {@link Hider} is dead
@@ -352,4 +356,37 @@ public class Hider extends SquareEntity implements Collisions {
     public double getInitPositionY() {
         return initPositionY;
     }
+
+    /**
+     * @return the isBombed boolean
+     */
+
+    public boolean isBombed() {
+        return isBombed;
+    }
+
+    /**
+     * @return the isTeleported boolean
+     */
+
+    public boolean isTeleported() {
+        return isTeleported;
+    }
+
+    /**
+     * sets the isBombed boolean
+     */
+
+    public void setBombed(boolean bl){
+        isBombed = bl;
+    }
+
+    /**
+     * sets the isTeleported boolean
+     */
+
+    public void setTeleported(boolean bl){
+        isTeleported = bl;
+    }
+
 }

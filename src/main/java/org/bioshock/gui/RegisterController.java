@@ -1,5 +1,17 @@
 package org.bioshock.gui;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Objects;
+import java.util.prefs.Preferences;
+
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import org.bioshock.main.App;
 import org.bioshock.networking.NetworkManager;
 
@@ -54,5 +66,17 @@ public class RegisterController {
         nameLabel.setText(App.getBundle().getString("ACCOUNT_NAME") + ":");
         passwordLabel.setText(App.getBundle().getString("ACCOUNT_PASSWORD") + ":");
         passwordConfirmationLabel.setText(App.getBundle().getString("ACCOUNT_PASSWORD_CONFIRMATION") + ":");
+
+        Image registerImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("icons/register.png")));
+        ImageView registerImageView = new ImageView(registerImage);
+        registerImageView.setPreserveRatio(true);
+        registerImageView.setFitWidth(17);
+        registerButton.setGraphic(registerImageView);
+
+        Image backImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("icons/arrow.png")));
+        ImageView backImageView = new ImageView(backImage);
+        backImageView.setPreserveRatio(true);
+        backImageView.setFitWidth(17);
+        backButton.setGraphic(backImageView);
     }
 }
