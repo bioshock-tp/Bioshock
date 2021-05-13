@@ -1,8 +1,9 @@
 package org.bioshock.utils;
 
 /**
- * A wrapper class that holds 2 doubles, used to represent the width and height
- * of an object. Is primarily for making function parameters more readable
+ * An immutable wrapper class that holds 2 doubles, used to represent the width
+ * and height of an object. Is primarily for making function parameters more
+ * readable
  */
 public class Size {
     /**
