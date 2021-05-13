@@ -47,6 +47,11 @@ public class ChatManager {
     private static final double CHAT_FADE_LENGTH = 3;
 
     /**
+     * Max length of a chat message
+     */
+    private static final int MAX_LENGTH = 90;
+
+    /**
      * Chat container node
      */
     private static VBox chat;
@@ -213,7 +218,8 @@ public class ChatManager {
      * @return True if valid string (matches {@link #CHAT_REGEX})
      */
     private static boolean checkValid(String string) {
-        return string.matches(hiderName + ": " + CHAT_REGEX);
+        return string.length() <= MAX_LENGTH
+            && string.matches(hiderName + ": " + CHAT_REGEX);
     }
 
 
