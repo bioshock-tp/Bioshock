@@ -95,6 +95,25 @@ public class Hider extends SquareEntity implements Collisions {
     }
 
 
+    /**
+     * Creates a {@link Hider} with default parameters
+     * position = (0, 0, 0)
+     * networkComponent = false
+     * size = (10, 10)
+     * fovRadius = 10
+     * colour = Transparent
+     */
+    public Hider() {
+        this(
+            new Point3D(0, 0, 0),
+            new NetworkC(false),
+            new Size(10, 10),
+            10,
+            Color.TRANSPARENT
+        );
+    }
+
+
     @Override
     protected void tick(double timeDelta) {
         if (
@@ -115,7 +134,6 @@ public class Hider extends SquareEntity implements Collisions {
     @Override
     public void collisionTick(Set<Entity> collisions) {
         if (dead) return;
-
 
         /* Collision Candidates*/
 
