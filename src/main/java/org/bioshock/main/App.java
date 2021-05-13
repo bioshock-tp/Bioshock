@@ -332,7 +332,7 @@ public class App extends Application {
     /**
      * @return The current controller used for the game's GUI
      */
-    public static GameScene getFXMLController() {
+    public static Object getFXMLController() {
         return fxmlLoader.getController();
     }
 

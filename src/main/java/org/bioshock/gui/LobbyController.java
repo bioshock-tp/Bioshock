@@ -1,5 +1,14 @@
 package org.bioshock.gui;
 
+import java.util.Objects;
+import java.util.prefs.Preferences;
+
+import org.bioshock.main.App;
+import org.bioshock.networking.NetworkManager;
+import org.bioshock.scenes.LoadingScreen;
+import org.bioshock.scenes.MainGame;
+import org.bioshock.scenes.SceneManager;
+
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -7,17 +16,8 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
-import org.bioshock.main.App;
-import org.bioshock.networking.NetworkManager;
-import org.bioshock.scenes.GameScene;
-import org.bioshock.scenes.LoadingScreen;
-import org.bioshock.scenes.MainGame;
-import org.bioshock.scenes.SceneManager;
 
-import java.util.Objects;
-import java.util.prefs.Preferences;
-
-public class LobbyController extends GameScene {
+public class LobbyController {
     public Label playerCountLabel;
     public Button backButton;
     public Label lobbyLabel;
