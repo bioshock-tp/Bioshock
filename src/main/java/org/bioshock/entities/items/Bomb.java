@@ -18,7 +18,7 @@ public class Bomb extends Item {
         super(
             spawn(seed),
             new Size(DEFAULT_SIZE, DEFAULT_SIZE),
-            new NetworkC(false),
+            new NetworkC(true),
             PATH
         );
     }
@@ -26,6 +26,7 @@ public class Bomb extends Item {
 
     @Override
     protected void apply(Hider hider){
+        hider.setBombed(true);
         hider.setDead(true);
     }
 
@@ -34,4 +35,6 @@ public class Bomb extends Item {
     protected void playCollectSound(){
         AudioManager.playBombSfx();
     }
+
+    protected void tick(double timeDelta) {}
 }
