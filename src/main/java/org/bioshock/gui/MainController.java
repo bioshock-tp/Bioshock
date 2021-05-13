@@ -79,5 +79,11 @@ public class MainController {
         helpImageView.setPreserveRatio(true);
         helpImageView.setFitWidth(18);
         helpButton.setGraphic(helpImageView);
+
+        Image accountImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("icons/account.png")));
+        ImageView accountImageView = new ImageView(accountImage);
+        accountImageView.setPreserveRatio(true);
+        accountImageView.setFitWidth(17);
+        accountButton.setGraphic(accountImageView);
     }
 }

@@ -21,7 +21,7 @@
         <Insets bottom="40.0" left="60.0" right="60.0" top="40.0"/>
     </padding>
 
-    <VBox alignment="CENTER">
+    <VBox spacing="20" alignment="CENTER">
         <HBox spacing="10" alignment="CENTER">
             <Label fx:id="nameLabel"  styleClass="p"/>
             <TextField fx:id="nameField"/>

@@ -7,8 +7,11 @@ import java.io.Reader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Objects;
 import java.util.prefs.Preferences;
 
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import org.bioshock.main.App;
 import org.bioshock.networking.Account;
 import org.json.JSONObject;
@@ -107,6 +110,24 @@ public class LoginController {
         logoutButton.setText(App.getBundle().getString("LOGOUT_BUTTON_TEXT"));
         nameLabel.setText(App.getBundle().getString("ACCOUNT_NAME") + ":");
         passwordLabel.setText(App.getBundle().getString("ACCOUNT_PASSWORD") + ":");
+
+        Image loginImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("icons/login.png")));
+        ImageView loginImageView = new ImageView(loginImage);
+        loginImageView.setPreserveRatio(true);
+        loginImageView.setFitWidth(17);
+        loginButton.setGraphic(loginImageView);
+
+        Image logoutImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("icons/logout.png")));
+        ImageView logoutImageView = new ImageView(logoutImage);
+        logoutImageView.setPreserveRatio(true);
+        logoutImageView.setFitWidth(17);
+        logoutButton.setGraphic(logoutImageView);
+
+        Image backImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("icons/arrow.png")));
+        ImageView backImageView = new ImageView(backImage);
+        backImageView.setPreserveRatio(true);
+        backImageView.setFitWidth(17);
+        backButton.setGraphic(backImageView);
 
     }
 
