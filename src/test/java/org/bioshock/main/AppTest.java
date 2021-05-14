@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Assertions;
 import javafx.application.Application;
 
 public class AppTest {
-    // @Test
+    @Test
     public void mainTest() {
         CountDownLatch latch = new CountDownLatch(1);
 

@@ -20,7 +20,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.robot.Robot;
 
 public class ChatManagerTest {
-    // @Test
+    @Test
     public void sendShortMessage() {
         TestingApp.launchJavaFXThread();
 
@@ -123,7 +123,7 @@ public class ChatManagerTest {
 
 
 
-    // @Test
+    @Test
     public void sendLongMessageTest() {
         TestingApp.launchJavaFXThread();
 

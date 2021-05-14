@@ -1,7 +1,5 @@
 package org.bioshock.engine.core;
 
-import static org.junit.jupiter.api.Assertions.fail;
-
 import java.lang.reflect.Field;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -15,13 +13,13 @@ import javafx.animation.AnimationTimer;
 import javafx.application.Platform;
 
 public class FrameRateTest {
-    // @After
+    @After
     public void destroy() {
         TestingApp.playGameLoop();
     }
 
 
-    // @Test
+    @Test
     public void frameRateTest() {
         TestingApp.launchJavaFXThread();
         TestingApp.stopGameLoop();

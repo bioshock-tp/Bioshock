@@ -1,15 +1,15 @@
 package org.bioshock.gui;
 
-import javafx.fxml.FXMLLoader;
-import javafx.scene.control.Label;
-import org.bioshock.main.App;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+
+import java.util.List;
+
 import org.bioshock.main.TestingApp;
 import org.bioshock.networking.NetworkManager;
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.jupiter.api.Assertions.*;
 
-import java.util.List;
+import javafx.scene.control.Label;
 
 
 public class ResultsControllerTest {

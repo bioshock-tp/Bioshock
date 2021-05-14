@@ -1,7 +1,5 @@
 package org.bioshock.scenes;
 
-import static org.mockito.Mockito.inOrder;
-
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 

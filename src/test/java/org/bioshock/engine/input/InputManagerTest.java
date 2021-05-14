@@ -1,7 +1,5 @@
 package org.bioshock.engine.input;
 
-import static org.mockito.Mockito.timeout;
-
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
@@ -15,13 +13,13 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.robot.Robot;
 
 public class InputManagerTest {
-    // @After
+    @After
     public void destroy() {
         TestingApp.showGame(false);
         TestingApp.playGameLoop();
     }
 
-    // @Test
+    @Test
     public void inputTest() {
         TestingApp.launchJavaFXThread();
         TestingApp.stopGameLoop();;

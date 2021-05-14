@@ -2,19 +2,18 @@ package org.bioshock.entities;
 
 import org.bioshock.entities.players.Hider;
 import org.bioshock.main.TestingApp;
-import org.bioshock.rendering.RenderManager;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
 
 public class EntityManagerTest {
-    // @Test
+    @Test
     public void registerTest() {
         TestingApp.stopGameLoop();
 
         EntityManager.unregisterAll();
         Hider hider = new Hider();
 
-        // EntityManager.register(hider);
+        EntityManager.register(hider);
 
         Assertions.assertEquals(
             1,
