@@ -1,15 +1,15 @@
 package org.bioshock.utils;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class FontManagerTest {
 
     private FontManager fontManagerUnderTest;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         fontManagerUnderTest = new FontManager();
     }

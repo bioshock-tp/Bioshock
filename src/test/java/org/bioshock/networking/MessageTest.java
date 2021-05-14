@@ -1,7 +1,7 @@
 package org.bioshock.networking;
 
 import org.bioshock.networking.Message.ClientInput;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Order;
 

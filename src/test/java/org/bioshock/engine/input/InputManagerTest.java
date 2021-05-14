@@ -4,8 +4,8 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 import org.bioshock.main.TestingApp;
-import org.junit.After;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Assertions;
 
 import javafx.application.Platform;
@@ -13,8 +13,8 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.robot.Robot;
 
 public class InputManagerTest {
-    @After
-    public void destroy() {
+    @AfterAll
+    public static void destroy() {
         TestingApp.showGame(false);
         TestingApp.playGameLoop();
     }

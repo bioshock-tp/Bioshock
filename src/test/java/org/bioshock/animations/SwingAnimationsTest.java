@@ -8,8 +8,8 @@ import org.bioshock.main.TestingApp;
 import org.bioshock.scenes.SceneManager;
 import org.bioshock.utils.GlobalConstants;
 import org.bioshock.utils.Size;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import javafx.geometry.Point3D;
 import javafx.scene.paint.Color;
@@ -17,7 +17,7 @@ import javafx.scene.paint.Color;
 public class SwingAnimationsTest {
     private SeekerAI seeker;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         TestingApp.launchJavaFXThread();
         double x = SceneManager.getMap().getRooms().get(0).getRoomCenter().getX();

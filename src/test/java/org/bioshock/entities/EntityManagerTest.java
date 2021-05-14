@@ -2,7 +2,7 @@ package org.bioshock.entities;
 
 import org.bioshock.entities.players.Hider;
 import org.bioshock.main.TestingApp;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Assertions;
 
 public class EntityManagerTest {

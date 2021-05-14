@@ -11,21 +11,18 @@ import org.bioshock.main.TestingApp;
 import org.bioshock.scenes.SceneManager;
 import org.bioshock.utils.GlobalConstants;
 import org.bioshock.utils.Size;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import javafx.geometry.Point2D;
 import javafx.geometry.Point3D;
 import javafx.scene.paint.Color;
 
-@RunWith(MockitoJUnitRunner.class)
 public class SeekerAIAnimationTest {
 
     private SeekerAI seeker;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         TestingApp.launchJavaFXThread();
         Point2D roomCenter = SceneManager.getMap().getRooms().get(0).getRoomCenter();

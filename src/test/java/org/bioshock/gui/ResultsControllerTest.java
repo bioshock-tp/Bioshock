@@ -6,17 +6,17 @@ import java.util.List;
 
 import org.bioshock.main.TestingApp;
 import org.bioshock.networking.NetworkManager;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import javafx.scene.control.Label;
 
 
 public class ResultsControllerTest {
 
-    private ResultsController resultsControllerUnderTest;
+    private static ResultsController resultsControllerUnderTest;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         TestingApp.launchJavaFXThread();
         resultsControllerUnderTest = new ResultsController();

@@ -11,7 +11,7 @@ import java.util.concurrent.TimeUnit;
 import org.bioshock.main.TestingApp;
 import org.bioshock.scenes.MainGame;
 import org.bioshock.scenes.SceneManager;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Assertions;
 
 import javafx.application.Platform;

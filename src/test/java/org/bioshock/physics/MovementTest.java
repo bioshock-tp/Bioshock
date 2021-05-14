@@ -1,7 +1,7 @@
 package org.bioshock.physics;
 
 import org.bioshock.entities.players.Hider;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Assertions;
 
 import javafx.geometry.Point2D;

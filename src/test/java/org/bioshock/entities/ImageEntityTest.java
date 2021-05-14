@@ -3,14 +3,14 @@ package org.bioshock.entities;
 import org.bioshock.components.NetworkC;
 import org.bioshock.main.TestingApp;
 import org.bioshock.utils.Size;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Assertions;
 
 import javafx.geometry.Point3D;
 
 public class ImageEntityTest {
-    @Before
+    @BeforeEach
     public void setUp() {
         TestingApp.launchJavaFXThread();
     }

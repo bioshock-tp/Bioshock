@@ -5,7 +5,7 @@ import org.bioshock.entities.EntityManager;
 import org.bioshock.main.TestingApp;
 import org.bioshock.scenes.SceneManager;
 import org.bioshock.utils.Size;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;

@@ -10,16 +10,13 @@ import org.bioshock.main.TestingApp;
 import org.bioshock.scenes.SceneManager;
 import org.bioshock.utils.GlobalConstants;
 import org.bioshock.utils.Size;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
 
 import javafx.geometry.Point3D;
 import javafx.scene.paint.Color;
 
-@RunWith(MockitoJUnitRunner.class)
 public class PlayerAnimationsTest {
 
     @Mock
@@ -28,7 +25,7 @@ public class PlayerAnimationsTest {
     private HiderAnimations hiderAnimationsUnderTest;
     private SeekerAnimations seekerAnimationsUnderTest;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         TestingApp.launchJavaFXThread();
         // Initialise the hider
