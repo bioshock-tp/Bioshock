@@ -1,5 +1,7 @@
 package org.bioshock.scenes;
 
+import java.util.Random;
+
 import org.bioshock.engine.core.WindowManager;
 import org.bioshock.engine.input.InputManager;
 import org.bioshock.entities.map.maps.Map;
@@ -43,7 +45,9 @@ public final class SceneManager {
     /**
      * The seed used to initialise the game scene
      */
-    private static long seed;
+    private static long seed = new Random().nextLong();
+
+    /* Instance of {@link MainGame} to be used whilst initialising game */
     private static MainGame mainGame;
 
 

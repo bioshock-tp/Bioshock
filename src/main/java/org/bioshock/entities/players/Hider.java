@@ -95,6 +95,8 @@ public class Hider extends SquareEntity implements Collisions {
 
         renderer = PlayerSpriteRenderer.class;
 
+        initAnimations();
+
         initCollision(this);
     }
 

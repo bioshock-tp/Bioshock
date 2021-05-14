@@ -189,9 +189,6 @@ public class NetworkManager {
 
             me.getMovement().initMovement();
 
-            playerList.forEach(Hider::initAnimations);
-            seekers.forEach(SeekerAI::initAnimations);
-
             pingTimeline = new Timeline(new KeyFrame(
                 Duration.seconds(PING_UPDATE_RATE),
                 e -> NetworkManager.sendPing()
