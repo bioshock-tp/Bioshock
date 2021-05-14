@@ -6,6 +6,7 @@ import static org.bioshock.rendering.RenderManager.getRenWidthUnzoomed;
 
 import org.bioshock.entities.LabelEntity;
 import org.bioshock.main.App;
+import org.bioshock.rendering.RenderManager;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.text.Font;
@@ -28,7 +29,14 @@ public class LabelRenderer implements Renderer {
             if (label.isDisplayed()) {
                 gc.save();
                 gc.setFont(label.getFont());
-                gc.setFill(label.getRendererC().getColour());
+                
+                if(RenderManager.clips()) {
+                	gc.setFill(label.getRendererC().getColour());
+                }
+                else {
+                	gc.setFill(label.getRendererC().getColour().invert());
+                }
+                
 
                 //Split the label on \r and \n
                 String textToDisplay = label.getString();

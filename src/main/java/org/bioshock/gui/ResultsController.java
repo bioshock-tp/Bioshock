@@ -39,27 +39,7 @@ public class ResultsController {
 
     @FXML
     public void initialize() {
-        JSONObject highScores = NetworkManager.getHighScores();
-
-        List<Label> nameLabels = List.of(
-            FirstName, SecondName, ThirdName, FourthName, FifthName
-        );
-
-        List<Label> scoreLabels = List.of(
-            FirstScore, SecondScore, ThirdScore, FourthScore, FifthScore
-        );
-
-        for (int i = 0; i < nameLabels.size(); i++) {
-            String number = Integer.toString(i + 1);
-
-            String nameKey = "Name" + number;
-            String name = highScores.getString(nameKey);
-            nameLabels.get(i).setText(name);
-
-            String scoreKey = "Score" + Integer.toString(i + 1);
-            int score = highScores.getInt(scoreKey);
-            scoreLabels.get(i).setText(Integer.toString(score));
-        }
+        generateScores();
 
         Image backImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("icons/arrow.png")));
         ImageView backImageView = new ImageView(backImage);
@@ -82,6 +62,30 @@ public class ResultsController {
                 + App.getBundle().getString("YOUR_SCORE") + " "
                 + account.getString(JSON.SCORE) + "."
             );
+        }
+    }
+
+    public void generateScores() {
+        JSONObject highScores = NetworkManager.getHighScores();
+
+        List<Label> nameLabels = List.of(
+            FirstName, SecondName, ThirdName, FourthName, FifthName
+        );
+
+        List<Label> scoreLabels = List.of(
+            FirstScore, SecondScore, ThirdScore, FourthScore, FifthScore
+        );
+
+        for (int i = 0; i < nameLabels.size(); i++) {
+            String number = Integer.toString(i + 1);
+
+            String nameKey = "Name" + number;
+            String name = highScores.getString(nameKey);
+            nameLabels.get(i).setText(name);
+
+            String scoreKey = "Score" + Integer.toString(i + 1);
+            int score = highScores.getInt(scoreKey);
+            scoreLabels.get(i).setText(Integer.toString(score));
         }
     }
 }

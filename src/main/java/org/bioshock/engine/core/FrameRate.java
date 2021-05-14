@@ -26,7 +26,7 @@ public class FrameRate {
         "0",
         new Font("arial", 20),
         3,
-        Color.BLACK
+        Color.LIGHTGRAY
     );
 
     /**
