@@ -211,7 +211,13 @@ public final class EntityManager {
                 me = NetworkManager.me();
             }
         }
-        if (me == null) App.logger.error("No players registered");
+        if (me == null) {
+            String split = Arrays.toString(Thread.currentThread().getStackTrace()).replace(',', '\n');
+            App.logger.error(
+                "No players registered {}",
+                split
+            );
+        }
         return me;
     }
 }
