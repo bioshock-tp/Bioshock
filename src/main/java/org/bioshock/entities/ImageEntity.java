@@ -45,6 +45,10 @@ public abstract class ImageEntity extends Entity {
                 true
             );
 
+            if (image.getException() != null) {
+                throw new IllegalArgumentException("Invalid path");
+            }
+
             hitbox.setWidth(image.getWidth());
             hitbox.setHeight(image.getHeight());
         } catch (IllegalArgumentException e) {

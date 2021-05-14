@@ -1,26 +1,24 @@
 package org.bioshock.entities.players;
 
-import java.util.concurrent.CountDownLatch;
-
 import org.bioshock.components.NetworkC;
 import org.bioshock.entities.EntityManager;
 import org.bioshock.main.TestingApp;
 import org.bioshock.scenes.SceneManager;
 import org.bioshock.utils.Size;
+import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
 
 import javafx.geometry.Point2D;
 import javafx.geometry.Point3D;
 import javafx.scene.paint.Color;
-import junit.framework.TestCase;
 
-public class SeekerAITest extends TestCase {
+public class SeekerAITest {
 
     private SeekerAI seeker;
     private Hider hider;
     private Point2D roomCenter;
-    private final CountDownLatch waiter = new CountDownLatch(1);
 
     private void initVariables(){
         int x = (int) SceneManager.getMap().getRooms().get(0).getRoomCenter().getX();
@@ -58,25 +56,30 @@ public class SeekerAITest extends TestCase {
         TestingApp.stopGameLoop();
     }
 
+    @AfterAll
+    public static void destroy() {
+        TestingApp.playGameLoop();
+    }
+
 
     @Test
     public void initTest() {
         initVariables();
 
         //Check that the seeker is at the right position
-        assertEquals(roomCenter, seeker.getPosition());
+        Assertions.assertEquals(roomCenter, seeker.getPosition());
 
         //make sure that all animations and rendering components have been assigned
-        assertNotNull(seeker.getRendererC());
-        assertNotNull(seeker.getSwatterHitbox());
-        assertNotNull(seeker.getSeekerAnimations());
-        assertNotNull(seeker.getCurrentSprite());
-        assertNotNull(seeker.getCurrentSwingSprite());
-        assertNotNull(seeker.getSwingAnimations());
-        assertNotNull(seeker.getRenderArea());
+        Assertions.assertNotNull(seeker.getRendererC());
+        Assertions.assertNotNull(seeker.getSwatterHitbox());
+        Assertions.assertNotNull(seeker.getSeekerAnimations());
+        Assertions.assertNotNull(seeker.getCurrentSprite());
+        Assertions.assertNotNull(seeker.getCurrentSwingSprite());
+        Assertions.assertNotNull(seeker.getSwingAnimations());
+        Assertions.assertNotNull(seeker.getRenderArea());
 
         //make sure the hider is alive
-        assertFalse(hider.isDead());
+        Assertions.assertFalse(hider.isDead());
     }
 
     @Test
@@ -90,15 +93,15 @@ public class SeekerAITest extends TestCase {
 
             //make sure the seeker sets the hider as a target if in sight
             if(hider.getPosition().subtract(seeker.getPosition()).magnitude() < seeker.getRadius()){
-                assertNotNull(seeker.getTarget());
-                assertEquals(hider, seeker.getTarget());
+                Assertions.assertNotNull(seeker.getTarget());
+                Assertions.assertEquals(hider, seeker.getTarget());
             }
         }
         //test if hider has been caught
-        assertTrue(hider.isDead());
+        Assertions.assertTrue(hider.isDead());
 
         //test that the seeker has moved from its original position
-        assertNotSame(roomCenter, seeker.getPosition());
+        Assertions.assertNotSame(roomCenter, seeker.getPosition());
 
     }
 }

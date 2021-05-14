@@ -15,8 +15,6 @@ import javafx.geometry.Point3D;
 import javafx.scene.paint.Color;
 
 public class SwingAnimationsTest {
-
-    private SwingAnimations swingAnimationsUnderTest;
     private SeekerAI seeker;
 
     @Before
@@ -38,7 +36,7 @@ public class SwingAnimationsTest {
             520,
             Color.INDIANRED
         );
-        swingAnimationsUnderTest = new SwingAnimations(seeker, 1.5);
+        new SwingAnimations(seeker, 1.5);
     }
 
     @Test

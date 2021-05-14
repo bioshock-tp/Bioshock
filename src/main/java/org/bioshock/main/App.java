@@ -3,7 +3,6 @@ package org.bioshock.main;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Arrays;
-import java.util.Locale;
 import java.util.Objects;
 import java.util.ResourceBundle;
 
@@ -68,11 +67,6 @@ public class App extends Application {
      * The resource bundle being used
      */
     private static ResourceBundle bundle;
-
-    /**
-     * The user's locale/language
-     */
-    private static Locale locale;
 
     /**
      * The FXMLLoader responsible for GUI
@@ -292,15 +286,6 @@ public class App extends Application {
      */
     public static void setBundle(ResourceBundle bundle) {
         App.bundle = bundle;
-    }
-
-
-    /**
-     * Sets the current locale/language.
-     * @param locale The locale to set.
-     */
-    public static void setLocale(Locale locale) {
-        App.locale = locale;
     }
 
 

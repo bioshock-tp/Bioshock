@@ -78,23 +78,14 @@ public class MainGame extends GameScene {
     private static final int PADDING = 10;
 
     /**
-     * How long until the the hiders win the game
-     * (Currently timer isn't used as win condition is now collecting a certain
-     * amount of loot)
-     */
-    private static final double END_TIME = 2 * 60f + 3;
-
-    /**
      * The teleporter
      */
-
-    private static Teleporter teleport;
+    private Teleporter teleport;
 
     /**
      * The bomb
      */
-
-    private static Bomb bomb;
+    private Bomb bomb;
 
     /**
      * The amount of time between you losing and the lose screen being shown
@@ -132,11 +123,6 @@ public class MainGame extends GameScene {
     private boolean cameraLock = true;
 
     /**
-     * The amount of time the game has been running
-     */
-    private double runningTime = 0;
-
-    /**
      * True if you are losing the game
      */
     private boolean losing = false;
@@ -152,13 +138,6 @@ public class MainGame extends GameScene {
      * The current amount of time you have been losing for
      */
     private double timeLosing = 0;
-
-    /**
-     * The timer entity representing how much time is left in the game
-     * (Currently timer isn't used as win condition is now collecting a certain
-     *  amount of loot)
-     */
-    private LabelEntity timer;
 
     /**
      * The label that displays the text you are currently typing
@@ -215,8 +194,6 @@ public class MainGame extends GameScene {
 
         children.add(FrameRate.getLabel());
 
-        initChat();
-
         registerEntities();
     }
 
@@ -264,44 +241,6 @@ public class MainGame extends GameScene {
         });
     }
 
-
-    /**
-     * Initialise the game timer
-     * (Currently timer isn't used as win condition is now collecting a certain
-     * amount of items)
-     */
-    private void initTimer() {
-        timer = new LabelEntity(
-            new Point3D(GameScene.getGameScreen().getWidth() / 2, 50, 100),
-            "mm:ss.ms",
-            new Font("arial", 20),
-            50,
-            Color.BLACK
-        );
-
-        children.add(timer);
-    }
-
-
-    /**
-     * Initialise the chat
-     */
-    private void initChat() {
-        /*
-         * Full screen is capable of up to 40 rows of messages.
-         * Keep only the last 20 messages always
-         */
-        chatLabel = new LabelEntity(
-            new Point3D(10, 70, 1000),
-            new Font(20),
-            100,
-            Color.BLACK
-        );
-
-        chatLabel.setDisplay(false);
-
-        children.add(chatLabel);
-    }
 
 
     @Override
@@ -397,7 +336,6 @@ public class MainGame extends GameScene {
             // the movement and animations of the player/hider
             assert(App.playerCount() == 1);
             EntityManager.getCurrentPlayer().getMovement().initMovement();
-            EntityManager.getCurrentPlayer().initAnimations();
         }
     }
 
@@ -530,7 +468,6 @@ public class MainGame extends GameScene {
                 seeker.setRadius(seeker.getRadius() * 1.3);
             }
 
-            seeker.initAnimations();
             EntityManager.register(seeker);
             RenderManager.register(seeker);
         }
@@ -657,8 +594,6 @@ public class MainGame extends GameScene {
     @Override
     public void logicTick(double timeDelta) {
         if (!losing) {
-            runningTime += timeDelta;
-
             if (
                 !EntityManager.getPlayers().isEmpty()
                 && EntityManager.getPlayers().stream().allMatch(Hider::isDead)
@@ -728,16 +663,14 @@ public class MainGame extends GameScene {
     /**
      * destroy teleporter
      */
-
-    public static void destroyTeleporter(){
+    public void destroyTeleporter(){
         teleport.destroy();
     }
 
     /**
      * destroy bomb
      */
-
-    public static void destroyBomb(){
+    public void destroyBomb(){
         bomb.destroy();
     }
 

@@ -1,6 +1,7 @@
 package org.bioshock.main;
 
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 import org.bioshock.audio.AudioManager;
 import org.bioshock.engine.core.GameLoop;
@@ -74,6 +75,8 @@ public class TestingApp extends Application {
             EntityManager.register(roomEntity);
         });
 
+        SceneManager.setInGame(true);
+
         gameLoop = new GameLoop();
         playGameLoop();
 
@@ -85,6 +88,7 @@ public class TestingApp extends Application {
      * Starts the GameLoop if not running
      */
     public static void playGameLoop() {
+        if (gameLoop == null) return;
         gameLoop.start();
     }
 
@@ -93,18 +97,56 @@ public class TestingApp extends Application {
      * Stops the GameLoop if running
      */
     public static void stopGameLoop() {
+        if (gameLoop == null) return;
         gameLoop.stop();
     }
 
+
     /**
      * Shows what is currently being tested
+     * @param show
      */
-    public static void showGame() {
-        if (javaFXThread == null) return;
+    public static boolean showGame(boolean show) {
+        if (javaFXThread == null) return false;
+        if (stage.isShowing()) return true;
 
         EntityManager.getEntityList().forEach(RenderManager::register);
 
-        Platform.runLater(stage::show);
+        CountDownLatch latch = new CountDownLatch(1);
+        Platform.runLater(() -> {
+            if (show) {
+                stage.show();
+            } else {
+                stage.hide();
+            }
+            latch.countDown();
+        });
+        try {
+            latch.await(5, TimeUnit.SECONDS);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+        return stage.isShowing();
+    }
+
+
+    /**
+     * Joins the JavaFX thread
+     * @param millis The time to wait in milliseconds for thread to end
+     * @throws InterruptedException
+     * @see Thread#join(long)
+     */
+    public static void join(long millis) {
+        if (javaFXThread != null) {
+            System.out.println("joining");
+            try {
+                javaFXThread.join(millis);
+            } catch (InterruptedException e) {
+                System.out.println("inter");
+                Thread.currentThread().interrupt();
+            }
+            System.out.println("finished");
+        }
     }
 
 

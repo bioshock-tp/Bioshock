@@ -32,8 +32,6 @@ public class SeekerRenderer implements Renderer {
         double x = seeker.getX();
         double y = seeker.getY();
         double width = seeker.getWidth();
-        double height = seeker.getHeight();
-        double radius = seeker.getRadius();
         boolean isActive = seeker.isActive();
 
         gc.save();
@@ -61,19 +59,6 @@ public class SeekerRenderer implements Renderer {
 
         gc.setLineWidth(getRenWidth(10));
         gc.setStroke(seeker.getRendererC().getColour());
-
-        /**
-         * Draws the seeker field of view
-         */
-        /*gc.strokeOval(
-            getRenX(x - radius + width / 2),
-            getRenY(y - radius + height / 2),
-            getRenWidth(radius * 2),
-            getRenHeight(radius * 2)
-        );
-
-        gc.setLineWidth(10);
-        gc.setStroke(seeker.getRendererC().getColour());*/
 
         /**
          * Does the swing animations if it is active

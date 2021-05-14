@@ -10,6 +10,8 @@ import java.util.Base64;
 
 import org.bioshock.main.App;
 
+import javafx.beans.property.SimpleIntegerProperty;
+
 public class Message implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -89,7 +91,10 @@ public class Message implements Serializable {
 
             this.message = message;
 
-            this.ping = NetworkManager.getPingMap().get(NetworkManager.me()).get();
+            this.ping = NetworkManager.getPingMap().getOrDefault(
+                NetworkManager.me(),
+                new SimpleIntegerProperty(0)
+            ).get();
         }
 
         @Override

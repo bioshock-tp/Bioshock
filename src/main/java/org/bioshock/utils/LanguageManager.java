@@ -34,7 +34,6 @@ public class LanguageManager {
      */
     public static void loadLang(String lang) {
         Locale locale = new Locale(lang);
-        App.setLocale(locale);
         ResourceBundle bundle = ResourceBundle.getBundle("org.bioshock.utils.lang", locale);
         App.setBundle(bundle);
     }
