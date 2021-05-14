@@ -233,7 +233,7 @@ public class NetworkManager {
 
         if(me.isTeleported()){
             me.setTeleported(false);
-            MainGame.destroyTeleporter();
+            SceneManager.getMainGame().destroyTeleporter();
             return new Message(-2, myID, myName, input, me.isDead());
         }
         else
@@ -272,11 +272,13 @@ public class NetworkManager {
 
             ClientInput input = message.input;
 
-            if(message.playerNumber == -2){
-                if( message.dead)
-                    MainGame.destroyBomb();
-                else
-                    MainGame.destroyTeleporter();
+            if (message.playerNumber == -2) {
+                if (message.dead) {
+                    SceneManager.getMainGame().destroyBomb();
+                }
+                else {
+                    SceneManager.getMainGame().destroyTeleporter();
+                }
             }
 
             if (input == null && message.dead) messageFrom.setDead(true);
@@ -409,7 +411,7 @@ public class NetworkManager {
     public static void kill(Hider hider) {
         if (hider.isBombed()) {
             hider.setBombed(false);
-            MainGame.destroyBomb();
+            SceneManager.getMainGame().destroyBomb();
             client.send(Message.serialise(
                 new Message(
                     -2,
