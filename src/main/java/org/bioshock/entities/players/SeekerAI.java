@@ -193,6 +193,8 @@ public class SeekerAI extends SquareEntity implements Collisions {
             getCentre().getY()
         );
 
+        initAnimations();
+
         initCollision(this);
     }
 

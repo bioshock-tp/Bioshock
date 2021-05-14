@@ -215,8 +215,6 @@ public class MainGame extends GameScene {
 
         children.add(FrameRate.getLabel());
 
-        initChat();
-
         registerEntities();
     }
 
@@ -280,27 +278,6 @@ public class MainGame extends GameScene {
         );
 
         children.add(timer);
-    }
-
-
-    /**
-     * Initialise the chat
-     */
-    private void initChat() {
-        /*
-         * Full screen is capable of up to 40 rows of messages.
-         * Keep only the last 20 messages always
-         */
-        chatLabel = new LabelEntity(
-            new Point3D(10, 70, 1000),
-            new Font(20),
-            100,
-            Color.BLACK
-        );
-
-        chatLabel.setDisplay(false);
-
-        children.add(chatLabel);
     }
 
 
@@ -397,7 +374,6 @@ public class MainGame extends GameScene {
             // the movement and animations of the player/hider
             assert(App.playerCount() == 1);
             EntityManager.getCurrentPlayer().getMovement().initMovement();
-            EntityManager.getCurrentPlayer().initAnimations();
         }
     }
 
@@ -530,7 +506,6 @@ public class MainGame extends GameScene {
                 seeker.setRadius(seeker.getRadius() * 1.3);
             }
 
-            seeker.initAnimations();
             EntityManager.register(seeker);
             RenderManager.register(seeker);
         }
