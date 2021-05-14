@@ -41,7 +41,10 @@ public class Room extends GraphNode {
      * Stores a list of all the walls that make up the room
      */
     private List<Wall> walls = new ArrayList<>();
-    //TODO
+
+    /**
+     * A list of points at each of the exits in the room, used for seeker pathfinding calculations
+     */
     private List<Pair<Point2D, Direction>> corridorPoints = new ArrayList<>();
     /***
      * Stores the position of the top left of the room
@@ -1086,10 +1089,9 @@ public class Room extends GraphNode {
 		return openlyConnectedRooms;
 	}
 
-	/**
-	 *
-	 * TODO
-	 */
+    /**
+     * @return the list of corridor points
+     */
     public List<Pair<Point2D, Direction>> getCorridorPoints() {
         return corridorPoints;
     }
