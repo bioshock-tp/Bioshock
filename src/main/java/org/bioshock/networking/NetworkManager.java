@@ -3,6 +3,7 @@ package org.bioshock.networking;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.Reader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -492,7 +493,7 @@ public class NetworkManager {
                     );
                     prefs.put("playerName", username);
 
-                    account.put(JSON.NAME,  response.optString(JSON.NAME ));
+                    account.put(JSON.NAME,  username);
                     account.put(JSON.SCORE, response.optInt(   JSON.SCORE));
                     account.put(JSON.TOKEN, response.optString(JSON.TOKEN));
                 }
@@ -612,33 +613,22 @@ public class NetworkManager {
      */
     public static void sendScores() {
         try {
-            URL url = new URL(SCORE_SERVER + "/increaseScore");
-            HttpURLConnection con = (HttpURLConnection) url.openConnection();
-            con.setRequestMethod(JSON.PUT);
-            con.setRequestProperty(
-                JSON.CONTENT_TYPE,
-                JSON.JSON_HEADER
-            );
-            con.setDoOutput(true);
-
-            JSONObject json = new JSONObject();
-            json.put(JSON.TOKEN, account.optString(JSON.TOKEN));
-            json.put(JSON.SCORE, account.optString(JSON.SCORE));
-
-            byte[] data = json.toString().getBytes(StandardCharsets.UTF_8);
-
-            con.getOutputStream().write(data);
-
             int oldScore = account.optInt(JSON.SCORE);
             MainGame mainGame = SceneManager.getMainGame();
             Map<Hider, Integer> playerScores = mainGame.getPlayerScores();
             Hider player = EntityManager.getCurrentPlayer();
             account.put(JSON.SCORE, oldScore + playerScores.get(player));
-        }
-        catch (MalformedURLException e) {
-            App.logger.error(JSON.ADDRESS_INCORRECT, e);
-        }
-        catch (IOException e) {
+
+            URL url = new URL("http://recklessgame.net:8034/increaseScore");
+            String jsonInputString = "{\"Token\":\"" + account.optString(JSON.TOKEN) + "\",\"Score\":\"" + playerScores.get(player) + "\"}";
+            byte[] postDataBytes = jsonInputString.getBytes(StandardCharsets.UTF_8);
+            HttpURLConnection con = (HttpURLConnection) url.openConnection();
+            con.setRequestMethod("PUT");
+            con.setRequestProperty("Content-Type", "application/json; utf-8");
+            con.setDoOutput(true);
+            con.getOutputStream().write(postDataBytes);
+            Reader in = new BufferedReader(new InputStreamReader(con.getInputStream(), StandardCharsets.UTF_8));
+        } catch (IOException e) {
             App.logger.error(e);
         }
     }
