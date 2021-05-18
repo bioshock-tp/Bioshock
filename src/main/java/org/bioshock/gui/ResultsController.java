@@ -60,7 +60,7 @@ public class ResultsController {
                 App.getBundle().getString("HI_MESSAGE")  + " "
                 + account.getString(JSON.NAME) + ", "
                 + App.getBundle().getString("YOUR_SCORE") + " "
-                + account.getString(JSON.SCORE) + "."
+                + account.getInt(JSON.SCORE) + "."
             );
         }
     }

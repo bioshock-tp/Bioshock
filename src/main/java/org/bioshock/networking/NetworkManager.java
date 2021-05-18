@@ -560,10 +560,12 @@ public class NetworkManager {
                     );
                     prefs.put("playerName", username);
 
-                    account.put(JSON.NAME,  response.optString(JSON.NAME ));
+                    account.put(JSON.NAME,  username);
                     account.put(JSON.SCORE, response.optInt(   JSON.SCORE));
                     account.put(JSON.TOKEN, response.optString(JSON.TOKEN));
                 }
+                App.logger.debug("Username: " + username);
+                App.logger.debug("Json Account: " + account.getString(JSON.NAME));
 
                 return response.optString(
                     JSON.MESSAGE,
