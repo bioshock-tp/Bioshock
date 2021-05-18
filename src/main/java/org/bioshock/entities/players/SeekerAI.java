@@ -65,8 +65,8 @@ public class SeekerAI extends SquareEntity implements Collisions {
     new PathfindingC<>(
         roomGraph,
         SceneManager.getMap().getRoomArray(),
-        SceneManager.getMap().getRoomArray()[0][0].getTotalSize().getWidth(),
-        SceneManager.getMap().getRoomArray()[0][0].getTotalSize().getHeight()
+        SceneManager.getMap().getRoomGraph().getNodes().iterator().next().getTotalSize().getWidth(),
+        SceneManager.getMap().getRoomGraph().getNodes().iterator().next().getTotalSize().getHeight()
     );
 
     /**
